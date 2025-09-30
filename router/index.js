@@ -2,7 +2,7 @@ import routerx from 'express-promise-router'
 import User from './User.js'
 import Categorie from './Categorie.js'
 import Course from './Course.js'
-import CourseSection from './CourseSection.js'
+import CourseSection from './CourseSection.js' // Mantener para la gestión de secciones
 import CourseClase from './CourseClase.js'
 import Coupon from './Coupon.js' // Renombrado de Cupone a Coupon
 import Discount from './Discount.js'
@@ -21,7 +21,7 @@ const router = routerx();
 router.use('/users',User);
 router.use('/categories',Categorie);
 router.use('/courses',Course);
-router.use('/course_section',CourseSection);
+router.use('/course-sections',CourseSection); // Renombrado para consistencia
 router.use('/course_clase',CourseClase);
 router.use('/coupon',Coupon); // Ruta cambiada a /coupon
 router.use('/discount',Discount);

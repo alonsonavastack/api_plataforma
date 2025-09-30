@@ -144,6 +144,7 @@ export default {
             N_REVIEWS: { $size: "$reviews" },
             AVG_RATING: { $ifNull: [{ $avg: "$reviews.rating" }, 0.0] },
             N_CLASES: { $size: "$clases" },
+            TIME_TOTAL: { $sum: "$clases.time" } // Sumar la duración de todas las clases
           },
         },
       ]);
@@ -157,7 +158,8 @@ export default {
           ct.N_STUDENTS ?? 0, // si tu resource lo ocupa; o pon 0 si no lo tienes aquí
           ct.N_REVIEWS,
           Number(ct.AVG_RATING).toFixed(2),
-          ct.N_CLASES
+          ct.N_CLASES,
+          ct.TIME_TOTAL
         );
       });
 
@@ -234,6 +236,7 @@ export default {
             N_REVIEWS: { $size: "$reviews" },
             AVG_RATING: { $ifNull: [{ $avg: "$reviews.rating" }, 0.0] },
             N_CLASES: { $size: "$clases" },
+            TIME_TOTAL: { $sum: "$clases.time" }
           },
         },
       ]);
@@ -254,7 +257,8 @@ export default {
             c.N_STUDENTS,
             c.N_REVIEWS,
             Number(c.AVG_RATING).toFixed(2),
-            c.N_CLASES
+            c.N_CLASES,
+            c.TIME_TOTAL
           );
         });
         return {
@@ -335,6 +339,7 @@ export default {
               N_REVIEWS: { $size: "$reviews" },
               AVG_RATING: { $ifNull: [{ $avg: "$reviews.rating" }, 0.0] },
               N_CLASES: { $size: "$clases" },
+              TIME_TOTAL: { $sum: "$clases.time" }
             },
           },
         ]);
@@ -345,7 +350,8 @@ export default {
             c.N_STUDENTS,
             c.N_REVIEWS,
             Number(c.AVG_RATING).toFixed(2),
-            c.N_CLASES
+            c.N_CLASES,
+            c.TIME_TOTAL
           );
         });
       };
@@ -435,72 +441,33 @@ export default {
       const SECTIONS = await models.CourseSection.find({ course: COURSE._id });
       const MALLA_CURRICULAR = [];
       let TIME_TOTAL_SECTIONS = [];
+      let time_total_course_seconds = 0;
       let FILES_TOTAL_SECTIONS = 0;
       let NUMERO_TOTAL_CLASES = 0;
 
       // Cargar clases por sección en paralelo
       await Promise.all(
         SECTIONS.map(async (_sec) => {
-          const SECTION = _sec.toObject();
+          const sectionObject = _sec.toObject();
+          const clases = await models.CourseClase.find({ section: _sec._id }).sort({ order: 1 });
 
-          const CLASES_SECTION = await models.CourseClase.find({ // Corregido: CourseClase
-            section: SECTION._id,
-          }).sort({ createdAt: -1 });
-          const CLASES_NEWS = [];
-          let TIME_CLASES = [];
+          let sectionTimeSeconds = 0;
+          const clasesConArchivos = await Promise.all(clases.map(async (clase) => {
+            const claseObject = clase.toObject();
+            const files = await models.CourseClaseFile.find({ clase: clase._id });
+            claseObject.files = files;
+            sectionTimeSeconds += clase.time || 0;
+            return claseObject;
+          }));
 
-          // Cargar archivos por clase en paralelo
-          await Promise.all(
-            CLASES_SECTION.map(async (_cl) => {
-              const CLASE = _cl.toObject();
-              
-              const ClaseFiles = await models.CourseClaseFile.find({
-                clase: CLASE._id,
-              });
-              CLASE.files = ClaseFiles.map((cf) => ({
-                _id: cf._id,
-                file:
-                  (process.env.URL_BACKEND || "") +
-                  "/api/course_clase/file-clase/" +
-                  cf.file,
-                file_name: cf.file_name,
-                size: cf.size,
-                clase: cf.clase,
-              }));
-              
-              FILES_TOTAL_SECTIONS += CLASE.files.length;
+          sectionObject.clases = clasesConArchivos;
+          sectionObject.time_parse = sectionTimeSeconds; // Duración total de la sección en segundos
+          time_total_course_seconds += sectionTimeSeconds;
+          NUMERO_TOTAL_CLASES += clases.length;
 
-              CLASE.vimeo_id = CLASE.vimeo_id
-                ? "https://player.vimeo.com/video/" + CLASE.vimeo_id
-                : null;
-
-              // Cálculo de tiempos
-              const time_clase = [CLASE.time].filter(Boolean);
-              const tiempoTotal = time_clase.length
-                ? sumarTiempos(...time_clase)
-                : 0;
-              CLASE.time_parse = tiempoTotal;
-
-              TIME_CLASES.push(CLASE.time);
-              TIME_TOTAL_SECTIONS.push(CLASE.time);
-
-              CLASES_NEWS.push(CLASE);
-            })
-          );
-
-          NUMERO_TOTAL_CLASES += CLASES_NEWS.length;
-          SECTION.clases = CLASES_NEWS;
-          SECTION.time_parse = TIME_CLASES.length
-            ? sumarTiempos(...TIME_CLASES)
-            : 0;
-
-          MALLA_CURRICULAR.push(SECTION);
+          MALLA_CURRICULAR.push(sectionObject);
         })
       );
-
-      const TIME_TOTAL_COURSE = TIME_TOTAL_SECTIONS.length
-        ? sumarTiempos(...TIME_TOTAL_SECTIONS)
-        : 0;
 
       // Cursos relacionados: del mismo instructor
       const COURSE_INSTRUCTOR = await models.Course.aggregate([
@@ -646,7 +613,7 @@ export default {
           COURSE,
           DISCOUNT_G,
           MALLA_CURRICULAR,
-          TIME_TOTAL_COURSE,
+          time_total_course_seconds, // Enviamos el total en segundos
           FILES_TOTAL_SECTIONS,
           COUNT_COURSE_INSTRUCTOR,
           NUMERO_TOTAL_CLASES,

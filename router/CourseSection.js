@@ -5,7 +5,7 @@ import auth from '../service/auth.js';
 const router = routerx();
 
 router.post("/register",[auth.verifyAdmin],courseSectionController.register);
-router.post("/update",[auth.verifyAdmin],courseSectionController.update);
+router.put("/update",[auth.verifyAdmin],courseSectionController.update);
 router.get("/list",[auth.verifyAdmin],courseSectionController.list);
 router.delete("/remove/:id",[auth.verifyAdmin],courseSectionController.remove);
 

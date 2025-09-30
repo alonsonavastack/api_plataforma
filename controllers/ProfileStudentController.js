@@ -20,13 +20,29 @@ export const client = async(req,res) => {
             }
 
             // 1. Obtener los cursos en los que el estudiante está inscrito directamente
-            const enrolled_courses = await models.CourseStudent.find({ user: req.user._id })
+            let enrolled_courses = await models.CourseStudent.find({ user: req.user._id })
                 .populate({
                     path: "course",
                     populate: {
                         path: "user" // Popula el instructor del curso
                     }
                 });
+
+            // 1.1 Calcular el porcentaje de completado para cada curso
+            enrolled_courses = await Promise.all(enrolled_courses.map(async (enrollment) => {
+                const enrollmentObj = enrollment.toObject();
+                const courseId = enrollmentObj.course._id;
+
+                // Contar el total de clases del curso
+                const sections = await models.CourseSection.find({ course: courseId });
+                const sectionIds = sections.map(s => s._id);
+                const totalClases = await models.CourseClase.countDocuments({ section: { $in: sectionIds } });
+
+                // Calcular porcentaje
+                const checkedClases = enrollmentObj.clases_checked?.length || 0;
+                enrollmentObj.percentage = totalClases > 0 ? Math.round((checkedClases / totalClases) * 100) : 0;
+                return enrollmentObj;
+            }));
 
             // 2. Obtener el historial de compras (opcional, pero útil para el perfil)
             const sales = await models.Sale.find({ user: req.user._id }).sort({ createdAt: -1 });

@@ -1,23 +1,15 @@
-import routerx from 'express-promise-router'
-import courseClaseController from '../controllers/CourseClaseController.js'
+import routerx from 'express-promise-router';
+import * as CourseClaseController from '../controllers/CourseClaseController.js';
 import auth from '../service/auth.js';
-
-import multiparty from 'connect-multiparty';
-const path2 = multiparty(); // Para Vimeo
-const path1 = multiparty({uploadDir: './uploads/course/files'}); // Para archivos descargables
 
 const router = routerx();
 
-router.post("/register",[auth.verifyAdmin],courseClaseController.register);
-router.post("/update",[auth.verifyAdmin],courseClaseController.update);
-router.get("/list",[auth.verifyAdmin],courseClaseController.list);
-router.delete("/remove/:id",[auth.verifyAdmin],courseClaseController.remove);
-
-router.post("/upload_vimeo",[auth.verifyAdmin,path2],courseClaseController.upload_vimeo);
-
-// recursos descargables
-router.post("/register_file",[auth.verifyAdmin,path1],courseClaseController.register_file);
-router.delete("/delete_file/:id",[auth.verifyAdmin],courseClaseController.delete_file);
-router.get("/file-clase/:file",courseClaseController.get_file_clase);
+// Usamos verifyDashboard porque es para instructores y admins
+router.post('/register', auth.verifyDashboard, CourseClaseController.register);
+router.get('/list', auth.verifyDashboard, CourseClaseController.list);
+router.put('/update', auth.verifyDashboard, CourseClaseController.update);
+router.delete('/remove/:id', auth.verifyDashboard, CourseClaseController.remove);
+router.put('/reorder', auth.verifyDashboard, CourseClaseController.reorder);
+router.get('/vimeo-data', auth.verifyDashboard, CourseClaseController.get_vimeo_data);
 
 export default router;
