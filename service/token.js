@@ -10,7 +10,8 @@ export default {
     },
     decode: async(token) => {
         try {
-            const {_id} = await jwt.verify(token, process.env.JWT_SECRETO);
+            // jwt.verify es síncrono, no necesita await.
+            const {_id} = jwt.verify(token, process.env.JWT_SECRETO);
             const user = await models.User.findOne({_id: _id});
             if(user){
                 return user;

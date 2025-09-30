@@ -5,7 +5,10 @@ import token from "../service/token.js";
 export default {
     register: async(req,res) => {
         try {
-            let user = await token.decode(req.headers.token);
+            const user = req.user;
+            if (!user) {
+                return res.status(401).send({ message: 'No autenticado.' });
+            }
             // Verifica si el producto (sea curso o proyecto) ya está en el carrito del usuario.
             let CART_EXIST = await models.Cart.findOne({product: req.body.product, user: user._id});
             if(CART_EXIST){
@@ -39,8 +42,10 @@ export default {
     },
     update: async(req,res) => {
         try {
-            // APLICACIÓN DE CUPÓN
-            let user = await token.decode(req.headers.token);
+            const user = req.user;
+            if (!user) {
+                return res.status(401).send({ message: 'No autenticado.' });
+            }
             let CUPON = await models.Cupone.findOne({code: req.body.cupon});
             if(!CUPON){
                 res.status(200).json({
@@ -118,7 +123,10 @@ export default {
     },
     list: async(req,res) => { 
         try {
-            let user = await token.decode(req.headers.token);
+            const user = req.user;
+            if (!user) {
+                return res.status(401).send({ carts: [] }); // Devuelve carrito vacío si no está autenticado
+            }
             
             let CARTS = await models.Cart.find({user: user._id}).populate({
                 path: 'product',

@@ -9,7 +9,7 @@ export default {
             description:user.description,
             rol:user.rol,
             state: user.state,
-            avatar: user.avatar ? process.env.URL_BACKEND+"/api/users/imagen-usuario/"+user.avatar : null,
+            avatar: user.avatar,
         }
     },
 }

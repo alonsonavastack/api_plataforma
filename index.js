@@ -27,6 +27,12 @@ app.use(express.urlencoded({extended: true}))
 app.use(express.static(path.join(__dirname,'public')))
 app.use('/api/',router)
 
+// Custom error handler
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).send({ message: 'An internal server error occurred.', error: err.message });
+});
+
 app.set('port', process.env.PUERTO || 3000);
 
 app.listen(app.get('port'), () => {

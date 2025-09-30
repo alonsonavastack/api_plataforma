@@ -1,6 +1,6 @@
 import routerx from 'express-promise-router'
-import couponController from '../controllers/CuponeController'
-import auth from '../service/auth'
+import couponController from '../controllers/CuponeController.js'
+import auth from '../service/auth.js'
 
 const router = routerx();
 

@@ -1,10 +1,11 @@
 import models from "../models/index.js";
-import token from "../service/token.js";
+// No es necesario importar 'token' porque el middleware 'verifyDashboard' ya lo maneja.
 
 export default {
   kpis: async (req, res) => {
     try {
-      const user = await token.decode(req.headers.token);
+      // El middleware 'verifyDashboard' ya ha validado el token y ha adjuntado el usuario a req.user.
+      const user = req.user;
 
       if (user.rol === 'admin') {
         // KPIs para el Administrador (Globales)
@@ -51,7 +52,7 @@ export default {
       return res.status(403).json({ message: 'Acceso denegado' });
 
     } catch (error) {
-      console.log(error);
+      console.error("Error en DashboardController.kpis:", error);
       res.status(500).send({
         message: "OCURRIÓ UN ERROR AL OBTENER LOS KPIS",
       });

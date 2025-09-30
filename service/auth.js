@@ -1,14 +1,22 @@
 import token from './token.js'
 
 const verifyAuth = async (req, res, next, allowedRoles) => {
-    if(!req.headers.token){
-        return res.status(401).send({ // 401 Unauthorized es más apropiado para un token faltante
-            message: 'NO SE ENVIÓ EL TOKEN',
+    // Estandarizar la lectura del token desde el encabezado 'Authorization'
+    const authHeader = req.headers['authorization'];
+    if (!authHeader) {
+        return res.status(401).send({
+            message: 'No se proporcionó un token de autenticación.',
         });
     }
-    const response = await token.decode(req.headers.token);
-    if(response){
+
+    const tokenValue = authHeader.split(' ')[1];
+    if (!tokenValue) {
+        return res.status(401).send({ message: 'Formato de token inválido. Se esperaba "Bearer <token>".' });
+    }
+    const response = await token.decode(tokenValue);
+    if (response) {
         if(allowedRoles.includes(response.rol)){
+            req.user = response; // Adjuntamos el usuario decodificado a la petición
             next();
         }else{
             res.status(403).send({

@@ -28,7 +28,7 @@ router.use('/discount',Discount);
 router.use('/home',Home);
 router.use('/cart',Cart);
 router.use('/checkout',Sale);
-router.use('/profile',ProfileStudent);
+router.use('/profile-student',ProfileStudent);
 router.use('/projects',Project);
 router.use('/profile-instructor', ProfileInstructorRouter);
 router.use('/profile-admin', ProfileAdminRouter);

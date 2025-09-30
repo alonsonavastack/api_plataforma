@@ -1,30 +1,31 @@
 import models from "../models/index.js";
 import resource from "../resource/index.js";
 import { ObjectId } from "mongodb";
-import token from "../service/token.js";
-import { N_CLASES_OF_COURSES, sumarTiempos } from "../utils/helpers.js";
+import token from "../service/token.js"; // Asegúrate que la ruta es correcta
+import { N_CLASES_OF_COURSES, sumarTiempos } from "../utils/helpers.js"; // Asegúrate que la ruta es correcta
+
 function DISCOUNT_G_F(Campaing_Normal, PRODUCT, product_type = "course") {
   let DISCOUNT_G = null;
   if (!Campaing_Normal) {
     return null;
   }
-
+ 
   const productIdStr = PRODUCT._id.toString();
   const categoryIdStr = PRODUCT.categorie?._id.toString();
-
+ 
   if (
     Campaing_Normal.type_segment == 1 &&
     product_type === "course" &&
     Campaing_Normal.courses.some((c) => c.toString() === productIdStr)
   ) {
     DISCOUNT_G = Campaing_Normal;
-  } else if (
+  } else if ( // Segmento por categoría
     Campaing_Normal.type_segment == 2 &&
     categoryIdStr &&
     Campaing_Normal.categories.some((c) => c.toString() === categoryIdStr)
   ) {
     DISCOUNT_G = Campaing_Normal;
-  } else if (
+  } else if ( // Segmento por proyecto
     Campaing_Normal.type_segment == 3 &&
     product_type === "project" &&
     Campaing_Normal.projects.some((p) => p.toString() === productIdStr)
@@ -33,20 +34,21 @@ function DISCOUNT_G_F(Campaing_Normal, PRODUCT, product_type = "course") {
   }
   return DISCOUNT_G;
 }
+
 async function COURSE_META_INFO(courseT) {
   let META_INFO = {};
-  let N_STUDENTS = await models.CourseStudent.count({ course: courseT._id });
+  let N_STUDENTS = await models.CourseStudent.countDocuments({ course: courseT._id });
   let REVIEWS = await models.Review.find({
     product: courseT._id,
     product_type: "course",
   });
   let AVG_RATING =
     REVIEWS.length > 0
-      ? (
+      ? Number(
           REVIEWS.reduce((sum, review) => sum + review.rating, 0) /
-          REVIEWS.length
+           REVIEWS.length
         ).toFixed(2)
-      : 0;
+      : "0.00";
 
   META_INFO.N_STUDENTS = N_STUDENTS;
   META_INFO.N_REVIEWS = REVIEWS.length;
@@ -56,10 +58,10 @@ async function COURSE_META_INFO(courseT) {
 export default {
   list: async (req, res) => {
     try {
-      // Asegura que TIME_NOW sea número
+      // Asegura que TIME_NOW sea un número
       const TIME_NOW = Number(req.query.TIME_NOW) || Date.now();
 
-      // 1) Categorías con conteo
+      // 1. Categorías con conteo de cursos
       const CATEGORIES_LIST = await models.Categorie.aggregate([
         { $match: { state: 1 } },
         {
@@ -80,14 +82,14 @@ export default {
         },
       ]);
 
-      // Campaña normal activa
+      // 2. Campaña de descuento "normal" activa
       let Campaing_home = await models.Discount.findOne({
         type_campaign: 1,
         start_date_num: { $lte: TIME_NOW },
         end_date_num: { $gte: TIME_NOW },
       });
 
-      // 2) Cursos TOPS — ahora incluye clases
+      // 3. Cursos TOP (aleatorios) con metadatos
       const courses_tops = await models.Course.aggregate([
         { $match: { state: 2 } },
         { $sample: { size: 3 } },
@@ -125,7 +127,7 @@ export default {
             as: "reviews",
           },
         },
-        // 🔧 lookup para clases a partir de las sections:
+        // Lookup para clases a partir de las secciones
         {
           $lookup: {
             from: "course_clases",
@@ -140,7 +142,7 @@ export default {
         {
           $addFields: {
             N_REVIEWS: { $size: "$reviews" },
-            AVG_RATING: { $ifNull: [{ $avg: "$reviews.rating" }, 0] },
+            AVG_RATING: { $ifNull: [{ $avg: "$reviews.rating" }, 0.0] },
             N_CLASES: { $size: "$clases" },
           },
         },
@@ -151,7 +153,7 @@ export default {
         return resource.Course.api_resource_course(
           ct,
           DISCOUNT_G,
-          // Orden de tu resource: pasa métricas ya calculadas
+          // Pasa métricas ya calculadas al resource
           ct.N_STUDENTS ?? 0, // si tu resource lo ocupa; o pon 0 si no lo tienes aquí
           ct.N_REVIEWS,
           Number(ct.AVG_RATING).toFixed(2),
@@ -159,7 +161,7 @@ export default {
         );
       });
 
-      // 3) Secciones por categorías (sample 5) — corrige variable y cursos
+      // 4. Secciones de cursos por categorías (5 categorías aleatorias)
       const categories_sections_sample = await models.Categorie.aggregate([
         { $match: { state: 1 } },
         { $sample: { size: 5 } },
@@ -167,6 +169,7 @@ export default {
 
       const categoryIds = categories_sections_sample.map((cat) => cat._id);
 
+      // Obtener todos los cursos para esas categorías de una sola vez
       const coursesForCategories = await models.Course.aggregate([
         { $match: { categorie: { $in: categoryIds }, state: 2 } },
         {
@@ -229,7 +232,7 @@ export default {
             ),
             N_STUDENTS: { $size: "$students" },
             N_REVIEWS: { $size: "$reviews" },
-            AVG_RATING: { $ifNull: [{ $avg: "$reviews.rating" }, 0] },
+            AVG_RATING: { $ifNull: [{ $avg: "$reviews.rating" }, 0.0] },
             N_CLASES: { $size: "$clases" },
           },
         },
@@ -263,7 +266,7 @@ export default {
         };
       });
 
-      // 4) Helper seguro para campañas (ids pueden ser ObjectId o {_id})
+      // 5. Helper para obtener cursos de campañas (banner y flash)
       const getCampaignCourses = async (campaign) => {
         if (!campaign || !campaign.courses || campaign.courses.length === 0)
           return [];
@@ -330,7 +333,7 @@ export default {
               ),
               N_STUDENTS: { $size: "$students" },
               N_REVIEWS: { $size: "$reviews" },
-              AVG_RATING: { $ifNull: [{ $avg: "$reviews.rating" }, 0] },
+              AVG_RATING: { $ifNull: [{ $avg: "$reviews.rating" }, 0.0] },
               N_CLASES: { $size: "$clases" },
             },
           },
@@ -347,7 +350,7 @@ export default {
         });
       };
 
-      // 5) Campañas banner y flash
+      // 6. Obtener campañas banner y flash
       let Campaing_banner = await models.Discount.findOne({
         type_campaign: 3,
         start_date_num: { $lte: TIME_NOW },
@@ -363,7 +366,7 @@ export default {
       const COURSES_FLASH = await getCampaignCourses(Campaing_flash);
       if (Campaing_flash) Campaing_flash = Campaing_flash.toObject();
 
-      // 6) Respuesta
+      // 7. Enviar respuesta
       res.status(200).json({
         categories: CATEGORIES_LIST,
         courses_top: COURSES_TOPS,
@@ -374,7 +377,7 @@ export default {
         campaing_flash: Campaing_flash,
       });
     } catch (error) {
-      console.log(error);
+      console.error("Error en HomeController.list:", error);
       res.status(500).send({ message: "Ocurrio un error" });
     }
   },
@@ -382,14 +385,14 @@ export default {
   show_course: async (req, res) => {
     try {
       const user = req.headers.token
-        ? await token.decode(req.headers.token).catch(() => null)
+        ? await token.decode(req.headers.token).catch(() => null) // No falla si el token es inválido
         : null;
 
       // Parámetros
       const SLUG = (req.params.slug || "").toString().trim();
       const TIME_NOW = Number(req.query.TIME_NOW) || Date.now();
       const CAMPAING_SPECIAL = req.query.CAMPAING_SPECIAL || null;
-
+      
       // Campaña activa (especial o normal)
       let Campaing_Normal = null;
       if (CAMPAING_SPECIAL) {
@@ -410,7 +413,7 @@ export default {
         "categorie",
         "user",
       ]);
-
+      
       if (!COURSE) {
         return res.status(200).json({
           message: 404,
@@ -418,7 +421,7 @@ export default {
         });
       }
 
-      // ¿El usuario ya tiene el curso?
+      // Verificar si el usuario ya posee el curso
       let STUDENT_HAVE_COURSE = false;
       if (user) {
         const IS_HAVE_COURSE = await models.CourseStudent.findOne({
@@ -428,7 +431,7 @@ export default {
         STUDENT_HAVE_COURSE = !!IS_HAVE_COURSE;
       }
 
-      // Secciones + clases + archivos (malla curricular)
+      // Malla curricular: Secciones, clases y archivos
       const SECTIONS = await models.CourseSection.find({ course: COURSE._id });
       const MALLA_CURRICULAR = [];
       let TIME_TOTAL_SECTIONS = [];
@@ -440,7 +443,7 @@ export default {
         SECTIONS.map(async (_sec) => {
           const SECTION = _sec.toObject();
 
-          const CLASES_SECTION = await models.CourseClase.find({
+          const CLASES_SECTION = await models.CourseClase.find({ // Corregido: CourseClase
             section: SECTION._id,
           }).sort({ createdAt: -1 });
           const CLASES_NEWS = [];
@@ -450,7 +453,7 @@ export default {
           await Promise.all(
             CLASES_SECTION.map(async (_cl) => {
               const CLASE = _cl.toObject();
-
+              
               const ClaseFiles = await models.CourseClaseFile.find({
                 clase: CLASE._id,
               });
@@ -464,14 +467,14 @@ export default {
                 size: cf.size,
                 clase: cf.clase,
               }));
-
+              
               FILES_TOTAL_SECTIONS += CLASE.files.length;
 
               CLASE.vimeo_id = CLASE.vimeo_id
                 ? "https://player.vimeo.com/video/" + CLASE.vimeo_id
                 : null;
 
-              // Tiempos
+              // Cálculo de tiempos
               const time_clase = [CLASE.time].filter(Boolean);
               const tiempoTotal = time_clase.length
                 ? sumarTiempos(...time_clase)
@@ -499,7 +502,7 @@ export default {
         ? sumarTiempos(...TIME_TOTAL_SECTIONS)
         : 0;
 
-      // Cursos del mismo instructor (relacionados por instructor)
+      // Cursos relacionados: del mismo instructor
       const COURSE_INSTRUCTOR = await models.Course.aggregate([
         { $match: { state: 2, user: COURSE.user._id } },
         { $sample: { size: 2 } },
@@ -523,7 +526,7 @@ export default {
         { $unwind: "$categorie" },
       ]);
 
-      // Cursos relacionados por categoría (mismo curso excluido)
+      // Cursos relacionados: por categoría (excluyendo el actual)
       const COURSE_RELATEDS = await models.Course.aggregate([
         {
           $match: {
@@ -556,13 +559,13 @@ export default {
       // Meta info del curso principal (estudiantes, reviews, rating)
       const META_INFO = await COURSE_META_INFO(COURSE);
 
-      // Armar cards de relacionados (con descuento y meta)
+      // Procesar cursos relacionados en paralelo
       const [N_COURSE_INSTRUCTOR, N_COURSE_RELATEDS] = await Promise.all([
         Promise.all(
           COURSE_INSTRUCTOR.map(async (ci) => {
             const DISCOUNT_G = DISCOUNT_G_F(Campaing_Normal, ci);
             const meta = await COURSE_META_INFO(ci);
-            const nClases = await N_CLASES_OF_COURSES(ci); // si tienes una versión agregada, cámbiala por performance
+            const nClases = await N_CLASES_OF_COURSES(ci); // Considerar optimizar si es lento
             return resource.Course.api_resource_course(
               ci,
               DISCOUNT_G,
@@ -590,12 +593,12 @@ export default {
         ),
       ]);
 
-      // Reviews del curso
+      // Obtener reseñas del curso
       const REVIEWS = await models.Review.find({
         product: COURSE._id,
         product_type: "course",
       }).populate("user");
-
+      
       // Info del instructor (totales)
       const COURSES_INSTRUCTOR = await models.Course.find({
         user: COURSE.user,
@@ -607,7 +610,7 @@ export default {
       let TOTAL_RATINGS_SUM = 0;
       let NUM_REVIEW_SUM_TOTAL = 0;
 
-      // Promedio ponderado (sumatorio de ratings / total de reviews)
+      // Calcular métricas agregadas del instructor
       await Promise.all(
         COURSES_INSTRUCTOR.map(async (ci) => {
           const nStudents = await models.CourseStudent.countDocuments({
@@ -635,7 +638,7 @@ export default {
           ? (TOTAL_RATINGS_SUM / NUM_REVIEW_SUM_TOTAL).toFixed(2)
           : "0.00";
 
-      // Descuento para el curso principal
+      // Aplicar descuento al curso principal
       const DISCOUNT_G = DISCOUNT_G_F(Campaing_Normal, COURSE);
 
       return res.status(200).json({
@@ -675,7 +678,7 @@ export default {
         student_have_course: STUDENT_HAVE_COURSE,
       });
     } catch (error) {
-      console.log(error);
+      console.error("Error en HomeController.show_course:", error);
       return res.status(500).send({ message: "OCURRIO UN ERROR" });
     }
   },
@@ -683,7 +686,7 @@ export default {
   search_course: async (req, res) => {
     try {
       let TIME_NOW = req.query.TIME_NOW;
-      // Compatible con 'q' (frontend) y 'search' (backend/postman)
+      // Compatible con 'q' (frontend) y 'search' (backend)
       let search_course = req.body.q || req.body.search;
       let selected_categories = req.body.selected_categories;
       if (selected_categories) {
@@ -731,7 +734,7 @@ export default {
           $lookup: {
             from: "reviews",
             localField: "_id",
-            foreignField: "product", // Cambiado de 'course' a 'product'
+            foreignField: "product",
             as: "reviews",
           },
         });
@@ -739,7 +742,7 @@ export default {
           $addFields: {
             avgRanting: {
               $avg: "$reviews.rating",
-            },
+            }, // Cuidado: avg de un array vacío es null
             // Asegurarse que el filtro no falle si no hay reviews
             product_type: {
               $cond: {
@@ -759,7 +762,7 @@ export default {
                   $lt: rating_selected + 1,
                 },
               },
-              { product_type: "course" }, // Aseguramos que solo sean reviews de cursos
+              { product_type: "course" }, // Asegura que solo sean reviews de cursos
             ],
           },
         });
@@ -788,10 +791,6 @@ export default {
       });
       let Courses = await models.Course.aggregate(
         filters
-        // [
-        // {$match: { state: 2, title: new RegExp(search_course,'i')}},
-        // {$match: { categorie: {$in: selected_categories } }},
-        // ]
       );
 
       // CAMPAING NORMAL
@@ -804,7 +803,7 @@ export default {
       let COURSES = [];
       for (const Course of Courses) {
         let DISCOUNT_G = DISCOUNT_G_F(Campaing_home, Course);
-        // N_CLASES no se usa en esta versión del resource, así que se puede omitir la llamada
+        // TODO: Obtener N_CLASES, N_STUDENTS, etc., si es necesario para el resource.
         COURSES.push(resource.Course.api_resource_course(Course, DISCOUNT_G));
       }
 
@@ -812,7 +811,7 @@ export default {
         courses: COURSES,
       });
     } catch (error) {
-      console.log(error);
+      console.error("Error en HomeController.search_course:", error);
       res.status(500).send({
         message: "OCURRIO UN ERROR",
       });
@@ -820,7 +819,7 @@ export default {
   },
   config_all: async (req, res) => {
     try {
-      // OPTIMIZADO CON AGREGACIONES
+      // Optimizado con agregaciones para evitar múltiples consultas en bucle
       const categories = await models.Categorie.aggregate([
         { $match: { state: 1 } },
         {
@@ -855,7 +854,7 @@ export default {
 
       let levels = ["Basico", "Intermedio", "Avanzado"];
 
-      // OPTIMIZADO CON AGREGACIONES
+      // Conteo de cursos por nivel
       const N_LEVELS = await models.Course.aggregate([
         { $match: { level: { $in: levels } } },
         { $group: { _id: "$level", count_course: { $sum: 1 } } },
@@ -864,7 +863,7 @@ export default {
 
       let idiomas = ["Ingles", "Español", "Portugues", "Aleman"];
 
-      // OPTIMIZADO CON AGREGACIONES
+      // Conteo de cursos por idioma
       const N_IDIOMAS = await models.Course.aggregate([
         { $match: { idioma: { $in: idiomas } } },
         { $group: { _id: "$idioma", count_course: { $sum: 1 } } },
@@ -878,7 +877,7 @@ export default {
         idiomas: N_IDIOMAS,
       });
     } catch (error) {
-      console.log(error);
+      console.error("Error en HomeController.config_all:", error);
       res.status(500).send({
         message: "OCURRIO UN ERROR",
       });
