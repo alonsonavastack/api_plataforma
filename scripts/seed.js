@@ -94,9 +94,9 @@ const seedData = async () => {
                 title: 'Curso Completo de React y Next.js',
                 slug: 'curso-completo-de-react-y-next-js',
                 subtitle: 'De cero a experto con proyectos reales',
-                categorie: webCategory._id,
+                categorie: webCategory._id, 
                 user: instructorJuan._id,
-                price_soles: 150,
+                price_mxn: 750,
                 price_usd: 40,
                 description: 'Aprende a construir aplicaciones web modernas y potentes con React, Next.js, TailwindCSS y mucho más.',
                 imagen: 'react-next.jpg',
@@ -112,7 +112,7 @@ const seedData = async () => {
                 subtitle: 'Crea prototipos interactivos y profesionales',
                 categorie: uiuxCategory._id,
                 user: instructorMaria._id,
-                price_soles: 120,
+                price_mxn: 600,
                 price_usd: 30,
                 description: 'Domina la herramienta líder en diseño de interfaces y colaboración en equipo. Aprende a crear sistemas de diseño.',
                 imagen: 'figma.jpg',
@@ -132,11 +132,12 @@ const seedData = async () => {
                 title: 'Plantilla de E-commerce con MERN',
                 subtitle: 'Solución completa para tu tienda online',
                 categorie: webCategory._id,
-                price_soles: 200,
+                price_mxn: 950,
                 price_usd: 50,
                 description: 'Código fuente completo de una tienda en línea construida con MongoDB, Express, React y Node.js.',
                 imagen: 'project-mern.jpg',
                 state: 2, // Publico
+                user: instructorJuan._id, // Asignamos el instructor al proyecto
             }
         ]);
         const mernProject = projects[0];

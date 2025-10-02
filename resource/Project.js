@@ -5,11 +5,13 @@ export default {
             title: project.title,
             subtitle: project.subtitle,
             description: project.description,
-            imagen: project.imagen ? `${process.env.URL_BACKEND}/api/projects/imagen-project/${project.imagen}` : null,
+            imagen: project.imagen,
+            url_video: project.url_video,
             categorie: project.categorie,
-            price_soles: project.price_soles,
+            price_mxn: project.price_mxn,
             price_usd: project.price_usd,
             state: project.state,
+            user: project.user,
         }
     }
 }

@@ -5,5 +5,6 @@ import auth from "../service/auth.js";
 const router = routerx();
 
 router.get("/kpis", [auth.verifyDashboard], dashboardController.kpis);
+router.get("/students", [auth.verifyDashboard], dashboardController.listStudents);
 
 export default router;

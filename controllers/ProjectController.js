@@ -12,6 +12,9 @@ export default {
     // POST /api/project/register
     register: async (req, res) => {
         try {
+            // El middleware 'auth.verifyDashboard' decodifica el token y añade el usuario a req.user
+            // Si no existe, el middleware ya habría devuelto un error.
+
             const existingProject = await models.Project.findOne({ title: req.body.title });
             if (existingProject) {
                 return res.status(200).json({
@@ -25,6 +28,9 @@ export default {
                 const imagen_name = path.basename(img_path);
                 req.body.imagen = imagen_name;
             }
+
+            // Asignar el usuario (instructor/admin) que está creando el proyecto
+            req.body.user = req.user._id; // Se obtiene el ID del usuario desde el token verificado
 
             const newProject = await models.Project.create(req.body);
 
@@ -43,6 +49,8 @@ export default {
     // POST /api/project/update
     update: async (req, res) => {
         try {
+            // El middleware 'auth.verifyDashboard' ya ha verificado el token y adjuntado el usuario a req.user
+            
             const existingProject = await models.Project.findOne({ title: req.body.title, _id: { $ne: req.body._id } });
             if (existingProject) {
                 return res.status(200).json({
@@ -52,7 +60,13 @@ export default {
             }
 
             if (req.files && req.files.imagen) {
-                const oldProject = await models.Project.findById(req.body._id);
+                const oldProject = await models.Project.findById(req.body._id).lean();
+
+                // Verificación de permisos: un instructor solo puede editar sus propios proyectos.
+                if (req.user.rol === 'instructor' && oldProject.user.toString() !== req.user._id.toString()) {
+                    return res.status(403).json({ message: 'No tienes permiso para editar este proyecto.' });
+                }
+
                 if (oldProject.imagen && fs.existsSync(path.join(__dirname, '../uploads/project/', oldProject.imagen))) {
                     fs.unlinkSync(path.join(__dirname, '../uploads/project/', oldProject.imagen));
                 }
@@ -61,7 +75,14 @@ export default {
                 req.body.imagen = imagen_name;
             }
 
-            const updatedProject = await models.Project.findByIdAndUpdate(req.body._id, req.body, { new: true });
+            // Un instructor no debería poder cambiar el estado o el autor del proyecto.
+            if (req.user.rol === 'instructor') {
+                delete req.body.user;
+                delete req.body.state;
+            }
+
+            const updatedProject = await models.Project.findByIdAndUpdate(req.body._id, req.body, { new: true })
+                                                        .populate('user');
 
             res.status(200).json({
                 project: resource.Project.api_resource_project(updatedProject),
@@ -78,9 +99,15 @@ export default {
     // GET /api/project/list
     list: async (req, res) => {
         try {
+            // El middleware 'auth.verifyDashboard' ya ha verificado el token y adjuntado el usuario a req.user
             const search = req.query.search;
             const categorie = req.query.categorie;
             const filter = {};
+
+            // Si el usuario es un instructor, solo listamos sus proyectos.
+            if (req.user.rol === 'instructor') {
+                filter.user = req.user._id;
+            }
 
             if (search) {
                 filter.title = new RegExp(search, "i");
@@ -88,10 +115,14 @@ export default {
             if (categorie) {
                 filter.categorie = categorie;
             }
-
-            let projects = await models.Project.find(filter).populate("categorie");
-
-            projects = projects.map(project => resource.Project.api_resource_project(project));
+            
+            // Populamos 'user' para mostrar la información del instructor.
+            // Se elimina la transformación a través de 'resource' que estaba eliminando el objeto 'user'.
+            // Ahora se envían los proyectos directamente con los datos populados.
+            const projects = await models.Project.find(filter)
+                                                 .populate("categorie")
+                                                 .populate("user")
+                                                 .sort({ createdAt: -1 });
 
             res.status(200).json({
                 projects: projects,
@@ -107,7 +138,7 @@ export default {
     // GET /api/project/show/:id
     show_project: async (req, res) => {
         try {
-            const project = await models.Project.findById(req.params.id).populate('categorie');
+            const project = await models.Project.findById(req.params.id).populate(['categorie', 'user']);
             if (!project) {
                 return res.status(404).json({ message: 'Proyecto no encontrado' });
             }
@@ -125,9 +156,15 @@ export default {
     // DELETE /api/project/remove/:id
     remove: async (req, res) => {
         try {
-            const project = await models.Project.findById(req.params.id);
+            // El middleware 'auth.verifyDashboard' ya ha verificado el token y adjuntado el usuario a req.user
+            const project = await models.Project.findById(req.params.id).lean();
             if (!project) {
                 return res.status(404).json({ message: 'Proyecto no encontrado' });
+            }
+
+            // Verificación de permisos: un instructor solo puede eliminar sus propios proyectos.
+            if (req.user.rol === 'instructor' && project.user.toString() !== req.user._id.toString()) {
+                return res.status(403).json({ message: 'No tienes permiso para eliminar este proyecto.' });
             }
 
             if (project.imagen) {

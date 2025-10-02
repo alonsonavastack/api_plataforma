@@ -1,7 +1,7 @@
 // Función interna para evitar la dependencia de `this` y asegurar la robustez.
 function resource_course(course, discount_g = null, N_CLASES = 0, N_STUDENTS = 0, N_REVIEWS = 0, AVG_RATING = 0) {
     let final_price_usd = course.price_usd;
-    let final_price_soles = course.price_soles;
+    let final_price_mxn = course.price_mxn;
     let discount_active = null;
 
     if (discount_g) {
@@ -14,10 +14,10 @@ function resource_course(course, discount_g = null, N_CLASES = 0, N_STUDENTS = 0
         };
         if (discount_g.type_discount == 1) { // Porcentaje
             final_price_usd = parseFloat((final_price_usd - (final_price_usd * discount_g.discount * 0.01)).toFixed(2));
-            final_price_soles = parseFloat((final_price_soles - (final_price_soles * discount_g.discount * 0.01)).toFixed(2));
+            final_price_mxn = parseFloat((final_price_mxn - (final_price_mxn * discount_g.discount * 0.01)).toFixed(2));
         } else { // Monto fijo
             final_price_usd = parseFloat((final_price_usd - discount_g.discount).toFixed(2));
-            // Asumimos un tipo de cambio para soles, o lo dejamos como está. Por simplicidad, lo aplicamos solo a USD.
+            // Nota: El descuento fijo se aplica directamente. Si se necesita un tipo de cambio para MXN, se implementaría aquí.
         }
     }
 
@@ -36,9 +36,9 @@ function resource_course(course, discount_g = null, N_CLASES = 0, N_STUDENTS = 0
         } : null,
         level: course.level,
         idioma: course.idioma,
-        price_soles: course.price_soles,
+        price_mxn: course.price_mxn,
         price_usd: course.price_usd,
-        final_price_soles: final_price_soles,
+        final_price_mxn: final_price_mxn,
         final_price_usd: final_price_usd,
         discount_active: discount_active,
         state: course.state,

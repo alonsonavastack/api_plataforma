@@ -29,7 +29,7 @@ router.use('/home',Home);
 router.use('/cart',Cart);
 router.use('/checkout',Sale);
 router.use('/profile-student',ProfileStudent);
-router.use('/projects',Project);
+router.use('/project',Project); // Corregido: de plural a singular
 router.use('/profile-instructor', ProfileInstructorRouter);
 router.use('/profile-admin', ProfileAdminRouter);
 router.use('/dashboard', DashboardRouter);

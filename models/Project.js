@@ -6,13 +6,15 @@ const ProjectSchema = new Schema({
     description: {type:String, required:true},
     
     imagen: {type:String, maxlength:250, required:true},
+    url_video: {type:String, required:false},
     
     categorie: {type:Schema.ObjectId, ref: 'categorie', required:true},
     
-    price_soles:{type:Number, required:true},
+    price_mxn:{type:Number, required:true},
     price_usd: {type:Number, required:true},
 
     state: {type:Number, default: 1}, // 1 es borrador, 2 es publico, 3 es anulado
+    user: {type:Schema.ObjectId, ref: 'user', required:true},
 },{
     timestamps: true
 });

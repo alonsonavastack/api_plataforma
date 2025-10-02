@@ -5,7 +5,7 @@ const CourseSchema = new Schema({
     slug: {type:String,required: true},
     subtitle: {type:String,required: true},
     categorie: {type:Schema.ObjectId,ref: 'categorie',required:true},
-    price_soles:{type:Number,required:true},
+    price_mxn:{type:Number,required:true},
     price_usd: {type:Number,required:true},
     imagen: {type:String,maxlength:250,required:true},
     description: {type:String,required:true},

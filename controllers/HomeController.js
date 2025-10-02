@@ -9,23 +9,25 @@ function DISCOUNT_G_F(Campaing_Normal, PRODUCT, product_type = "course") {
   if (!Campaing_Normal) {
     return null;
   }
- 
+
   const productIdStr = PRODUCT._id.toString();
   const categoryIdStr = PRODUCT.categorie?._id.toString();
- 
+
   if (
     Campaing_Normal.type_segment == 1 &&
     product_type === "course" &&
     Campaing_Normal.courses.some((c) => c.toString() === productIdStr)
   ) {
     DISCOUNT_G = Campaing_Normal;
-  } else if ( // Segmento por categoría
+  } else if (
+    // Segmento por categoría
     Campaing_Normal.type_segment == 2 &&
     categoryIdStr &&
     Campaing_Normal.categories.some((c) => c.toString() === categoryIdStr)
   ) {
     DISCOUNT_G = Campaing_Normal;
-  } else if ( // Segmento por proyecto
+  } else if (
+    // Segmento por proyecto
     Campaing_Normal.type_segment == 3 &&
     product_type === "project" &&
     Campaing_Normal.projects.some((p) => p.toString() === productIdStr)
@@ -37,7 +39,9 @@ function DISCOUNT_G_F(Campaing_Normal, PRODUCT, product_type = "course") {
 
 async function COURSE_META_INFO(courseT) {
   let META_INFO = {};
-  let N_STUDENTS = await models.CourseStudent.countDocuments({ course: courseT._id });
+  let N_STUDENTS = await models.CourseStudent.countDocuments({
+    course: courseT._id,
+  });
   let REVIEWS = await models.Review.find({
     product: courseT._id,
     product_type: "course",
@@ -46,7 +50,7 @@ async function COURSE_META_INFO(courseT) {
     REVIEWS.length > 0
       ? Number(
           REVIEWS.reduce((sum, review) => sum + review.rating, 0) /
-           REVIEWS.length
+            REVIEWS.length
         ).toFixed(2)
       : "0.00";
 
@@ -144,7 +148,7 @@ export default {
             N_REVIEWS: { $size: "$reviews" },
             AVG_RATING: { $ifNull: [{ $avg: "$reviews.rating" }, 0.0] },
             N_CLASES: { $size: "$clases" },
-            TIME_TOTAL: { $sum: "$clases.time" } // Sumar la duración de todas las clases
+            TIME_TOTAL: { $sum: "$clases.time" }, // Sumar la duración de todas las clases
           },
         },
       ]);
@@ -236,7 +240,7 @@ export default {
             N_REVIEWS: { $size: "$reviews" },
             AVG_RATING: { $ifNull: [{ $avg: "$reviews.rating" }, 0.0] },
             N_CLASES: { $size: "$clases" },
-            TIME_TOTAL: { $sum: "$clases.time" }
+            TIME_TOTAL: { $sum: "$clases.time" },
           },
         },
       ]);
@@ -339,7 +343,7 @@ export default {
               N_REVIEWS: { $size: "$reviews" },
               AVG_RATING: { $ifNull: [{ $avg: "$reviews.rating" }, 0.0] },
               N_CLASES: { $size: "$clases" },
-              TIME_TOTAL: { $sum: "$clases.time" }
+              TIME_TOTAL: { $sum: "$clases.time" },
             },
           },
         ]);
@@ -371,7 +375,11 @@ export default {
       });
       const COURSES_FLASH = await getCampaignCourses(Campaing_flash);
       if (Campaing_flash) Campaing_flash = Campaing_flash.toObject();
-
+      const projects_featured = await models.Project.find({ state: 2 })
+        .populate("categorie")
+        .populate("user")
+        .sort({ createdAt: -1 })
+        .limit(3); // Limitar a 3 para la página de inicio
       // 7. Enviar respuesta
       res.status(200).json({
         categories: CATEGORIES_LIST,
@@ -381,6 +389,7 @@ export default {
         campaing_banner: Campaing_banner,
         courses_flash: COURSES_FLASH,
         campaing_flash: Campaing_flash,
+        projects_featured: projects_featured
       });
     } catch (error) {
       console.error("Error en HomeController.list:", error);
@@ -398,7 +407,7 @@ export default {
       const SLUG = (req.params.slug || "").toString().trim();
       const TIME_NOW = Number(req.query.TIME_NOW) || Date.now();
       const CAMPAING_SPECIAL = req.query.CAMPAING_SPECIAL || null;
-      
+
       // Campaña activa (especial o normal)
       let Campaing_Normal = null;
       if (CAMPAING_SPECIAL) {
@@ -419,7 +428,7 @@ export default {
         "categorie",
         "user",
       ]);
-      
+
       if (!COURSE) {
         return res.status(200).json({
           message: 404,
@@ -449,16 +458,24 @@ export default {
       await Promise.all(
         SECTIONS.map(async (_sec) => {
           const sectionObject = _sec.toObject();
-          const clases = await models.CourseClase.find({ section: _sec._id }).sort({ order: 1 });
+          const clases = await models.CourseClase.find({
+            section: _sec._id,
+          }).sort({ order: 1 });
 
           let sectionTimeSeconds = 0;
-          const clasesConArchivos = await Promise.all(clases.map(async (clase) => {
-            const claseObject = clase.toObject();
-            const files = await models.CourseClaseFile.find({ clase: clase._id });
-            claseObject.files = files;
-            sectionTimeSeconds += clase.time || 0;
-            return claseObject;
-          }));
+          const clasesConArchivos = await Promise.all(
+            clases.map(async (clase) => {
+              const claseObject = clase.toObject();
+              const files = await models.CourseClaseFile.find({
+                clase: clase._id,
+              });
+              claseObject.files = files;
+              sectionTimeSeconds += clase.time || 0;
+              // Asegurarnos de que el vimeo_id se incluya para el reproductor
+              claseObject.vimeo_id = clase.vimeo_id;
+              return claseObject;
+            })
+          );
 
           sectionObject.clases = clasesConArchivos;
           sectionObject.time_parse = sectionTimeSeconds; // Duración total de la sección en segundos
@@ -565,7 +582,7 @@ export default {
         product: COURSE._id,
         product_type: "course",
       }).populate("user");
-      
+
       // Info del instructor (totales)
       const COURSES_INSTRUCTOR = await models.Course.find({
         user: COURSE.user,
@@ -756,9 +773,7 @@ export default {
       filters.push({
         $unwind: "$categorie",
       });
-      let Courses = await models.Course.aggregate(
-        filters
-      );
+      let Courses = await models.Course.aggregate(filters);
 
       // CAMPAING NORMAL
       let Campaing_home = await models.Discount.findOne({

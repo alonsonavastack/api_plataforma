@@ -58,4 +58,47 @@ export default {
       });
     }
   },
+
+  listStudents: async (req, res) => {
+    try {
+      // El middleware 'verifyDashboard' ya ha validado el rol de admin/instructor.
+      const user = req.user;
+
+      let studentQuery = { rol: 'cliente' };
+
+      // Si el usuario es un instructor, solo mostramos sus propios estudiantes.
+      if (user.rol === 'instructor') {
+        const instructorCourses = await models.Course.find({ user: user._id }).select('_id');
+        const courseIds = instructorCourses.map(c => c._id);
+        
+        const studentIds = await models.CourseStudent.distinct('user', { course: { $in: courseIds } });
+        studentQuery._id = { $in: studentIds };
+      }
+
+      // Usamos un pipeline de agregación para obtener el conteo de cursos por estudiante.
+      const students = await models.User.aggregate([
+        { $match: studentQuery },
+        {
+          $lookup: {
+            from: 'coursestudents', // El nombre de la colección de inscripciones
+            localField: '_id',
+            foreignField: 'user',
+            as: 'enrollments'
+          }
+        },
+        {
+          $addFields: {
+            course_count: { $size: '$enrollments' }
+          }
+        },
+        { $project: { password: 0, token: 0, enrollments: 0 } } // Excluimos campos sensibles
+      ]);
+
+      res.status(200).json({ students });
+
+    } catch (error) {
+      console.error("Error en DashboardController.listStudents:", error);
+      res.status(500).send({ message: "OCURRIÓ UN ERROR AL OBTENER LOS ESTUDIANTES" });
+    }
+  }
 };
