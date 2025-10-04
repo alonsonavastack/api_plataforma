@@ -8,6 +8,14 @@ const ProjectSchema = new Schema({
     imagen: {type:String, maxlength:250, required:true},
     url_video: {type:String, required:false},
     
+    // Archivos ZIP adjuntos al proyecto
+    files: [{
+        name: {type: String, required: true}, // Nombre original del archivo
+        filename: {type: String, required: true}, // Nombre único guardado en el servidor
+        size: {type: Number, required: true}, // Tamaño en bytes
+        uploadDate: {type: Date, default: Date.now}
+    }],
+    
     categorie: {type:Schema.ObjectId, ref: 'categorie', required:true},
     
     price_mxn:{type:Number, required:true},
