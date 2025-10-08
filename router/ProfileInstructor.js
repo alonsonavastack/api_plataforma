@@ -8,7 +8,8 @@ const path = multiparty({uploadDir : './uploads/user'});
 const router = routerx();
 
 router.get("/profile", [auth.verifyDashboard], profileInstructorController.profile);
-router.post("/update", [auth.verifyDashboard], profileInstructorController.update);
+router.put("/update", [auth.verifyDashboard], profileInstructorController.update);
 router.post("/update-avatar", [path, auth.verifyDashboard], profileInstructorController.update_avatar);
+router.post("/update-password", [auth.verifyDashboard], profileInstructorController.update_password);
 
 export default router;

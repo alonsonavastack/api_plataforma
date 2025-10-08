@@ -61,6 +61,37 @@ export default {
         }
     },
 
+    update_password: async(req,res) => {
+        try {
+            if (!req.user) {
+                return res.status(401).send({ message: 'No autenticado.' });
+            }
+
+            const { currentPassword, newPassword } = req.body;
+
+            const user = await models.User.findById(req.user._id);
+            if (!user) {
+                return res.status(404).send({ message: 'Usuario no encontrado.' });
+            }
+
+            const match = await bcrypt.compare(currentPassword, user.password);
+            if (!match) {
+                return res.status(400).json({ message_text: 'La contraseña actual es incorrecta.' });
+            }
+
+            const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+            await models.User.findByIdAndUpdate(req.user._id, { password: hashedNewPassword });
+
+            res.status(200).json({
+                message: 'La contraseña se actualizó correctamente.',
+            });
+
+        } catch (error) {
+            console.log(error);
+            res.status(500).send({ message: 'HUBO UN ERROR' });
+        }
+    },
+
     update_avatar: async(req,res) => {
         try {
             // The user ID should be available from the auth middleware via `req.user`

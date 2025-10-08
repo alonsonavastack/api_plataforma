@@ -105,6 +105,11 @@ export default {
                 filter.categorie = categorie;
             }
 
+            // Si el usuario es un instructor, solo listamos sus cursos.
+            if (req.user.rol === 'instructor') {
+                filter.user = req.user._id;
+            }
+
             let courses = await models.Course.find(filter).populate(["categorie","user"]);
 
             courses = courses.map((course) => {
@@ -133,7 +138,13 @@ export default {
                 }
             })
 
-            let Users = await models.User.find({state: 1,rol: 'instructor'});
+            let userFilter = { state: 1, rol: 'instructor' };
+            // Si el usuario es un instructor, solo se devuelve a sí mismo en la lista.
+            if (req.user.rol === 'instructor') {
+                userFilter._id = req.user._id;
+            }
+
+            let Users = await models.User.find(userFilter);
 
             Users = Users.map((user) => {
                 return {

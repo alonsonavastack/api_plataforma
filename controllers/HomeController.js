@@ -478,18 +478,21 @@ export default {
         });
       }
       
-      // 8. Enviar respuesta
-      res.status(200).json({
+      // 8. Construir y enviar respuesta
+      const responsePayload = {
         categories: CATEGORIES_LIST,
         courses_top: COURSES_TOPS,
         categories_sections: CATEGORIES_SECTIONS,
         courses_banners: COURSES_BANNERS,
         campaing_banner: Campaing_banner,
         courses_flash: COURSES_FLASH,
-        campaing_flash: Campaing_flash,
-        projects_featured: projects_featured,
-        courses_featured: COURSES_FEATURED, // Añadimos los cursos destacados
-      });
+        campaing_flash: Campaing_flash
+      };
+
+      if (showFeaturedProjects) responsePayload.projects_featured = projects_featured;
+      if (showFeaturedCourses) responsePayload.courses_featured = COURSES_FEATURED;
+
+      res.status(200).json(responsePayload);
     } catch (error) {
       console.error("Error en HomeController.list:", error);
       res.status(500).send({ message: "Ocurrio un error" });

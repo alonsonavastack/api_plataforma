@@ -11,16 +11,16 @@ const router = routerx();
 router.post("/register",[auth.verifyAdmin,path],courseController.register);
 router.post("/update",[auth.verifyAdmin,path],courseController.update);
 
-router.post("/upload_vimeo",[auth.verifyAdmin,path2],courseController.upload_vimeo);
+router.post("/upload_vimeo",[auth.verifyDashboard,path2],courseController.upload_vimeo);
 
-router.get("/list",[auth.verifyAdmin],courseController.list);
 
-router.get("/list-settings",[auth.verifyAdmin],courseController.list_settings);
+router.get("/list-settings",[auth.verifyDashboard],courseController.list_settings);
 router.put("/toggle-featured/:id",[auth.verifyAdmin],courseController.toggle_featured);
 
-router.get("/show/:id",[auth.verifyAdmin],courseController.show_course);
+router.get("/show/:id",[auth.verifyDashboard],courseController.show_course);
 
-router.get("/config_all",[auth.verifyAdmin],courseController.config_all);
+router.get("/list",[auth.verifyDashboard],courseController.list);
+router.get("/config_all",[auth.verifyDashboard],courseController.config_all);
 
 
 router.delete("/remove/:id",[auth.verifyAdmin],courseController.remove);

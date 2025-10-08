@@ -32,7 +32,7 @@ const verifyAuth = async (req, res, next, allowedRoles) => {
 
 export default {
     verifyTienda: async(req,res,next) => {
-        await verifyAuth(req, res, next, ['cliente', 'admin']);
+        await verifyAuth(req, res, next, ['cliente', 'admin', 'instructor']);
     },
     verifyAdmin: async(req,res,next) => {
         await verifyAuth(req, res, next, ['admin']);
