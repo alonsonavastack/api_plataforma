@@ -1,5 +1,6 @@
 import models from "../models/index.js";
 import resource from "../resource/index.js";
+import SettingController from "./SettingController.js"; // Importamos el controlador de ajustes
 import { ObjectId } from "mongodb";
 import token from "../service/token.js"; // Asegúrate que la ruta es correcta
 import { N_CLASES_OF_COURSES, sumarTiempos } from "../utils/helpers.js"; // Asegúrate que la ruta es correcta
@@ -64,6 +65,11 @@ export default {
     try {
       // Asegura que TIME_NOW sea un número
       const TIME_NOW = Number(req.query.TIME_NOW) || Date.now();
+
+      // Obtener los ajustes de visibilidad
+      const settings = await SettingController.getSettings();
+      const showFeaturedCourses = settings['home_show_featured_courses'] !== false; // true por defecto
+      const showFeaturedProjects = settings['home_show_featured_projects'] !== false; // true por defecto
 
       // 1. Categorías con conteo de cursos
       const CATEGORIES_LIST = await models.Categorie.aggregate([
@@ -375,12 +381,104 @@ export default {
       });
       const COURSES_FLASH = await getCampaignCourses(Campaing_flash);
       if (Campaing_flash) Campaing_flash = Campaing_flash.toObject();
-      const projects_featured = await models.Project.find({ state: 2 })
+      let projects_featured = [];
+      if (showFeaturedProjects) {
+        projects_featured = await models.Project.find({ state: 2, featured: true })
         .populate("categorie")
         .populate("user")
         .sort({ createdAt: -1 })
         .limit(3); // Limitar a 3 para la página de inicio
-      // 7. Enviar respuesta
+      }
+
+      // 7. Obtener cursos destacados (si está activado)
+      let COURSES_FEATURED = [];
+      if (showFeaturedCourses) {
+        const featuredCourses = await models.Course.aggregate([
+          // Cambiamos la condición para que solo requiera ser destacado
+          // y que el estado no sea 'anulado' (state: 3)
+          { $match: { featured: true, state: { $in: [1, 2] } } },
+          {
+            $lookup: {
+              from: "users",
+              localField: "user",
+              foreignField: "_id",
+              as: "user",
+            },
+          },
+          { $unwind: "$user" },
+          {
+            $lookup: {
+              from: "categories",
+              localField: "categorie",
+              foreignField: "_id",
+              as: "categorie",
+            },
+          },
+          { $unwind: "$categorie" },
+          {
+            $lookup: {
+              from: "course_students",
+              localField: "_id",
+              foreignField: "course",
+              as: "students",
+            },
+          },
+          {
+            $lookup: {
+              from: "reviews",
+              localField: "_id",
+              foreignField: "product",
+              as: "reviews",
+            },
+          },
+          {
+            $lookup: {
+              from: "course_sections",
+              localField: "_id",
+              foreignField: "course",
+              as: "sections",
+            },
+          },
+          {
+            $lookup: {
+              from: "course_clases",
+              let: { section_ids: "$sections._id" },
+              pipeline: [
+                { $match: { $expr: { $in: ["$section", "$$section_ids"] } } },
+              ],
+              as: "clases",
+            },
+          },
+          {
+            $project: {
+              ...Object.keys(models.Course.schema.paths).reduce(
+                (obj, key) => ({ ...obj, [key]: 1 }),
+                {}
+              ),
+              N_STUDENTS: { $size: "$students" },
+              N_REVIEWS: { $size: "$reviews" },
+              AVG_RATING: { $ifNull: [{ $avg: "$reviews.rating" }, 0.0] },
+              N_CLASES: { $size: "$clases" },
+              TIME_TOTAL: { $sum: "$clases.time" },
+            },
+          },
+        ]);
+
+        COURSES_FEATURED = featuredCourses.map((c) => {
+          const DISCOUNT_G = DISCOUNT_G_F(Campaing_home, c);
+          return resource.Course.api_resource_course(
+            c,
+            DISCOUNT_G,
+            c.N_STUDENTS,
+            c.N_REVIEWS,
+            Number(c.AVG_RATING).toFixed(2),
+            c.N_CLASES,
+            c.TIME_TOTAL
+          );
+        });
+      }
+      
+      // 8. Enviar respuesta
       res.status(200).json({
         categories: CATEGORIES_LIST,
         courses_top: COURSES_TOPS,
@@ -389,7 +487,8 @@ export default {
         campaing_banner: Campaing_banner,
         courses_flash: COURSES_FLASH,
         campaing_flash: Campaing_flash,
-        projects_featured: projects_featured
+        projects_featured: projects_featured,
+        courses_featured: COURSES_FEATURED, // Añadimos los cursos destacados
       });
     } catch (error) {
       console.error("Error en HomeController.list:", error);

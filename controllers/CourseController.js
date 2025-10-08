@@ -292,5 +292,50 @@ export default {
                 message: 'HUBO UN ERROR'
             });
         }
+    },
+    list_settings: async(req,res) => {
+        try {
+            // Obtenemos todos los cursos, seleccionando solo los campos necesarios.
+            const courses = await models.Course.find({}, { title: 1, subtitle: 1, imagen: 1, price_usd: 1, slug: 1, featured: 1 });
+
+            res.status(200).json({
+                courses: courses // Devolvemos la propiedad 'courses' que el frontend espera
+            });
+
+        } catch (error) {
+            console.log(error);
+            res.status(500).send({
+                message: 'HUBO UN ERROR'
+            });
+        }
+    },
+    toggle_featured: async(req,res) => {
+        // Lógica para marcar/desmarcar un curso como destacado.
+        try {
+            const course = await models.Course.findById(req.params.id);
+            if (!course) {
+                return res.status(404).json({ message: 'Curso no encontrado' });
+            }
+            course.featured = req.body.is_featured;
+            await course.save();
+
+            // Devolvemos el curso con el mismo formato que 'list-settings'
+            const updatedCourseForSettings = {
+                _id: course._id,
+                title: course.title,
+                subtitle: course.subtitle,
+                imagen: course.imagen,
+                price_usd: course.price_usd,
+                slug: course.slug,
+                featured: course.featured
+            };
+
+            res.status(200).json({
+                message: `El curso ha sido ${course.featured ? 'marcado como destacado' : 'desmarcado'}.`,
+                course: updatedCourseForSettings
+            });
+        } catch (error) {
+            res.status(500).send({ message: "HUBO UN ERROR" });
+        }
     }
 }

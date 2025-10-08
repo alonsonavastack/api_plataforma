@@ -124,6 +124,64 @@ export default {
       });
     }
   },
+  update_state: async (req, res) => {
+    try {
+      const userId = req.params.id;
+      const { state } = req.body;
+
+      console.log('=== update_state called ===');
+      console.log('userId:', userId);
+      console.log('state received:', state, 'type:', typeof state);
+
+      // Validar que el estado sea booleano
+      if (typeof state !== 'boolean') {
+        console.log('Error: state is not boolean');
+        return res.status(400).json({
+          message: 400,
+          message_text: "El estado debe ser un valor booleano",
+        });
+      }
+
+      // Buscar el usuario
+      console.log('Searching for user...');
+      const user = await models.User.findById(userId);
+      if (!user) {
+        console.log('Error: User not found');
+        return res.status(404).json({
+          message: 404,
+          message_text: "Usuario no encontrado",
+        });
+      }
+
+      console.log('User found:', user.name, user.email);
+      console.log('Current state:', user.state);
+      console.log('New state value:', state);
+
+      // Actualizar solo el estado (usando boolean directamente)
+      const updatedUser = await models.User.findByIdAndUpdate(
+        userId,
+        { state: state }, // true = activo, false = inactivo
+        { new: true }
+      );
+
+      console.log('User updated successfully');
+      console.log('Updated state:', updatedUser.state);
+
+      res.status(200).json({
+        message: "Estado del usuario actualizado correctamente",
+        user: resource.User.api_resource_user(updatedUser),
+      });
+    } catch (error) {
+      console.error('=== ERROR in update_state ===');
+      console.error('Error name:', error.name);
+      console.error('Error message:', error.message);
+      console.error('Error stack:', error.stack);
+      res.status(500).send({
+        message: "OCURRIO UN PROBLEMA",
+        error: error.message, // Añadimos el mensaje de error para debug
+      });
+    }
+  },
   list: async (req, res) => {
     try {
       // jose

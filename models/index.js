@@ -8,6 +8,7 @@ import Coupon from './Cupone.js';
 import Discount from './Discount.js'
 import Cart from './Cart.js'
 import Project from './Project.js';
+import Setting from './Setting.js';
 
 import Sale from './Sale.js'
 import SaleDetail from './SaleDetail.js'
@@ -25,6 +26,7 @@ export default {
     Discount,
     Cart,
     Project,
+    Setting,
 
     Sale,
     SaleDetail,

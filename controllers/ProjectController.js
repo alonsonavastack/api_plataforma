@@ -11,9 +11,8 @@ const __dirname = path.dirname(__filename);
 // Tamaño máximo de archivo en bytes (50MB)
 const MAX_FILE_SIZE = 50 * 1024 * 1024;
 
-export default {
-    // POST /api/project/register
-    register: async (req, res) => {
+// POST /api/project/register
+export const register = async (req, res) => {
         try {
             // El middleware 'auth.verifyDashboard' decodifica el token y añade el usuario a req.user
             // Si no existe, el middleware ya habría devuelto un error.
@@ -47,10 +46,10 @@ export default {
                 message: "HUBO UN ERROR"
             });
         }
-    },
+    };
 
-    // POST /api/project/update
-    update: async (req, res) => {
+// POST /api/project/update
+export const update = async (req, res) => {
         try {
             // El middleware 'auth.verifyDashboard' ya ha verificado el token y adjuntado el usuario a req.user
             
@@ -97,10 +96,10 @@ export default {
                 message: "HUBO UN ERROR"
             });
         }
-    },
+    };
 
-    // GET /api/project/list
-    list: async (req, res) => {
+// GET /api/project/list
+export const list = async (req, res) => {
         try {
             // El middleware 'auth.verifyDashboard' ya ha verificado el token y adjuntado el usuario a req.user
             const search = req.query.search;
@@ -136,10 +135,10 @@ export default {
                 message: "HUBO UN ERROR"
             });
         }
-    },
+    };
 
-    // GET /api/project/show/:id
-    show_project: async (req, res) => {
+// GET /api/project/show/:id
+export const show_project = async (req, res) => {
         try {
             const project = await models.Project.findById(req.params.id).populate(['categorie', 'user']);
             if (!project) {
@@ -154,10 +153,10 @@ export default {
                 message: "HUBO UN ERROR"
             });
         }
-    },
+    };
 
-    // GET /api/project/get-admin/:id
-    get_project_admin: async (req, res) => {
+// GET /api/project/get-admin/:id
+export const get_project_admin = async (req, res) => {
         try {
             const project = await models.Project.findById(req.params.id).populate(['categorie', 'user']);
             if (!project) {
@@ -176,10 +175,10 @@ export default {
             console.log(error);
             res.status(500).send({ message: "HUBO UN ERROR" });
         }
-    },
+    };
 
-    // DELETE /api/project/remove/:id
-    remove: async (req, res) => {
+// DELETE /api/project/remove/:id
+export const remove = async (req, res) => {
         try {
             // El middleware 'auth.verifyDashboard' ya ha verificado el token y adjuntado el usuario a req.user
             const project = await models.Project.findById(req.params.id).lean();
@@ -219,25 +218,8 @@ export default {
                 message: "HUBO UN ERROR"
             });
         }
-    },
-
-    // GET /api/project/imagen-project/:img
-    get_imagen: async (req, res) => {
-        const img = req.params["img"];
-        const imagePath = path.join(__dirname, '../uploads/project/', img);
-        const defaultImagePath = path.join(__dirname, '../uploads/default.jpg');
-
-        fs.stat(imagePath, (err) => {
-            if (!err) {
-                res.status(200).sendFile(path.resolve(imagePath));
-            } else {
-                res.status(200).sendFile(path.resolve(defaultImagePath));
-            }
-        });
-    },
-
-    // POST /api/project/upload-files/:id
-    uploadFiles: async (req, res) => {
+    };
+export const uploadFiles = async (req, res) => {
         try {
             const projectId = req.params.id;
             const project = await models.Project.findById(projectId);
@@ -328,10 +310,8 @@ export default {
                 message: "HUBO UN ERROR AL SUBIR LOS ARCHIVOS"
             });
         }
-    },
-
-    // DELETE /api/project/remove-file/:projectId/:fileId
-    removeFile: async (req, res) => {
+    };
+export const removeFile = async (req, res) => {
         try {
             const { projectId, fileId } = req.params;
             const project = await models.Project.findById(projectId);
@@ -375,33 +355,39 @@ export default {
                 message: "HUBO UN ERROR AL ELIMINAR EL ARCHIVO"
             });
         }
-    },
-
-    // GET /api/project/download-file/:projectId/:filename
-    downloadFile: async (req, res) => {
+    };
+export const downloadFile = async (req, res) => {
         try {
+            // El middleware 'auth.verifyTienda' ya ha verificado el token y adjuntado el usuario a req.user
             const { projectId, filename } = req.params;
-            const project = await models.Project.findById(projectId);
 
+            // 1. Verificar que el usuario ha comprado el proyecto.
+            const hasPurchased = await models.Sale.findOne({
+                user: req.user._id,
+                status: 'Pagado',
+                'detail.product': projectId,
+                'detail.product_type': 'project'
+            });
+
+            if (!hasPurchased) {
+                return res.status(403).json({ message: 'No tienes permiso para descargar este archivo.' });
+            }
+
+            // 2. Buscar el proyecto y el archivo específico.
+            const project = await models.Project.findOne({ _id: projectId, 'files.filename': filename });
             if (!project) {
-                return res.status(404).json({ message: 'Proyecto no encontrado' });
+                return res.status(404).json({ message: 'Proyecto o archivo no encontrado.' });
             }
 
-            // Buscar el archivo en el proyecto
             const file = project.files.find(f => f.filename === filename);
-            
-            if (!file) {
-                return res.status(404).json({ message: 'Archivo no encontrado' });
-            }
-
             const filePath = path.join(__dirname, '../uploads/project-files/', filename);
 
             if (!fs.existsSync(filePath)) {
                 return res.status(404).json({ message: 'Archivo físico no encontrado' });
             }
 
-            // Descargar archivo con su nombre original
-            res.download(filePath, file.name);
+            // 3. Enviar el archivo para su descarga con su nombre original.
+            res.download(filePath, file.name); // El segundo argumento establece el nombre del archivo para el cliente.
 
         } catch (error) {
             console.log(error);
@@ -409,5 +395,72 @@ export default {
                 message: "HUBO UN ERROR AL DESCARGAR EL ARCHIVO"
             });
         }
+    };
+
+// GET /api/project/imagen-project/:img
+export const get_imagen = async (req, res) => {
+    try {
+        const img = req.params["img"];
+        const imagePath = path.join(__dirname, '../uploads/project/', img);
+        const defaultImagePath = path.join(__dirname, '../uploads/default.jpg');
+
+        if (fs.existsSync(imagePath)) {
+            res.status(200).sendFile(path.resolve(imagePath));
+        } else {
+            res.status(200).sendFile(path.resolve(defaultImagePath));
+        }
+    } catch (error) {
+        res.status(500).send({ message: "HUBO UN ERROR AL OBTENER LA IMAGEN" });
     }
-}
+};
+
+// GET /api/project/list-settings
+export const list_settings = async (req, res) => {
+    try {
+        // Obtenemos todos los proyectos, seleccionando solo los campos necesarios.
+        const projects = await models.Project.find({}, { title: 1, subtitle: 1, imagen: 1, price_usd: 1, featured: 1 });
+
+        res.status(200).json({
+            projects: projects // Devolvemos la propiedad 'projects' que el frontend espera
+        });
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({
+            message: 'HUBO UN ERROR'
+        });
+    }
+};
+
+
+// PUT /api/project/toggle-featured/:id
+export const toggle_featured = async (req, res) => {
+    try {
+        const projectId = req.params.id;
+        const project = await models.Project.findById(projectId);
+
+        if (!project) {
+            return res.status(404).json({ message: 'Proyecto no encontrado' });
+        }
+
+        // Cambia el estado de 'featured' al valor que viene del frontend
+        project.featured = req.body.is_featured;
+        await project.save();
+
+        res.status(200).json({
+            message: `El proyecto ha sido ${project.featured ? 'marcado como destacado' : 'desmarcado'}.`,
+            // Devolvemos el proyecto con el mismo formato que 'list-settings'
+            project: {
+                _id: project._id,
+                title: project.title,
+                subtitle: project.subtitle,
+                imagen: project.imagen,
+                price_usd: project.price_usd,
+                // No hay slug en el modelo de proyecto, así que no lo incluimos
+                featured: project.featured
+            }
+        });
+    } catch (error) {
+        res.status(500).send({ message: "HUBO UN ERROR" });
+    }
+};

@@ -14,6 +14,7 @@ import Project from './Project.js' // Nuevo router para Project
 import DashboardRouter from "./Dashboard.js";
 import ProfileInstructorRouter from "./ProfileInstructor.js";
 import ProfileAdminRouter from "./ProfileAdmin.js";
+import SettingRouter from './Setting.js'; // Importamos el nuevo router
 
 // http://localhost:3000/api/users/register
 const router = routerx();
@@ -33,4 +34,5 @@ router.use('/project',Project); // Corregido: de plural a singular
 router.use('/profile-instructor', ProfileInstructorRouter);
 router.use('/profile-admin', ProfileAdminRouter);
 router.use('/dashboard', DashboardRouter);
+router.use('/settings', SettingRouter); // Usamos el nuevo router para settings
 export default router;

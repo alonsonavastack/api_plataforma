@@ -23,6 +23,7 @@ const ProjectSchema = new Schema({
 
     state: {type:Number, default: 1}, // 1 es borrador, 2 es publico, 3 es anulado
     user: {type:Schema.ObjectId, ref: 'user', required:true},
+    featured: {type: Boolean, default: false} // Campo para destacar el proyecto
 },{
     timestamps: true
 });

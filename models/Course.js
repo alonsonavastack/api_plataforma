@@ -16,6 +16,7 @@ const CourseSchema = new Schema({
     idioma: {type:String,required: true},
     requirements: [{type:String,required:true}],//["ANGULAR BAISCO","LARAVEL BASICO"]
     who_is_it_for: [{type:String,required:true}],
+    featured: {type: Boolean, default: false}, // Campo para destacar el curso
 },{
     timestamps: true
 });

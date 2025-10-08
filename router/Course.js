@@ -15,6 +15,9 @@ router.post("/upload_vimeo",[auth.verifyAdmin,path2],courseController.upload_vim
 
 router.get("/list",[auth.verifyAdmin],courseController.list);
 
+router.get("/list-settings",[auth.verifyAdmin],courseController.list_settings);
+router.put("/toggle-featured/:id",[auth.verifyAdmin],courseController.toggle_featured);
+
 router.get("/show/:id",[auth.verifyAdmin],courseController.show_course);
 
 router.get("/config_all",[auth.verifyAdmin],courseController.config_all);

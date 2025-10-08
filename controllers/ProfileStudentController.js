@@ -45,17 +45,31 @@ export const client = async(req,res) => {
             }));
 
             // 2. Obtener el historial de compras (opcional, pero útil para el perfil)
-            const sales = await models.Sale.find({ user: req.user._id }).sort({ createdAt: -1 });
+            const sales = await models.Sale.find({ user: req.user._id })
+                .populate('detail.product') // Poblamos la información completa del producto (curso o proyecto)
+                .sort({ createdAt: -1 });
+
+            // 2.1. De la lista de ventas ya obtenida, filtramos para obtener solo los proyectos pagados.
+            let projects = [];
+            sales.forEach(sale => {
+                if (sale.status === 'Pagado') {
+                    sale.detail.forEach(item => {
+                        if (item.product && item.product_type === 'project') {
+                            projects.push(item.product); // item.product ahora es el objeto completo del proyecto
+                        }
+                    });
+                }
+            });
 
             // 3. Calcular contadores de cursos
             const enrolled_course_count = enrolled_courses.length;
             const actived_course_count = enrolled_courses.filter(item => item.state === 1).length;
             const termined_course_count = enrolled_courses.filter(item => item.state === 2).length;
-
             res.status(200).json({
                 profile: resource.User.api_resource_user(student),
                 enrolled_courses: enrolled_courses,
                 sales: sales,
+                projects: projects, // 3. Añadimos los proyectos a la respuesta
                 enrolled_course_count,
                 actived_course_count,
                 termined_course_count,

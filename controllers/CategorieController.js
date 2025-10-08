@@ -10,8 +10,8 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-export default {
-    register: async(req,res) => {
+
+export const register = async(req,res) => {
         try {
             
             const VALID_CATEGORIE = await models.Categorie.findOne({title: req.body.title});
@@ -40,8 +40,8 @@ export default {
                 message: 'Hubo un error'
             });
         }
-    },
-    update: async(req,res) => {
+    };
+export const update = async(req,res) => {
         try {
             // TITLE
             // NUEVA IMAGEN
@@ -79,8 +79,8 @@ export default {
                 message: 'Hubo un error'
             });
         }
-    },
-    list: async(req,res) => {
+    };
+export const list = async(req,res) => {
         try {
             const search = req.query.search;
             const state = req.query.state;
@@ -117,8 +117,8 @@ export default {
                 message: 'Hubo un error'
             });
         }
-    },
-    remove: async(req,res) => {
+    };
+export const remove = async(req,res) => {
         try {
             let categorie_id = req.params["id"];
 
@@ -150,8 +150,8 @@ export default {
                 message: 'Hubo un error'
             });
         }
-    },
-    get_imagen: async(req,res) => {
+    };
+export const get_imagen = async(req,res) => {
         try {
             const img = req.params["img"];
             if(!img){
@@ -175,5 +175,4 @@ export default {
                 message: 'OCURRIO UN PROBLEMA'
             });
         }
-    },
-}
+    };

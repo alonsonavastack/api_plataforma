@@ -3,6 +3,12 @@ import axios from 'axios';
 
 export const register = async (req, res) => {
   try {
+    // --- INICIO DE LA LÓGICA DE UPLOAD DE ARCHIVOS ---
+    if (req.files && req.files.files) {
+      // Esta lógica asume que tienes un controlador o middleware para manejar la subida de archivos
+      // y que los nombres de los archivos se añadirán a req.body.files_name o similar.
+      // Por ahora, nos enfocamos en la eliminación segura.
+    }
     // Crea la nueva clase con los datos recibidos
     const newClass = await models.CourseClase.create(req.body);
 
@@ -50,6 +56,21 @@ export const remove = async (req, res) => {
     if (!deletedClass) {
       return res.status(404).json({ message: 'Clase no encontrada' });
     }
+
+    // --- INICIO DE LA LÓGICA AÑADIDA ---
+    // 1. Buscar y eliminar todos los archivos asociados a esta clase.
+    const claseFiles = await models.CourseClaseFile.find({ clase: classId });
+    for (const file of claseFiles) {
+      // Construir la ruta al archivo físico
+      const filePath = path.join(__dirname, '../uploads/course/files/', file.file);
+      // Eliminar el archivo del servidor si existe
+      if (fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath);
+      }
+    }
+    // 2. Eliminar los registros de la base de datos.
+    await models.CourseClaseFile.deleteMany({ clase: classId });
+    // --- FIN DE LA LÓGICA AÑADIDA ---
 
     // Decrementa el contador de clases en la sección padre
     await models.CourseSection.findByIdAndUpdate(deletedClass.section, { $inc: { num_clases: -1 } });

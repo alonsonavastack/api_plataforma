@@ -14,6 +14,7 @@ router.post("/login", userController.login_general); // RUTA UNIFICADA
 //CRUD ADMIN 
 router.post("/register_admin",[auth.verifyAdmin,path],userController.register_admin)
 router.post("/update",[auth.verifyAdmin,path],userController.update)
+router.put("/update-state/:id",[auth.verifyAdmin],userController.update_state)
 router.get("/list",[auth.verifyAdmin],userController.list)
 router.delete("/delete/:id",[auth.verifyAdmin],userController.remove)
 

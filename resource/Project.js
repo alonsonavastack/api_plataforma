@@ -12,6 +12,7 @@ export default {
             price_usd: project.price_usd,
             state: project.state,
             user: project.user,
+            files: project.files || [], // Incluir los archivos del proyecto
         }
     }
 }
