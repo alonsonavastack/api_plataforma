@@ -286,7 +286,8 @@ export default {
           return [];
         const courseIds = campaign.courses.map((c) => c?._id ?? c);
         const courses = await models.Course.aggregate([
-          { $match: { _id: { $in: courseIds } } },
+          // CORRECCIÓN: Asegurarse de que los cursos de la campaña también estén públicos.
+          { $match: { _id: { $in: courseIds }, state: 2 } },
           {
             $lookup: {
               from: "users",
@@ -394,9 +395,8 @@ export default {
       let COURSES_FEATURED = [];
       if (showFeaturedCourses) {
         const featuredCourses = await models.Course.aggregate([
-          // Cambiamos la condición para que solo requiera ser destacado
-          // y que el estado no sea 'anulado' (state: 3)
-          { $match: { featured: true, state: { $in: [1, 2] } } },
+          // Solo cursos destacados (featured: true) y que estén públicos (state: 2)
+          { $match: { featured: true, state: 2 } },
           {
             $lookup: {
               from: "users",
@@ -966,5 +966,36 @@ export default {
         message: "OCURRIO UN ERROR",
       });
     }
+  },  
+
+  get_all_courses: async (req, res) => {
+    try {
+      const courses = await models.Course.find({ state: 2 })
+        .populate('user', 'name surname')
+        .populate('categorie', 'title')
+        .sort({ createdAt: -1 });
+
+      // Aquí no usamos el resource para asegurar que todos los datos necesarios lleguen al frontend.
+      res.status(200).json({ courses });
+
+    } catch (error) {
+      console.error("Error en HomeController.get_all_courses:", error);
+      res.status(500).send({ message: "Ocurrió un error al obtener todos los cursos." });
+    }
   },
+
+  get_all_projects: async (req, res) => {
+    try {
+      const projects = await models.Project.find({ state: 2 })
+        .populate('user', 'name surname')
+        .populate('categorie', 'title')
+        .sort({ createdAt: -1 });
+
+      res.status(200).json({ projects });
+
+    } catch (error) {
+      console.error("Error en HomeController.get_all_projects:", error);
+      res.status(500).send({ message: "Ocurrió un error al obtener todos los proyectos." });
+    }
+  }
 };

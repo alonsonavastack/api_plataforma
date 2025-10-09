@@ -8,7 +8,7 @@ const path2 = multiparty(); // Para Vimeo, no guarda localmente
 
 const router = routerx();
 
-router.post("/register",[auth.verifyAdmin,path],courseController.register);
+router.post("/register",[auth.verifyDashboard,path],courseController.register);
 router.post("/update",[auth.verifyAdmin,path],courseController.update);
 
 router.post("/upload_vimeo",[auth.verifyDashboard,path2],courseController.upload_vimeo);

@@ -34,6 +34,13 @@ export const register = async (req, res) => {
             // Asignar el usuario (instructor/admin) que está creando el proyecto
             req.body.user = req.user._id; // Se obtiene el ID del usuario desde el token verificado
 
+            // Si el usuario es un instructor, el proyecto se crea como borrador (estado 1)
+            if (req.user.rol === 'instructor') {
+                req.body.state = 1; // 1: Borrador
+            } else if (req.user.rol === 'admin') {
+                req.body.state = req.body.state || 1; // El admin decide, o borrador por defecto
+            }
+
             const newProject = await models.Project.create(req.body);
 
             res.status(200).json({
@@ -83,11 +90,11 @@ export const update = async (req, res) => {
                 delete req.body.state;
             }
 
-            const updatedProject = await models.Project.findByIdAndUpdate(req.body._id, req.body, { new: true })
-                                                        .populate('user');
+            await models.Project.findByIdAndUpdate(req.body._id, req.body);
+            const updatedProject = await models.Project.findById(req.body._id).populate('user').populate('categorie');
 
             res.status(200).json({
-                project: resource.Project.api_resource_project(updatedProject),
+                project: updatedProject,
                 message: "EL PROYECTO SE EDITÓ CORRECTAMENTE"
             });
         } catch (error) {

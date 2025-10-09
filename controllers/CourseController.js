@@ -32,10 +32,23 @@ export default {
                 req.body.imagen = imagen_name;
             }
 
-            const NewCourse = await models.Course.create(req.body);
+            // Si el usuario es un instructor, el curso se crea como borrador (estado 1)
+            // Si es admin, se respeta el estado que venga en el body (o se puede poner un default)
+            if (req.user.rol === 'instructor') {
+                req.body.state = 1; // 1: Borrador
+                // Asignamos el ID del instructor logueado directamente en el backend
+                req.body.user = req.user._id;
+            } else if (req.user.rol === 'admin') {
+                // El admin puede decidir el estado, si no viene, lo ponemos como borrador por seguridad.
+                req.body.state = req.body.state || 1;
+            }
+
+            let NewCourse = await models.Course.create(req.body);
+            // Populamos el usuario y la categoría para devolver el objeto completo
+            NewCourse = await models.Course.findById(NewCourse._id).populate('user').populate('categorie');
 
             res.status(200).json({
-                course: resource.Course.api_resource_course(NewCourse),
+                course: NewCourse,
                 message: "EL CURSO SE REGISTRÓ CORRECTAMENTE"
             });
         } catch (error) {
@@ -69,12 +82,18 @@ export default {
                 req.body.imagen = imagen_name;
             }
 
-            const EditCourse = await models.Course.findByIdAndUpdate(req.body._id, req.body, {
-                new: true // Devuelve el documento actualizado
-            });
+            // Un instructor no puede cambiar el estado de un curso.
+            if (req.user.rol === 'instructor') {
+                delete req.body.state;
+            }
+
+            // 1. Actualiza el curso
+            await models.Course.findByIdAndUpdate(req.body._id, req.body);
+            // 2. Vuelve a buscarlo para obtener el objeto completo y populado
+            const updatedCourse = await models.Course.findById(req.body._id).populate('user').populate('categorie');
 
             res.status(200).json({
-                course: resource.Course.api_resource_course(EditCourse),
+                course: updatedCourse, // 3. Devuelve el objeto completo
                 message: "EL CURSO SE EDITÓ CORRECTAMENTE"
             });
         } catch (error) {
@@ -110,14 +129,10 @@ export default {
                 filter.user = req.user._id;
             }
 
-            let courses = await models.Course.find(filter).populate(["categorie","user"]);
-
-            courses = courses.map((course) => {
-                return resource.Course.api_resource_course(course);
-            });
+            const courses = await models.Course.find(filter).populate(["categorie","user"]).sort({ createdAt: -1 });
 
             res.status(200).json({
-                courses: courses,//NECESITAMOS PASARLE EL API RESOURCE
+                courses: courses,
             });
         } catch (error) {
             console.log(error);
@@ -307,7 +322,9 @@ export default {
     list_settings: async(req,res) => {
         try {
             // Obtenemos todos los cursos, seleccionando solo los campos necesarios.
-            const courses = await models.Course.find({}, { title: 1, subtitle: 1, imagen: 1, price_usd: 1, slug: 1, featured: 1 });
+            // CORRECCIÓN: Se popula la información del usuario y la categoría para que la respuesta sea completa.
+            const courses = await models.Course.find({}, { title: 1, subtitle: 1, imagen: 1, price_usd: 1, slug: 1, featured: 1 })
+                                              .populate('user', 'name surname').populate('categorie', 'title');
 
             res.status(200).json({
                 courses: courses // Devolvemos la propiedad 'courses' que el frontend espera
@@ -323,29 +340,27 @@ export default {
     toggle_featured: async(req,res) => {
         // Lógica para marcar/desmarcar un curso como destacado.
         try {
-            const course = await models.Course.findById(req.params.id);
-            if (!course) {
+            const courseId = req.params.id;
+            const isFeatured = req.body.is_featured; // true o false
+
+            // Usamos findByIdAndUpdate para actualizar solo el campo 'featured'.
+            // Esto evita problemas de validación con otros campos requeridos como 'description'.
+            const updatedCourse = await models.Course.findByIdAndUpdate(
+                courseId,
+                { featured: isFeatured },
+                { new: true } // Devuelve el documento actualizado
+            ).populate('user', 'name surname').populate('categorie', 'title');
+
+            if (!updatedCourse) {
                 return res.status(404).json({ message: 'Curso no encontrado' });
             }
-            course.featured = req.body.is_featured;
-            await course.save();
-
-            // Devolvemos el curso con el mismo formato que 'list-settings'
-            const updatedCourseForSettings = {
-                _id: course._id,
-                title: course.title,
-                subtitle: course.subtitle,
-                imagen: course.imagen,
-                price_usd: course.price_usd,
-                slug: course.slug,
-                featured: course.featured
-            };
 
             res.status(200).json({
-                message: `El curso ha sido ${course.featured ? 'marcado como destacado' : 'desmarcado'}.`,
-                course: updatedCourseForSettings
+                message: `El curso ha sido ${updatedCourse.featured ? 'marcado como destacado' : 'desmarcado'}.`,
+                course: updatedCourse
             });
         } catch (error) {
+            console.log(error);
             res.status(500).send({ message: "HUBO UN ERROR" });
         }
     }
