@@ -4,7 +4,6 @@ import path from 'path'
 import { fileURLToPath } from 'url';
 import mongoose from 'mongoose'
 import router from './router/index.js';
-
 // CONEXION A LA BASE DE DATOS
 mongoose.Promise = global.Promise
 const dbUrl = process.env.MONGO_URI;

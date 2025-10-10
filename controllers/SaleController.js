@@ -17,9 +17,6 @@ async function send_email (sale_id) {
                 return reject({ message: "Venta no encontrada" });
             }
 
-            // --- CORRECCIÓN ---
-            // Los detalles de la orden ya están en el documento 'Orden' (la venta).
-            // No necesitamos consultar 'SaleDetail' por separado.
             let OrdenDetail = Orden.detail;
 
             const transporter = nodemailer.createTransport(smtpTransport({
@@ -31,11 +28,9 @@ async function send_email (sale_id) {
                 }
             }));
 
-            // Usar fs.promises para un código más limpio
             const html = await fs.promises.readFile(process.cwd() + '/mails/email_sale.html', 'utf-8');
 
             const mappedOrdenDetail = OrdenDetail.map((detail) => {
-                // La población de 'product' se debe hacer al buscar la 'Orden'
                 const productInfo = detail.product || {};
                 const imagePath = productInfo.imagen || 'default.jpg';
                 const imageType = detail.product_type === 'course' ? 'courses/imagen-course' : 'projects/imagen-project';
@@ -47,7 +42,7 @@ async function send_email (sale_id) {
             });
 
             const rest_html = ejs.render(html, { Orden: Orden, Orden_detail: mappedOrdenDetail });
-            const htmlToSend = rest_html; // El HTML ya está listo después de EJS
+            const htmlToSend = rest_html;
 
             const mailOptions = {
                 from: process.env.MAIL_USER,
@@ -70,17 +65,16 @@ async function send_email (sale_id) {
         }
     });
 }
+
 export default {
     register: async(req,res) => {
         try {
-            // El middleware 'auth.verifyTienda' ya decodificó el token y adjuntó el usuario a req.user.
             const Carts = await models.Cart.find({user: req.user._id}).populate('product');
 
             if (Carts.length === 0) {
                 return res.status(400).send({ message: 'No hay artículos en el carrito.' });
             }
 
-            // Construimos el objeto de la venta con todos sus datos
             const saleData = {
                 ...req.body,
                 user: req.user._id,
@@ -97,9 +91,6 @@ export default {
             
             const Sale = await models.Sale.create(saleData);
 
-            // --- INICIO DE LA LÓGICA MEJORADA ---
-
-            // Si el pago fue exitoso (no es transferencia), inscribimos al estudiante a los cursos.
             if (Sale.status === 'Pagado') {
                 for (const item of Sale.detail) {
                     if (item.product_type === 'course') {
@@ -108,17 +99,13 @@ export default {
                 }
             }
 
-            // Limpiamos el carrito del usuario de una sola vez
             await models.Cart.deleteMany({ user: req.user._id });
 
-            // Enviamos el correo de confirmación
             try {
                 await send_email(Sale._id);
             } catch (emailError) {
-                // Opcional: Registrar el error de correo sin detener la respuesta exitosa al cliente.
                 console.error("El registro de la venta fue exitoso, pero el correo de confirmación no pudo ser enviado.");
             }
-            // --- FIN DE LA LÓGICA MEJORADA ---
 
             res.status(200).json({
                 message: 'LA ORDEN SE GENERO CORRECTAMENTE',
@@ -131,25 +118,28 @@ export default {
         }
     },
 
-    // --- INICIO DE LA FUNCIÓN AUXILIAR ---
-    // Esta función se puede reutilizar en otros lugares si es necesario.
-    // Se mueve fuera del controlador para mantenerlo limpio.
-    // (Añadir al final del archivo, antes del `export default`)
-    // --- FIN DE LA FUNCIÓN AUXILIAR ---
-
     list: async (req, res) => {
         try {
-            // El middleware auth.verifyAdmin ya valida que el rol sea 'admin'
-            const { search, status } = req.query;
+            const { search, status, month, year } = req.query;
 
-            let filter = {};
+            let filter = { status: { $ne: 'Anulado' } };
 
             if (status) {
                 filter.status = status;
             }
 
+            // Filtro por mes y año
+            if (month && year) {
+                const startDate = new Date(year, month - 1, 1);
+                const endDate = new Date(year, month, 0, 23, 59, 59, 999);
+                filter.createdAt = { $gte: startDate, $lte: endDate };
+            } else if (year) {
+                const startDate = new Date(year, 0, 1);
+                const endDate = new Date(year, 11, 31, 23, 59, 59, 999);
+                filter.createdAt = { $gte: startDate, $lte: endDate };
+            }
+
             if (search) {
-                // Buscar por número de transacción o por datos del usuario
                 const userQuery = {
                     $or: [
                         { name: new RegExp(search, "i") },
@@ -166,11 +156,36 @@ export default {
                 ];
             }
 
+            // Si el usuario es un instructor, filtramos las ventas para mostrar solo las de sus cursos y proyectos.
+            if (req.user.rol === 'instructor') {
+                // Encontrar cursos del instructor
+                const instructorCourses = await models.Course.find({ user: req.user._id }).select('_id');
+                const courseIds = instructorCourses.map(c => c._id);
+
+                // Encontrar proyectos del instructor
+                const instructorProjects = await models.Project.find({ user: req.user._id }).select('_id');
+                const projectIds = instructorProjects.map(p => p._id);
+
+                // Combinar ambos arrays
+                const allProductIds = [...courseIds, ...projectIds];
+
+                // Filtrar ventas que contengan al menos uno de esos productos
+                filter['detail'] = {
+                    $elemMatch: {
+                        product: { $in: allProductIds }
+                    }
+                };
+            }
+
             const sales = await models.Sale.find(filter)
                 .populate('user', 'name surname email')
                 .populate({
-                    path: 'detail.product', // Poblar el producto dentro del array de detalles
-                    select: 'title imagen' // Seleccionar solo los campos que necesitamos para la lista
+                    path: 'detail.product',
+                    select: 'title imagen user',
+                    populate: {
+                        path: 'user',
+                        select: 'name surname'
+                    }
                 })
                 .sort({ createdAt: -1 });
 
@@ -182,19 +197,14 @@ export default {
         }
     },
 
-    /**
-     * Actualiza el estado de una venta.
-     * Especialmente útil para que el admin confirme pagos por transferencia.
-     */
     update_status_sale: async (req, res) => {
       try {
-        // Solo administradores pueden ejecutar esta acción
         if (req.user.rol !== 'admin') {
           return res.status(403).send({ message_text: 'No tienes permiso para realizar esta acción.' });
         }
     
         const { id } = req.params;
-        const { status } = req.body; // Esperamos un nuevo estado, ej: 'Pagado'
+        const { status } = req.body;
     
         if (!status) {
           return res.status(400).send({ message_text: 'El nuevo estado es requerido.' });
@@ -209,13 +219,9 @@ export default {
         sale.status = status;
         await sale.save();
     
-        // --- INICIO DE LA LÓGICA AÑADIDA ---
-        // Si el estado anterior era diferente y el nuevo es 'Pagado',
-        // procedemos a inscribir al estudiante.
         if (oldStatus !== 'Pagado' && status === 'Pagado') {
           for (const item of sale.detail) {
             if (item.product_type === 'course') {
-              // Verificamos si ya existe una inscripción para evitar duplicados
               const existingEnrollment = await models.CourseStudent.findOne({
                 user: sale.user._id,
                 course: item.product._id,
@@ -226,11 +232,8 @@ export default {
                 console.log(`Curso ${item.product.title} habilitado para usuario ${sale.user.email} tras confirmación de pago.`);
               }
             }
-            // Para los proyectos, el acceso se basa en que la venta esté 'Pagada',
-            // por lo que no se necesita una acción adicional aquí.
           }
         }
-        // --- FIN DE LA LÓGICA AÑADIDA ---
     
         res.status(200).json({ message_text: 'Estado de la venta actualizado correctamente.', sale: sale });
     
@@ -259,6 +262,5 @@ async function enrollStudent(userId, courseId) {
         }
     } catch (error) {
         console.error(`Error al inscribir al estudiante ${userId} en el curso ${courseId}:`, error);
-        // Considera un mecanismo para reintentar o notificar este error.
     }
 }
