@@ -111,6 +111,9 @@ export const list = async (req, res) => {
             // El middleware 'auth.verifyDashboard' ya ha verificado el token y adjuntado el usuario a req.user
             const search = req.query.search;
             const categorie = req.query.categorie;
+            const sortBy = req.query.sortBy; // 'newest' o 'oldest'
+            const startDate = req.query.startDate;
+            const endDate = req.query.endDate;
             const filter = {};
 
             // Si el usuario es un instructor, solo listamos sus proyectos.
@@ -124,14 +127,34 @@ export const list = async (req, res) => {
             if (categorie) {
                 filter.categorie = categorie;
             }
+
+            // Añadir filtro por rango de fechas de creación
+            if (startDate && endDate) {
+                // Aseguramos que el rango cubra todo el día final
+                const endOfDay = new Date(endDate);
+                endOfDay.setHours(23, 59, 59, 999);
+                filter.createdAt = { $gte: new Date(startDate), $lte: endOfDay };
+            } else if (startDate) {
+                filter.createdAt = { $gte: new Date(startDate) };
+            } else if (endDate) {
+                const endOfDay = new Date(endDate);
+                endOfDay.setHours(23, 59, 59, 999);
+                filter.createdAt = { $lte: endOfDay };
+            }
             
+            // Determinar el orden de los resultados
+            let sortOption = { createdAt: -1 }; // Por defecto: más nuevos primero
+            if (sortBy === 'oldest') {
+                sortOption = { createdAt: 1 }; // Más antiguos primero
+            }
+
             // Populamos 'user' para mostrar la información del instructor.
             // Se elimina la transformación a través de 'resource' que estaba eliminando el objeto 'user'.
             // Ahora se envían los proyectos directamente con los datos populados.
             const projects = await models.Project.find(filter)
                                                  .populate("categorie")
                                                  .populate("user")
-                                                 .sort({ createdAt: -1 });
+                                                 .sort(sortOption);
 
             res.status(200).json({
                 projects: projects,

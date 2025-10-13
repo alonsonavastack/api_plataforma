@@ -16,8 +16,10 @@ function resource_course(course, discount_g = null, N_CLASES = 0, N_STUDENTS = 0
             final_price_usd = parseFloat((final_price_usd - (final_price_usd * discount_g.discount * 0.01)).toFixed(2));
             final_price_mxn = parseFloat((final_price_mxn - (final_price_mxn * discount_g.discount * 0.01)).toFixed(2));
         } else { // Monto fijo
-            final_price_usd = parseFloat((final_price_usd - discount_g.discount).toFixed(2));
+            final_price_usd = Math.max(0, parseFloat((final_price_usd - discount_g.discount).toFixed(2)));
             // Nota: El descuento fijo se aplica directamente. Si se necesita un tipo de cambio para MXN, se implementaría aquí.
+            // Asumimos que el descuento fijo es en USD y se aplica de forma similar a MXN por simplicidad.
+            final_price_mxn = Math.max(0, parseFloat((final_price_mxn - discount_g.discount).toFixed(2)));
         }
     }
 

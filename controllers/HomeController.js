@@ -14,26 +14,24 @@ function DISCOUNT_G_F(Campaing_Normal, PRODUCT, product_type = "course") {
   const productIdStr = PRODUCT._id.toString();
   const categoryIdStr = PRODUCT.categorie?._id.toString();
 
-  if (
-    Campaing_Normal.type_segment == 1 &&
-    product_type === "course" &&
-    Campaing_Normal.courses.some((c) => c.toString() === productIdStr)
-  ) {
-    DISCOUNT_G = Campaing_Normal;
-  } else if (
-    // Segmento por categoría
-    Campaing_Normal.type_segment == 2 &&
-    categoryIdStr &&
-    Campaing_Normal.categories.some((c) => c.toString() === categoryIdStr)
-  ) {
-    DISCOUNT_G = Campaing_Normal;
-  } else if (
-    // Segmento por proyecto
-    Campaing_Normal.type_segment == 3 &&
-    product_type === "project" &&
-    Campaing_Normal.projects.some((p) => p.toString() === productIdStr)
-  ) {
-    DISCOUNT_G = Campaing_Normal;
+  switch (Campaing_Normal.type_segment) {
+    case 1: // Segmento por curso
+      if (product_type === "course" && Campaing_Normal.courses.some((c) => c.toString() === productIdStr)) {
+        DISCOUNT_G = Campaing_Normal;
+      }
+      break;
+    case 2: // Segmento por categoría
+      if (categoryIdStr && Campaing_Normal.categories.some((c) => c.toString() === categoryIdStr)) {
+        DISCOUNT_G = Campaing_Normal;
+      }
+      break;
+    case 3: // Segmento por proyecto
+      if (product_type === "project" && Campaing_Normal.projects.some((p) => p.toString() === productIdStr)) {
+        DISCOUNT_G = Campaing_Normal;
+      }
+      break;
+    default:
+      DISCOUNT_G = null;
   }
   return DISCOUNT_G;
 }
@@ -92,12 +90,13 @@ export default {
         },
       ]);
 
-      // 2. Campaña de descuento "normal" activa
-      let Campaing_home = await models.Discount.findOne({
-        type_campaign: 1,
+      // 2. Obtener TODAS las campañas de descuento activas (Normal, Flash, Banner)
+      const ActiveCampaigns = await models.Discount.find({
         start_date_num: { $lte: TIME_NOW },
         end_date_num: { $gte: TIME_NOW },
-      });
+        state: true,
+      }).sort({ createdAt: -1 });
+
 
       // 3. Cursos TOP (aleatorios) con metadatos
       const courses_tops = await models.Course.aggregate([
@@ -160,7 +159,10 @@ export default {
       ]);
 
       const COURSES_TOPS = courses_tops.map((ct) => {
-        const DISCOUNT_G = DISCOUNT_G_F(Campaing_home, ct);
+        const applicableCampaign = ActiveCampaigns.find(campaign => 
+          DISCOUNT_G_F(campaign, ct, "course")
+        );
+        const DISCOUNT_G = applicableCampaign ? DISCOUNT_G_F(applicableCampaign, ct, "course") : null;
         return resource.Course.api_resource_course(
           ct,
           DISCOUNT_G,
@@ -260,7 +262,10 @@ export default {
       const CATEGORIES_SECTIONS = categories_sections_sample.map((category) => {
         const courses = coursesByCategory[category._id.toString()] || [];
         const COURSES_C = courses.map((c) => {
-          const DISCOUNT_G = DISCOUNT_G_F(Campaing_home, c);
+          const applicableCampaign = ActiveCampaigns.find(campaign => 
+            DISCOUNT_G_F(campaign, c, "course")
+          );
+          const DISCOUNT_G = applicableCampaign ? DISCOUNT_G_F(applicableCampaign, c, "course") : null;
           return resource.Course.api_resource_course(
             c,
             DISCOUNT_G,
@@ -382,13 +387,28 @@ export default {
       });
       const COURSES_FLASH = await getCampaignCourses(Campaing_flash);
       if (Campaing_flash) Campaing_flash = Campaing_flash.toObject();
-      let projects_featured = [];
+
+      let projects_featured_processed = [];
       if (showFeaturedProjects) {
-        projects_featured = await models.Project.find({ state: 2, featured: true })
-        .populate("categorie")
-        .populate("user")
-        .sort({ createdAt: -1 })
-        .limit(3); // Limitar a 3 para la página de inicio
+        const projects_featured_raw = await models.Project.find({ state: 2, featured: true })
+          .populate("categorie")
+          .populate("user")
+          .sort({ createdAt: -1 })
+          .limit(3);
+
+        // Aplicar descuentos a los proyectos destacados usando el resource
+        projects_featured_processed = projects_featured_raw.map(project => {
+          // Encontrar la campaña aplicable para este proyecto
+          const applicableCampaign = ActiveCampaigns.find(campaign => 
+            DISCOUNT_G_F(campaign, project, "project")
+          );
+          const DISCOUNT_G = applicableCampaign ? DISCOUNT_G_F(applicableCampaign, project, "project") : null;
+          
+          const result = resource.Project.api_resource_project(project, DISCOUNT_G);
+          
+          return result;
+        });
+        console.log('========== FIN DEBUG ==========\n');
       }
 
       // 7. Obtener cursos destacados (si está activado)
@@ -465,7 +485,10 @@ export default {
         ]);
 
         COURSES_FEATURED = featuredCourses.map((c) => {
-          const DISCOUNT_G = DISCOUNT_G_F(Campaing_home, c);
+          const applicableCampaign = ActiveCampaigns.find(campaign => 
+            DISCOUNT_G_F(campaign, c, "course")
+          );
+          const DISCOUNT_G = applicableCampaign ? DISCOUNT_G_F(applicableCampaign, c, "course") : null;
           return resource.Course.api_resource_course(
             c,
             DISCOUNT_G,
@@ -489,7 +512,7 @@ export default {
         campaing_flash: Campaing_flash
       };
 
-      if (showFeaturedProjects) responsePayload.projects_featured = projects_featured;
+      if (showFeaturedProjects) responsePayload.projects_featured = projects_featured_processed;
       if (showFeaturedCourses) responsePayload.courses_featured = COURSES_FEATURED;
 
       res.status(200).json(responsePayload);
@@ -970,13 +993,32 @@ export default {
 
   get_all_courses: async (req, res) => {
     try {
+      const TIME_NOW = Number(req.query.TIME_NOW) || Date.now();
+
+      // Obtener TODAS las campañas de descuento activas (Normal, Flash, Banner)
+      const ActiveCampaigns = await models.Discount.find({
+        start_date_num: { $lte: TIME_NOW },
+        end_date_num: { $gte: TIME_NOW },
+        state: true,
+      }).sort({ createdAt: -1 });
+
       const courses = await models.Course.find({ state: 2 })
-        .populate('user', 'name surname')
-        .populate('categorie', 'title')
+        .populate('user', 'name surname avatar')
+        .populate('categorie', 'title imagen')
         .sort({ createdAt: -1 });
 
-      // Aquí no usamos el resource para asegurar que todos los datos necesarios lleguen al frontend.
-      res.status(200).json({ courses });
+      // Aplicar descuentos a cada curso
+      const courses_with_discounts = courses.map(course => {
+        // Encontrar la campaña aplicable para este curso
+        const applicableCampaign = ActiveCampaigns.find(campaign => 
+          DISCOUNT_G_F(campaign, course, "course")
+        );
+        const DISCOUNT_G = applicableCampaign ? DISCOUNT_G_F(applicableCampaign, course, "course") : null;
+        return resource.Course.api_resource_course(course, DISCOUNT_G);
+      });
+
+      // Enviar cursos con descuentos aplicados
+      res.status(200).json({ courses: courses_with_discounts });
 
     } catch (error) {
       console.error("Error en HomeController.get_all_courses:", error);
@@ -986,12 +1028,34 @@ export default {
 
   get_all_projects: async (req, res) => {
     try {
+      const TIME_NOW = Number(req.query.TIME_NOW) || Date.now();
+
+      // Obtener TODAS las campañas de descuento activas (Normal, Flash, Banner)
+      const ActiveCampaigns = await models.Discount.find({
+        start_date_num: { $lte: TIME_NOW },
+        end_date_num: { $gte: TIME_NOW },
+        state: true,
+      }).sort({ createdAt: -1 });
+
       const projects = await models.Project.find({ state: 2 })
-        .populate('user', 'name surname')
-        .populate('categorie', 'title')
+        .populate('user', 'name surname avatar')
+        .populate('categorie', 'title imagen')
         .sort({ createdAt: -1 });
 
-      res.status(200).json({ projects });
+      console.log('\nProyectos públicos encontrados:', projects.length);
+
+      // Aplicar descuentos a cada proyecto usando el resource
+      const projects_with_discounts = projects.map(project => {
+        // Encontrar la campaña aplicable para este proyecto
+        const applicableCampaign = ActiveCampaigns.find(campaign => 
+          DISCOUNT_G_F(campaign, project, "project")
+        );
+        const DISCOUNT_G = applicableCampaign ? DISCOUNT_G_F(applicableCampaign, project, "project") : null;
+        const result = resource.Project.api_resource_project(project, DISCOUNT_G);
+        return result;
+      });
+
+      res.status(200).json({ projects: projects_with_discounts });
 
     } catch (error) {
       console.error("Error en HomeController.get_all_projects:", error);
