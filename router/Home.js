@@ -7,6 +7,7 @@ router.get("/list",homeController.list);
 router.get("/config-all",homeController.config_all);
 
 router.get("/landing-curso/:slug",homeController.show_course);
+router.get('/general_search', homeController.general_search);
 
 router.post("/search-course",homeController.search_course);
 router.get("/get_all_courses", homeController.get_all_courses);

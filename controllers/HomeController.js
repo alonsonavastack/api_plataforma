@@ -1061,5 +1061,70 @@ export default {
       console.error("Error en HomeController.get_all_projects:", error);
       res.status(500).send({ message: "Ocurrió un error al obtener todos los proyectos." });
     }
-  }
+  },
+
+  general_search: async (req, res) => {
+    try {
+      const TIME_NOW = Number(req.query.TIME_NOW) || Date.now();
+      const searchTerm = req.query.q || '';
+      const categoryId = req.query.categoryId || null;
+
+      // 1. Obtener campañas de descuento activas
+      const ActiveCampaigns = await models.Discount.find({
+        start_date_num: { $lte: TIME_NOW },
+        end_date_num: { $gte: TIME_NOW },
+        state: true,
+      }).sort({ createdAt: -1 });
+
+      // 2. Construir la consulta base
+      const queryConditions = [{ state: 2 }]; // Solo items públicos
+
+      if (searchTerm.trim()) {
+        const searchRegex = new RegExp(searchTerm, "i");
+        queryConditions.push({
+          $or: [
+          { title: searchRegex },
+          { subtitle: searchRegex },
+          { description: searchRegex },
+          ]
+        });
+      }
+      // Solo añadir el filtro de categoría si categoryId es un ObjectId válido
+      if (categoryId && ObjectId.isValid(categoryId)) {
+        queryConditions.push({ categorie: new ObjectId(categoryId) });
+      }
+      const query = { $and: queryConditions };
+      // 3. Buscar en paralelo en Cursos y Proyectos
+      const [courses, projects] = await Promise.all([
+        models.Course.find(query).populate('user', 'name surname').populate('categorie', 'title'),
+        models.Project.find(query).populate('user', 'name surname').populate('categorie', 'title')
+      ]);
+
+      // 4. Procesar cursos con su resource y añadir tipo
+      const processedCourses = courses.map(course => {
+        const applicableCampaign = ActiveCampaigns.find(campaign => DISCOUNT_G_F(campaign, course, "course"));
+        const DISCOUNT_G = applicableCampaign ? DISCOUNT_G_F(applicableCampaign, course, "course") : null;
+        const courseResource = resource.Course.api_resource_course(course, DISCOUNT_G);
+        return { ...courseResource, item_type: 'course' }; // Añadir tipo
+      });
+
+      // 5. Procesar proyectos con su resource y añadir tipo
+      const processedProjects = projects.map(project => {
+        const applicableCampaign = ActiveCampaigns.find(campaign => DISCOUNT_G_F(campaign, project, "project"));
+        const DISCOUNT_G = applicableCampaign ? DISCOUNT_G_F(applicableCampaign, project, "project") : null;
+        const projectResource = resource.Project.api_resource_project(project, DISCOUNT_G);
+        return { ...projectResource, item_type: 'project' }; // Añadir tipo
+      });
+
+      // 6. Combinar resultados y ordenar (opcional, por fecha de creación)
+      const results = [...processedCourses, ...processedProjects];
+      results.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+      res.status(200).json({ results });
+
+    } catch (error) {
+      console.error("Error en HomeController.general_search:", error);
+      res.status(500).send({ message: "Ocurrió un error durante la búsqueda." });
+    }
+  },
 };
