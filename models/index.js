@@ -15,6 +15,12 @@ import SaleDetail from './SaleDetail.js'
 import CourseStudent from './CourseStudent.js'
 import Review from './Review.js'
 
+// MODELOS DEL SISTEMA DE PAGOS A INSTRUCTORES
+import InstructorPaymentConfig from './InstructorPaymentConfig.js'
+import InstructorEarnings from './InstructorEarnings.js'
+import InstructorPayment from './InstructorPayment.js'
+import PlatformCommissionSettings from './PlatformCommissionSettings.js'
+
 export default {
     User,
     Categorie,
@@ -32,4 +38,10 @@ export default {
     SaleDetail,
     CourseStudent,
     Review,
+    
+    // Sistema de pagos a instructores
+    InstructorPaymentConfig,
+    InstructorEarnings,
+    InstructorPayment,
+    PlatformCommissionSettings,
 }

@@ -37,6 +37,9 @@ export default {
     verifyAdmin: async(req,res,next) => {
         await verifyAuth(req, res, next, ['admin']);
     },
+    verifyInstructor: async(req,res,next) => {
+        await verifyAuth(req, res, next, ['instructor']);
+    },
     verifyDashboard: async(req,res,next) => {
         await verifyAuth(req, res, next, ['admin', 'instructor']);
     },

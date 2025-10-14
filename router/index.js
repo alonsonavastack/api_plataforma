@@ -17,6 +17,10 @@ import ProfileAdminRouter from "./ProfileAdmin.js";
 import SettingRouter from './Setting.js'; // Importamos el nuevo router
 import ReportsRouter from './Reports.js'; // Nuevo router para reportes
 
+// SISTEMA DE PAGOS A INSTRUCTORES
+import InstructorPaymentRouter from './InstructorPayment.js';
+import AdminInstructorPaymentRouter from './AdminInstructorPayment.js';
+
 // http://localhost:3000/api/users/register
 const router = routerx();
 
@@ -37,5 +41,9 @@ router.use('/profile-admin', ProfileAdminRouter);
 router.use('/dashboard', DashboardRouter);
 router.use('/settings', SettingRouter); // Usamos el nuevo router para settings
 router.use('/reports', ReportsRouter); // Rutas de reportes
+
+// SISTEMA DE PAGOS A INSTRUCTORES
+router.use('/instructor', InstructorPaymentRouter); // Rutas para instructores
+router.use('/admin', AdminInstructorPaymentRouter); // Rutas para administradores
 
 export default router;
