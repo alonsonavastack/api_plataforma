@@ -1,5 +1,10 @@
 export default {
     api_cart_list: (cart) => {
+        // Verifica que el producto existe antes de procesarlo
+        if (!cart.product) {
+            return null; // Retorna null si el producto no existe
+        }
+
         // Construye la URL de la imagen correctamente dependiendo del tipo de producto.
         const imagePath = cart.product_type === 'project' 
             ? `project/imagen-project/${cart.product.imagen}` 
@@ -10,10 +15,10 @@ export default {
             title: cart.product.title,
             slug: cart.product.slug,
             imagen: `${process.env.URL_BACKEND}/api/${imagePath}`,
-            categorie: {
+            categorie: cart.product.categorie ? {
                 _id: cart.product.categorie._id,
                 title: cart.product.categorie.title,
-            },
+            } : null,
             price_mxn: cart.product.price_mxn,
             price_usd: cart.product.price_usd,
         };

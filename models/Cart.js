@@ -18,5 +18,8 @@ const CartSchema = new Schema({
     timestamps: true
 });
 
+// Índice compuesto para evitar duplicados
+CartSchema.index({ user: 1, product: 1 }, { unique: true });
+
 const Cart = mongoose.model("cart",CartSchema);
 export default Cart;

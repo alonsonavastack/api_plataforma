@@ -6,6 +6,11 @@ import resource from "../resource/index.js";
 import fs from "fs";
 import path from "path";
 
+// Necesitamos __dirname para manejar las rutas de archivos
+import { fileURLToPath } from 'url';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 export default {
   register: async (req, res) => {
     try {
@@ -70,26 +75,32 @@ export default {
   },
   update: async (req, res) => {
     try {
-      // echo@gmail.com
+      // El ID del usuario a actualizar puede venir del body (gestión de usuarios) o del token (auto-gestión)
+      const userIdToUpdate = req.body._id || req.user._id;
+      if (!userIdToUpdate) {
+        return res.status(400).send({ message: 'No se especificó un ID de usuario.' });
+      }
+
       const VALID_USER = await models.User.findOne({
         email: req.body.email,
-        _id: { $ne: req.body._id },
+        _id: { $ne: userIdToUpdate },
       });
 
       if (VALID_USER) {
-        res.status(200).json({
+        return res.status(200).json({
           message: 403,
           message_text: "EL USUARIO INGRESADO YA EXISTE",
         });
       }
 
+      // No permitir que un usuario se cambie el rol a sí mismo
       if (req.body.password) {
         req.body.password = await bcrypt.hash(req.body.password, 10);
       }
 
       if (req.files && req.files.avatar) {
         // Si se sube una nueva imagen, eliminamos la anterior.
-        const oldUser = await models.User.findById(req.body._id);
+        const oldUser = await models.User.findById(userIdToUpdate);
         if (
           oldUser.avatar &&
           fs.existsSync(
@@ -105,8 +116,8 @@ export default {
         req.body.avatar = avatar_name;
       }
 
-      const NUser = await models.User.findByIdAndUpdate(
-        { _id: req.body._id },
+      const updatedUser = await models.User.findByIdAndUpdate(
+        userIdToUpdate,
         req.body,
         {
           new: true, // Devuelve el documento actualizado
@@ -115,7 +126,7 @@ export default {
 
       res.status(200).json({
         message: "EL USUARIO SE EDITO CORRECTAMENTE",
-        user: resource.User.api_resource_user(NUser),
+        user: resource.User.api_resource_user(updatedUser),
       });
     } catch (error) {
       console.log(error);
@@ -123,6 +134,67 @@ export default {
         message: "OCURRIO UN PROBLEMA",
       });
     }
+  },
+  update_password: async(req,res) => {
+    try {
+        if (!req.user) {
+            return res.status(401).send({ message: 'No autenticado.' });
+        }
+
+        const { currentPassword, newPassword } = req.body;
+
+        const user = await models.User.findById(req.user._id);
+        if (!user) {
+            return res.status(404).send({ message: 'Usuario no encontrado.' });
+        }
+
+        const match = await bcrypt.compare(currentPassword, user.password);
+        if (!match) {
+            return res.status(400).json({ message_text: 'La contraseña actual es incorrecta.' });
+        }
+
+        const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+        await models.User.findByIdAndUpdate(req.user._id, { password: hashedNewPassword });
+
+        res.status(200).json({
+            message: 'La contraseña se actualizó correctamente.',
+        });
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({ message: 'HUBO UN ERROR' });
+    }
+  },
+  update_avatar: async(req,res) => {
+      try {
+          if (!req.user) {
+              return res.status(401).send({ message: 'No autenticado.' });
+          }
+
+          // Usar siempre el ID del usuario autenticado para la actualización de su propio avatar.
+          const userIdToUpdate = req.user._id;
+
+          if(req.files && req.files.avatar){
+              const oldUser = await models.User.findById(userIdToUpdate);
+              if (oldUser.avatar && fs.existsSync(path.join(__dirname, '../uploads/user/', oldUser.avatar))) {
+                  fs.unlinkSync(path.join(__dirname, '../uploads/user/', oldUser.avatar));
+              }
+              const img_path = req.files.avatar.path;
+              const avatar_name = path.basename(img_path);
+              
+              const updatedUser = await models.User.findByIdAndUpdate(userIdToUpdate, { avatar: avatar_name }, { new: true });
+
+              res.status(200).json({
+                  message: 'El avatar se actualizó correctamente.',
+                  user: resource.User.api_resource_user(updatedUser),
+              });
+          } else {
+            return res.status(400).send({ message: 'No se proporcionó ningún archivo de avatar.' });
+          }
+      } catch (error) {
+          console.log(error);
+          res.status(500).send({ message: 'HUBO UN ERROR' });
+      }
   },
   update_state: async (req, res) => {
     try {
@@ -300,7 +372,6 @@ export default {
       });
     }
   },
-
   login_general: async (req, res) => {
     try {
       const user = await models.User.findOne({

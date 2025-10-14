@@ -39,5 +39,8 @@ export default {
     },
     verifyDashboard: async(req,res,next) => {
         await verifyAuth(req, res, next, ['admin', 'instructor']);
+    },
+    verifyToken: async(req,res,next) => {
+        await verifyAuth(req, res, next, ['cliente', 'admin', 'instructor']);
     }
 }

@@ -1,5 +1,5 @@
 import models from "../models/index.js";
-// No es necesario importar 'token.js' porque el middleware ya hizo la verificación.
+
 
 export default {
   profile: async (req, res) => {

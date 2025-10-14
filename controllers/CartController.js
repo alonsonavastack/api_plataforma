@@ -29,6 +29,15 @@ export default {
                 }
             });
 
+            // Verifica que el producto exista
+            if (!NewCart.product) {
+                await models.Cart.findByIdAndDelete(Cart._id);
+                return res.status(404).json({
+                    message: 404,
+                    message_text: 'EL PRODUCTO NO EXISTE'
+                });
+            }
+
             res.status(200).json({
                 cart: resource.Cart.api_cart_list(NewCart),
                 message_text: 'EL PRODUCTO SE AGREGO CORRECTAMENTE'
@@ -55,6 +64,9 @@ export default {
                 return;
             }
             let carts = await models.Cart.find({user: user._id}).populate("product");
+
+            // Filtra los carritos con productos que existen
+            carts = carts.filter(cart => cart.product !== null);
 
             // Mapea los IDs del cupón para una búsqueda más eficiente
             const couponCourses = CUPON.courses.map(c => c.toString());
@@ -106,9 +118,11 @@ export default {
                 }
             });
 
-            newCarts = newCarts.map((cart) => {
-                return resource.Cart.api_cart_list(cart);
-            });
+            // Filtra y mapea los carritos válidos
+            newCarts = newCarts
+                .filter(cart => cart.product !== null)
+                .map((cart) => resource.Cart.api_cart_list(cart));
+
             res.status(200).json({
                 carts: newCarts,
                 message: 200,
@@ -135,9 +149,21 @@ export default {
                 }
             });
 
-            CARTS = CARTS.map((cart) => {
-                return resource.Cart.api_cart_list(cart);
-            });
+            // Encuentra carritos con productos nulos para eliminarlos
+            const invalidCartIds = CARTS
+                .filter(cart => cart.product === null)
+                .map(cart => cart._id);
+
+            // Elimina carritos con productos inexistentes
+            if (invalidCartIds.length > 0) {
+                await models.Cart.deleteMany({ _id: { $in: invalidCartIds } });
+                console.log(`Eliminados ${invalidCartIds.length} carritos con productos inexistentes`);
+            }
+
+            // Filtra y mapea los carritos válidos
+            CARTS = CARTS
+                .filter(cart => cart.product !== null)
+                .map((cart) => resource.Cart.api_cart_list(cart));
             
             res.status(200).json({
                 carts: CARTS,
