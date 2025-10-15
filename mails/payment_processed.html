@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pago Procesado</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7fa;
+            padding: 20px;
+        }
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 40px 30px;
+            text-align: center;
+            color: white;
+        }
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        .header p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+        .icon {
+            width: 80px;
+            height: 80px;
+            background-color: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 40px;
+        }
+        .content {
+            padding: 40px 30px;
+        }
+        .greeting {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .message {
+            font-size: 15px;
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+        .payment-details {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+        .payment-details h2 {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+        .detail-label {
+            font-weight: 600;
+            color: #555;
+        }
+        .detail-value {
+            color: #333;
+            text-align: right;
+        }
+        .amount {
+            font-size: 32px;
+            font-weight: bold;
+            color: #667eea;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 8px 16px;
+            background-color: #10b981;
+            color: white;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .info-box {
+            background-color: #e0e7ff;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        .info-box p {
+            margin: 0;
+            color: #4338ca;
+            font-size: 14px;
+        }
+        .footer {
+            background-color: #f8f9fa;
+            padding: 30px;
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+        }
+        .footer p {
+            margin: 5px 0;
+        }
+        .button {
+            display: inline-block;
+            padding: 14px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: 600;
+            margin: 20px 0;
+            transition: transform 0.2s;
+        }
+        .button:hover {
+            transform: translateY(-2px);
+        }
+        @media only screen and (max-width: 600px) {
+            .content {
+                padding: 30px 20px;
+            }
+            .header {
+                padding: 30px 20px;
+            }
+            .amount {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="icon">💰</div>
+            <h1>¡Pago Procesado!</h1>
+            <p>Tu pago ha sido procesado exitosamente</p>
+        </div>
+
+        <!-- Content -->
+        <div class="content">
+            <p class="greeting">Hola <strong>{{instructorName}}</strong>,</p>
+            
+            <p class="message">
+                Nos complace informarte que tu pago ha sido procesado exitosamente. 
+                Los fondos deberían reflejarse en tu cuenta en un plazo de 3-5 días hábiles.
+            </p>
+
+            <div class="amount">{{currency}} ${{finalAmount}}</div>
+            
+            <div style="text-align: center;">
+                <span class="status-badge">✓ Procesado</span>
+            </div>
+
+            <!-- Payment Details -->
+            <div class="payment-details">
+                <h2>📋 Detalles del Pago</h2>
+                
+                <div class="detail-row">
+                    <span class="detail-label">ID de Pago:</span>
+                    <span class="detail-value">{{paymentId}}</span>
+                </div>
+                
+                <div class="detail-row">
+                    <span class="detail-label">Método de Pago:</span>
+                    <span class="detail-value">{{paymentMethod}}</span>
+                </div>
+                
+                <div class="detail-row">
+                    <span class="detail-label">Total de Ganancias:</span>
+                    <span class="detail-value">{{currency}} ${{totalEarnings}}</span>
+                </div>
+                
+                {{#if deductions}}
+                <div class="detail-row">
+                    <span class="detail-label">Deducciones:</span>
+                    <span class="detail-value">-{{currency}} ${{deductions}}</span>
+                </div>
+                {{/if}}
+                
+                <div class="detail-row">
+                    <span class="detail-label">Monto Final:</span>
+                    <span class="detail-value"><strong>{{currency}} ${{finalAmount}}</strong></span>
+                </div>
+                
+                <div class="detail-row">
+                    <span class="detail-label">Fecha de Procesamiento:</span>
+                    <span class="detail-value">{{processedDate}}</span>
+                </div>
+                
+                {{#if transactionId}}
+                <div class="detail-row">
+                    <span class="detail-label">ID de Transacción:</span>
+                    <span class="detail-value">{{transactionId}}</span>
+                </div>
+                {{/if}}
+            </div>
+
+            <!-- Info Box -->
+            <div class="info-box">
+                <p><strong>ℹ️ Información importante:</strong> Este pago incluye {{earningsCount}} venta(s) de tus cursos. Puedes ver el detalle completo en tu panel de instructor.</p>
+            </div>
+
+            {{#if adminNotes}}
+            <div class="info-box">
+                <p><strong>📝 Nota del administrador:</strong> {{adminNotes}}</p>
+            </div>
+            {{/if}}
+
+            <!-- CTA Button -->
+            <div style="text-align: center;">
+                <a href="{{dashboardUrl}}" class="button">Ver Dashboard</a>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p><strong>Plataforma de Cursos Online</strong></p>
+            <p>Si tienes alguna pregunta sobre este pago, no dudes en contactarnos.</p>
+            <p style="margin-top: 15px; color: #999; font-size: 12px;">
+                Este es un correo automático, por favor no respondas a este mensaje.
+            </p>
+        </div>
+    </div>
+</body>
+</html>

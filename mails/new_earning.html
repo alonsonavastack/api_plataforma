@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nueva Ganancia</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7fa;
+            padding: 20px;
+        }
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .header {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            padding: 40px 30px;
+            text-align: center;
+            color: white;
+        }
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        .header p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+        .icon {
+            width: 80px;
+            height: 80px;
+            background-color: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 40px;
+        }
+        .content {
+            padding: 40px 30px;
+        }
+        .greeting {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .message {
+            font-size: 15px;
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+        .amount {
+            font-size: 36px;
+            font-weight: bold;
+            color: #10b981;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .course-card {
+            background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 25px 0;
+            border-left: 4px solid #10b981;
+        }
+        .course-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .course-meta {
+            font-size: 14px;
+            color: #666;
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+        .earning-details {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+        .earning-details h2 {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #10b981;
+            padding-bottom: 10px;
+        }
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+        .detail-label {
+            font-weight: 600;
+            color: #555;
+        }
+        .detail-value {
+            color: #333;
+            text-align: right;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .status-pending {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+        .status-available {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+        .info-box {
+            background-color: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        .info-box p {
+            margin: 0;
+            color: #92400e;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        .success-box {
+            background-color: #d1fae5;
+            border-left: 4px solid #10b981;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        .success-box p {
+            margin: 0;
+            color: #065f46;
+            font-size: 14px;
+        }
+        .footer {
+            background-color: #f8f9fa;
+            padding: 30px;
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+        }
+        .footer p {
+            margin: 5px 0;
+        }
+        .button {
+            display: inline-block;
+            padding: 14px 30px;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: 600;
+            margin: 20px 0;
+            transition: transform 0.2s;
+        }
+        .button:hover {
+            transform: translateY(-2px);
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .stat-card {
+            background-color: #f3f4f6;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #10b981;
+            margin-bottom: 5px;
+        }
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        @media only screen and (max-width: 600px) {
+            .content {
+                padding: 30px 20px;
+            }
+            .header {
+                padding: 30px 20px;
+            }
+            .amount {
+                font-size: 28px;
+            }
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="icon">🎉</div>
+            <h1>¡Felicidades!</h1>
+            <p>Has recibido una nueva ganancia</p>
+        </div>
+
+        <!-- Content -->
+        <div class="content">
+            <p class="greeting">Hola <strong>{{instructorName}}</strong>,</p>
+            
+            <p class="message">
+                ¡Excelentes noticias! Uno de tus cursos acaba de ser vendido. 
+                Aquí están los detalles de tu nueva ganancia:
+            </p>
+
+            <div class="amount">+{{currency}} ${{instructorEarning}}</div>
+            
+            <div style="text-align: center;">
+                <span class="status-badge {{statusClass}}">{{statusText}}</span>
+            </div>
+
+            <!-- Course Card -->
+            <div class="course-card">
+                <div class="course-title">📚 {{courseTitle}}</div>
+                <div class="course-meta">
+                    <span>Precio de venta: {{currency}} ${{salePrice}}</span>
+                    <span>Comisión: {{commissionRate}}%</span>
+                </div>
+            </div>
+
+            <!-- Earning Details -->
+            <div class="earning-details">
+                <h2>💰 Desglose de la Ganancia</h2>
+                
+                <div class="detail-row">
+                    <span class="detail-label">Precio de Venta:</span>
+                    <span class="detail-value">{{currency}} ${{salePrice}}</span>
+                </div>
+                
+                <div class="detail-row">
+                    <span class="detail-label">Comisión Plataforma ({{commissionRate}}%):</span>
+                    <span class="detail-value">-{{currency}} ${{platformCommission}}</span>
+                </div>
+                
+                <div class="detail-row" style="background-color: #d1fae5; padding: 12px; border-radius: 4px; margin-top: 10px;">
+                    <span class="detail-label" style="color: #065f46;">Tu Ganancia:</span>
+                    <span class="detail-value" style="color: #065f46; font-size: 18px;"><strong>{{currency}} ${{instructorEarning}}</strong></span>
+                </div>
+                
+                <div class="detail-row">
+                    <span class="detail-label">Fecha de Venta:</span>
+                    <span class="detail-value">{{saleDate}}</span>
+                </div>
+                
+                <div class="detail-row">
+                    <span class="detail-label">Disponible para Pago:</span>
+                    <span class="detail-value">{{availableDate}}</span>
+                </div>
+            </div>
+
+            <!-- Info Box -->
+            {{#if isPending}}
+            <div class="info-box">
+                <p><strong>⏳ Período de espera:</strong> Esta ganancia estará disponible para retiro el <strong>{{availableDate}}</strong>. Este período de espera de {{daysUntilAvailable}} días permite gestionar posibles reembolsos.</p>
+            </div>
+            {{else}}
+            <div class="success-box">
+                <p><strong>✓ Disponible ahora:</strong> Esta ganancia ya está disponible para retiro. Puedes solicitar tu pago cuando lo desees.</p>
+            </div>
+            {{/if}}
+
+            <!-- Stats -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value">{{totalEarnings}}</div>
+                    <div class="stat-label">Total Disponible</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">{{totalSales}}</div>
+                    <div class="stat-label">Ventas del Curso</div>
+                </div>
+            </div>
+
+            <!-- CTA Button -->
+            <div style="text-align: center;">
+                <a href="{{earningsUrl}}" class="button">Ver Mis Ganancias</a>
+            </div>
+
+            <p class="message" style="margin-top: 30px; text-align: center; font-size: 14px;">
+                ¡Sigue creando contenido de calidad y alcanza tus objetivos! 💪
+            </p>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p><strong>Plataforma de Cursos Online</strong></p>
+            <p>Gracias por ser parte de nuestra comunidad de instructores.</p>
+            <p style="margin-top: 15px; color: #999; font-size: 12px;">
+                Este es un correo automático, por favor no respondas a este mensaje.
+            </p>
+        </div>
+    </div>
+</body>
+</html>

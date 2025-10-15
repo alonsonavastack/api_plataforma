@@ -4,6 +4,7 @@ import path from 'path'
 import { fileURLToPath } from 'url';
 import mongoose from 'mongoose'
 import router from './router/index.js';
+
 // CONEXION A LA BASE DE DATOS
 mongoose.Promise = global.Promise
 const dbUrl = process.env.MONGO_URI;
@@ -12,7 +13,18 @@ mongoose.connect(
         useNewUrlParser: true,
         useUnifiedTopology:true,
     }
-).then(mongoose => console.log("Conectado a la base de datos MongoDB."))
+).then(async mongoose => {
+    console.log("Conectado a la base de datos MongoDB.");
+    
+    // Intentar inicializar CRON jobs (solo si node-cron está instalado)
+    try {
+        const { initializeCronJobs } = await import('./cron/index.js');
+        initializeCronJobs();
+    } catch (error) {
+        console.log('\n⚠️  CRON jobs no inicializados (instala node-cron con: npm install node-cron)');
+        console.log('   El sistema funcionará normalmente sin CRON jobs automáticos.\n');
+    }
+})
 .catch(err => console.log(err));
 
 const app = express();
@@ -34,6 +46,35 @@ app.use((err, req, res, next) => {
 
 app.set('port', process.env.PUERTO || 3000);
 
-app.listen(app.get('port'), () => {
+const server = app.listen(app.get('port'), () => {
     console.log(`EL SERVIDOR SE ESTA EJECUTANDO EN EL PUERTO ${app.get('port')}`)
-})
+});
+
+// Manejo de cierre graceful del servidor
+process.on('SIGTERM', async () => {
+    console.log('\n⚠️  SIGTERM recibido. Cerrando servidor...');
+    try {
+        const { stopAllCronJobs } = await import('./cron/index.js');
+        stopAllCronJobs();
+    } catch (error) {
+        // CRON jobs no están disponibles
+    }
+    server.close(() => {
+        console.log('✅ Servidor cerrado correctamente.');
+        process.exit(0);
+    });
+});
+
+process.on('SIGINT', async () => {
+    console.log('\n⚠️  SIGINT recibido (Ctrl+C). Cerrando servidor...');
+    try {
+        const { stopAllCronJobs } = await import('./cron/index.js');
+        stopAllCronJobs();
+    } catch (error) {
+        // CRON jobs no están disponibles
+    }
+    server.close(() => {
+        console.log('✅ Servidor cerrado correctamente.');
+        process.exit(0);
+    });
+});
