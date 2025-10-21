@@ -120,7 +120,8 @@ export const updateBankConfig = async (req, res) => {
             account_number,
             clabe,
             swift_code,
-            account_type
+            account_type,
+            card_brand
         } = req.body;
 
         // Validaciones
@@ -146,8 +147,24 @@ export const updateBankConfig = async (req, res) => {
         }
 
         // Encriptar datos sensibles
-        const encryptedAccountNumber = account_number ? encrypt(account_number) : '';
-        const encryptedClabe = clabe ? encrypt(clabe) : '';
+        let encryptedAccountNumber = '';
+        let encryptedClabe = '';
+        
+        try {
+            if (account_number) {
+                encryptedAccountNumber = encrypt(account_number.toString().trim());
+            }
+            if (clabe) {
+                encryptedClabe = encrypt(clabe.toString().trim());
+            }
+        } catch (encryptError) {
+            console.error('Error al encriptar:', encryptError);
+            return res.status(500).json({
+                success: false,
+                message: 'Error al encriptar datos bancarios. Verifica que ENCRYPTION_KEY y ENCRYPTION_IV estén configurados correctamente en .env',
+                error: encryptError.message
+            });
+        }
 
         // Actualizar datos bancarios
         config.bank_account = {
@@ -157,6 +174,7 @@ export const updateBankConfig = async (req, res) => {
             clabe: encryptedClabe,
             swift_code: swift_code || '',
             account_type: account_type || 'ahorros',
+            card_brand: card_brand || '',
             verified: false // Requiere verificación manual del admin
         };
 
@@ -412,10 +430,108 @@ export const getPaymentHistory = async (req, res) => {
     }
 };
 
+/**
+ * Eliminar configuración de PayPal
+ * DELETE /api/instructor/payment-config/paypal
+ */
+export const deletePaypalConfig = async (req, res) => {
+    try {
+        const instructorId = req.user._id;
+
+        const config = await InstructorPaymentConfig.findOne({ instructor: instructorId });
+
+        if (!config) {
+            return res.status(404).json({
+                success: false,
+                message: 'Configuración no encontrada'
+            });
+        }
+
+        // Limpiar datos de PayPal
+        config.paypal_email = '';
+        config.paypal_merchant_id = '';
+        config.paypal_connected = false;
+        config.paypal_verified = false;
+
+        // Si PayPal era el método preferido, cambiar a bank_transfer o limpiar
+        if (config.preferred_payment_method === 'paypal') {
+            config.preferred_payment_method = config.bank_account?.account_number ? 'bank_transfer' : '';
+        }
+
+        await config.save();
+
+        res.json({
+            success: true,
+            message: 'Configuración de PayPal eliminada exitosamente',
+            config
+        });
+    } catch (error) {
+        console.error('Error al eliminar PayPal:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error al eliminar configuración de PayPal',
+            error: error.message
+        });
+    }
+};
+
+/**
+ * Eliminar configuración de cuenta bancaria
+ * DELETE /api/instructor/payment-config/bank
+ */
+export const deleteBankConfig = async (req, res) => {
+    try {
+        const instructorId = req.user._id;
+
+        const config = await InstructorPaymentConfig.findOne({ instructor: instructorId });
+
+        if (!config) {
+            return res.status(404).json({
+                success: false,
+                message: 'Configuración no encontrada'
+            });
+        }
+
+        // Limpiar datos bancarios
+        config.bank_account = {
+            account_holder_name: '',
+            bank_name: '',
+            account_number: '',
+            clabe: '',
+            swift_code: '',
+            account_type: '',
+            card_brand: '',
+            verified: false
+        };
+
+        // Si cuenta bancaria era el método preferido, cambiar a paypal o limpiar
+        if (config.preferred_payment_method === 'bank_transfer') {
+            config.preferred_payment_method = config.paypal_email ? 'paypal' : '';
+        }
+
+        await config.save();
+
+        res.json({
+            success: true,
+            message: 'Configuración bancaria eliminada exitosamente',
+            config
+        });
+    } catch (error) {
+        console.error('Error al eliminar cuenta bancaria:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error al eliminar configuración bancaria',
+            error: error.message
+        });
+    }
+};
+
 export default {
     getPaymentConfig,
     updatePaypalConfig,
     updateBankConfig,
+    deletePaypalConfig,
+    deleteBankConfig,
     updatePreferredPaymentMethod,
     getEarnings,
     getEarningsStats,

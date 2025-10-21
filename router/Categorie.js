@@ -1,11 +1,14 @@
 import express from 'express';
 import auth from '../service/auth.js';
 import multiparty from 'connect-multiparty';
-import { register, update, list, remove, get_imagen } from '../controllers/CategorieController.js';
+import { register, update, list, remove, get_imagen, list_public } from '../controllers/CategorieController.js';
 
 const path = multiparty({ uploadDir: './uploads/categorie' });
 
 const router = express.Router();
+
+// Ruta pública para listar categorías (no requiere token)
+router.get("/list-public", list_public);
 
 router.get("/list", [auth.verifyDashboard], list); // Permite a admin e instructor
 router.post("/register", [auth.verifyAdmin, path], register); // Solo admin

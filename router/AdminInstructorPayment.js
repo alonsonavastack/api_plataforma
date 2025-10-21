@@ -10,7 +10,8 @@ import {
     updateCommissionSettings,
     setCustomCommission,
     removeCustomCommission,
-    getEarningsReport
+    getEarningsReport,
+    getInstructorPaymentMethodFull // 🔥 Nuevo import
 } from '../controllers/AdminInstructorPaymentController.js';
 import auth from '../service/auth.js';
 
@@ -40,6 +41,14 @@ router.get('/instructors/payments', auth.verifyAdmin, getInstructorsWithEarnings
  * @access  Private (Admin)
  */
 router.get('/instructors/:id/earnings', auth.verifyAdmin, getInstructorEarnings);
+
+/**
+ * @route   GET /api/admin/instructors/:id/payment-method-full
+ * @desc    🔥 NUEVO: Obtener datos bancarios COMPLETOS (sin encriptar) de un instructor
+ * @desc    Este endpoint devuelve números de cuenta y CLABE completos para que el admin pueda procesar pagos
+ * @access  Private (Admin ONLY)
+ */
+router.get('/instructors/:id/payment-method-full', auth.verifyAdmin, getInstructorPaymentMethodFull);
 
 // ========================================
 // GESTIÓN DE PAGOS

@@ -46,7 +46,13 @@ export const client = async(req,res) => {
 
             // 2. Obtener el historial de compras (opcional, pero útil para el perfil)
             const sales = await models.Sale.find({ user: req.user._id })
-                .populate('detail.product') // Poblamos la información completa del producto (curso o proyecto)
+                .populate({
+                    path: 'detail.product',
+                    populate: [ // Populamos los campos anidados dentro del producto
+                        { path: 'categorie' },
+                        { path: 'user' }
+                    ]
+                })
                 .sort({ createdAt: -1 });
 
             // 2.1. De la lista de ventas ya obtenida, filtramos para obtener solo los proyectos pagados.
@@ -55,7 +61,9 @@ export const client = async(req,res) => {
                 if (sale.status === 'Pagado') {
                     sale.detail.forEach(item => {
                         if (item.product && item.product_type === 'project') {
-                            projects.push(item.product); // item.product ahora es el objeto completo del proyecto
+                            // CORRECCIÓN: Pasamos el proyecto por el resource para asegurar que tenga
+                            // todos los campos necesarios, incluyendo 'video_link'.
+                            projects.push(resource.Project.api_resource_project(item.product));
                         }
                     });
                 }

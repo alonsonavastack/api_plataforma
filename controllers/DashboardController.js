@@ -162,23 +162,43 @@ export default {
     try {
       const user = req.user;
 
-      let studentQuery = { rol: 'cliente' };
+      // Construir filtro base
+      let matchStage = { rol: 'cliente' };
+      let instructorCourseIds = [];
 
+      // Si es instructor, filtrar solo sus estudiantes
       if (user.rol === 'instructor') {
+        // Obtener cursos del instructor
         const instructorCourses = await models.Course.find({ user: user._id }).select('_id');
-        const courseIds = instructorCourses.map(c => c._id);
+        instructorCourseIds = instructorCourses.map(c => c._id);
         
-        const studentIds = await models.CourseStudent.distinct('user', { course: { $in: courseIds } });
-        studentQuery._id = { $in: studentIds };
+        // Obtener IDs de estudiantes que compraron sus cursos
+        const studentIds = await models.CourseStudent.distinct('user', { course: { $in: instructorCourseIds } });
+        
+        // Filtrar solo esos estudiantes
+        matchStage._id = { $in: studentIds };
       }
 
+      // Realizar agregación con el filtro correcto
       const students = await models.User.aggregate([
-        { $match: studentQuery },
+        { $match: matchStage },
         {
           $lookup: {
             from: 'coursestudents',
-            localField: '_id',
-            foreignField: 'user',
+            let: { userId: '$_id' },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $and: [
+                      { $eq: ['$user', '$userId'] },
+                      // Si es instructor, filtrar solo sus cursos
+                      ...(user.rol === 'instructor' ? [{ $in: ['$course', instructorCourseIds] }] : [])
+                    ]
+                  }
+                }
+              }
+            ],
             as: 'enrollments'
           }
         },
@@ -187,7 +207,8 @@ export default {
             course_count: { $size: '$enrollments' }
           }
         },
-        { $project: { password: 0, token: 0, enrollments: 0 } }
+        { $project: { password: 0, token: 0, enrollments: 0 } },
+        { $sort: { created_at: -1 } } // Ordenar por más recientes primero
       ]);
 
       res.status(200).json({ students });

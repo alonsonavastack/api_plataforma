@@ -168,6 +168,7 @@ export default {
 
                 // Combinar ambos arrays
                 const allProductIds = [...courseIds, ...projectIds];
+                const allProductIdStrings = allProductIds.map(id => id.toString());
 
                 // Filtrar ventas que contengan al menos uno de esos productos
                 filter['detail'] = {
@@ -175,21 +176,60 @@ export default {
                         product: { $in: allProductIds }
                     }
                 };
+
+                // Obtener las ventas
+                let sales = await models.Sale.find(filter)
+                    .populate('user', 'name surname email')
+                    .populate({
+                        path: 'detail.product',
+                        select: 'title imagen user',
+                        populate: {
+                            path: 'user',
+                            select: 'name surname'
+                        }
+                    })
+                    .sort({ createdAt: -1 })
+                    .lean(); // Usar lean() para poder modificar los objetos
+
+                // FILTRAR los detalles para mostrar SOLO los productos del instructor
+                sales = sales.map(sale => {
+                    // Filtrar el array de detalles
+                    const filteredDetails = sale.detail.filter(item => 
+                        item.product && allProductIdStrings.includes(item.product._id.toString())
+                    );
+
+                    // Recalcular el total basado solo en los productos del instructor
+                    const instructorTotal = filteredDetails.reduce((sum, item) => sum + item.price_unit, 0);
+
+                    return {
+                        ...sale,
+                        detail: filteredDetails,
+                        total: instructorTotal, // Total solo de sus productos
+                        _id: sale._id.toString() // Asegurar que el ID sea string
+                    };
+                });
+
+                // Eliminar ventas que quedaron sin detalles (por si acaso)
+                sales = sales.filter(sale => sale.detail.length > 0);
+
+                res.status(200).json({ sales });
+
+            } else {
+                // Admin ve todas las ventas sin filtrar
+                const sales = await models.Sale.find(filter)
+                    .populate('user', 'name surname email')
+                    .populate({
+                        path: 'detail.product',
+                        select: 'title imagen user',
+                        populate: {
+                            path: 'user',
+                            select: 'name surname'
+                        }
+                    })
+                    .sort({ createdAt: -1 });
+
+                res.status(200).json({ sales });
             }
-
-            const sales = await models.Sale.find(filter)
-                .populate('user', 'name surname email')
-                .populate({
-                    path: 'detail.product',
-                    select: 'title imagen user',
-                    populate: {
-                        path: 'user',
-                        select: 'name surname'
-                    }
-                })
-                .sort({ createdAt: -1 });
-
-            res.status(200).json({ sales });
 
         } catch (error) {
             console.error("Error en SaleController.list:", error);

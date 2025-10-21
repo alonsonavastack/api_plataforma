@@ -11,10 +11,24 @@ const InstructorEarningsSchema = new Schema({
         ref: 'sale',
         required: true
     },
+    
+    // Para cursos (legacy y nuevo)
     course: {
         type: Schema.ObjectId,
         ref: 'course',
-        required: true
+        required: false
+    },
+    
+    // Para proyectos y futuras referencias dinámicas
+    product_id: {
+        type: Schema.ObjectId,
+        refPath: 'product_type',
+        required: false
+    },
+    product_type: {
+        type: String,
+        enum: ['course', 'project'],
+        required: false
     },
     
     // MONTOS DE LA VENTA

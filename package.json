@@ -7,7 +7,9 @@
   "scripts": {
     "start": "nodemon --env-file .env index.js",
     "seed:import": "node --env-file .env scripts/seed.js --import",
-    "seed:destroy": "node --env-file .env scripts/seed.js --destroy"
+    "seed:destroy": "node --env-file .env scripts/seed.js --destroy",
+    "fix:earnings": "node --env-file .env scripts/fix-earnings.js",
+    "update:earnings": "node --env-file .env scripts/update-earnings-status.js"
   },
   "author": "ECHODEVELOPERS",
   "license": "ISC",

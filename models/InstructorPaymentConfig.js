@@ -41,12 +41,13 @@ const InstructorPaymentConfigSchema = new Schema({
             required: false
         },
         account_number: {
-            type: String, // Este campo estará ENCRIPTADO
+            type: String, // Este campo estará ENCRIPTADO (puede ser hasta 500 caracteres)
+            maxlength: 500,
             required: false
         },
         clabe: {
-            type: String, // CLABE interbancaria (México) - ENCRIPTADO
-            maxlength: 18,
+            type: String, // CLABE interbancaria (México) - ENCRIPTADO (puede ser hasta 500 caracteres)
+            maxlength: 500,
             required: false
         },
         swift_code: {
@@ -56,8 +57,13 @@ const InstructorPaymentConfigSchema = new Schema({
         },
         account_type: {
             type: String,
-            enum: ['ahorros', 'corriente', ''],
+            enum: ['ahorros', 'corriente', 'debito', 'credito', ''],
             default: ''
+        },
+        card_brand: {
+            type: String, // Visa, Mastercard, etc.
+            maxlength: 50,
+            required: false
         },
         verified: {
             type: Boolean,

@@ -64,6 +64,25 @@ export default {
       // Asegura que TIME_NOW sea un número
       const TIME_NOW = Number(req.query.TIME_NOW) || Date.now();
 
+      // INICIO DE LA CORRECCIÓN: Obtener compras del usuario si está logueado
+      let user_purchases = [];
+      if (req.headers.token) {
+          try {
+              // Decodificamos el token para obtener el ID del usuario
+              const decoded_token = await token.decode(req.headers.token);
+              const user_id = decoded_token._id;
+              
+              // Buscamos todas las ventas pagadas de ese usuario
+              const sales = await models.Sale.find({ user: user_id, status: 'Pagado' }).select('detail.product');
+              sales.forEach(sale => {
+                  sale.detail.forEach(item => user_purchases.push(item.product.toString()));
+              });
+          } catch (error) {
+              // Si el token es inválido o expira, simplemente no habrá compras de usuario.
+          }
+      }
+      // FIN DE LA CORRECION
+
       // Obtener los ajustes de visibilidad
       const settings = await SettingController.getSettings();
       const showFeaturedCourses = settings['home_show_featured_courses'] !== false; // true por defecto
@@ -163,7 +182,7 @@ export default {
           DISCOUNT_G_F(campaign, ct, "course")
         );
         const DISCOUNT_G = applicableCampaign ? DISCOUNT_G_F(applicableCampaign, ct, "course") : null;
-        return resource.Course.api_resource_course(
+        const course_resource = resource.Course.api_resource_course(
           ct,
           DISCOUNT_G,
           // Pasa métricas ya calculadas al resource
@@ -173,6 +192,9 @@ export default {
           ct.N_CLASES,
           ct.TIME_TOTAL
         );
+        // CORRECCIÓN: Añadimos la marca si el estudiante ya tiene el curso
+        course_resource.student_has_course = user_purchases.includes(ct._id.toString());
+        return course_resource;
       });
 
       // 4. Secciones de cursos por categorías (5 categorías aleatorias)
@@ -266,7 +288,7 @@ export default {
             DISCOUNT_G_F(campaign, c, "course")
           );
           const DISCOUNT_G = applicableCampaign ? DISCOUNT_G_F(applicableCampaign, c, "course") : null;
-          return resource.Course.api_resource_course(
+          const course_resource = resource.Course.api_resource_course(
             c,
             DISCOUNT_G,
             c.N_STUDENTS,
@@ -275,6 +297,9 @@ export default {
             c.N_CLASES,
             c.TIME_TOTAL
           );
+          // CORRECCIÓN: Añadimos la marca si el estudiante ya tiene el curso
+          course_resource.student_has_course = user_purchases.includes(c._id.toString());
+          return course_resource;
         });
         return {
           _id: category._id,
@@ -360,7 +385,7 @@ export default {
           },
         ]);
         return courses.map((c) => {
-          return resource.Course.api_resource_course(
+          const course_resource = resource.Course.api_resource_course(
             c,
             null,
             c.N_STUDENTS,
@@ -369,6 +394,9 @@ export default {
             c.N_CLASES,
             c.TIME_TOTAL
           );
+          // CORRECCIÓN: Añadimos la marca si el estudiante ya tiene el curso
+          course_resource.student_has_course = user_purchases.includes(c._id.toString());
+          return course_resource;
         });
       };
 
@@ -404,9 +432,10 @@ export default {
           );
           const DISCOUNT_G = applicableCampaign ? DISCOUNT_G_F(applicableCampaign, project, "project") : null;
           
-          const result = resource.Project.api_resource_project(project, DISCOUNT_G);
-          
-          return result;
+          const project_resource = resource.Project.api_resource_project(project, DISCOUNT_G);
+          // CORRECCIÓN: Añadimos la marca si el estudiante ya tiene el proyecto
+          project_resource.student_has_project = user_purchases.includes(project._id.toString());
+          return project_resource;
         });
         console.log('========== FIN DEBUG ==========\n');
       }
@@ -489,7 +518,7 @@ export default {
             DISCOUNT_G_F(campaign, c, "course")
           );
           const DISCOUNT_G = applicableCampaign ? DISCOUNT_G_F(applicableCampaign, c, "course") : null;
-          return resource.Course.api_resource_course(
+          const course_resource = resource.Course.api_resource_course(
             c,
             DISCOUNT_G,
             c.N_STUDENTS,
@@ -498,6 +527,9 @@ export default {
             c.N_CLASES,
             c.TIME_TOTAL
           );
+          // CORRECCIÓN: Añadimos la marca si el estudiante ya tiene el curso
+          course_resource.student_has_course = user_purchases.includes(c._id.toString());
+          return course_resource;
         });
       }
       
@@ -995,6 +1027,24 @@ export default {
     try {
       const TIME_NOW = Number(req.query.TIME_NOW) || Date.now();
 
+      // INICIO DE LA CORRECCIÓN: Obtener compras del usuario si está logueado
+      let user_purchases = [];
+      if (req.headers.token) {
+          try {
+              // Decodificamos el token para obtener el ID del usuario
+              const decoded_token = await token.decode(req.headers.token);
+              const user_id = decoded_token._id;
+              
+              // Buscamos todas las ventas pagadas de ese usuario
+              const sales = await models.Sale.find({ user: user_id, status: 'Pagado' }).select('detail.product');
+              sales.forEach(sale => {
+                  sale.detail.forEach(item => user_purchases.push(item.product.toString()));
+              });
+          } catch (error) {
+              // Si el token es inválido o expira, simplemente no habrá compras de usuario.
+          }
+      }
+
       // Obtener TODAS las campañas de descuento activas (Normal, Flash, Banner)
       const ActiveCampaigns = await models.Discount.find({
         start_date_num: { $lte: TIME_NOW },
@@ -1014,7 +1064,10 @@ export default {
           DISCOUNT_G_F(campaign, course, "course")
         );
         const DISCOUNT_G = applicableCampaign ? DISCOUNT_G_F(applicableCampaign, course, "course") : null;
-        return resource.Course.api_resource_course(course, DISCOUNT_G);
+        const course_resource = resource.Course.api_resource_course(course, DISCOUNT_G);
+        // CORRECCIÓN: Añadimos la marca si el estudiante ya tiene el curso
+        course_resource.student_has_course = user_purchases.includes(course._id.toString());
+        return course_resource;
       });
 
       // Enviar cursos con descuentos aplicados
@@ -1029,6 +1082,24 @@ export default {
   get_all_projects: async (req, res) => {
     try {
       const TIME_NOW = Number(req.query.TIME_NOW) || Date.now();
+
+      // INICIO DE LA CORRECCIÓN: Obtener compras del usuario si está logueado
+      let user_purchases = [];
+      if (req.headers.token) {
+          try {
+              // Decodificamos el token para obtener el ID del usuario
+              const decoded_token = await token.decode(req.headers.token);
+              const user_id = decoded_token._id;
+              
+              // Buscamos todas las ventas pagadas de ese usuario
+              const sales = await models.Sale.find({ user: user_id, status: 'Pagado' }).select('detail.product');
+              sales.forEach(sale => {
+                  sale.detail.forEach(item => user_purchases.push(item.product.toString()));
+              });
+          } catch (error) {
+              // Si el token es inválido o expira, simplemente no habrá compras de usuario.
+          }
+      }
 
       // Obtener TODAS las campañas de descuento activas (Normal, Flash, Banner)
       const ActiveCampaigns = await models.Discount.find({
@@ -1051,8 +1122,10 @@ export default {
           DISCOUNT_G_F(campaign, project, "project")
         );
         const DISCOUNT_G = applicableCampaign ? DISCOUNT_G_F(applicableCampaign, project, "project") : null;
-        const result = resource.Project.api_resource_project(project, DISCOUNT_G);
-        return result;
+        const project_resource = resource.Project.api_resource_project(project, DISCOUNT_G);
+        // CORRECCIÓN: Añadimos la marca si el estudiante ya tiene el proyecto
+        project_resource.student_has_project = user_purchases.includes(project._id.toString());
+        return project_resource;
       });
 
       res.status(200).json({ projects: projects_with_discounts });

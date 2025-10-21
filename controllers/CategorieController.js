@@ -176,3 +176,21 @@ export const get_imagen = async(req,res) => {
             });
         }
     };
+
+export const list_public = async(req,res) => {
+    try {
+        // Este endpoint es público, no requiere autenticación.
+        // Devuelve solo las categorías activas (state: 1).
+        const categories = await models.Categorie.find({state: 1}).sort({'createdAt': -1});
+
+        res.status(200).json({
+            categories: categories.map(cat => resource.Categorie.api_resource_categorie(cat))
+        });
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({
+            message: "OCURRIO UN PROBLEMA"
+        });
+    }
+}

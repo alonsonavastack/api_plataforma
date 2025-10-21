@@ -3,6 +3,8 @@ import {
     getPaymentConfig,
     updatePaypalConfig,
     updateBankConfig,
+    deletePaypalConfig,
+    deleteBankConfig,
     updatePreferredPaymentMethod,
     getEarnings,
     getEarningsStats,
@@ -41,6 +43,20 @@ router.post('/payment-config/paypal', auth.verifyInstructor, updatePaypalConfig)
  * @access  Private (Instructor)
  */
 router.post('/payment-config/bank', auth.verifyInstructor, updateBankConfig);
+
+/**
+ * @route   DELETE /api/instructor/payment-config/paypal
+ * @desc    Eliminar configuración de PayPal
+ * @access  Private (Instructor)
+ */
+router.delete('/payment-config/paypal', auth.verifyInstructor, deletePaypalConfig);
+
+/**
+ * @route   DELETE /api/instructor/payment-config/bank
+ * @desc    Eliminar configuración de cuenta bancaria
+ * @access  Private (Instructor)
+ */
+router.delete('/payment-config/bank', auth.verifyInstructor, deleteBankConfig);
 
 /**
  * @route   PUT /api/instructor/payment-config

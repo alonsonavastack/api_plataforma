@@ -4,7 +4,7 @@ import Categorie from './Categorie.js'
 import Course from './Course.js'
 import CourseSection from './CourseSection.js' // Mantener para la gestión de secciones
 import CourseClase from './CourseClase.js'
-import Coupon from './Coupon.js' // Renombrado de Cupone a Coupon
+
 import Discount from './Discount.js'
 import Home from './Home.js'
 import Cart from './Cart.js'
@@ -29,7 +29,7 @@ router.use('/categories',Categorie);
 router.use('/courses',Course);
 router.use('/course-sections',CourseSection); // Renombrado para consistencia
 router.use('/course_clase',CourseClase);
-router.use('/coupon',Coupon); // Ruta cambiada a /coupon
+// router.use('/coupon',Coupon); // MÓDULO ELIMINADO - No se usaba (0% implementación frontend)
 router.use('/discount',Discount);
 router.use('/home',Home);
 router.use('/cart',Cart);

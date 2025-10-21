@@ -2,6 +2,7 @@ import mongoose, {Schema} from "mongoose";
 import CourseStudent from './CourseStudent.js';
 import SaleDetail from './SaleDetail.js';
 import Course from './Course.js';
+import Project from './Project.js';
 import InstructorEarnings from './InstructorEarnings.js';
 import PlatformCommissionSettings from './PlatformCommissionSettings.js';
 
@@ -42,16 +43,15 @@ SaleSchema.pre('save', async function (next) {
   
         // Iteramos sobre cada artículo en el detalle de la venta
         for (const item of details) {
+          // PROCESAR CURSOS
           if (item.product_type === 'course') {
             // 1. CREAR INSCRIPCIÓN AL CURSO
-            // Verificamos si ya existe una inscripción para evitar duplicados
             const existingEnrollment = await CourseStudent.findOne({
               user: this.user,
               course: item.product,
             });
   
             if (!existingEnrollment) {
-              // Si no existe, creamos la nueva inscripción
               await CourseStudent.create({
                 user: this.user,
                 course: item.product,
@@ -59,35 +59,31 @@ SaleSchema.pre('save', async function (next) {
               console.log(`✓ Inscripción creada para el usuario ${this.user} en el curso ${item.product}`);
             }
 
-            // 2. REGISTRAR GANANCIA DEL INSTRUCTOR
-            // Obtener información del curso y su instructor
+            // 2. REGISTRAR GANANCIA DEL INSTRUCTOR DEL CURSO
             const course = await Course.findById(item.product);
             
             if (course && course.user) {
-              // Obtener la comisión configurada para este instructor
               const commissionRate = await PlatformCommissionSettings.getInstructorCommissionRate(course.user);
-              
-              // Obtener configuración global para días hasta disponible
               const settings = await PlatformCommissionSettings.getSettings();
               
-              // Calcular montos
               const salePrice = item.price_unit || 0;
               const platformCommissionAmount = (salePrice * commissionRate) / 100;
               const instructorEarning = salePrice - platformCommissionAmount;
               
-              // Calcular fecha disponible (fecha actual + días configurados)
+              // Calcular fechas
               const earnedAt = new Date();
               const availableAt = new Date(earnedAt);
               availableAt.setDate(availableAt.getDate() + settings.days_until_available);
               
-              // Verificar si ya existe un registro de ganancia para esta venta y curso
+              // Si days_until_available es 0, el estado debe ser 'available' inmediatamente
+              const status = settings.days_until_available === 0 ? 'available' : 'pending';
+              
               const existingEarning = await InstructorEarnings.findOne({
                 sale: this._id,
                 course: item.product
               });
               
               if (!existingEarning) {
-                // Crear registro de ganancia
                 await InstructorEarnings.create({
                   instructor: course.user,
                   sale: this._id,
@@ -97,18 +93,66 @@ SaleSchema.pre('save', async function (next) {
                   platform_commission_rate: commissionRate,
                   platform_commission_amount: platformCommissionAmount,
                   instructor_earning: instructorEarning,
-                  status: 'pending',
+                  status: status, // 🔥 Usar el estado calculado
                   earned_at: earnedAt,
                   available_at: availableAt
                 });
                 
                 console.log(`✓ Ganancia registrada para instructor ${course.user} - Curso: ${course.title}`);
-                console.log(`  Precio venta: $${salePrice}, Comisión: ${commissionRate}%, Ganancia: $${instructorEarning}`);
+                console.log(`  Precio venta: ${salePrice}, Comisión: ${commissionRate}%, Ganancia: ${instructorEarning}`);
               }
             }
           }
-          // Los proyectos no necesitan inscripción especial
-          // Se acceden directamente desde las ventas pagadas
+          
+          // PROCESAR PROYECTOS
+          if (item.product_type === 'project') {
+            // 1. REGISTRAR GANANCIA DEL INSTRUCTOR DEL PROYECTO
+            const project = await Project.findById(item.product);
+            
+            if (project && project.user) {
+              const commissionRate = await PlatformCommissionSettings.getInstructorCommissionRate(project.user);
+              const settings = await PlatformCommissionSettings.getSettings();
+              
+              const salePrice = item.price_unit || 0;
+              const platformCommissionAmount = (salePrice * commissionRate) / 100;
+              const instructorEarning = salePrice - platformCommissionAmount;
+              
+              // Calcular fechas
+              const earnedAt = new Date();
+              const availableAt = new Date(earnedAt);
+              availableAt.setDate(availableAt.getDate() + settings.days_until_available);
+              
+              // Si days_until_available es 0, el estado debe ser 'available' inmediatamente
+              const statusProject = settings.days_until_available === 0 ? 'available' : 'pending';
+              
+              // Para proyectos, usamos 'project' como referencia en lugar de 'course'
+              const existingEarning = await InstructorEarnings.findOne({
+                sale: this._id,
+                product_id: item.product,
+                product_type: 'project'
+              });
+              
+              if (!existingEarning) {
+                await InstructorEarnings.create({
+                  instructor: project.user,
+                  sale: this._id,
+                  product_id: item.product,
+                  product_type: 'project',
+                  sale_price: salePrice,
+                  currency: this.currency_total || 'USD',
+                  platform_commission_rate: commissionRate,
+                  platform_commission_amount: platformCommissionAmount,
+                  instructor_earning: instructorEarning,
+                  status: statusProject, // 🔥 Usar el estado calculado
+                  earned_at: earnedAt,
+                  available_at: availableAt
+                });
+                
+                console.log(`✓ Ganancia registrada para instructor ${project.user} - Proyecto: ${project.title}`);
+                console.log(`  Precio venta: ${salePrice}, Comisión: ${commissionRate}%, Ganancia: ${instructorEarning}`);
+              }
+            }
+          }
         }
       } catch (error) {
         console.error('Error al crear inscripciones/ganancias desde el hook de venta:', error);

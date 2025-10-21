@@ -11,6 +11,34 @@ const __dirname = path.dirname(__filename);
 // Tamaño máximo de archivo en bytes (50MB)
 const MAX_FILE_SIZE = 50 * 1024 * 1024;
 
+/**
+ * Convierte una URL de video de YouTube o Vimeo a su formato "embed" para iframes.
+ * @param {string} originalUrl - La URL original del video.
+ * @returns {string | null} La URL embed o null si no es una URL válida.
+ */
+function getEmbedUrl(originalUrl) {
+  if (!originalUrl) return null;
+
+  try {
+    const url = new URL(originalUrl);
+    if (url.hostname.includes('youtube.com') && url.pathname.includes('watch')) {
+      return `https://www.youtube.com/embed/${url.searchParams.get('v')}`;
+    }
+    if (url.hostname.includes('youtu.be')) {
+      // Extraemos solo el ID del video, ignorando parámetros como '?si='
+      return `https://www.youtube.com/embed/${url.pathname.split('/')[1]}`;
+    }
+    if (url.hostname.includes('vimeo.com')) {
+      const videoId = url.pathname.split('/').pop();
+      return `https://player.vimeo.com/video/${videoId}`;
+    }
+  } catch (error) {
+    console.error('URL de video no válida:', originalUrl, error);
+    return originalUrl; // Devolver la original si falla el parseo
+  }
+  return originalUrl; // Devolver la original si no coincide con los patrones
+}
+
 // POST /api/project/register
 export const register = async (req, res) => {
         try {
@@ -33,6 +61,11 @@ export const register = async (req, res) => {
 
             // Asignar el usuario (instructor/admin) que está creando el proyecto
             req.body.user = req.user._id; // Se obtiene el ID del usuario desde el token verificado
+
+            // Convertir la URL del video a formato embed si existe
+            if (req.body.url_video) {
+                req.body.video_link = getEmbedUrl(req.body.url_video);
+            }
 
             // Si el usuario es un instructor, el proyecto se crea como borrador (estado 1)
             if (req.user.rol === 'instructor') {
@@ -82,6 +115,11 @@ export const update = async (req, res) => {
                 const img_path = req.files.imagen.path;
                 const imagen_name = path.basename(img_path);
                 req.body.imagen = imagen_name;
+            }
+
+            // Convertir la URL del video a formato embed si se está actualizando
+            if (req.body.url_video) {
+                req.body.video_link = getEmbedUrl(req.body.url_video);
             }
 
             // Un instructor no debería poder cambiar el estado o el autor del proyecto.

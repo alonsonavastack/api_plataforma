@@ -118,9 +118,27 @@ export const getInstructorEarnings = async (req, res) => {
 
         // Obtener earnings
         const earnings = await InstructorEarnings.find(filters)
-            .populate('course', 'title image')
+            .populate('course', 'title imagen')
+            .populate('product_id')
             .populate('sale', 'n_transaccion created_at user')
             .sort({ earned_at: -1 });
+        
+        // Formatear earnings para mostrar curso o proyecto correctamente
+        const formattedEarnings = earnings.map(earning => {
+            const earningObj = earning.toObject();
+            
+            // Si tiene product_id (nuevo formato para proyectos)
+            if (earningObj.product_id) {
+                earningObj.product = earningObj.product_id;
+            } 
+            // Si tiene course (formato legacy)
+            else if (earningObj.course) {
+                earningObj.product = earningObj.course;
+                earningObj.product_type = 'course';
+            }
+            
+            return earningObj;
+        });
 
         // Calcular totales
         const totals = calculateTotalEarnings(earnings);
@@ -132,7 +150,7 @@ export const getInstructorEarnings = async (req, res) => {
         res.json({
             success: true,
             instructor,
-            earnings,
+            earnings: formattedEarnings,
             totals,
             paymentConfig
         });
@@ -670,6 +688,97 @@ export const getEarningsReport = async (req, res) => {
     }
 };
 
+/**
+ * 🔥 NUEVO: Obtener datos bancarios completos de un instructor (solo para admin)
+ * GET /api/admin/instructors/:id/payment-method-full
+ * Este endpoint devuelve los datos bancarios SIN encriptar para que el admin pueda procesarlos
+ */
+export const getInstructorPaymentMethodFull = async (req, res) => {
+    try {
+        const { id: instructorId } = req.params;
+
+        // Verificar que el instructor existe
+        const instructor = await User.findById(instructorId).select('name email surname');
+        if (!instructor) {
+            return res.status(404).json({
+                success: false,
+                message: 'Instructor no encontrado'
+            });
+        }
+
+        // Obtener configuración de pago
+        const paymentConfig = await InstructorPaymentConfig.findOne({ instructor: instructorId });
+
+        if (!paymentConfig) {
+            return res.status(404).json({
+                success: false,
+                message: 'El instructor no tiene configuración de pago'
+            });
+        }
+
+        // Preparar respuesta con datos COMPLETOS (desencriptados)
+        const response = {
+            instructor,
+            paymentMethod: paymentConfig.preferred_payment_method,
+            preferredMethod: paymentConfig.preferred_payment_method,
+            paymentDetails: null
+        };
+
+        if (paymentConfig.preferred_payment_method === 'bank_transfer' && paymentConfig.bank_account) {
+            // 🔥 Desencriptar datos bancarios completos para admin
+            let accountNumber = '';
+            let clabe = '';
+
+            try {
+                if (paymentConfig.bank_account.account_number) {
+                    accountNumber = decrypt(paymentConfig.bank_account.account_number);
+                }
+                if (paymentConfig.bank_account.clabe) {
+                    clabe = decrypt(paymentConfig.bank_account.clabe);
+                }
+            } catch (decryptError) {
+                console.error('Error al desencriptar:', decryptError);
+                return res.status(500).json({
+                    success: false,
+                    message: 'Error al desencriptar datos bancarios'
+                });
+            }
+
+            response.paymentDetails = {
+                type: 'bank_transfer',
+                bank_name: paymentConfig.bank_account.bank_name,
+                account_number: accountNumber, // 🔥 Número completo sin asteriscos
+                clabe: clabe, // 🔥 CLABE completa sin asteriscos
+                account_holder_name: paymentConfig.bank_account.account_holder_name,
+                account_type: paymentConfig.bank_account.account_type,
+                card_brand: paymentConfig.bank_account.card_brand || '',
+                swift_code: paymentConfig.bank_account.swift_code || '',
+                verified: paymentConfig.bank_account.verified
+            };
+        } else if (paymentConfig.preferred_payment_method === 'paypal') {
+            response.paymentDetails = {
+                type: 'paypal',
+                paypal_email: paymentConfig.paypal_email, // Email completo
+                paypal_merchant_id: paymentConfig.paypal_merchant_id || '',
+                paypal_connected: paymentConfig.paypal_connected,
+                paypal_verified: paymentConfig.paypal_verified
+            };
+        }
+
+        res.json({
+            success: true,
+            data: response
+        });
+    } catch (error) {
+        console.error('Error al obtener método de pago completo:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error al obtener método de pago',
+            error: error.message
+        });
+    }
+};
+
 export default {
     getInstructorsWithEarnings,
     getInstructorEarnings,
@@ -681,5 +790,6 @@ export default {
     updateCommissionSettings,
     setCustomCommission,
     removeCustomCommission,
-    getEarningsReport
+    getEarningsReport,
+    getInstructorPaymentMethodFull // 🔥 Nuevo endpoint
 };
