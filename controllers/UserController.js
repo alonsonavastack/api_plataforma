@@ -376,7 +376,7 @@ export default {
     try {
       const user = await models.User.findOne({
         email: req.body.email,
-        state: 1,
+        state: true,
       });
       if (!user) {
         return res.status(401).json({

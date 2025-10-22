@@ -212,7 +212,7 @@ export default {
                 // Eliminar ventas que quedaron sin detalles (por si acaso)
                 sales = sales.filter(sale => sale.detail.length > 0);
 
-                res.status(200).json({ sales });
+                return res.status(200).json({ sales });
 
             } else {
                 // Admin ve todas las ventas sin filtrar
@@ -228,7 +228,7 @@ export default {
                     })
                     .sort({ createdAt: -1 });
 
-                res.status(200).json({ sales });
+                return res.status(200).json({ sales });
             }
 
         } catch (error) {
