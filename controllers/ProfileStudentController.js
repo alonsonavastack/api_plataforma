@@ -122,6 +122,55 @@ export const update = async(req,res) => {
         }
     };
 
+// Nuevo endpoint para actualizar solo la contraseña con validación de la antigua
+export const updatePassword = async(req, res) => {
+    try {
+        if (!req.user) {
+            return res.status(401).send({ message: 'No autenticado.' });
+        }
+
+        const { old_password, password } = req.body;
+
+        if (!old_password || !password) {
+            return res.status(400).json({
+                message_text: 'Debes proporcionar la contraseña actual y la nueva contraseña.'
+            });
+        }
+
+        // Obtener el usuario actual
+        const user = await models.User.findById(req.user._id);
+        if (!user) {
+            return res.status(404).send({ message: 'Usuario no encontrado.' });
+        }
+
+        // Verificar que la contraseña actual es correcta
+        const isMatch = await bcrypt.compare(old_password, user.password);
+        if (!isMatch) {
+            return res.status(400).json({
+                message_text: 'La contraseña actual es incorrecta.'
+            });
+        }
+
+        // Encriptar la nueva contraseña
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        // Actualizar solo la contraseña
+        const updatedUser = await models.User.findByIdAndUpdate(
+            req.user._id, 
+            { password: hashedPassword }, 
+            { new: true }
+        );
+
+        res.status(200).json({
+            message: 'La contraseña se actualizó correctamente.',
+            user: resource.User.api_resource_user(updatedUser),
+        });
+    } catch (error) {
+        console.error('Error al actualizar contraseña:', error);
+        res.status(500).send({ message: 'HUBO UN ERROR AL ACTUALIZAR LA CONTRASEÑA' });
+    }
+};
+
 export const update_avatar = async(req,res) => {
     try {
         if (!req.user) {
@@ -146,5 +195,52 @@ export const update_avatar = async(req,res) => {
     } catch (error) {
         console.log(error);
         res.status(500).send({ message: 'HUBO UN ERROR' });
+    }
+};
+
+// Nuevo endpoint para obtener las transacciones del estudiante
+export const getTransactions = async(req, res) => {
+    try {
+        if (!req.user) {
+            return res.status(401).send({ message: 'No autenticado.' });
+        }
+
+        // Obtener todas las ventas del usuario con detalles poblados
+        const sales = await models.Sale.find({ user: req.user._id })
+            .populate({
+                path: 'detail.product',
+                select: 'title imagen' // Solo seleccionamos los campos necesarios
+            })
+            .sort({ createdAt: -1 }); // Ordenar por fecha descendente
+
+        // Transformar las ventas a un formato de transacciones
+        const transactions = sales.map(sale => {
+            const saleObj = sale.toObject();
+            return {
+                _id: saleObj._id,
+                n_transaccion: saleObj.n_transaccion,
+                method_payment: saleObj.method_payment,
+                total: saleObj.total,
+                currency_total: saleObj.currency_total,
+                status: saleObj.status,
+                items: saleObj.detail.map(item => ({
+                    product: {
+                        _id: item.product?._id || null,
+                        title: item.title,
+                        imagen: item.product?.imagen || null
+                    },
+                    product_type: item.product_type,
+                    price: item.price_unit
+                })),
+                createdAt: saleObj.createdAt
+            };
+        });
+
+        res.status(200).json({
+            transactions
+        });
+    } catch (error) {
+        console.error('Error al obtener transacciones:', error);
+        res.status(500).send({ message: 'HUBO UN ERROR AL OBTENER LAS TRANSACCIONES' });
     }
 };

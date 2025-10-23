@@ -13,4 +13,10 @@ router.put("/update-status/:id", [auth.verifyAdmin], saleController.update_statu
 // Registrar venta - Cualquier usuario autenticado
 router.post("/register", auth.verifyTienda, saleController.register);
 
+// Obtener mis transacciones (estudiante)
+router.get("/my-transactions", auth.verifyTienda, saleController.my_transactions);
+
+// Buscar transacción por número
+router.get("/transaction/:n_transaccion", auth.verifyTienda, saleController.get_by_transaction);
+
 export default router;

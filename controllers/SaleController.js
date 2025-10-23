@@ -282,6 +282,99 @@ export default {
         res.status(500).send({ message_text: 'Error interno del servidor.' });
       }
     },
+
+    // Obtener transacciones del usuario actual (estudiante)
+    my_transactions: async (req, res) => {
+        try {
+            const userId = req.user._id;
+
+            const sales = await models.Sale.find({ user: userId })
+                .populate({
+                    path: 'detail.product',
+                    select: 'title imagen'
+                })
+                .sort({ createdAt: -1 })
+                .lean();
+
+            // Formatear la respuesta para el frontend
+            const transactions = sales.map(sale => ({
+                _id: sale._id,
+                n_transaccion: sale.n_transaccion,
+                method_payment: sale.method_payment,
+                status: sale.status,
+                total: sale.total,
+                currency_total: sale.currency_total,
+                createdAt: sale.createdAt,
+                items: sale.detail.map(item => ({
+                    product_id: item.product?._id,
+                    product_type: item.product_type,
+                    title: item.title || item.product?.title,
+                    imagen: item.product?.imagen,
+                    price_unit: item.price_unit,
+                    discount: item.discount,
+                    type_discount: item.type_discount
+                }))
+            }));
+
+            res.status(200).json({ transactions });
+        } catch (error) {
+            console.error('Error en my_transactions:', error);
+            res.status(500).send({ message: 'Error al obtener las transacciones' });
+        }
+    },
+
+    // Buscar transacción por número de transacción
+    get_by_transaction: async (req, res) => {
+        try {
+            const { n_transaccion } = req.params;
+            const userId = req.user._id;
+
+            // Buscar la transacción que pertenezca al usuario
+            const sale = await models.Sale.findOne({ 
+                n_transaccion: n_transaccion,
+                user: userId 
+            })
+            .populate({
+                path: 'detail.product',
+                select: 'title imagen'
+            })
+            .lean();
+
+            if (!sale) {
+                return res.status(404).json({ 
+                    message: 'Transacción no encontrada o no tienes permiso para verla' 
+                });
+            }
+
+            // Formatear la respuesta
+            const transaction = {
+                _id: sale._id,
+                n_transaccion: sale.n_transaccion,
+                method_payment: sale.method_payment,
+                status: sale.status,
+                total: sale.total,
+                currency_total: sale.currency_total,
+                currency_payment: sale.currency_payment,
+                price_dolar: sale.price_dolar,
+                createdAt: sale.createdAt,
+                updatedAt: sale.updatedAt,
+                items: sale.detail.map(item => ({
+                    product_id: item.product?._id,
+                    product_type: item.product_type,
+                    title: item.title || item.product?.title,
+                    imagen: item.product?.imagen,
+                    price_unit: item.price_unit,
+                    discount: item.discount,
+                    type_discount: item.type_discount
+                }))
+            };
+
+            res.status(200).json({ transaction });
+        } catch (error) {
+            console.error('Error en get_by_transaction:', error);
+            res.status(500).send({ message: 'Error al buscar la transacción' });
+        }
+    },
 }
 
 /**

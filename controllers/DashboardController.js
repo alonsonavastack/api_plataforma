@@ -443,4 +443,74 @@ export default {
       res.status(500).send({ message: "OCURRIÓ UN ERROR" });
     }
   },
+
+  // 🆕 NUEVO: Actividad reciente
+  recentActivity: async (req, res) => {
+    try {
+      const user = req.user;
+      const limit = parseInt(req.query.limit) || 10;
+
+      if (user.rol === "admin") {
+        // ADMIN ve TODA la actividad
+        const sales = await models.Sale.find({ status: "Pagado" })
+          .populate('user', 'name surname email')
+          .sort({ createdAt: -1 })
+          .limit(limit)
+          .lean();
+
+        const activities = sales.map(sale => ({
+          type: 'sale',
+          user: `${sale.user?.name || ''} ${sale.user?.surname || ''}`.trim(),
+          amount: sale.total,
+          time: sale.createdAt,
+          color: 'lime'
+        }));
+
+        return res.status(200).json(activities);
+      } else if (user.rol === "instructor") {
+        // INSTRUCTOR ve solo actividad de SUS cursos/proyectos
+        const instructorCourses = await models.Course.find({ user: user._id }).select('_id');
+        const instructorProjects = await models.Project.find({ user: user._id }).select('_id');
+        const allProductIds = [
+          ...instructorCourses.map(c => c._id),
+          ...instructorProjects.map(p => p._id)
+        ];
+
+        const sales = await models.Sale.find({
+          status: "Pagado",
+          "detail.product": { $in: allProductIds }
+        })
+          .populate('user', 'name surname email')
+          .sort({ createdAt: -1 })
+          .limit(limit)
+          .lean();
+
+        const activities = [];
+        for (const sale of sales) {
+          // Filtrar solo los items del instructor
+          const instructorItems = sale.detail.filter(item =>
+            allProductIds.some(id => id.toString() === item.product.toString())
+          );
+
+          if (instructorItems.length > 0) {
+            const totalInstructor = instructorItems.reduce((sum, item) => sum + item.price_unit, 0);
+            activities.push({
+              type: 'sale',
+              user: `${sale.user?.name || ''} ${sale.user?.surname || ''}`.trim(),
+              amount: totalInstructor,
+              time: sale.createdAt,
+              color: 'lime'
+            });
+          }
+        }
+
+        return res.status(200).json(activities);
+      }
+
+      return res.status(403).json({ message: "Acceso denegado" });
+    } catch (error) {
+      console.error("Error en DashboardController.recentActivity:", error);
+      res.status(500).send({ message: "OCURRIÓ UN ERROR" });
+    }
+  },
 };
