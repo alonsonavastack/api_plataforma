@@ -36,6 +36,7 @@ router.use('/discount',Discount);
 router.use('/home',Home);
 router.use('/cart',Cart);
 router.use('/checkout',Sale);
+router.use('/sales',Sale); // Agregado para notificaciones
 router.use('/profile-student',ProfileStudent);
 router.use('/project',Project); // Corregido: de plural a singular
 router.use('/profile-instructor', ProfileInstructorRouter);

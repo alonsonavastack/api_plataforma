@@ -10,6 +10,9 @@ router.get('/list', auth.verifyDashboard, CourseClaseController.list);
 router.put('/update', auth.verifyDashboard, CourseClaseController.update);
 router.delete('/remove/:id', auth.verifyDashboard, CourseClaseController.remove);
 router.put('/reorder', auth.verifyDashboard, CourseClaseController.reorder);
+
+// 🎥 Endpoints para obtener duración de videos
 router.get('/vimeo-data', auth.verifyDashboard, CourseClaseController.get_vimeo_data);
+router.get('/youtube-data', auth.verifyDashboard, CourseClaseController.get_youtube_data); // ✅ NUEVO
 
 export default router;

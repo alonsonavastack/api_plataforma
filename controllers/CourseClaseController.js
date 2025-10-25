@@ -127,7 +127,10 @@ export const get_vimeo_data = async (req, res) => {
         'Authorization': `Bearer ${vimeoToken}`
       }
     });
-    res.status(200).json({ duration: response.data.duration }); // Devuelve la duración en segundos
+    res.status(200).json({ 
+      duration: response.data.duration,
+      video_id: videoId 
+    }); // Devuelve la duración en segundos y el ID
   } catch (error) {
     // Log del error para depuración en el servidor
     console.error("Error al obtener datos de Vimeo:", error.response ? error.response.data : error.message);
@@ -137,3 +140,69 @@ export const get_vimeo_data = async (req, res) => {
     res.status(status).json({ message });
   }
 };
+
+// 🎬 NUEVO: Obtener datos de YouTube
+export const get_youtube_data = async (req, res) => {
+  try {
+    const youtubeUrl = req.query.url;
+    if (!youtubeUrl) {
+      return res.status(400).json({ message: 'No se proporcionó una URL de YouTube.' });
+    }
+
+    // Extraer el ID del video de YouTube (soporta múltiples formatos)
+    const videoIdMatch = youtubeUrl.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/v\/)([^&?/]+)/);
+    if (!videoIdMatch) {
+      return res.status(400).json({ message: 'URL de YouTube no válida.' });
+    }
+    const videoId = videoIdMatch[1];
+
+    const youtubeApiKey = process.env.YOUTUBE_API_KEY;
+    if (!youtubeApiKey) {
+      console.error('YOUTUBE_API_KEY no está configurado en el archivo .env');
+      return res.status(500).json({ message: 'Error de configuración del servidor: falta la API Key de YouTube.' });
+    }
+
+    // Llamar a la API de YouTube Data v3
+    const youtubeApiUrl = `https://www.googleapis.com/youtube/v3/videos?id=${videoId}&part=contentDetails,snippet&key=${youtubeApiKey}`;
+    
+    const response = await axios.get(youtubeApiUrl);
+    
+    if (!response.data.items || response.data.items.length === 0) {
+      return res.status(404).json({ message: 'Video no encontrado en YouTube.' });
+    }
+
+    // Parsear la duración ISO 8601 (ej: PT1H2M10S)
+    const duration = response.data.items[0].contentDetails.duration;
+    const seconds = parseISO8601Duration(duration);
+
+    res.status(200).json({ 
+      duration: seconds,
+      video_id: videoId,
+      title: response.data.items[0].snippet.title
+    });
+  } catch (error) {
+    console.error("Error al obtener datos de YouTube:", error.response ? error.response.data : error.message);
+    const status = error.response ? error.response.status : 500;
+    let message = 'No se pudieron obtener los datos del video desde YouTube.';
+    
+    if (status === 403) {
+      message = 'Error de autenticación con YouTube API. Verifica tu API Key en el archivo .env';
+    } else if (status === 404) {
+      message = 'El video no fue encontrado en YouTube.';
+    }
+    
+    res.status(status).json({ message });
+  }
+};
+
+// 🛠️ Función helper para convertir ISO 8601 a segundos
+function parseISO8601Duration(duration) {
+  const match = duration.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);
+  if (!match) return 0;
+  
+  const hours = parseInt(match[1] || 0);
+  const minutes = parseInt(match[2] || 0);
+  const seconds = parseInt(match[3] || 0);
+  
+  return hours * 3600 + minutes * 60 + seconds;
+}

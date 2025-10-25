@@ -7,6 +7,10 @@ const router = routerx();
 // Lista de ventas - Administradores e Instructores pueden ver sus ventas
 router.get("/list", [auth.verifyTienda], saleController.list);
 
+// 🔔 Notificaciones - Solo administradores
+router.get("/recent-notifications", [auth.verifyAdmin], saleController.recent_notifications);
+router.post("/mark-notifications-read", [auth.verifyAdmin], saleController.mark_notifications_read);
+
 // Actualizar estado - Solo administradores
 router.put("/update-status/:id", [auth.verifyAdmin], saleController.update_status_sale);
 

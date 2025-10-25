@@ -4,6 +4,8 @@ import path from 'path'
 import { fileURLToPath } from 'url';
 import mongoose from 'mongoose'
 import router from './router/index.js';
+import { createServer } from 'http';
+import { initializeSocketIO } from './services/socket.service.js';
 
 // CONEXION A LA BASE DE DATOS
 mongoose.Promise = global.Promise
@@ -46,8 +48,16 @@ app.use((err, req, res, next) => {
 
 app.set('port', process.env.PUERTO || 3000);
 
-const server = app.listen(app.get('port'), () => {
-    console.log(`EL SERVIDOR SE ESTA EJECUTANDO EN EL PUERTO ${app.get('port')}`)
+// Crear servidor HTTP
+const httpServer = createServer(app);
+
+// Inicializar Socket.IO
+initializeSocketIO(httpServer);
+
+// Iniciar servidor
+const server = httpServer.listen(app.get('port'), () => {
+    console.log(`🚀 Servidor ejecutándose en puerto ${app.get('port')}`);
+    console.log(`🔌 WebSocket disponible en ws://localhost:${app.get('port')}`);
 });
 
 // Manejo de cierre graceful del servidor

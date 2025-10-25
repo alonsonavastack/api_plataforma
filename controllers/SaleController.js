@@ -1,11 +1,62 @@
 import models from "../models/index.js";
 import token from "../service/token.js";
+import { emitNewSaleToAdmins, emitSaleStatusUpdate } from '../services/socket.service.js';
 
 import fs from 'fs';
 import handlebars from 'handlebars';
 import ejs from 'ejs';
 import nodemailer from 'nodemailer';
 import smtpTransport from 'nodemailer-smtp-transport';
+
+// 📨 Función para enviar notificación a Telegram
+async function send_telegram_notification(sale) {
+    try {
+        const TELEGRAM_TOKEN = '7958971419:AAFT29lhSOLzoZcWIMXHz8vha_5z95tX37Q';
+        const CHAT_ID = '5066230896';
+
+        // Formatear los productos comprados
+        const productsText = sale.detail.map((item, index) => 
+            `   ${index + 1}. ${item.title} - ${item.price_unit.toFixed(2)} ${sale.currency_total}`
+        ).join('%0A');
+
+        // Construir el mensaje
+        const text = [
+            '📦 *¡NUEVA COMPRA REALIZADA!*',
+            '',
+            `💳 *N° Transacción:* \`${sale.n_transaccion}\``,
+            `👤 *Cliente:* ${sale.user.name} ${sale.user.surname}`,
+            `✉️ *Correo:* ${sale.user.email}`,
+            '',
+            '🛍 *Productos comprados:*',
+            productsText,
+            '',
+            `💰 *Total:* ${sale.total.toFixed(2)} ${sale.currency_total}`,
+            `💳 *Método de pago:* ${sale.method_payment === 'transfer' ? 'Transferencia' : sale.method_payment}`,
+            `🟢 *Estado:* ${sale.status}`,
+            '',
+            `📅 *Fecha:* ${new Date(sale.createdAt).toLocaleString('es-MX', { 
+                timeZone: 'America/Mexico_City',
+                dateStyle: 'full',
+                timeStyle: 'short'
+            })}`,
+            '',
+            '👉 Revisa el dashboard para más detalles'
+        ].join('%0A');
+
+        const url = `https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${text}&parse_mode=Markdown`;
+
+        const response = await fetch(url);
+        
+        if (response.ok) {
+            console.log('✅ Notificación enviada a Telegram exitosamente');
+        } else {
+            console.error('❌ Error al enviar notificación a Telegram:', response.statusText);
+        }
+    } catch (error) {
+        console.error('❌ Error al enviar mensaje a Telegram:', error.message);
+        // No lanzamos el error para no interrumpir el proceso de venta
+    }
+}
 
 async function send_email (sale_id) {
     return new Promise(async (resolve, reject) => {
@@ -90,6 +141,18 @@ export default {
             };
             
             const Sale = await models.Sale.create(saleData);
+
+            // Emitir evento de nueva venta a los admins via WebSocket
+            const saleWithUser = await models.Sale.findById(Sale._id).populate('user', 'name surname email');
+            emitNewSaleToAdmins(saleWithUser);
+            console.log('🔔 WebSocket: Nueva venta emitida a admins');
+
+            // 📨 Enviar notificación a Telegram
+            try {
+                await send_telegram_notification(saleWithUser);
+            } catch (telegramError) {
+                console.error('⚠️  La notificación de Telegram falló, pero la venta se registró correctamente:', telegramError.message);
+            }
 
             if (Sale.status === 'Pagado') {
                 for (const item of Sale.detail) {
@@ -258,6 +321,10 @@ export default {
         const oldStatus = sale.status;
         sale.status = status;
         await sale.save();
+
+        // Emitir evento de actualización de estado via WebSocket
+        emitSaleStatusUpdate(sale);
+        console.log('🔄 WebSocket: Estado de venta actualizado y emitido');
     
         if (oldStatus !== 'Pagado' && status === 'Pagado') {
           for (const item of sale.detail) {
@@ -373,6 +440,85 @@ export default {
         } catch (error) {
             console.error('Error en get_by_transaction:', error);
             res.status(500).send({ message: 'Error al buscar la transacción' });
+        }
+    },
+
+    // 🔔 Obtener notificaciones recientes (solo admin)
+    recent_notifications: async (req, res) => {
+        try {
+            const { limit = 10, minutes = 1440 } = req.query; // 24 horas por defecto
+            
+            // Calcular timestamp hace X minutos
+            const cutoffTime = new Date();
+            cutoffTime.setMinutes(cutoffTime.getMinutes() - parseInt(minutes));
+            
+            console.log('🔔 Buscando notificaciones desde:', cutoffTime);
+            
+            // Buscar ventas recientes (sin filtro de tiempo para debug)
+            const recentSales = await models.Sale.find({})
+            .populate('user', 'name surname email')
+            .sort({ createdAt: -1 })
+            .limit(parseInt(limit))
+            .lean();
+            
+            console.log('📊 Total ventas encontradas:', recentSales.length);
+            
+            // Contar ventas con estado "Pendiente"
+            const unreadCount = recentSales.filter(sale => sale.status === 'Pendiente').length;
+            
+            // Formatear la respuesta
+            const formattedSales = recentSales.map(sale => ({
+                _id: sale._id,
+                n_transaccion: sale.n_transaccion,
+                total: sale.total,
+                currency_total: sale.currency_total,
+                status: sale.status,
+                createdAt: sale.createdAt,
+                user: {
+                    _id: sale.user._id,
+                    name: sale.user.name,
+                    surname: sale.user.surname,
+                    email: sale.user.email
+                }
+            }));
+            
+            console.log('✅ Enviando respuesta con', formattedSales.length, 'notificaciones');
+            
+            res.status(200).json({
+                recent_sales: formattedSales,
+                unread_count: unreadCount
+            });
+            
+        } catch (error) {
+            console.error('❌ Error al obtener notificaciones:', error);
+            res.status(500).json({ 
+                message: 'Error al cargar notificaciones',
+                error: error.message 
+            });
+        }
+    },
+
+    // 🔔 Marcar notificaciones como leídas (solo admin)
+    mark_notifications_read: async (req, res) => {
+        try {
+            const { timestamp } = req.body;
+            const userId = req.user._id;
+            
+            // Por ahora solo retornamos success
+            // En el futuro podrías guardar esto en una colección de "notificaciones leídas"
+            console.log(`👁️ Admin ${userId} marcó notificaciones como leídas en ${timestamp}`);
+            
+            res.status(200).json({
+                success: true,
+                message: 'Notificaciones marcadas como leídas'
+            });
+            
+        } catch (error) {
+            console.error('❌ Error al marcar notificaciones:', error);
+            res.status(500).json({ 
+                message: 'Error al marcar notificaciones',
+                error: error.message 
+            });
         }
     },
 }
