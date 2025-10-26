@@ -9,7 +9,7 @@ const path2 = multiparty(); // Para Vimeo, no guarda localmente
 const router = routerx();
 
 router.post("/register",[auth.verifyDashboard,path],courseController.register);
-router.post("/update",[auth.verifyAdmin,path],courseController.update);
+router.post("/update",[auth.verifyInstructor,path],courseController.update);
 
 router.post("/upload_vimeo",[auth.verifyDashboard,path2],courseController.upload_vimeo);
 
@@ -21,9 +21,9 @@ router.get("/show/:id",[auth.verifyDashboard],courseController.show_course);
 
 router.get("/list",[auth.verifyDashboard],courseController.list);
 router.get("/config_all",[auth.verifyDashboard],courseController.config_all);
+router.get("/check-sales/:id",[auth.verifyDashboard],courseController.checkSales);
 
-
-router.delete("/remove/:id",[auth.verifyAdmin],courseController.remove);
+router.delete("/remove/:id",[auth.verifyInstructor],courseController.remove);
 
 router.get("/imagen-course/:img",courseController.get_imagen);
 

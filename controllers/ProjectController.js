@@ -1,5 +1,6 @@
 import models from "../models/index.js";
 import resource from "../resource/index.js";
+import { notifyNewProject } from '../services/telegram.service.js';
 import fs from 'fs';
 import path from 'path';
 
@@ -75,9 +76,19 @@ export const register = async (req, res) => {
             }
 
             const newProject = await models.Project.create(req.body);
+            // Popular el proyecto con usuario y categoría para la notificación
+            const populatedProject = await models.Project.findById(newProject._id).populate('user').populate('categorie');
+
+            // 📨 Enviar notificación a Telegram de nuevo proyecto
+            try {
+                await notifyNewProject(populatedProject, populatedProject.user);
+                console.log('✅ Notificación de Telegram enviada para nuevo proyecto');
+            } catch (telegramError) {
+                console.error('⚠️  La notificación de Telegram falló, pero el proyecto se creó correctamente:', telegramError.message);
+            }
 
             res.status(200).json({
-                project: resource.Project.api_resource_project(newProject),
+                project: resource.Project.api_resource_project(populatedProject),
                 message: "EL PROYECTO SE REGISTRÓ CORRECTAMENTE"
             });
         } catch (error) {
@@ -205,6 +216,59 @@ export const list = async (req, res) => {
         }
     };
 
+// GET /api/project/check-sales/:id
+// Verificar si un proyecto tiene ventas (para habilitar/deshabilitar eliminación)
+export const checkSales = async (req, res) => {
+    try {
+        const projectId = req.params.id;
+        console.log('🔍 Verificando ventas para proyecto:', projectId);
+
+        // Verificar permisos: solo el propietario o admin pueden verificar
+        const project = await models.Project.findById(projectId).lean();
+        if (!project) {
+            return res.status(404).json({ 
+                message: 'Proyecto no encontrado',
+                hasSales: false 
+            });
+        }
+
+        // Si es instructor, solo puede verificar sus propios proyectos
+        if (req.user.rol === 'instructor' && project.user.toString() !== req.user._id.toString()) {
+            return res.status(403).json({ 
+                message: 'No tienes permiso para verificar este proyecto.',
+                hasSales: false
+            });
+        }
+
+        // 🔥 CORRECCIÓN: Buscar ventas donde el proyecto aparece en detail.product
+        // Sale.detail es un subdocumento, no una colección separada
+        const sales = await models.Sale.find({ 
+            'detail.product': projectId,
+            'detail.product_type': 'project'
+        }).lean();
+
+        const hasSales = sales.length > 0;
+        console.log(`📊 Proyecto tiene ${sales.length} venta(s)`);
+        
+        // Contar cuántos estudiantes diferentes compraron el proyecto
+        const uniqueUsers = new Set(sales.map(sale => sale.user.toString()));
+        console.log(`👥 Estudiantes únicos que compraron: ${uniqueUsers.size}`);
+
+        res.status(200).json({
+            hasSales: hasSales,
+            saleCount: sales.length,
+            uniqueStudents: uniqueUsers.size,
+            canDelete: !hasSales // Solo se puede eliminar si NO tiene ventas
+        });
+    } catch (error) {
+        console.error('❌ Error al verificar ventas:', error);
+        res.status(500).send({
+            message: "HUBO UN ERROR AL VERIFICAR LAS VENTAS",
+            hasSales: true // Por seguridad, asumir que tiene ventas en caso de error
+        });
+    }
+};
+
 // GET /api/project/show/:id
 export const show_project = async (req, res) => {
         try {
@@ -246,27 +310,75 @@ export const get_project_admin = async (req, res) => {
     };
 
 // DELETE /api/project/remove/:id
+// Los instructores pueden eliminar sus propios proyectos SI NO tienen ventas
+// Los admins pueden eliminar cualquier proyecto SI NO tiene ventas
 export const remove = async (req, res) => {
         try {
-            // El middleware 'auth.verifyDashboard' ya ha verificado el token y adjuntado el usuario a req.user
-            const project = await models.Project.findById(req.params.id).lean();
+            const projectId = req.params.id;
+            console.log('🛠️ Intentando eliminar proyecto:', projectId);
+            console.log('👤 Usuario:', req.user.rol, '-', req.user._id.toString());
+            
+            // Buscar el proyecto
+            const project = await models.Project.findById(projectId).lean();
             if (!project) {
-                return res.status(404).json({ message: 'Proyecto no encontrado' });
+                console.log('❌ Proyecto no encontrado');
+                return res.status(404).json({ 
+                    message: 'Proyecto no encontrado',
+                    code: 404 
+                });
             }
 
-            // Verificación de permisos: un instructor solo puede eliminar sus propios proyectos.
+            console.log('✅ Proyecto encontrado:', project.title);
+            console.log('👨‍🏫 Propietario del proyecto:', project.user.toString());
+
+            // 🔒 VALIDACIÓN 1: Verificar permisos de propiedad
+            // Los instructores solo pueden eliminar sus propios proyectos
             if (req.user.rol === 'instructor' && project.user.toString() !== req.user._id.toString()) {
-                return res.status(403).json({ message: 'No tienes permiso para eliminar este proyecto.' });
+                console.log('⛔ Permiso denegado: no es el propietario');
+                return res.status(403).json({ 
+                    message: 'No tienes permiso para eliminar este proyecto. Solo puedes eliminar tus propios proyectos.',
+                    code: 403 
+                });
             }
+
+            console.log('🔍 Verificando ventas del proyecto...');
+            // 🔒 VALIDACIÓN 2: Verificar si el proyecto tiene ventas (integridad de datos)
+            // Sale.detail es un subdocumento, no una colección separada
+            const sales = await models.Sale.find({ 
+                'detail.product': projectId,
+                'detail.product_type': 'project'
+            }).lean();
+
+            console.log('📊 Total de ventas encontradas:', sales.length);
+            
+            if (sales.length > 0) {
+                console.log('⚠️ Proyecto tiene ventas, bloqueando eliminación');
+                console.log('📄 IDs de ventas:', sales.map(s => s._id));
+                const uniqueUsers = new Set(sales.map(s => s.user.toString()));
+                console.log('👥 Estudiantes únicos:', uniqueUsers.size);
+                
+                return res.status(200).json({
+                    message: `EL PROYECTO NO SE PUEDE ELIMINAR PORQUE TIENE ${sales.length} VENTA(S) REGISTRADA(S) DE ${uniqueUsers.size} ESTUDIANTE(S). Esto protege la integridad de los registros de compra y ganancias de los estudiantes.`,
+                    code: 403,
+                    saleCount: sales.length,
+                    uniqueStudents: uniqueUsers.size
+                });
+            }
+
+            console.log('✅ No hay ventas, procediendo con la eliminación...');
 
             // Eliminar imagen
             if (project.imagen) {
                 const imagePath = path.join(__dirname, '../uploads/project/', project.imagen);
-                if (fs.existsSync(imagePath)) fs.unlinkSync(imagePath);
+                if (fs.existsSync(imagePath)) {
+                    fs.unlinkSync(imagePath);
+                    console.log('🖼️ Imagen eliminada');
+                }
             }
 
             // Eliminar archivos ZIP
             if (project.files && project.files.length > 0) {
+                console.log(`📦 Eliminando ${project.files.length} archivo(s) ZIP...`);
                 project.files.forEach(file => {
                     const filePath = path.join(__dirname, '../uploads/project-files/', file.filename);
                     if (fs.existsSync(filePath)) {
@@ -275,13 +387,15 @@ export const remove = async (req, res) => {
                 });
             }
 
-            await models.Project.findByIdAndDelete(req.params.id);
+            await models.Project.findByIdAndDelete(projectId);
+            console.log('✅ Proyecto eliminado exitosamente');
 
             res.status(200).json({
-                message: "EL PROYECTO SE ELIMINÓ CORRECTAMENTE"
+                message: "EL PROYECTO SE ELIMINÓ CORRECTAMENTE",
+                code: 200
             });
         } catch (error) {
-            console.log(error);
+            console.error('❌ Error al eliminar proyecto:', error);
             res.status(500).send({
                 message: "HUBO UN ERROR"
             });

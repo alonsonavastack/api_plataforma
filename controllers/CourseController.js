@@ -1,5 +1,6 @@
 import models from "../models/index.js";
 import resource from "../resource/index.js";
+import { notifyNewCourse } from '../services/telegram.service.js';
 
 import fs from 'fs'
 import path from 'path'
@@ -46,6 +47,14 @@ export default {
             let NewCourse = await models.Course.create(req.body);
             // Populamos el usuario y la categoría para devolver el objeto completo
             NewCourse = await models.Course.findById(NewCourse._id).populate('user').populate('categorie');
+
+            // 📨 Enviar notificación a Telegram de nuevo curso
+            try {
+                await notifyNewCourse(NewCourse, NewCourse.user);
+                console.log('✅ Notificación de Telegram enviada para nuevo curso');
+            } catch (telegramError) {
+                console.error('⚠️  La notificación de Telegram falló, pero el curso se creó correctamente:', telegramError.message);
+            }
 
             res.status(200).json({
                 course: NewCourse,
@@ -195,37 +204,157 @@ export default {
             });
         }
     },
+    checkSales: async(req,res) => {
+        try {
+            const courseId = req.params.id;
+            console.log('🔍 Verificando ventas y estudiantes para curso:', courseId);
+
+            // Verificar permisos: solo el propietario o admin pueden verificar
+            const course = await models.Course.findById(courseId).lean();
+            if (!course) {
+                return res.status(404).json({ 
+                    message: 'Curso no encontrado',
+                    hasSales: false,
+                    hasStudents: false
+                });
+            }
+
+            // Si es instructor, solo puede verificar sus propios cursos
+            if (req.user.rol === 'instructor' && course.user.toString() !== req.user._id.toString()) {
+                return res.status(403).json({ 
+                    message: 'No tienes permiso para verificar este curso.',
+                    hasSales: false,
+                    hasStudents: false
+                });
+            }
+
+            // 🔥 VALIDACIÓN 1: Buscar ventas donde el curso aparece en detail.product
+            // Sale.detail es un subdocumento, no una colección separada
+            const sales = await models.Sale.find({ 
+                'detail.product': courseId,
+                'detail.product_type': 'course'
+            }).lean();
+
+            // 🔥 VALIDACIÓN 2: Buscar estudiantes inscritos
+            const students = await models.CourseStudent.find({ 
+                course: courseId 
+            }).lean();
+
+            const hasSales = sales.length > 0;
+            const hasStudents = students.length > 0;
+            
+            console.log(`📊 Curso tiene ${sales.length} venta(s) y ${students.length} estudiante(s)`);
+            
+            // Contar cuántos estudiantes diferentes compraron el curso
+            const uniqueUsers = new Set(sales.map(sale => sale.user.toString()));
+            console.log(`👥 Estudiantes únicos que compraron: ${uniqueUsers.size}`);
+
+            res.status(200).json({
+                hasSales: hasSales,
+                hasStudents: hasStudents,
+                saleCount: sales.length,
+                studentCount: students.length,
+                uniqueStudents: uniqueUsers.size,
+                canDelete: !hasSales && !hasStudents // Solo se puede eliminar si NO tiene ventas NI estudiantes
+            });
+        } catch (error) {
+            console.error('❌ Error al verificar ventas y estudiantes:', error);
+            res.status(500).send({
+                message: "HUBO UN ERROR AL VERIFICAR LAS VENTAS Y ESTUDIANTES",
+                hasSales: true, // Por seguridad, asumir que tiene ventas en caso de error
+                hasStudents: true
+            });
+        }
+    },
     remove: async(req,res) => {
         try {
             const course_id = req.params.id;
+            console.log('🛠️ Intentando eliminar curso:', course_id);
+            console.log('👤 Usuario:', req.user.rol, '-', req.user._id.toString());
 
-            // 1. VERIFICAR SI EL CURSO TIENE VENTAS
-            const saleDetailCount = await models.SaleDetail.countDocuments({ product: course_id, product_type: 'course' });
-
-            if (saleDetailCount > 0) {
-                res.status(200).send({
-                    message: 'EL CURSO NO SE PUEDE ELIMINAR, PORQUE YA TIENE VENTAS',
-                    code: 403,
-                });
-                return;
-            }
-
-            // 2. SI NO TIENE VENTAS, PROCEDER CON LA ELIMINACIÓN EN CASCADA
-            const course = await models.Course.findById(course_id);
+            // 1. VERIFICAR SI EL CURSO EXISTE
+            const course = await models.Course.findById(course_id).lean();
             if (!course) {
-                return res.status(404).send({ message: 'El curso no existe.' });
+                console.log('❌ Curso no encontrado');
+                return res.status(404).send({ 
+                    message: 'El curso no existe.',
+                    code: 404 
+                });
             }
 
-            // Eliminar imagen de portada del curso
+            console.log('✅ Curso encontrado:', course.title);
+            console.log('👨‍🏫 Propietario del curso:', course.user.toString());
+
+            // 🔒 VALIDACIÓN 1: Verificar permisos de propiedad
+            // Los instructores solo pueden eliminar sus propios cursos
+            if (req.user.rol === 'instructor' && course.user.toString() !== req.user._id.toString()) {
+                console.log('⛔ Permiso denegado: no es el propietario');
+                return res.status(403).send({ 
+                    message: 'No tienes permiso para eliminar este curso. Solo puedes eliminar tus propios cursos.',
+                    code: 403 
+                });
+            }
+
+            console.log('🔍 Verificando ventas y estudiantes del curso...');
+            
+            // 🔒 VALIDACIÓN 2: Verificar si el curso tiene ventas (integridad de datos)
+            // Sale.detail es un subdocumento, no una colección separada
+            const sales = await models.Sale.find({ 
+                'detail.product': course_id,
+                'detail.product_type': 'course'
+            }).lean();
+
+            console.log('📊 Total de ventas encontradas:', sales.length);
+            
+            if (sales.length > 0) {
+                console.log('⚠️ Curso tiene ventas, bloqueando eliminación');
+                console.log('📄 IDs de ventas:', sales.map(s => s._id));
+                const uniqueUsers = new Set(sales.map(s => s.user.toString()));
+                console.log('👥 Estudiantes únicos:', uniqueUsers.size);
+                
+                return res.status(200).json({
+                    message: `EL CURSO NO SE PUEDE ELIMINAR PORQUE TIENE ${sales.length} VENTA(S) REGISTRADA(S) DE ${uniqueUsers.size} ESTUDIANTE(S). Esto protege la integridad de los registros de compra y ganancias de los estudiantes.`,
+                    code: 403,
+                    saleCount: sales.length,
+                    uniqueStudents: uniqueUsers.size
+                });
+            }
+
+            // 🔒 VALIDACIÓN 3: Verificar si el curso tiene estudiantes inscritos
+            const students = await models.CourseStudent.find({ course: course_id }).lean();
+
+            console.log('📊 Total de estudiantes inscritos:', students.length);
+
+            if (students.length > 0) {
+                console.log('⚠️ Curso tiene estudiantes inscritos, bloqueando eliminación');
+                console.log('🎓 IDs de estudiantes:', students.map(s => s.user));
+                
+                return res.status(200).json({
+                    message: `EL CURSO NO SE PUEDE ELIMINAR PORQUE TIENE ${students.length} ESTUDIANTE(S) INSCRITO(S). Esto protege el acceso de los estudiantes a su contenido educativo.`,
+                    code: 403,
+                    studentCount: students.length
+                });
+            }
+
+            console.log('✅ No hay ventas ni estudiantes, procediendo con la eliminación...');
+
+            // 2. ELIMINAR IMAGEN DE PORTADA
             if (course.imagen) {
                 const imagePath = path.join(__dirname, '../uploads/course/', course.imagen);
-                if (fs.existsSync(imagePath)) fs.unlinkSync(imagePath);
+                if (fs.existsSync(imagePath)) {
+                    fs.unlinkSync(imagePath);
+                    console.log('🖼️ Imagen eliminada');
+                }
             }
 
-            // Eliminar secciones, clases y archivos de clase asociados
+            // 3. ELIMINAR SECCIONES, CLASES Y ARCHIVOS
             const sections = await models.CourseSection.find({ course: course_id });
+            console.log(`📚 Eliminando ${sections.length} sección(es)...`);
+            
             for (const section of sections) {
                 const clases = await models.CourseClase.find({ section: section._id });
+                console.log(`  🎬 Eliminando ${clases.length} clase(s) de la sección "${section.title}"...`);
+                
                 for (const clase of clases) {
                     const claseFiles = await models.CourseClaseFile.find({ clase: clase._id });
                     for (const file of claseFiles) {
@@ -238,16 +367,19 @@ export default {
                 await models.CourseSection.findByIdAndDelete(section._id);
             }
 
-            // Finalmente, eliminar el curso y las inscripciones de estudiantes
+            // 4. ELIMINAR INSCRIPCIONES (aunque ya verificamos que no hay, por si acaso)
             await models.CourseStudent.deleteMany({ course: course_id });
+
+            // 5. ELIMINAR EL CURSO
             await models.Course.findByIdAndDelete(course_id);
+            console.log('✅ Curso eliminado exitosamente');
 
             res.status(200).send({
                 message: 'EL CURSO Y TODOS SUS DATOS ASOCIADOS SE ELIMINARON CORRECTAMENTE',
                 code: 200,
             });
         } catch (error) {
-            console.log(error);
+            console.error('❌ Error al eliminar curso:', error);
             res.status(500).send({
                 message: 'HUBO UN ERROR'
             });

@@ -18,7 +18,7 @@ const ProjectSchema = new Schema({
     
     categorie: {type:Schema.ObjectId, ref: 'categorie', required:true},
     
-    price_mxn:{type:Number, required:true},
+    price_mxn:{type:Number, required:false}, // Campo legacy, ahora opcional
     price_usd: {type:Number, required:true},
 
     state: {type:Number, default: 1}, // 1 es borrador, 2 es publico, 3 es anulado

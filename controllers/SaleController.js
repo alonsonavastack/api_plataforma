@@ -1,62 +1,13 @@
 import models from "../models/index.js";
 import token from "../service/token.js";
 import { emitNewSaleToAdmins, emitSaleStatusUpdate } from '../services/socket.service.js';
+import { notifyNewSale } from '../services/telegram.service.js';
 
 import fs from 'fs';
 import handlebars from 'handlebars';
 import ejs from 'ejs';
 import nodemailer from 'nodemailer';
 import smtpTransport from 'nodemailer-smtp-transport';
-
-// 📨 Función para enviar notificación a Telegram
-async function send_telegram_notification(sale) {
-    try {
-        const TELEGRAM_TOKEN = '7958971419:AAFT29lhSOLzoZcWIMXHz8vha_5z95tX37Q';
-        const CHAT_ID = '5066230896';
-
-        // Formatear los productos comprados
-        const productsText = sale.detail.map((item, index) => 
-            `   ${index + 1}. ${item.title} - ${item.price_unit.toFixed(2)} ${sale.currency_total}`
-        ).join('%0A');
-
-        // Construir el mensaje
-        const text = [
-            '📦 *¡NUEVA COMPRA REALIZADA!*',
-            '',
-            `💳 *N° Transacción:* \`${sale.n_transaccion}\``,
-            `👤 *Cliente:* ${sale.user.name} ${sale.user.surname}`,
-            `✉️ *Correo:* ${sale.user.email}`,
-            '',
-            '🛍 *Productos comprados:*',
-            productsText,
-            '',
-            `💰 *Total:* ${sale.total.toFixed(2)} ${sale.currency_total}`,
-            `💳 *Método de pago:* ${sale.method_payment === 'transfer' ? 'Transferencia' : sale.method_payment}`,
-            `🟢 *Estado:* ${sale.status}`,
-            '',
-            `📅 *Fecha:* ${new Date(sale.createdAt).toLocaleString('es-MX', { 
-                timeZone: 'America/Mexico_City',
-                dateStyle: 'full',
-                timeStyle: 'short'
-            })}`,
-            '',
-            '👉 Revisa el dashboard para más detalles'
-        ].join('%0A');
-
-        const url = `https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${text}&parse_mode=Markdown`;
-
-        const response = await fetch(url);
-        
-        if (response.ok) {
-            console.log('✅ Notificación enviada a Telegram exitosamente');
-        } else {
-            console.error('❌ Error al enviar notificación a Telegram:', response.statusText);
-        }
-    } catch (error) {
-        console.error('❌ Error al enviar mensaje a Telegram:', error.message);
-        // No lanzamos el error para no interrumpir el proceso de venta
-    }
-}
 
 async function send_email (sale_id) {
     return new Promise(async (resolve, reject) => {
@@ -149,7 +100,7 @@ export default {
 
             // 📨 Enviar notificación a Telegram
             try {
-                await send_telegram_notification(saleWithUser);
+                await notifyNewSale(saleWithUser);
             } catch (telegramError) {
                 console.error('⚠️  La notificación de Telegram falló, pero la venta se registró correctamente:', telegramError.message);
             }
