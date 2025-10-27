@@ -7,6 +7,7 @@ const CourseSchema = new Schema({
     categorie: {type:Schema.ObjectId,ref: 'categorie',required:true},
     price_mxn:{type:Number,required:false}, // Campo legacy, ahora opcional
     price_usd: {type:Number,required:true},
+    isFree: {type:Boolean, default: false}, // Indica si el curso es gratuito
     imagen: {type:String,maxlength:250,required:true},
     description: {type:String,required:true},
     vimeo_id: {type:String,required:false},

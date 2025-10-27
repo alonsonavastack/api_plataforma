@@ -92,8 +92,12 @@ export async function notifyNewCourse(course, instructor) {
         };
         const estadoTexto = estados[course.state] || 'Desconocido';
 
-        // Formatear los precios
-        const priceUSD = course.price_usd ? `${course.price_usd.toFixed(2)} USD` : 'Gratis';
+        // Formatear los precios (considerar si es gratuito)
+        const priceUSD = course.isFree 
+            ? '🎁 *GRATUITO*' 
+            : course.price_usd 
+                ? `💵 ${course.price_usd.toFixed(2)} USD` 
+                : 'Sin precio definido';
 
         const text = [
             '📚 *¡NUEVO CURSO CREADO!*',
@@ -108,7 +112,7 @@ export async function notifyNewCourse(course, instructor) {
             `📊 *Nivel:* ${course.level}`,
             `🌐 *Idioma:* ${course.idioma}`,
             '',
-            `💵 *Precio:* ${priceUSD}`,
+            `${course.isFree ? '🎁' : '💵'} *Precio:* ${priceUSD}`,
             '',
             `📌 *Estado:* ${estadoTexto}`,
             '',
@@ -134,8 +138,12 @@ export async function notifyNewCourse(course, instructor) {
  */
 export async function notifyNewProject(project, instructor) {
     try {
-        // Formatear los precios
-        const priceUSD = project.price_usd ? `${project.price_usd.toFixed(2)} USD` : 'Gratis';
+        // Formatear los precios (considerar si es gratuito)
+        const priceUSD = project.isFree 
+            ? '🎁 *GRATUITO*' 
+            : project.price_usd 
+                ? `💵 ${project.price_usd.toFixed(2)} USD` 
+                : 'Sin precio definido';
 
         const text = [
             '🎨 *¡NUEVO PROYECTO CREADO!*',
@@ -150,7 +158,7 @@ export async function notifyNewProject(project, instructor) {
             `📊 *Nivel:* ${project.level}`,
             `🌐 *Idioma:* ${project.idioma}`,
             '',
-            `💵 *Precio:* ${priceUSD}`,
+            `${project.isFree ? '🎁' : '💵'} *Precio:* ${priceUSD}`,
             '',
             `📅 *Fecha de creación:* ${new Date(project.createdAt).toLocaleString('es-MX', { 
                 timeZone: 'America/Mexico_City',

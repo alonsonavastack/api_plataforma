@@ -5,6 +5,7 @@ export default {
             name:user.name,
             surname:user.surname,
             email:user.email,
+            phone: user.phone,
             profession:user.profession,
             description:user.description,
             rol:user.rol,

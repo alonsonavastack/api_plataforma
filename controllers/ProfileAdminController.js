@@ -1,5 +1,5 @@
 import models from "../models/index.js";
-
+import resource from "../resource/index.js";
 
 export default {
   profile: async (req, res) => {
@@ -15,7 +15,7 @@ export default {
       }
 
       res.status(200).json({
-        profile: adminProfile,
+        profile: resource.User.api_resource_user(adminProfile),
       });
     } catch (error) {
       console.error("Error en ProfileAdminController.profile:", error);

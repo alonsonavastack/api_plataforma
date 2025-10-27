@@ -54,6 +54,11 @@ export const register = async (req, res) => {
                 });
             }
 
+            // 🔥 NUEVO: Convertir isFree de string a boolean
+            if (req.body.isFree !== undefined) {
+                req.body.isFree = req.body.isFree === 'true' || req.body.isFree === true;
+            }
+
             if (req.files && req.files.imagen) {
                 const img_path = req.files.imagen.path;
                 const imagen_name = path.basename(img_path);
@@ -110,6 +115,11 @@ export const update = async (req, res) => {
                     message: 403,
                     message_text: "EL PROYECTO CON ESTE TÍTULO YA EXISTE"
                 });
+            }
+
+            // 🔥 NUEVO: Convertir isFree de string a boolean
+            if (req.body.isFree !== undefined) {
+                req.body.isFree = req.body.isFree === 'true' || req.body.isFree === true;
             }
 
             if (req.files && req.files.imagen) {

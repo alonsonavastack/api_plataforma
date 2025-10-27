@@ -27,6 +27,11 @@ export default {
 
             req.body.slug = req.body.title.toLowerCase().replace(/ /g,'-').replace(/[^\w-]+/g,'');
 
+            // 🔥 NUEVO: Convertir isFree de string a boolean
+            if (req.body.isFree !== undefined) {
+                req.body.isFree = req.body.isFree === 'true' || req.body.isFree === true;
+            }
+
             if(req.files && req.files.portada){
                 const img_path = req.files.portada.path;
                 const imagen_name = path.basename(img_path);
@@ -79,6 +84,11 @@ export default {
             }
 
             req.body.slug = req.body.title.toLowerCase().replace(/ /g,'-').replace(/[^\w-]+/g,'');
+
+            // 🔥 NUEVO: Convertir isFree de string a boolean
+            if (req.body.isFree !== undefined) {
+                req.body.isFree = req.body.isFree === 'true' || req.body.isFree === true;
+            }
 
             if(req.files && req.files.portada){
                 // Si se sube una nueva imagen, eliminamos la anterior.

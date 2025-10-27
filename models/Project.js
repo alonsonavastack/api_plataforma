@@ -20,6 +20,7 @@ const ProjectSchema = new Schema({
     
     price_mxn:{type:Number, required:false}, // Campo legacy, ahora opcional
     price_usd: {type:Number, required:true},
+    isFree: {type:Boolean, default: false}, // Indica si el proyecto es gratuito
 
     state: {type:Number, default: 1}, // 1 es borrador, 2 es publico, 3 es anulado
     user: {type:Schema.ObjectId, ref: 'user', required:true},

@@ -10,6 +10,19 @@ const router = routerx();
 // Ruta pública para que cualquier usuario pueda registrarse.
 router.post("/register", [], userController.register)
 
+// Rutas de verificación OTP (públicas)
+router.post("/verify-otp", [], userController.verify_otp)
+router.post("/resend-otp", [], userController.resend_otp)
+
+// Rutas de recuperación de contraseña (públicas)
+router.post("/request-password-recovery", [], userController.request_password_recovery)
+router.post("/verify-recovery-otp", [], userController.verify_recovery_otp)
+router.post("/reset-password", [], userController.reset_password)
+router.post("/resend-recovery-otp", [], userController.resend_recovery_otp)
+
+// Ruta de prueba para generar OTP (solo para testing)
+router.post("/generate-otp-test", [], userController.generate_otp_for_existing_user)
+
 router.post("/login", userController.login_general); // RUTA UNIFICADA
 //CRUD ADMIN 
 router.post("/register_admin",[auth.verifyAdmin,path],userController.register_admin)

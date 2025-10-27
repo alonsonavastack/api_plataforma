@@ -2,6 +2,7 @@ import models from "../models/index.js";
 import bcrypt from "bcryptjs";
 import token from "../service/token.js";
 import resource from "../resource/index.js";
+import { sendOtpCode, sendRecoveryOtp, notifyNewRegistration, notifySuccessfulVerification } from "../helpers/telegram.js";
 
 import fs from "fs";
 import path from "path";
@@ -17,26 +18,73 @@ export default {
       const VALID_USER = await models.User.findOne({ email: req.body.email });
 
       if (VALID_USER) {
-        res.status(200).json({
+        return res.status(200).json({
           message: 403,
           message_text: "EL USUARIO INGRESADO YA EXISTE",
         });
       }
 
-      // ENCRIPTACIÓN DE CONTRASEÑA 12345678 -> fhjsdhf34j534jbj34bf34
+      // Validar que el teléfono esté en formato E.164 (sin '+')
+      if (!req.body.phone || req.body.phone.length < 10) {
+        return res.status(400).json({
+          message: 400,
+          message_text: "El teléfono es requerido y debe estar en formato E.164 (ej: 52155XXXXXXX)",
+        });
+      }
+
+      // ENCRIPTACIÓN DE CONTRASEÑA
       req.body.password = await bcrypt.hash(req.body.password, 10);
 
-      // const newUser = new models.User();
-      // newUser.rol = req.body.role
-      // newUser.name = req.body.nombre
-      // newUser.surname = req.body.apellido
-      // newUser.email = req.body.correo
-      // newUser.password = req.body.contraseña
-      // newUser.save();
+      // Generar código OTP de 6 dígitos
+      const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
+      const otpExpiration = new Date(Date.now() + 10 * 60 * 1000); // 10 minutos
+
+      // Agregar datos de OTP al usuario
+      req.body.isVerified = false;
+      req.body.otp = {
+        code: otpCode,
+        expiresAt: otpExpiration,
+        attempts: 0,
+        resends: 0,
+        lastResendAt: new Date()
+      };
 
       const User = await models.User.create(req.body);
+
+      // Enviar OTP por Telegram
+      try {
+        console.log(`📤 Intentando enviar OTP a Telegram para ${req.body.name}...`);
+        const telegramResponse = await sendOtpCode({ 
+          code: otpCode, 
+          phone: req.body.phone, 
+          userName: req.body.name 
+        });
+        console.log(`✅ OTP enviado exitosamente a Telegram:`, telegramResponse);
+        console.log(`   📱 Teléfono: ${req.body.phone}`);
+        console.log(`   🔢 Código: ${otpCode}`);
+        
+        // Notificar a administradores sobre nuevo registro
+        await notifyNewRegistration(User);
+      } catch (telegramError) {
+        console.error('❌ Error enviando Telegram:', {
+          message: telegramError.message,
+          stack: telegramError.stack,
+          telefono: req.body.phone,
+          codigo: otpCode
+        });
+        // No bloqueamos el registro, pero informamos al usuario
+        return res.status(200).json({
+          message: 'Usuario registrado pero hubo un error al enviar el código. Contacta soporte.',
+          user: resource.User.api_resource_user(User),
+          otpSent: false
+        });
+      }
+
       res.status(200).json({
+        message: 'Usuario registrado. Revisa tu Telegram para verificar tu cuenta.',
         user: resource.User.api_resource_user(User),
+        otpSent: true,
+        expiresIn: 600 // segundos
       });
     } catch (error) {
       console.log(error);
@@ -391,6 +439,16 @@ export default {
         });
       }
 
+      // Verificar si el usuario necesita verificación OTP
+      if (!user.isVerified) {
+        return res.status(403).json({
+          message: 403,
+          message_text: "Debes verificar tu cuenta antes de iniciar sesión. Revisa tu Telegram.",
+          requiresVerification: true,
+          userId: user._id
+        });
+      }
+
       const tokenReturn = await token.encode(user._id, user.rol, user.email);
       // Ajustamos la respuesta para que sea consistente con el resto de la aplicación,
       // separando el usuario base del perfil detallado.
@@ -404,6 +462,579 @@ export default {
     } catch (error) {
       console.log(error);
       res.status(500).send({ message: "Ocurrió un error en el servidor." });
+    }
+  },
+
+  // =====================================================
+  // MÉTODOS DE VERIFICACIÓN OTP
+  // =====================================================
+
+  // Verificar código OTP
+  verify_otp: async (req, res) => {
+    try {
+      const { userId, code } = req.body;
+
+      if (!userId || !code) {
+        return res.status(400).json({
+          message: 400,
+          message_text: "Usuario y código son requeridos",
+        });
+      }
+
+      const user = await models.User.findById(userId);
+      if (!user) {
+        return res.status(404).json({
+          message: 404,
+          message_text: "Usuario no encontrado",
+        });
+      }
+
+      // Verificar si ya está verificado
+      if (user.isVerified) {
+        return res.status(200).json({
+          message: "Tu cuenta ya está verificada",
+          alreadyVerified: true
+        });
+      }
+
+      // Verificar si tiene OTP
+      if (!user.otp || !user.otp.code) {
+        return res.status(400).json({
+          message: 400,
+          message_text: "No hay código pendiente. Solicita uno nuevo.",
+        });
+      }
+
+      // Verificar intentos
+      if (user.otp.attempts >= 3) {
+        return res.status(403).json({
+          message: 403,
+          message_text: "Has excedido el número de intentos. Solicita un nuevo código.",
+        });
+      }
+
+      // Verificar expiración
+      if (new Date() > user.otp.expiresAt) {
+        return res.status(410).json({
+          message: 410,
+          message_text: "El código ha expirado. Solicita uno nuevo.",
+        });
+      }
+
+      // Verificar código
+      if (user.otp.code !== code) {
+        // Incrementar intentos
+        user.otp.attempts += 1;
+        await user.save();
+
+        return res.status(400).json({
+          message: 400,
+          message_text: `Código incorrecto. Te quedan ${3 - user.otp.attempts} intentos.`,
+          attemptsRemaining: 3 - user.otp.attempts
+        });
+      }
+
+      // ¡Código correcto! Verificar cuenta
+      user.isVerified = true;
+      user.otp = undefined; // Limpiar OTP
+      await user.save();
+
+      // Generar token JWT
+      const tokenReturn = await token.encode(user._id, user.rol, user.email);
+
+      console.log(`✅ Usuario verificado exitosamente: ${user.email}`);
+      
+      // Notificar a administradores sobre verificación exitosa
+      await notifySuccessfulVerification(user);
+
+      res.status(200).json({
+        message: "¡Cuenta verificada exitosamente!",
+        USER: {
+          token: tokenReturn,
+          user: { _id: user._id, rol: user.rol },
+          profile: resource.User.api_resource_user(user),
+        },
+      });
+    } catch (error) {
+      console.log(error);
+      res.status(500).send({
+        message: "OCURRIO UN PROBLEMA",
+      });
+    }
+  },
+
+  // Reenviar código OTP
+  resend_otp: async (req, res) => {
+    try {
+      const { userId } = req.body;
+
+      if (!userId) {
+        return res.status(400).json({
+          message: 400,
+          message_text: "El ID del usuario es requerido",
+        });
+      }
+
+      const user = await models.User.findById(userId);
+      if (!user) {
+        return res.status(404).json({
+          message: 404,
+          message_text: "Usuario no encontrado",
+        });
+      }
+
+      // Verificar si ya está verificado
+      if (user.isVerified) {
+        return res.status(200).json({
+          message: "Tu cuenta ya está verificada",
+          alreadyVerified: true
+        });
+      }
+
+      // Verificar límite de reenvíos diarios (5 por día)
+      if (user.otp && user.otp.resends >= 5) {
+        const lastResend = new Date(user.otp.lastResendAt);
+        const now = new Date();
+        const hoursSinceLastResend = (now - lastResend) / (1000 * 60 * 60);
+        
+        if (hoursSinceLastResend < 24) {
+          return res.status(429).json({
+            message: 429,
+            message_text: "Has alcanzado el límite de reenvíos por hoy. Inténtalo mañana.",
+          });
+        }
+      }
+
+      // Rate limiting: no permitir reenvíos antes de 60 segundos
+      if (user.otp && user.otp.lastResendAt) {
+        const secondsSinceLastResend = (new Date() - new Date(user.otp.lastResendAt)) / 1000;
+        if (secondsSinceLastResend < 60) {
+          return res.status(429).json({
+            message: 429,
+            message_text: `Debes esperar ${Math.ceil(60 - secondsSinceLastResend)} segundos antes de reenviar.`,
+            waitSeconds: Math.ceil(60 - secondsSinceLastResend)
+          });
+        }
+      }
+
+      // Generar nuevo código OTP
+      const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
+      const otpExpiration = new Date(Date.now() + 10 * 60 * 1000); // 10 minutos
+
+      // Actualizar OTP
+      user.otp = {
+        code: otpCode,
+        expiresAt: otpExpiration,
+        attempts: 0,
+        resends: (user.otp?.resends || 0) + 1,
+        lastResendAt: new Date()
+      };
+
+      await user.save();
+
+      // Enviar nuevo OTP por Telegram
+      try {
+        await sendOtpCode({ 
+          code: otpCode, 
+          phone: user.phone, 
+          userName: user.name 
+        });
+        console.log(`✅ OTP reenviado a Telegram para ${user.name}: ${otpCode}`);
+      } catch (telegramError) {
+        console.error('❌ Error reenviando Telegram:', telegramError);
+        return res.status(500).json({
+          message: "Error al enviar el código. Inténtalo de nuevo.",
+        });
+      }
+
+      res.status(200).json({
+        message: "Código reenviado exitosamente. Revisa tu Telegram.",
+        expiresIn: 600, // segundos
+        resendsRemaining: 5 - user.otp.resends
+      });
+    } catch (error) {
+      console.log(error);
+      res.status(500).send({
+        message: "OCURRIO UN PROBLEMA",
+      });
+    }
+  },
+
+  // =====================================================
+  // MÉTODOS DE RECUPERACIÓN DE CONTRASEÑA
+  // =====================================================
+
+  // Solicitar recuperación de contraseña
+  request_password_recovery: async (req, res) => {
+    try {
+      const { email } = req.body;
+
+      if (!email) {
+        return res.status(400).json({
+          message: 400,
+          message_text: "El email es requerido",
+        });
+      }
+
+      const user = await models.User.findOne({ email: email });
+      if (!user) {
+        return res.status(404).json({
+          message: 404,
+          message_text: "No se encontró un usuario con ese email",
+        });
+      }
+
+      // Verificar que el usuario esté verificado
+      if (!user.isVerified) {
+        return res.status(403).json({
+          message: 403,
+          message_text: "Debes verificar tu cuenta antes de recuperar la contraseña",
+        });
+      }
+
+      // Verificar que tenga teléfono
+      if (!user.phone) {
+        return res.status(400).json({
+          message: 400,
+          message_text: "No tienes un teléfono registrado para recuperar la contraseña",
+        });
+      }
+
+      // Generar código OTP de recuperación
+      const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
+      const otpExpiration = new Date(Date.now() + 10 * 60 * 1000); // 10 minutos
+
+      // Guardar OTP de recuperación
+      user.passwordRecoveryOtp = {
+        code: otpCode,
+        expiresAt: otpExpiration,
+        attempts: 0,
+        resends: 0,
+        lastResendAt: new Date()
+      };
+
+      await user.save();
+
+      // Enviar OTP de recuperación por Telegram
+      try {
+        await sendRecoveryOtp({ 
+          code: otpCode, 
+          phone: user.phone, 
+          userName: user.name 
+        });
+        console.log(`✅ OTP de recuperación enviado a Telegram para ${user.name}: ${otpCode}`);
+      } catch (telegramError) {
+        console.error('❌ Error enviando OTP de recuperación:', telegramError);
+        return res.status(500).json({
+          message: "Error al enviar el código de recuperación. Inténtalo de nuevo.",
+        });
+      }
+
+      res.status(200).json({
+        message: "Código de recuperación enviado. Revisa tu Telegram.",
+        expiresIn: 600 // segundos
+      });
+    } catch (error) {
+      console.log(error);
+      res.status(500).send({
+        message: "OCURRIO UN PROBLEMA",
+      });
+    }
+  },
+
+  // Verificar código OTP de recuperación
+  verify_recovery_otp: async (req, res) => {
+    try {
+      const { email, code } = req.body;
+
+      if (!email || !code) {
+        return res.status(400).json({
+          message: 400,
+          message_text: "Email y código son requeridos",
+        });
+      }
+
+      const user = await models.User.findOne({ email: email });
+      if (!user) {
+        return res.status(404).json({
+          message: 404,
+          message_text: "Usuario no encontrado",
+        });
+      }
+
+      // Verificar si tiene OTP de recuperación
+      if (!user.passwordRecoveryOtp || !user.passwordRecoveryOtp.code) {
+        return res.status(400).json({
+          message: 400,
+          message_text: "No hay código de recuperación pendiente. Solicita uno nuevo.",
+        });
+      }
+
+      // Verificar intentos
+      if (user.passwordRecoveryOtp.attempts >= 3) {
+        return res.status(403).json({
+          message: 403,
+          message_text: "Has excedido el número de intentos. Solicita un nuevo código.",
+        });
+      }
+
+      // Verificar expiración
+      if (new Date() > user.passwordRecoveryOtp.expiresAt) {
+        return res.status(410).json({
+          message: 410,
+          message_text: "El código ha expirado. Solicita uno nuevo.",
+        });
+      }
+
+      // Verificar código
+      if (user.passwordRecoveryOtp.code !== code) {
+        // Incrementar intentos
+        user.passwordRecoveryOtp.attempts += 1;
+        await user.save();
+
+        return res.status(400).json({
+          message: 400,
+          message_text: `Código incorrecto. Te quedan ${3 - user.passwordRecoveryOtp.attempts} intentos.`,
+          attemptsRemaining: 3 - user.passwordRecoveryOtp.attempts
+        });
+      }
+
+      // ¡Código correcto! Generar token temporal para cambio de contraseña
+      const recoveryToken = await token.encode(user._id, user.rol, user.email, 'password_recovery');
+      
+      // Limpiar OTP de recuperación
+      user.passwordRecoveryOtp = undefined;
+      await user.save();
+
+      console.log(`✅ Código de recuperación verificado exitosamente para: ${user.email}`);
+
+      res.status(200).json({
+        message: "Código verificado correctamente. Ahora puedes cambiar tu contraseña.",
+        recoveryToken: recoveryToken,
+        userId: user._id
+      });
+    } catch (error) {
+      console.log(error);
+      res.status(500).send({
+        message: "OCURRIO UN PROBLEMA",
+      });
+    }
+  },
+
+  // Cambiar contraseña con token de recuperación
+  reset_password: async (req, res) => {
+    try {
+      const { recoveryToken, newPassword } = req.body;
+
+      if (!recoveryToken || !newPassword) {
+        return res.status(400).json({
+          message: 400,
+          message_text: "Token de recuperación y nueva contraseña son requeridos",
+        });
+      }
+
+      // Verificar token de recuperación
+      const decodedToken = await token.decode(recoveryToken);
+      if (!decodedToken || decodedToken.type !== 'password_recovery') {
+        return res.status(401).json({
+          message: 401,
+          message_text: "Token de recuperación inválido",
+        });
+      }
+
+      const user = await models.User.findById(decodedToken.user_id);
+      if (!user) {
+        return res.status(404).json({
+          message: 404,
+          message_text: "Usuario no encontrado",
+        });
+      }
+
+      // Encriptar nueva contraseña
+      const hashedPassword = await bcrypt.hash(newPassword, 10);
+      user.password = hashedPassword;
+      await user.save();
+
+      console.log(`✅ Contraseña restablecida exitosamente para: ${user.email}`);
+
+      res.status(200).json({
+        message: "Contraseña restablecida exitosamente. Ya puedes iniciar sesión.",
+      });
+    } catch (error) {
+      console.log(error);
+      res.status(500).send({
+        message: "OCURRIO UN PROBLEMA",
+      });
+    }
+  },
+
+  // Reenviar código OTP de recuperación
+  resend_recovery_otp: async (req, res) => {
+    try {
+      const { email } = req.body;
+
+      if (!email) {
+        return res.status(400).json({
+          message: 400,
+          message_text: "El email es requerido",
+        });
+      }
+
+      const user = await models.User.findOne({ email: email });
+      if (!user) {
+        return res.status(404).json({
+          message: 404,
+          message_text: "Usuario no encontrado",
+        });
+      }
+
+      // Verificar límite de reenvíos diarios (5 por día)
+      if (user.passwordRecoveryOtp && user.passwordRecoveryOtp.resends >= 5) {
+        const lastResend = new Date(user.passwordRecoveryOtp.lastResendAt);
+        const now = new Date();
+        const hoursSinceLastResend = (now - lastResend) / (1000 * 60 * 60);
+        
+        if (hoursSinceLastResend < 24) {
+          return res.status(429).json({
+            message: 429,
+            message_text: "Has alcanzado el límite de reenvíos por hoy. Inténtalo mañana.",
+          });
+        }
+      }
+
+      // Rate limiting: no permitir reenvíos antes de 60 segundos
+      if (user.passwordRecoveryOtp && user.passwordRecoveryOtp.lastResendAt) {
+        const secondsSinceLastResend = (new Date() - new Date(user.passwordRecoveryOtp.lastResendAt)) / 1000;
+        if (secondsSinceLastResend < 60) {
+          return res.status(429).json({
+            message: 429,
+            message_text: `Debes esperar ${Math.ceil(60 - secondsSinceLastResend)} segundos antes de reenviar.`,
+            waitSeconds: Math.ceil(60 - secondsSinceLastResend)
+          });
+        }
+      }
+
+      // Generar nuevo código OTP de recuperación
+      const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
+      const otpExpiration = new Date(Date.now() + 10 * 60 * 1000); // 10 minutos
+
+      // Actualizar OTP de recuperación
+      user.passwordRecoveryOtp = {
+        code: otpCode,
+        expiresAt: otpExpiration,
+        attempts: 0,
+        resends: (user.passwordRecoveryOtp?.resends || 0) + 1,
+        lastResendAt: new Date()
+      };
+
+      await user.save();
+
+      // Enviar nuevo OTP de recuperación por Telegram
+      try {
+        await sendRecoveryOtp({ 
+          code: otpCode, 
+          phone: user.phone, 
+          userName: user.name 
+        });
+        console.log(`✅ OTP de recuperación reenviado a Telegram para ${user.name}: ${otpCode}`);
+      } catch (telegramError) {
+        console.error('❌ Error reenviando OTP de recuperación:', telegramError);
+        return res.status(500).json({
+          message: "Error al enviar el código de recuperación. Inténtalo de nuevo.",
+        });
+      }
+
+      res.status(200).json({
+        message: "Código de recuperación reenviado exitosamente. Revisa tu Telegram.",
+        expiresIn: 600, // segundos
+        resendsRemaining: 5 - user.passwordRecoveryOtp.resends
+      });
+    } catch (error) {
+      console.log(error);
+      res.status(500).send({
+        message: "OCURRIO UN PROBLEMA",
+      });
+    }
+  },
+
+  // =====================================================
+  // ENDPOINT DE PRUEBA PARA GENERAR OTP
+  // =====================================================
+
+  // Generar OTP para usuario existente (solo para testing)
+  generate_otp_for_existing_user: async (req, res) => {
+    try {
+      const { userId } = req.body;
+
+      if (!userId) {
+        return res.status(400).json({
+          message: 400,
+          message_text: "El ID del usuario es requerido",
+        });
+      }
+
+      const user = await models.User.findById(userId);
+      if (!user) {
+        return res.status(404).json({
+          message: 404,
+          message_text: "Usuario no encontrado",
+        });
+      }
+
+      // Verificar que tenga teléfono
+      if (!user.phone) {
+        return res.status(400).json({
+          message: 400,
+          message_text: "El usuario no tiene teléfono registrado",
+        });
+      }
+
+      // Generar código OTP de 6 dígitos
+      const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
+      const otpExpiration = new Date(Date.now() + 10 * 60 * 1000); // 10 minutos
+
+      // Actualizar OTP
+      user.otp = {
+        code: otpCode,
+        expiresAt: otpExpiration,
+        attempts: 0,
+        resends: 0,
+        lastResendAt: new Date()
+      };
+
+      await user.save();
+
+      // Enviar OTP por Telegram
+      try {
+        await sendOtpCode({ 
+          code: otpCode, 
+          phone: user.phone, 
+          userName: user.name 
+        });
+        console.log(`✅ OTP generado y enviado a Telegram para ${user.name}: ${otpCode}`);
+      } catch (telegramError) {
+        console.error('❌ Error enviando OTP:', telegramError);
+        return res.status(500).json({
+          message: "Error al enviar el código. Verifica la configuración de Telegram.",
+        });
+      }
+
+      res.status(200).json({
+        message: "Código OTP generado y enviado exitosamente. Revisa tu Telegram.",
+        user: {
+          _id: user._id,
+          name: user.name,
+          email: user.email,
+          phone: user.phone
+        },
+        otpCode: otpCode, // Solo para testing
+        expiresIn: 600 // segundos
+      });
+    } catch (error) {
+      console.log(error);
+      res.status(500).send({
+        message: "OCURRIO UN PROBLEMA",
+      });
     }
   },
 };

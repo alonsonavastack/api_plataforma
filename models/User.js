@@ -13,6 +13,25 @@ const UserSchema = new Schema({
     // is_instructor:{type:Number,required:false,default: null},// 1 es instructor
     profession: {type: String, maxlength: 250,required:false},
     description: {type: String,required:false},
+    
+    // Campos de verificación OTP
+    isVerified: {type: Boolean, default: false},
+    otp: {
+        code: {type: String},
+        expiresAt: {type: Date},
+        attempts: {type: Number, default: 0},
+        resends: {type: Number, default: 0},
+        lastResendAt: {type: Date}
+    },
+    
+    // Campos de recuperación de contraseña
+    passwordRecoveryOtp: {
+        code: {type: String},
+        expiresAt: {type: Date},
+        attempts: {type: Number, default: 0},
+        resends: {type: Number, default: 0},
+        lastResendAt: {type: Date}
+    },
 },{
     timestamps: true
 });
