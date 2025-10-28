@@ -669,6 +669,175 @@ const seedCommissionSettings = async () => {
     }
 };
 
+const seedInstructorPaymentConfigs = async (users) => {
+    console.log('💳 Creando configuraciones de pago de instructores...');
+    try {
+        const { encrypt } = await import('../utils/encryption.js');
+        
+        const instructors = users.filter(u => u.rol === 'instructor');
+        
+        const paymentConfigs = await Promise.all(instructors.map(async (instructor, index) => {
+            let config = {
+                instructor: getObjectId(instructor),
+                preferred_payment_method: index === 0 ? 'paypal' : 'bank_transfer',
+            };
+
+            // Primer instructor con PayPal
+            if (index === 0) {
+                config.paypal_email = `payment${index + 1}@example.com`;
+                config.paypal_merchant_id = `MERCHANT-${instructor._id.toString().slice(0, 8)}`;
+                config.paypal_connected = true;
+                config.paypal_verified = true;
+            }
+
+            // Otros instructores con cuentas bancarias (con datos de prueba encriptados)
+            if (index > 0) {
+                try {
+                    const accountNumber = `1234567890${index}`;
+                    const clabe = `01234567890123456${index}`;
+                    
+                    config.bank_account = {
+                        account_holder_name: `${instructor.name} ${instructor.surname}`,
+                        bank_name: index === 1 ? 'BBVA' : index === 2 ? 'Banorte' : 'Santander',
+                        account_number: await encrypt(accountNumber),
+                        clabe: await encrypt(clabe),
+                        account_type: index === 1 ? 'debito' : index === 2 ? 'credito' : 'corriente',
+                        card_brand: index === 1 ? 'Visa' : index === 2 ? 'Mastercard' : 'Visa',
+                        swift_code: index === 1 ? 'BNMXMXMM' : index === 2 ? 'MENOMXMM' : 'BMSXMXXX',
+                        verified: index === 1 ? false : index === 2 ? true : false, // Solo el segundo verificado
+                    };
+                } catch (encryptError) {
+                    console.error(`Error al encriptar datos del instructor ${instructor.name}:`, encryptError.message);
+                    config.bank_account = {
+                        account_holder_name: `${instructor.name} ${instructor.surname}`,
+                        bank_name: 'Banco de Ejemplo',
+                        account_type: 'corriente',
+                        verified: false
+                    };
+                }
+            }
+
+            return config;
+        }));
+
+        await models.InstructorPaymentConfig.insertMany(paymentConfigs);
+        console.log(`✅ ${paymentConfigs.length} configuraciones de pago creadas`);
+    } catch (error) {
+        console.error('❌ Error al crear configuraciones de pago:', error);
+        throw error;
+    }
+};
+
+const seedCarouselImages = async () => {
+    console.log('🖼️  Creando imágenes del carrusel...');
+    try {
+        const images = await models.CarouselImage.insertMany([
+            {
+                title: 'Aprende Desarrollo Web',
+                subtitle: 'Domina las tecnologías más demandadas',
+                image: 'carousel-1.jpg',
+                link: '/categories/desarrollo-web',
+                state: 1
+            },
+            {
+                title: 'Diseño UI/UX Profesional',
+                subtitle: 'Crea experiencias excepcionales',
+                image: 'carousel-2.jpg',
+                link: '/categories/diseno-uiux',
+                state: 1
+            },
+            {
+                title: 'Data Science y Machine Learning',
+                subtitle: 'Domina Python y análisis de datos',
+                image: 'carousel-3.jpg',
+                link: '/categories/ciencia-de-datos',
+                state: 1
+            },
+        ]);
+        
+        console.log(`✅ ${images.length} imágenes del carrusel creadas`);
+        return images;
+    } catch (error) {
+        console.error('❌ Error al crear imágenes del carrusel:', error);
+        throw error;
+    }
+};
+
+const seedInstructorEarnings = async (users, courses) => {
+    console.log('💰 Creando ganancias de instructores...');
+    try {
+        const { decrypt, maskAccountNumber } = await import('../utils/encryption.js');
+        
+        // Crear ganancias para diferentes instructores
+        const earnings = [];
+        
+        // Ganancias para el instructor de React (Juan Carlos)
+        const instructorReact = users[1];
+        const reactCourse = courses[0];
+        
+        // Simular ventas del curso de React
+        for (let i = 0; i < 5; i++) {
+            const saleDate = new Date(Date.now() - (i * 7 * 24 * 60 * 60 * 1000));
+            
+            earnings.push({
+                instructor: getObjectId(instructorReact),
+                product: getObjectId(reactCourse),
+                product_type: 'course',
+                sale: mongoose.Types.ObjectId(),
+                sale_price: reactCourse.price_usd,
+                currency: 'USD',
+                platform_commission_rate: 20,
+                platform_commission_amount: reactCourse.price_usd * 0.20,
+                instructor_earning: reactCourse.price_usd * 0.80,
+                status: i < 2 ? 'available' : i < 4 ? 'paid' : 'pending',
+                earned_at: saleDate,
+                available_at: i < 2 ? new Date(saleDate.getTime() + 14 * 24 * 60 * 60 * 1000) : saleDate,
+                paid_at: i >= 2 && i < 4 ? new Date(saleDate.getTime() + 21 * 24 * 60 * 60 * 1000) : undefined,
+            });
+        }
+        
+        await models.InstructorEarnings.insertMany(earnings);
+        console.log(`✅ ${earnings.length} ganancias de instructores creadas`);
+    } catch (error) {
+        console.error('❌ Error al crear ganancias:', error);
+        throw error;
+    }
+};
+
+const seedNotifications = async (users) => {
+    console.log('🔔 Creando notificaciones...');
+    try {
+        const notifications = await models.Notification.insertMany([
+            {
+                user: getObjectId(users[1]),
+                title: 'Nueva venta de curso',
+                message: 'Tu curso "React y Next.js" ha sido vendido',
+                type: 'sale',
+                read: false
+            },
+            {
+                user: getObjectId(users[1]),
+                title: 'Pago procesado',
+                message: 'Se ha procesado tu pago de $156.80 USD',
+                type: 'payment',
+                read: false
+            },
+            {
+                user: getObjectId(users[2]),
+                title: 'Bienvenido',
+                message: 'Gracias por unirte a la plataforma',
+                type: 'info',
+                read: false
+            },
+        ]);
+        
+        console.log(`✅ ${notifications.length} notificaciones creadas`);
+    } catch (error) {
+        console.error('❌ Error al crear notificaciones:', error);
+        throw error;
+    }
+};
+
 const seedData = async () => {
     try {
         console.log('\n🚀 Iniciando seeding de la base de datos...\n');
@@ -685,6 +854,10 @@ const seedData = async () => {
         await seedSalesAndActivity(users, courses, projects);
         await seedSettings();
         await seedCommissionSettings();
+        await seedInstructorPaymentConfigs(users);
+        await seedCarouselImages();
+        await seedInstructorEarnings(users, courses);
+        await seedNotifications(users);
 
         console.log('\n✅ ¡Datos insertados correctamente!');
         console.log('\n📧 Credenciales de acceso:');

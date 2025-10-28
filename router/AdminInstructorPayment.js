@@ -11,7 +11,8 @@ import {
     setCustomCommission,
     removeCustomCommission,
     getEarningsReport,
-    getInstructorPaymentMethodFull // 🔥 Nuevo import
+    getInstructorPaymentMethodFull, // 🔥 Nuevo import
+    verifyInstructorBank // 🔥 Endpoint de verificación de cuenta bancaria
 } from '../controllers/AdminInstructorPaymentController.js';
 import auth from '../service/auth.js';
 
@@ -49,6 +50,13 @@ router.get('/instructors/:id/earnings', auth.verifyAdmin, getInstructorEarnings)
  * @access  Private (Admin ONLY)
  */
 router.get('/instructors/:id/payment-method-full', auth.verifyAdmin, getInstructorPaymentMethodFull);
+
+/**
+ * @route   PUT /api/admin/instructors/:id/verify-bank
+ * @desc    🔥 NUEVO: Verificar cuenta bancaria de un instructor
+ * @access  Private (Admin ONLY)
+ */
+router.put('/instructors/:id/verify-bank', auth.verifyAdmin, verifyInstructorBank);
 
 // ========================================
 // GESTIÓN DE PAGOS

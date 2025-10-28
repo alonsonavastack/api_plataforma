@@ -779,6 +779,56 @@ export const getInstructorPaymentMethodFull = async (req, res) => {
     }
 };
 
+/**
+ * Verificar cuenta bancaria de un instructor
+ * PUT /api/admin/instructors/:id/verify-bank
+ */
+export const verifyInstructorBank = async (req, res) => {
+    try {
+        const { id: instructorId } = req.params;
+
+        const instructor = await User.findById(instructorId).select('name email surname');
+        if (!instructor) {
+            return res.status(404).json({
+                success: false,
+                message: 'Instructor no encontrado'
+            });
+        }
+
+        const paymentConfig = await InstructorPaymentConfig.findOne({ instructor: instructorId });
+
+        if (!paymentConfig) {
+            return res.status(404).json({
+                success: false,
+                message: 'El instructor no tiene configuración de pago'
+            });
+        }
+
+        if (!paymentConfig.bank_account) {
+            return res.status(400).json({
+                success: false,
+                message: 'El instructor no tiene cuenta bancaria configurada'
+            });
+        }
+
+        // Verificar la cuenta bancaria
+        paymentConfig.bank_account.verified = true;
+        await paymentConfig.save();
+
+        res.json({
+            success: true,
+            message: 'Cuenta bancaria verificada exitosamente'
+        });
+    } catch (error) {
+        console.error('Error al verificar cuenta bancaria:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error al verificar cuenta bancaria',
+            error: error.message
+        });
+    }
+};
+
 export default {
     getInstructorsWithEarnings,
     getInstructorEarnings,
@@ -791,5 +841,6 @@ export default {
     setCustomCommission,
     removeCustomCommission,
     getEarningsReport,
-    getInstructorPaymentMethodFull // 🔥 Nuevo endpoint
+    getInstructorPaymentMethodFull, // 🔥 Nuevo endpoint
+    verifyInstructorBank // 🔥 Nuevo endpoint de verificación
 };

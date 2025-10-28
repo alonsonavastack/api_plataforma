@@ -31,82 +31,110 @@ const InstructorEarningsSchema = new Schema({
         required: false
     },
     
-    // MONTOS DE LA VENTA
+    // MONTOS DE LA VENTA (CON IVA INCLUIDO)
     sale_price: {
         type: Number,
         required: true
     },
+    sale_price_includes_vat: {
+        type: Boolean,
+        default: true
+    },
     currency: {
         type: String,
         default: 'USD',
-        enum: ['USD', 'MXN']
+        enum: ['USD', 'MXN', 'EUR', 'ARS']
     },
     
-    // COMISIONES (DECIDIDAS POR EL ADMIN)
+    // COMISIONES
     platform_commission_rate: {
-        type: Number, // Porcentaje (ej: 30 = 30%)
+        type: Number,
         required: true
     },
     platform_commission_amount: {
-        type: Number, // Monto en $ que se queda la plataforma
-        required: true
-    },
-    instructor_earning: {
-        type: Number, // Lo que le corresponde al instructor
+        type: Number,
         required: true
     },
     
-    // ESTADO DE PAGO
+    // DESGLOSE FISCAL
+    fiscal: {
+        country: { type: String, maxlength: 2, uppercase: true },
+        tax_regime: { type: String, maxlength: 50 },
+        tax_regime_name: { type: String, maxlength: 200 },
+        tax_currency: { type: String, default: 'USD', enum: ['USD', 'MXN', 'EUR', 'ARS'] },
+        
+        subtotal_sin_iva: { type: Number, default: 0 },
+        iva_amount: { type: Number, default: 0 },
+        iva_rate: { type: Number, default: 0 },
+        retencion_iva: { type: Number, default: 0 },
+        retencion_iva_rate: { type: Number, default: 0 },
+        isr_amount: { type: Number, default: 0 },
+        isr_rate: { type: Number, default: 0 },
+        
+        retencion_irpf: { type: Number, default: 0 },
+        other_taxes: { type: Number, default: 0 },
+        total_taxes: { type: Number, default: 0 },
+        
+        ingreso_acumulado_antes: { type: Number, default: 0 },
+        ingreso_acumulado_despues: { type: Number, default: 0 }
+    },
+    
+    // MÉTODO DE PAGO
+    payment_method: {
+        type: String,
+        enum: ['bank_transfer', 'paypal', 'stripe', 'wise', 'payoneer', 'oxxo', 'sepa'],
+        required: false
+    },
+    payment_method_name: { type: String, maxlength: 100 },
+    payment_currency: { type: String, default: 'USD', enum: ['USD', 'MXN', 'EUR', 'ARS'] },
+    payment_fee_rate: { type: Number, default: 0 },
+    payment_fee_amount: { type: Number, default: 0 },
+    
+    // TIPOS DE CAMBIO
+    exchange_rates: {
+        usd_to_tax_currency: { type: Number, default: 1 },
+        tax_currency_to_payment_currency: { type: Number, default: 1 },
+        timestamp: { type: Date }
+    },
+    
+    // GANANCIA FINAL
+    instructor_earning: { type: Number, required: true },
+    instructor_earning_usd: { type: Number, default: 0 },
+    
+    // ESTADO
     status: {
         type: String,
-        enum: ['pending', 'available', 'paid', 'disputed'],
+        enum: ['pending', 'available', 'paid', 'disputed', 'blocked'],
         default: 'pending'
-        // pending: Recién creado, esperando días de seguridad
-        // available: Ya puede ser pagado por el admin
-        // paid: Ya fue pagado al instructor
-        // disputed: Hay un problema/disputa
     },
     
     // FECHAS
-    earned_at: {
-        type: Date,
-        required: true,
-        default: Date.now
-    },
-    available_at: {
-        type: Date,
-        required: true
-        // Se calcula: earned_at + X días (configurado en PlatformCommissionSettings)
-    },
-    paid_at: {
-        type: Date,
-        required: false
-    },
+    earned_at: { type: Date, required: true, default: Date.now },
+    available_at: { type: Date, required: true },
+    paid_at: { type: Date, required: false },
     
-    // REFERENCIA DE PAGO
-    payment_reference: {
-        type: Schema.ObjectId,
-        ref: 'instructor_payment',
-        required: false
-    },
+    // REFERENCIA Y NOTAS
+    payment_reference: { type: Schema.ObjectId, ref: 'instructor_payment', required: false },
+    admin_notes: { type: String, maxlength: 1000, required: false },
     
-    // NOTAS DEL ADMIN
-    admin_notes: {
-        type: String,
-        maxlength: 1000,
-        required: false
-    }
+    // ALERTAS FISCALES
+    fiscal_alerts: [{
+        level: { type: String, enum: ['info', 'warning', 'danger', 'blocked'] },
+        message: { type: String, maxlength: 500 },
+        percentage: { type: Number },
+        created_at: { type: Date, default: Date.now }
+    }]
 }, {
     timestamps: true
 });
 
-// Índices para optimizar búsquedas
+// Índices
 InstructorEarningsSchema.index({ instructor: 1, status: 1 });
 InstructorEarningsSchema.index({ sale: 1 });
 InstructorEarningsSchema.index({ available_at: 1, status: 1 });
-InstructorEarningsSchema.index({ earned_at: -1 }); // Para ordenar por fecha descendente
+InstructorEarningsSchema.index({ earned_at: -1 });
 
-// Método virtual para saber si ya está disponible
+// Virtuales
 InstructorEarningsSchema.virtual('is_available').get(function() {
     return this.status === 'available' || (this.status === 'pending' && new Date() >= this.available_at);
 });

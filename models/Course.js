@@ -22,5 +22,38 @@ const CourseSchema = new Schema({
     timestamps: true
 });
 
+// 🔧 FIX: Índice de texto para búsqueda full-text
+// Los índices text NO soportan collation, pero tienen su propia normalización integrada
+CourseSchema.index(
+    { title: 'text', subtitle: 'text', description: 'text' },
+    { 
+        name: 'search_text_index',
+        background: true,
+        default_language: 'spanish'  // Usa stemming y stop words en español
+    }
+);
+
+// 🔧 Normalizar slug al guardar
+CourseSchema.pre('save', function(next) {
+    // Normalizar el slug (sin tildes, minúsculas, guiones)
+    if (this.isModified('title') && !this.slug) {
+        this.slug = this.title
+            .toLowerCase()
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '') // Remover tildes
+            .replace(/[^a-z0-9]+/g, '-')     // Reemplazar espacios y caracteres especiales
+            .replace(/^-+|-+$/g, '');         // Remover guiones al inicio/fin
+    }
+    next();
+});
+
 const Course = mongoose.model("course",CourseSchema);
+
+// 🔧 Crear índices al inicializar el modelo
+Course.createIndexes().then(() => {
+    console.log('✅ Course indexes created successfully');
+}).catch(err => {
+    console.error('❌ Error creating Course indexes:', err);
+});
+
 export default Course;

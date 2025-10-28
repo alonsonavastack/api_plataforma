@@ -9,7 +9,8 @@
     "seed:import": "node --env-file .env scripts/seed.js --import",
     "seed:destroy": "node --env-file .env scripts/seed.js --destroy",
     "fix:earnings": "node --env-file .env scripts/fix-earnings.js",
-    "update:earnings": "node --env-file .env scripts/update-earnings-status.js"
+    "update:earnings": "node --env-file .env scripts/update-earnings-status.js",
+    "fix:index": "node --env-file .env fix-index.js"
   },
   "author": "ECHODEVELOPERS",
   "license": "ISC",

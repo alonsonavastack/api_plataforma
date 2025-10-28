@@ -27,23 +27,34 @@ export const getPaymentConfig = async (req, res) => {
             });
         }
 
+        // Convertir a objeto plano para poder modificar
+        const response = config.toObject();
+
         // Desencriptar datos bancarios si existen
-        if (config.bank_account?.account_number) {
-            const decryptedAccountNumber = decrypt(config.bank_account.account_number);
-            config.bank_account.account_number_masked = maskAccountNumber(decryptedAccountNumber);
+        if (response.bank_account?.account_number && response.bank_account.account_number.trim() !== '') {
+            try {
+                const decryptedAccountNumber = decrypt(response.bank_account.account_number);
+                response.bank_account.account_number_masked = maskAccountNumber(decryptedAccountNumber);
+            } catch (err) {
+                console.error('Error al desencriptar número de cuenta:', err);
+            }
             // No enviar el número completo al frontend
-            config.bank_account.account_number = undefined;
+            delete response.bank_account.account_number;
         }
 
-        if (config.bank_account?.clabe) {
-            const decryptedClabe = decrypt(config.bank_account.clabe);
-            config.bank_account.clabe_masked = maskAccountNumber(decryptedClabe);
-            config.bank_account.clabe = undefined;
+        if (response.bank_account?.clabe && response.bank_account.clabe.trim() !== '') {
+            try {
+                const decryptedClabe = decrypt(response.bank_account.clabe);
+                response.bank_account.clabe_masked = maskAccountNumber(decryptedClabe);
+            } catch (err) {
+                console.error('Error al desencriptar CLABE:', err);
+            }
+            delete response.bank_account.clabe;
         }
 
         res.json({
             success: true,
-            config
+            config: response
         });
     } catch (error) {
         console.error('Error al obtener configuración de pago:', error);
@@ -151,11 +162,20 @@ export const updateBankConfig = async (req, res) => {
         let encryptedClabe = '';
         
         try {
-            if (account_number) {
+            // Si el usuario proporciona un nuevo número de cuenta, actualizarlo
+            if (account_number && account_number.toString().trim() !== '') {
                 encryptedAccountNumber = encrypt(account_number.toString().trim());
+            } else {
+                // Mantener el número de cuenta existente si no se proporciona uno nuevo
+                encryptedAccountNumber = config.bank_account?.account_number || '';
             }
-            if (clabe) {
+            
+            // Si el usuario proporciona una nueva CLABE, actualizarla
+            if (clabe && clabe.toString().trim() !== '') {
                 encryptedClabe = encrypt(clabe.toString().trim());
+            } else {
+                // Mantener la CLABE existente si no se proporciona una nueva
+                encryptedClabe = config.bank_account?.clabe || '';
             }
         } catch (encryptError) {
             console.error('Error al encriptar:', encryptError);
@@ -175,7 +195,7 @@ export const updateBankConfig = async (req, res) => {
             swift_code: swift_code || '',
             account_type: account_type || 'ahorros',
             card_brand: card_brand || '',
-            verified: false // Requiere verificación manual del admin
+            verified: config.bank_account?.verified || false // Mantener estado de verificación existente
         };
 
         // Si no tiene método preferido, establecer transferencia bancaria
@@ -187,15 +207,23 @@ export const updateBankConfig = async (req, res) => {
 
         // Preparar respuesta sin datos sensibles
         const response = { ...config.toObject() };
-        if (response.bank_account?.account_number) {
-            const decrypted = decrypt(response.bank_account.account_number);
-            response.bank_account.account_number_masked = maskAccountNumber(decrypted);
-            response.bank_account.account_number = undefined;
+        if (response.bank_account?.account_number && response.bank_account.account_number.trim() !== '') {
+            try {
+                const decrypted = decrypt(response.bank_account.account_number);
+                response.bank_account.account_number_masked = maskAccountNumber(decrypted);
+            } catch (err) {
+                console.error('Error al desencriptar número de cuenta:', err);
+            }
+            delete response.bank_account.account_number;
         }
-        if (response.bank_account?.clabe) {
-            const decrypted = decrypt(response.bank_account.clabe);
-            response.bank_account.clabe_masked = maskAccountNumber(decrypted);
-            response.bank_account.clabe = undefined;
+        if (response.bank_account?.clabe && response.bank_account.clabe.trim() !== '') {
+            try {
+                const decrypted = decrypt(response.bank_account.clabe);
+                response.bank_account.clabe_masked = maskAccountNumber(decrypted);
+            } catch (err) {
+                console.error('Error al desencriptar CLABE:', err);
+            }
+            delete response.bank_account.clabe;
         }
 
         res.json({

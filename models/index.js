@@ -21,6 +21,7 @@ import InstructorEarnings from './InstructorEarnings.js'
 import InstructorPayment from './InstructorPayment.js'
 import PlatformCommissionSettings from './PlatformCommissionSettings.js'
 import CarouselImage from './CarouselImage.js'
+import Notification from './Notification.js' // 🔧 FIX BUG #67
 
 export default {
     User,
@@ -46,4 +47,5 @@ export default {
     InstructorPayment,
     PlatformCommissionSettings,
     CarouselImage,
+    Notification, // 🔧 FIX BUG #67
 }

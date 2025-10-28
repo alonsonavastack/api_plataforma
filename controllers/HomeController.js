@@ -5,6 +5,21 @@ import { ObjectId } from "mongodb";
 import token from "../service/token.js"; // Asegúrate que la ruta es correcta
 import { N_CLASES_OF_COURSES, sumarTiempos } from "../utils/helpers.js"; // Asegúrate que la ruta es correcta
 
+// Helper function para obtener usuario del token de Authorization
+async function getUserFromAuthHeader(req) {
+  const authHeader = req.headers['authorization'];
+  if (!authHeader) return null;
+  
+  const tokenValue = authHeader.split(' ')[1];
+  if (!tokenValue) return null;
+  
+  try {
+    return await token.decode(tokenValue);
+  } catch (error) {
+    return null;
+  }
+}
+
 function DISCOUNT_G_F(Campaing_Normal, PRODUCT, product_type = "course") {
   let DISCOUNT_G = null;
   if (!Campaing_Normal) {
@@ -66,11 +81,10 @@ export default {
 
       // INICIO DE LA CORRECCIÓN: Obtener compras del usuario si está logueado
       let user_purchases = [];
-      if (req.headers.token) {
+      const user = await getUserFromAuthHeader(req);
+      if (user) {
           try {
-              // Decodificamos el token para obtener el ID del usuario
-              const decoded_token = await token.decode(req.headers.token);
-              const user_id = decoded_token._id;
+              const user_id = user._id;
               
               // Buscamos todas las ventas pagadas de ese usuario
               const sales = await models.Sale.find({ user: user_id, status: 'Pagado' }).select('detail.product');
@@ -556,9 +570,8 @@ export default {
 
   show_course: async (req, res) => {
     try {
-      const user = req.headers.token
-        ? await token.decode(req.headers.token).catch(() => null) // No falla si el token es inválido
-        : null;
+      // Obtener usuario del token de Authorization
+      const user = await getUserFromAuthHeader(req);
 
       // Parámetros
       const SLUG = (req.params.slug || "").toString().trim();
@@ -1029,11 +1042,10 @@ export default {
 
       // INICIO DE LA CORRECCIÓN: Obtener compras del usuario si está logueado
       let user_purchases = [];
-      if (req.headers.token) {
+      const user = await getUserFromAuthHeader(req);
+      if (user) {
           try {
-              // Decodificamos el token para obtener el ID del usuario
-              const decoded_token = await token.decode(req.headers.token);
-              const user_id = decoded_token._id;
+              const user_id = user._id;
               
               // Buscamos todas las ventas pagadas de ese usuario
               const sales = await models.Sale.find({ user: user_id, status: 'Pagado' }).select('detail.product');
@@ -1085,11 +1097,10 @@ export default {
 
       // INICIO DE LA CORRECCIÓN: Obtener compras del usuario si está logueado
       let user_purchases = [];
-      if (req.headers.token) {
+      const user = await getUserFromAuthHeader(req);
+      if (user) {
           try {
-              // Decodificamos el token para obtener el ID del usuario
-              const decoded_token = await token.decode(req.headers.token);
-              const user_id = decoded_token._id;
+              const user_id = user._id;
               
               // Buscamos todas las ventas pagadas de ese usuario
               const sales = await models.Sale.find({ user: user_id, status: 'Pagado' }).select('detail.product');

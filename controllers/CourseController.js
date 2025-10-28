@@ -131,8 +131,11 @@ export default {
 
             const filter = {};
 
+            // 🔧 FIX BUG #45: Búsqueda con collation para ignorar tildes
             if(search){
-                filter.title = new RegExp(search,"i");
+                // Usamos $text search que respeta el índice de texto con collation
+                // Esto permite buscar "programacion" y encontrar "Programación"
+                filter.$text = { $search: search };
             }
 
             if(state){
@@ -148,7 +151,11 @@ export default {
                 filter.user = req.user._id;
             }
 
-            const courses = await models.Course.find(filter).populate(["categorie","user"]).sort({ createdAt: -1 });
+            // 🔧 FIX BUG #45: Aplicar collation en la query para búsqueda insensible a tildes
+            const courses = await models.Course.find(filter)
+                .populate(["categorie","user"])
+                .collation({ locale: 'es', strength: 1 }) // Ignora mayúsculas y tildes
+                .sort({ createdAt: -1 });
 
             res.status(200).json({
                 courses: courses,
