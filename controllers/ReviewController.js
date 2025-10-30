@@ -1,5 +1,6 @@
 import models from "../models/index.js";
 import token from "../service/token.js";
+import NotificationController from "./NotificationController.js";
 
 export default {
   // Crear una nueva calificación/review
@@ -181,7 +182,8 @@ export default {
               : null
           },
           // ✅ AGREGAR RESPUESTA DEL INSTRUCTOR SI EXISTE
-          reply: reviewObj.reply && reviewObj.reply.description ? {
+          // 🔥 FILTRAR respuestas marcadas como [MARKED_AS_READ] (no mostrarlas al público)
+          reply: reviewObj.reply && reviewObj.reply.description && reviewObj.reply.description !== '[MARKED_AS_READ]' ? {
             description: reviewObj.reply.description,
             createdAt: reviewObj.reply.createdAt,
             instructor_info: reviewObj.reply.user ? {
@@ -572,6 +574,10 @@ export default {
       await review.save();
       await review.populate('reply.user', 'name surname avatar');
 
+      // 🔥 AUTO-MARCAR NOTIFICACIÓN COMO LEÍDA
+      await NotificationController.markReviewNotificationAsRead(review_id, user_id);
+      console.log('✅ [ADD REPLY] Notificación auto-marcada como leída');
+
       const replyResponse = {
         _id: review._id,
         reply: {
@@ -736,6 +742,176 @@ export default {
       res.status(500).json({
         message: "Error interno del servidor",
         message_text: "Ocurrió un error al eliminar la respuesta"
+      });
+    }
+  },
+
+  // 🔔 NUEVO: Marcar todas las notificaciones de reviews como respondidas
+  markAllRepliesAsRead: async (req, res) => {
+    try {
+      const instructorId = req.user._id;
+      console.log('🧹 [MARK ALL READ] Marcando todas las reviews como respondidas para instructor:', instructorId.toString());
+
+      // Obtener todos los cursos del instructor
+      const instructorCourses = await models.Course.find({ 
+        user: instructorId,
+        state: { $in: [1, 2] }
+      }).select('_id');
+
+      const courseIds = instructorCourses.map(course => course._id);
+
+      if (courseIds.length === 0) {
+        console.log('ℹ️ [MARK ALL READ] Instructor no tiene cursos');
+        return res.status(200).json({
+          success: true,
+          message: 'No hay cursos para actualizar',
+          marked: 0
+        });
+      }
+
+      console.log(`🔍 [MARK ALL READ] Buscando reviews sin respuesta en ${courseIds.length} cursos`);
+
+      // Buscar reviews sin respuesta en los cursos del instructor
+      // 🔥 CORREGIDO: Excluir reviews marcadas como leídas con [MARKED_AS_READ]
+      const pendingReviews = await models.Review.find({
+        product: { $in: courseIds },
+        product_type: 'course',
+        $or: [
+          { 'reply.description': { $exists: false } },
+          { 'reply.description': null },
+          { 'reply.description': '' }
+        ],
+        // 🔥 EXCLUIR reviews marcadas como leídas
+        'reply.description': { $ne: '[MARKED_AS_READ]' }
+      });
+
+      console.log(`📊 [MARK ALL READ] Encontradas ${pendingReviews.length} reviews sin respuesta`);
+
+      // Marcar como respondidas agregando un reply especial "[MARKED_AS_READ]"
+      // Esto hará que no aparezcan en las notificaciones pero no son respuestas reales
+      let markedCount = 0;
+      for (const review of pendingReviews) {
+        review.reply = {
+          user: instructorId,
+          description: '[MARKED_AS_READ]', // Flag especial
+          createdAt: new Date()
+        };
+        await review.save();
+        markedCount++;
+      }
+
+      console.log(`✅ [MARK ALL READ] ${markedCount} reviews marcadas como leídas`);
+
+      res.status(200).json({
+        success: true,
+        message: `${markedCount} notificaciones marcadas como leídas`,
+        marked: markedCount
+      });
+
+    } catch (error) {
+      console.error('❌ [MARK ALL READ] Error completo:', error);
+      console.error('❌ [MARK ALL READ] Stack:', error.stack);
+      res.status(500).json({
+        success: false,
+        message: "Error al marcar notificaciones como leídas",
+        message_text: "Ocurrió un error al procesar la solicitud",
+        error: process.env.NODE_ENV === 'development' ? error.message : undefined
+      });
+    }
+  },
+
+  // 🔔 NUEVO: Obtener reviews sin respuesta de los cursos del instructor (notificaciones)
+  getPendingRepliesForInstructor: async (req, res) => {
+    try {
+      const instructorId = req.user._id;
+      console.log('🔔 [PENDING REPLIES] Obteniendo reviews sin respuesta para instructor:', instructorId.toString());
+
+      // Obtener todos los cursos del instructor
+      const instructorCourses = await models.Course.find({ 
+        user: instructorId,
+        state: { $in: [1, 2] } // Solo cursos activos (borrador o público)
+      }).select('_id title imagen slug'); // 🔥 Agregar slug al select
+
+      const courseIds = instructorCourses.map(course => course._id);
+
+      if (courseIds.length === 0) {
+        console.log('ℹ️ [PENDING REPLIES] Instructor no tiene cursos');
+        return res.status(200).json({
+          success: true,
+          notifications: [],
+          count: 0
+        });
+      }
+
+      console.log(`🔍 [PENDING REPLIES] Buscando reviews en ${courseIds.length} cursos`);
+
+      // Buscar reviews sin respuesta en los cursos del instructor
+      const pendingReviews = await models.Review.find({
+        product: { $in: courseIds },
+        product_type: 'course',
+        $or: [
+          { 'reply.description': { $exists: false } },
+          { 'reply.description': null },
+          { 'reply.description': '' }
+        ]
+      })
+      .populate('user', 'name surname avatar')
+      .populate('product', 'title imagen slug') // 🔥 Asegurar que slug se incluya
+      .sort({ createdAt: -1 })
+      .limit(20); // Limitar a las últimas 20 notificaciones
+
+      console.log(`✅ [PENDING REPLIES] Encontradas ${pendingReviews.length} reviews sin respuesta`);
+
+      // Formatear notificaciones con validaciones robustas
+      const notifications = pendingReviews
+        .filter(review => review.user && review.product) // 🔥 Filtrar reviews con datos válidos
+        .map(review => {
+          const course = review.product;
+          const user = review.user;
+          
+          console.log(`  - Review ${review._id}: ${user.name} en ${course.title}`);
+          
+          return {
+            _id: review._id,
+            rating: review.rating,
+            description: review.description,
+            createdAt: review.createdAt,
+            student: {
+              _id: user._id,
+              name: user.name,
+              surname: user.surname,
+              full_name: `${user.name} ${user.surname}`.trim(),
+              avatar: user.avatar 
+                ? `${process.env.URL_BACKEND || ""}/api/users/imagen-usuario/${user.avatar}` // 🔥 Corregido: user.avatar (no user.user.avatar)
+                : null
+            },
+            course: {
+              _id: course._id,
+              title: course.title,
+              slug: course.slug || 'sin-slug', // 🔥 Fallback para slug
+              imagen: course.imagen
+            },
+            // Detectar si es reciente (menos de 24 horas)
+            isRecent: review.createdAt && (Date.now() - new Date(review.createdAt).getTime()) < 86400000
+          };
+        });
+
+      console.log(`📦 [PENDING REPLIES] Retornando ${notifications.length} notificaciones`);
+
+      res.status(200).json({
+        success: true,
+        notifications,
+        count: notifications.length
+      });
+
+    } catch (error) {
+      console.error('❌ [PENDING REPLIES] Error completo:', error);
+      console.error('❌ [PENDING REPLIES] Stack:', error.stack);
+      res.status(500).json({
+        success: false,
+        message: "Error al obtener notificaciones",
+        message_text: "Ocurrió un error al obtener las notificaciones",
+        error: process.env.NODE_ENV === 'development' ? error.message : undefined
       });
     }
   }

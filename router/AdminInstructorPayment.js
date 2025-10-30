@@ -12,7 +12,8 @@ import {
     removeCustomCommission,
     getEarningsReport,
     getInstructorPaymentMethodFull, // 🔥 Nuevo import
-    verifyInstructorBank // 🔥 Endpoint de verificación de cuenta bancaria
+    verifyInstructorBank, // 🔥 Endpoint de verificación de cuenta bancaria
+    getPendingBankVerifications // 🔔 Notificaciones de cuentas pendientes
 } from '../controllers/AdminInstructorPaymentController.js';
 import auth from '../service/auth.js';
 
@@ -57,6 +58,13 @@ router.get('/instructors/:id/payment-method-full', auth.verifyAdmin, getInstruct
  * @access  Private (Admin ONLY)
  */
 router.put('/instructors/:id/verify-bank', auth.verifyAdmin, verifyInstructorBank);
+
+/**
+ * @route   GET /api/admin/bank-verifications/pending
+ * @desc    🔔 NUEVO: Obtener lista de cuentas bancarias pendientes de verificación (notificaciones)
+ * @access  Private (Admin ONLY)
+ */
+router.get('/bank-verifications/pending', auth.verifyAdmin, getPendingBankVerifications);
 
 // ========================================
 // GESTIÓN DE PAGOS

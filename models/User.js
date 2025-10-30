@@ -14,7 +14,7 @@ const UserSchema = new Schema({
     // ✅ Información de ubicación y pago
     country: {
         type: String,
-        maxlength: 2,
+        maxlength: 4,  // Permite códigos ISO (MX, US) e internacionales (INTL)
         uppercase: true,
         default: 'INTL',
         required: false
@@ -28,6 +28,20 @@ const UserSchema = new Schema({
     // is_instructor:{type:Number,required:false,default: null},// 1 es instructor
     profession: {type: String, maxlength: 250,required:false},
     description: {type: String,required:false},
+    
+    // ✅ REDES SOCIALES (OPCIONALES)
+    socialMedia: {
+        facebook: {type: String, maxlength: 250, required: false},
+        instagram: {type: String, maxlength: 250, required: false},
+        youtube: {type: String, maxlength: 250, required: false},
+        tiktok: {type: String, maxlength: 250, required: false},
+        twitch: {type: String, maxlength: 250, required: false},
+        website: {type: String, maxlength: 250, required: false},
+        discord: {type: String, maxlength: 250, required: false},
+        linkedin: {type: String, maxlength: 250, required: false},
+        twitter: {type: String, maxlength: 250, required: false},
+        github: {type: String, maxlength: 250, required: false},
+    },
     
     // ✅ CONFIGURACIÓN FISCAL (MÉXICO - ADAPTADO PARA USD/MXN)
     fiscal: {

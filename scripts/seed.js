@@ -47,7 +47,7 @@ const seedUsers = async () => {
                 password: adminPassword, 
                 rol: 'admin',
                 profession: 'Administrador de Plataforma',
-                description: 'Encargado de la gestión y mantenimiento de NeoCourse.',
+                description: 'Encargado de la gestión y mantenimiento de Dev-Sharks.',
                 phone: '+52 55 1234 5678',
                 state: 1
             },

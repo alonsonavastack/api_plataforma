@@ -29,6 +29,8 @@ router.post("/register_admin",[auth.verifyAdmin,path],userController.register_ad
 router.post("/update",[auth.verifyAdmin,path],userController.update)
 router.put("/update-state/:id",[auth.verifyAdmin],userController.update_state)
 router.get("/list",[auth.verifyAdmin],userController.list)
+router.get("/list-instructors", userController.list_instructors) // 🆕 NUEVO: Público para listar instructores
+router.get("/instructor-profile/:id", userController.instructor_profile) // 🆕 NUEVO: Perfil público del instructor
 router.delete("/delete/:id",[auth.verifyAdmin],userController.remove)
 
 // Ruta para verificar la sesión del usuario a partir de su token

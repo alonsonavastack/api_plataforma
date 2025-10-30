@@ -141,5 +141,30 @@ export default {
                 message: 'HUBO UN ERROR'
             });
         }
+    },
+
+    // 🔥 NUEVO: Marcar notificación de review como leída cuando instructor responde
+    markReviewNotificationAsRead: async(reviewId, instructorId) => {
+        try {
+            // Buscar notificación de tipo 'new_review' para este instructor y review
+            const notification = await models.Notification.findOne({
+                user: instructorId,
+                type: 'new_review',
+                'data.reviewId': reviewId,
+                isRead: false,
+                isDeleted: false
+            });
+
+            if (notification) {
+                await models.Notification.markAsRead(notification._id);
+                console.log('✅ Notificación de review auto-marcada como leída:', notification._id);
+                return true;
+            }
+            
+            return false;
+        } catch (error) {
+            console.error('❌ Error al auto-marcar notificación de review:', error);
+            return false;
+        }
     }
 };

@@ -1,182 +1,437 @@
-// /api/controllers/SettingController.js
 import models from "../models/index.js";
+import multiparty from "connect-multiparty";
+import fs from "fs";
+import path from "path";
+
+// Configuración de multiparty para subir archivos
+const path_uploads = multiparty({ uploadDir: './uploads/settings' });
 
 export default {
-    // Listar todos los ajustes
-    list: async (req, res) => {
-        try {
-            const settings = await models.Setting.find({});
-            res.status(200).json({ settings });
-        } catch (error) {
-            console.error("Error en SettingController.list:", error);
-            res.status(500).send({ message: "Ocurrió un error al listar los ajustes." });
-        }
-    },
+  /**
+   * 📋 Obtener toda la configuración del sistema (para uso interno)
+   */
+  getSettings: async () => {
+    try {
+      const settings = await models.Setting.find();
+      
+      // Formatear como objeto plano key: value
+      const formattedSettings = {};
+      settings.forEach(setting => {
+        formattedSettings[setting.key] = setting.value;
+      });
 
-    // Obtener ajustes por grupo
-    getByGroup: async (req, res) => {
-        try {
-            const { group } = req.params;
-            const settings = await models.Setting.find({ group });
-            res.status(200).json({ settings });
-        } catch (error) {
-            console.error("Error en SettingController.getByGroup:", error);
-            res.status(500).send({ message: "Ocurrió un error al obtener los ajustes del grupo." });
-        }
-    },
-
-    // Obtener un setting específico por key
-    getByKey: async (req, res) => {
-        try {
-            const { key } = req.params;
-            const setting = await models.Setting.findOne({ key });
-            
-            if (!setting) {
-                return res.status(404).json({ message: "Setting no encontrado." });
-            }
-            
-            res.status(200).json({ setting });
-        } catch (error) {
-            console.error("Error en SettingController.getByKey:", error);
-            res.status(500).send({ message: "Ocurrió un error al obtener el ajuste." });
-        }
-    },
-
-    // Actualizar múltiples settings
-    update: async (req, res) => {
-        try {
-            const settingsToUpdate = req.body.settings;
-
-            if (!Array.isArray(settingsToUpdate)) {
-                return res.status(400).send({ 
-                    message: "El formato de los datos es incorrecto. Se esperaba un array de ajustes." 
-                });
-            }
-
-            const updatePromises = settingsToUpdate.map(setting => {
-                return models.Setting.findOneAndUpdate(
-                    { key: setting.key },
-                    { 
-                        value: setting.value,
-                        name: setting.name || setting.key,
-                        description: setting.description || '',
-                        group: setting.group || 'general'
-                    },
-                    { new: true, upsert: true }
-                );
-            });
-
-            const updatedSettings = await Promise.all(updatePromises);
-
-            res.status(200).json({ 
-                message: "Ajustes actualizados correctamente.",
-                settings: updatedSettings
-            });
-
-        } catch (error) {
-            console.error("Error en SettingController.update:", error);
-            res.status(500).send({ message: "Ocurrió un error al actualizar los ajustes." });
-        }
-    },
-
-    // Actualizar un solo setting
-    updateOne: async (req, res) => {
-        try {
-            const { key } = req.params;
-            const { value, name, description, group } = req.body;
-
-            const updatedSetting = await models.Setting.findOneAndUpdate(
-                { key },
-                { 
-                    value,
-                    ...(name && { name }),
-                    ...(description && { description }),
-                    ...(group && { group })
-                },
-                { new: true, upsert: true }
-            );
-
-            res.status(200).json({ 
-                message: "Ajuste actualizado correctamente.",
-                setting: updatedSetting
-            });
-
-        } catch (error) {
-            console.error("Error en SettingController.updateOne:", error);
-            res.status(500).send({ message: "Ocurrió un error al actualizar el ajuste." });
-        }
-    },
-
-    // Inicializar settings por defecto
-    initializeDefaults: async (req, res) => {
-        try {
-            const defaultSettings = [
-                // General
-                { key: 'site_name', value: 'NeoCourse', name: 'Nombre del Sitio', group: 'general', description: 'Nombre de tu plataforma' },
-                { key: 'site_description', value: 'Plataforma de cursos online', name: 'Descripción', group: 'general', description: 'Descripción breve de tu sitio' },
-                { key: 'site_email', value: 'contact@neocourse.com', name: 'Email de Contacto', group: 'general', description: 'Email principal de contacto' },
-                { key: 'site_phone', value: '+52 123 456 7890', name: 'Teléfono', group: 'general', description: 'Teléfono de contacto' },
-                
-                // Comisiones
-                { key: 'default_commission', value: 30, name: 'Comisión por Defecto (%)', group: 'commissions', description: 'Porcentaje de comisión que cobra la plataforma' },
-                { key: 'min_payout_amount', value: 50, name: 'Monto Mínimo de Pago (USD)', group: 'commissions', description: 'Monto mínimo para realizar un pago a instructores' },
-                { key: 'days_to_available', value: 7, name: 'Días hasta Disponible', group: 'commissions', description: 'Días que deben pasar para que una ganancia esté disponible' },
-                
-                // Pagos
-                { key: 'payment_methods', value: ['PayPal', 'Transferencia Bancaria'], name: 'Métodos de Pago', group: 'payments', description: 'Métodos de pago disponibles' },
-                { key: 'currency_default', value: 'USD', name: 'Moneda por Defecto', group: 'payments', description: 'Moneda principal de la plataforma' },
-                { key: 'tax_rate', value: 16, name: 'Tasa de IVA (%)', group: 'payments', description: 'Porcentaje de IVA aplicable' },
-                
-                // Email
-                { key: 'email_from_name', value: 'NeoCourse', name: 'Nombre del Remitente', group: 'email', description: 'Nombre que aparece en los emails' },
-                { key: 'email_from_address', value: 'noreply@neocourse.com', name: 'Email del Remitente', group: 'email', description: 'Email desde donde se envían las notificaciones' },
-                { key: 'email_footer', value: '© 2025 NeoCourse. Todos los derechos reservados.', name: 'Footer de Emails', group: 'email', description: 'Texto del pie de página en emails' },
-                
-                // Legales
-                { key: 'terms_url', value: '/terms', name: 'URL Términos y Condiciones', group: 'legal', description: 'URL de términos y condiciones' },
-                { key: 'privacy_url', value: '/privacy', name: 'URL Política de Privacidad', group: 'legal', description: 'URL de política de privacidad' },
-                { key: 'refund_policy', value: '30 días de garantía', name: 'Política de Reembolso', group: 'legal', description: 'Descripción de la política de reembolso' },
-                
-                // Features
-                { key: 'allow_instructor_register', value: true, name: 'Permitir Registro de Instructores', group: 'features', description: 'Permitir que cualquiera se registre como instructor' },
-                { key: 'require_course_approval', value: false, name: 'Requiere Aprobación de Cursos', group: 'features', description: 'Los cursos deben ser aprobados antes de publicarse' },
-                { key: 'enable_reviews', value: true, name: 'Habilitar Reviews', group: 'features', description: 'Permitir que los estudiantes dejen reseñas' },
-                { key: 'enable_certificates', value: true, name: 'Habilitar Certificados', group: 'features', description: 'Generar certificados al completar cursos' },
-            ];
-
-            const promises = defaultSettings.map(setting => 
-                models.Setting.findOneAndUpdate(
-                    { key: setting.key },
-                    setting,
-                    { upsert: true, new: true }
-                )
-            );
-
-            await Promise.all(promises);
-
-            res.status(200).json({ 
-                message: "Settings por defecto inicializados correctamente.",
-                count: defaultSettings.length
-            });
-
-        } catch (error) {
-            console.error("Error en SettingController.initializeDefaults:", error);
-            res.status(500).send({ message: "Ocurrió un error al inicializar los settings." });
-        }
-    },
-
-    // Helper para obtener settings (para uso interno)
-    getSettings: async () => {
-        const settings = await models.Setting.find({});
-        return settings.reduce((acc, setting) => {
-            acc[setting.key] = setting.value;
-            return acc;
-        }, {});
-    },
-
-    // Helper para obtener un setting específico (para uso interno)
-    getSetting: async (key, defaultValue = null) => {
-        const setting = await models.Setting.findOne({ key });
-        return setting ? setting.value : defaultValue;
+      return formattedSettings;
+    } catch (error) {
+      console.error('❌ [SETTINGS] Error al obtener configuración:', error);
+      return {};
     }
+  },
+
+  /**
+   * 📋 Obtener toda la configuración del sistema (endpoint API)
+   */
+  getAll: async (req, res) => {
+    try {
+      console.log('📋 [SETTINGS] Obteniendo configuración del sistema');
+
+      const settings = await models.Setting.find().sort({ group: 1, key: 1 });
+
+      // Formatear respuesta agrupada
+      const formattedSettings = {};
+      settings.forEach(setting => {
+        formattedSettings[setting.key] = {
+          value: setting.value,
+          name: setting.name,
+          description: setting.description,
+          group: setting.group
+        };
+      });
+
+      console.log('✅ [SETTINGS] Configuración obtenida:', Object.keys(formattedSettings));
+
+      res.status(200).json({
+        success: true,
+        settings: formattedSettings
+      });
+
+    } catch (error) {
+      console.error('❌ [SETTINGS] Error al obtener configuración:', error);
+      res.status(500).json({
+        success: false,
+        message: "Error al obtener la configuración",
+        message_text: "Ocurrió un error al cargar la configuración del sistema"
+      });
+    }
+  },
+
+  /**
+   * 📝 Actualizar configuración del sistema (sin logo)
+   */
+  update: async (req, res) => {
+    try {
+      console.log('📝 [SETTINGS] Actualizando configuración:', req.body);
+
+      const updates = req.body;
+      const results = [];
+
+      // Actualizar o crear cada configuración
+      for (const [key, value] of Object.entries(updates)) {
+        // Saltar campos que no son configuraciones
+        if (key === 'logo' || key === 'currentLogo') continue;
+
+        const setting = await models.Setting.findOneAndUpdate(
+          { key },
+          { 
+            key,
+            value,
+            name: getSettingName(key),
+            description: getSettingDescription(key),
+            group: getSettingGroup(key)
+          },
+          { upsert: true, new: true }
+        );
+
+        results.push(setting);
+      }
+
+      console.log('✅ [SETTINGS] Configuración actualizada:', results.length, 'registros');
+
+      res.status(200).json({
+        success: true,
+        message: "Configuración actualizada exitosamente",
+        settings: results
+      });
+
+    } catch (error) {
+      console.error('❌ [SETTINGS] Error al actualizar configuración:', error);
+      res.status(500).json({
+        success: false,
+        message: "Error al actualizar la configuración",
+        message_text: "Ocurrió un error al guardar la configuración"
+      });
+    }
+  },
+
+  /**
+   * 🖼️ Actualizar logo del sistema
+   */
+  updateLogo: async (req, res) => {
+    try {
+      console.log('🖼️ [SETTINGS] Actualizando logo del sistema');
+
+      if (!req.files || !req.files.logo) {
+        return res.status(400).json({
+          success: false,
+          message: "No se envió ningún archivo",
+          message_text: "Debes seleccionar una imagen para el logo"
+        });
+      }
+
+      const file = req.files.logo;
+      const file_ext = path.extname(file.originalFilename).toLowerCase();
+      const valid_extensions = ['.png', '.jpg', '.jpeg', '.webp', '.svg'];
+
+      // Validar extensión
+      if (!valid_extensions.includes(file_ext)) {
+        fs.unlinkSync(file.path); // Eliminar archivo inválido
+        return res.status(400).json({
+          success: false,
+          message: "Formato de archivo no válido",
+          message_text: "Solo se permiten imágenes (PNG, JPG, JPEG, WEBP, SVG)"
+        });
+      }
+
+      // Validar tamaño (máximo 2MB)
+      const maxSize = 2 * 1024 * 1024; // 2MB
+      if (file.size > maxSize) {
+        fs.unlinkSync(file.path);
+        return res.status(400).json({
+          success: false,
+          message: "Archivo muy grande",
+          message_text: "El logo no puede superar los 2MB"
+        });
+      }
+
+      // Obtener logo actual para eliminarlo
+      const currentLogo = await models.Setting.findOne({ key: 'logo' });
+      if (currentLogo && currentLogo.value) {
+        const oldPath = `./uploads/settings/${currentLogo.value}`;
+        if (fs.existsSync(oldPath)) {
+          fs.unlinkSync(oldPath);
+          console.log('🗑️ [SETTINGS] Logo anterior eliminado');
+        }
+      }
+
+      // Generar nombre único para el archivo
+      const filename = `logo_${Date.now()}${file_ext}`;
+      const newPath = `./uploads/settings/${filename}`;
+
+      // Asegurar que existe el directorio
+      const uploadsDir = './uploads/settings';
+      if (!fs.existsSync(uploadsDir)) {
+        fs.mkdirSync(uploadsDir, { recursive: true });
+      }
+
+      // Mover archivo a la ubicación final
+      fs.renameSync(file.path, newPath);
+
+      // Actualizar en base de datos
+      const setting = await models.Setting.findOneAndUpdate(
+        { key: 'logo' },
+        { 
+          key: 'logo',
+          value: filename,
+          name: 'Logo de la plataforma',
+          description: 'Logotipo principal que se muestra en el sistema',
+          group: 'general'
+        },
+        { upsert: true, new: true }
+      );
+
+      console.log('✅ [SETTINGS] Logo actualizado:', filename);
+
+      res.status(200).json({
+        success: true,
+        message: "Logo actualizado exitosamente",
+        filename: filename,
+        setting: setting
+      });
+
+    } catch (error) {
+      console.error('❌ [SETTINGS] Error al actualizar logo:', error);
+      res.status(500).json({
+        success: false,
+        message: "Error al actualizar el logo",
+        message_text: "Ocurrió un error al subir la imagen"
+      });
+    }
+  },
+
+  /**
+   * 🖼️ Obtener imagen del logo
+   */
+  getLogo: async (req, res) => {
+    try {
+      const { filename } = req.params;
+      const filePath = `./uploads/settings/${filename}`;
+
+      if (!fs.existsSync(filePath)) {
+        console.warn('⚠️ [SETTINGS] Logo no encontrado:', filename);
+        return res.status(404).json({
+          success: false,
+          message: "Logo no encontrado"
+        });
+      }
+
+      res.sendFile(path.resolve(filePath));
+
+    } catch (error) {
+      console.error('❌ [SETTINGS] Error al obtener logo:', error);
+      res.status(500).json({
+        success: false,
+        message: "Error al obtener el logo"
+      });
+    }
+  },
+
+  /**
+   * 🗑️ Eliminar logo del sistema
+   */
+  deleteLogo: async (req, res) => {
+    try {
+      console.log('🗑️ [SETTINGS] Eliminando logo del sistema');
+
+      const currentLogo = await models.Setting.findOne({ key: 'logo' });
+      
+      if (!currentLogo || !currentLogo.value) {
+        return res.status(404).json({
+          success: false,
+          message: "No hay logo configurado",
+          message_text: "No existe un logo para eliminar"
+        });
+      }
+
+      // Eliminar archivo físico
+      const filePath = `./uploads/settings/${currentLogo.value}`;
+      if (fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath);
+        console.log('✅ [SETTINGS] Archivo de logo eliminado');
+      }
+
+      // Eliminar de base de datos
+      await models.Setting.deleteOne({ key: 'logo' });
+
+      console.log('✅ [SETTINGS] Logo eliminado de la base de datos');
+
+      res.status(200).json({
+        success: true,
+        message: "Logo eliminado exitosamente"
+      });
+
+    } catch (error) {
+      console.error('❌ [SETTINGS] Error al eliminar logo:', error);
+      res.status(500).json({
+        success: false,
+        message: "Error al eliminar el logo",
+        message_text: "Ocurrió un error al eliminar la imagen"
+      });
+    }
+  },
+
+  /**
+   * 🔄 Restablecer configuración por defecto
+   */
+  reset: async (req, res) => {
+    try {
+      console.log('🔄 [SETTINGS] Restableciendo configuración por defecto');
+
+      // Configuración por defecto
+      const defaultSettings = [
+        {
+          key: 'platform_name',
+          value: 'Dev-Sharks',
+          name: 'Nombre de la plataforma',
+          description: 'Nombre principal que se muestra en el sistema',
+          group: 'general'
+        },
+        {
+          key: 'contact_email',
+          value: 'contacto@Dev-Sharks.com',
+          name: 'Email de contacto',
+          description: 'Correo electrónico principal de contacto',
+          group: 'contact'
+        },
+        {
+          key: 'contact_phone',
+          value: '',
+          name: 'Teléfono de contacto',
+          description: 'Número de teléfono de contacto',
+          group: 'contact'
+        },
+        {
+          key: 'social_facebook',
+          value: '',
+          name: 'Facebook',
+          description: 'URL del perfil de Facebook',
+          group: 'social'
+        },
+        {
+          key: 'social_instagram',
+          value: '',
+          name: 'Instagram',
+          description: 'URL del perfil de Instagram',
+          group: 'social'
+        },
+        {
+          key: 'social_youtube',
+          value: '',
+          name: 'YouTube',
+          description: 'URL del canal de YouTube',
+          group: 'social'
+        },
+        {
+          key: 'social_tiktok',
+          value: '',
+          name: 'TikTok',
+          description: 'URL del perfil de TikTok',
+          group: 'social'
+        },
+        {
+          key: 'social_twitter',
+          value: '',
+          name: 'Twitter/X',
+          description: 'URL del perfil de Twitter/X',
+          group: 'social'
+        },
+        {
+          key: 'social_linkedin',
+          value: '',
+          name: 'LinkedIn',
+          description: 'URL del perfil de LinkedIn',
+          group: 'social'
+        },
+        // Configuraciones de visibilidad del home
+        {
+          key: 'home_show_featured_courses',
+          value: true,
+          name: 'Mostrar cursos destacados en Home',
+          description: 'Controla si se muestran los cursos destacados en la página principal',
+          group: 'home'
+        },
+        {
+          key: 'home_show_featured_projects',
+          value: true,
+          name: 'Mostrar proyectos destacados en Home',
+          description: 'Controla si se muestran los proyectos destacados en la página principal',
+          group: 'home'
+        }
+      ];
+
+      // Eliminar toda la configuración actual (excepto logo)
+      await models.Setting.deleteMany({ key: { $ne: 'logo' } });
+
+      // Insertar configuración por defecto
+      await models.Setting.insertMany(defaultSettings);
+
+      console.log('✅ [SETTINGS] Configuración restablecida a valores por defecto');
+
+      res.status(200).json({
+        success: true,
+        message: "Configuración restablecida exitosamente",
+        settings: defaultSettings
+      });
+
+    } catch (error) {
+      console.error('❌ [SETTINGS] Error al restablecer configuración:', error);
+      res.status(500).json({
+        success: false,
+        message: "Error al restablecer la configuración",
+        message_text: "Ocurrió un error al restablecer los valores"
+      });
+    }
+  }
+};
+
+// 🔧 Funciones helper para obtener metadata de configuraciones
+function getSettingName(key) {
+  const names = {
+    platform_name: 'Nombre de la plataforma',
+    contact_email: 'Email de contacto',
+    contact_phone: 'Teléfono de contacto',
+    social_facebook: 'Facebook',
+    social_instagram: 'Instagram',
+    social_youtube: 'YouTube',
+    social_tiktok: 'TikTok',
+    social_twitter: 'Twitter/X',
+    social_linkedin: 'LinkedIn',
+    home_show_featured_courses: 'Mostrar cursos destacados en Home',
+    home_show_featured_projects: 'Mostrar proyectos destacados en Home'
+  };
+  return names[key] || key;
 }
+
+function getSettingDescription(key) {
+  const descriptions = {
+    platform_name: 'Nombre principal que se muestra en el sistema',
+    contact_email: 'Correo electrónico principal de contacto',
+    contact_phone: 'Número de teléfono de contacto',
+    social_facebook: 'URL del perfil de Facebook',
+    social_instagram: 'URL del perfil de Instagram',
+    social_youtube: 'URL del canal de YouTube',
+    social_tiktok: 'URL del perfil de TikTok',
+    social_twitter: 'URL del perfil de Twitter/X',
+    social_linkedin: 'URL del perfil de LinkedIn',
+    home_show_featured_courses: 'Controla si se muestran los cursos destacados en la página principal',
+    home_show_featured_projects: 'Controla si se muestran los proyectos destacados en la página principal'
+  };
+  return descriptions[key] || '';
+}
+
+function getSettingGroup(key) {
+  if (key.startsWith('social_')) return 'social';
+  if (key.startsWith('contact_')) return 'contact';
+  if (key.startsWith('home_')) return 'home';
+  return 'general';
+}
+
+export { path_uploads };

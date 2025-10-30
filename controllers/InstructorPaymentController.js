@@ -195,7 +195,7 @@ export const updateBankConfig = async (req, res) => {
             swift_code: swift_code || '',
             account_type: account_type || 'ahorros',
             card_brand: card_brand || '',
-            verified: config.bank_account?.verified || false // Mantener estado de verificación existente
+            verified: false // 🔥 SIEMPRE marcar como NO verificado al actualizar/crear
         };
 
         // Si no tiene método preferido, establecer transferencia bancaria
@@ -520,17 +520,23 @@ export const deleteBankConfig = async (req, res) => {
             });
         }
 
-        // Limpiar datos bancarios
-        config.bank_account = {
-            account_holder_name: '',
-            bank_name: '',
-            account_number: '',
-            clabe: '',
-            swift_code: '',
-            account_type: '',
-            card_brand: '',
-            verified: false
-        };
+        // 🔥 OPCIÓN 1: Eliminar el documento completo si solo tenía cuenta bancaria
+        if (!config.paypal_email && config.bank_account?.account_number) {
+            console.log('🗑️ Eliminando documento completo de InstructorPaymentConfig para instructor:', instructorId);
+            await InstructorPaymentConfig.deleteOne({ _id: config._id });
+            
+            return res.json({
+                success: true,
+                message: 'Configuración bancaria eliminada completamente (documento eliminado)',
+                config: null
+            });
+        }
+
+        // 🔥 OPCIÓN 2: Solo limpiar datos bancarios si también tiene PayPal
+        console.log('🧹 Limpiando solo datos bancarios (mantiene documento con PayPal):', instructorId);
+        
+        // Eliminar completamente el objeto bank_account
+        config.bank_account = undefined;
 
         // Si cuenta bancaria era el método preferido, cambiar a paypal o limpiar
         if (config.preferred_payment_method === 'bank_transfer') {

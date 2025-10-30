@@ -32,6 +32,12 @@ export default {
         });
       }
 
+      // ✅ FIX: Manejar código de país 'INTL' inválido
+      // Si el frontend envía 'INTL', lo tratamos como si no se hubiera seleccionado país.
+      if (req.body.country === 'INTL') {
+        delete req.body.country; // O req.body.country = null;
+      }
+
       // ENCRIPTACIÓN DE CONTRASEÑA
       req.body.password = await bcrypt.hash(req.body.password, 10);
 
@@ -62,8 +68,24 @@ export default {
         console.log(`✅ OTP enviado exitosamente a Telegram:`, telegramResponse);
         console.log(`   📱 Teléfono: ${req.body.phone}`);
         console.log(`   🔢 Código: ${otpCode}`);
-        
-        // Notificar a administradores sobre nuevo registro
+
+      } catch (telegramError) {
+        console.error('❌ Error enviando OTP a Telegram:', {
+          message: telegramError.message,
+          stack: telegramError.stack,
+          telefono: req.body.phone,
+          codigo: otpCode
+        });
+        // No bloqueamos el registro, pero informamos al usuario
+        return res.status(200).json({
+          message: 'Usuario registrado pero hubo un error al enviar el código. Contacta soporte.',
+          user: resource.User.api_resource_user(User),
+          otpSent: false
+        });
+      }
+
+      // Notificar a administradores sobre nuevo registro (operación secundaria)
+      try {
         await notifyNewRegistration(User);
       } catch (telegramError) {
         console.error('❌ Error enviando Telegram:', {
@@ -104,6 +126,11 @@ export default {
         });
       }
 
+      // ✅ FIX: Manejar código de país 'INTL' inválido también en el registro de admin
+      if (req.body.country === 'INTL') {
+        delete req.body.country;
+      }
+
       req.body.password = await bcrypt.hash(req.body.password, 10);
       if (req.files && req.files.avatar) {
         const img_path = req.files.avatar.path;
@@ -139,6 +166,41 @@ export default {
           message: 403,
           message_text: "EL USUARIO INGRESADO YA EXISTE",
         });
+      }
+
+      // ✅ FIX: Manejar código de país 'INTL' inválido también en la actualización
+      // Si el frontend envía 'INTL', lo tratamos como si no se hubiera seleccionado país.
+      if (req.body.country === 'INTL') {
+        delete req.body.country; // O req.body.country = null;
+      }
+
+      // 🔥 MAPEAR REDES SOCIALES DESDE CAMPOS PLANOS A socialMedia
+      if (req.body.facebook || req.body.instagram || req.body.youtube || 
+          req.body.tiktok || req.body.twitch || req.body.website ||
+          req.body.discord || req.body.linkedin || req.body.twitter || req.body.github) {
+        req.body.socialMedia = {
+          facebook: req.body.facebook || '',
+          instagram: req.body.instagram || '',
+          youtube: req.body.youtube || '',
+          tiktok: req.body.tiktok || '',
+          twitch: req.body.twitch || '',
+          website: req.body.website || '',
+          discord: req.body.discord || '',
+          linkedin: req.body.linkedin || '',
+          twitter: req.body.twitter || '',
+          github: req.body.github || '',
+        };
+        // Limpiar campos planos
+        delete req.body.facebook;
+        delete req.body.instagram;
+        delete req.body.youtube;
+        delete req.body.tiktok;
+        delete req.body.twitch;
+        delete req.body.website;
+        delete req.body.discord;
+        delete req.body.linkedin;
+        delete req.body.twitter;
+        delete req.body.github;
       }
 
       // No permitir que un usuario se cambie el rol a sí mismo
@@ -960,6 +1022,96 @@ export default {
   // =====================================================
   // ENDPOINT DE PRUEBA PARA GENERAR OTP
   // =====================================================
+
+  // 🆕 NUEVO: Listar instructores (público)
+  list_instructors: async (req, res) => {
+    try {
+      // Buscar solo usuarios con rol 'instructor' que estén activos
+      const instructors = await models.User.find({ 
+        rol: 'instructor',
+        state: true 
+      })
+      .select('name surname email avatar profession description facebook instagram youtube tiktok twitch website')
+      .sort({ createdAt: -1 });
+
+      res.status(200).send({
+        users: instructors
+      });
+    } catch (error) {
+      console.error('❌ Error listando instructores:', error);
+      res.status(500).send({
+        message: "Error al obtener la lista de instructores"
+      });
+    }
+  },
+
+  // 🆕 NUEVO: Perfil público del instructor
+  instructor_profile: async (req, res) => {
+    try {
+      const { id } = req.params;
+
+      // Buscar instructor
+      const instructor = await models.User.findOne({ 
+        _id: id,
+        rol: 'instructor',
+        state: true 
+      })
+      .select('name surname email avatar profession description phone birthday socialMedia createdAt');
+
+      if (!instructor) {
+        return res.status(404).send({
+          message: "Instructor no encontrado"
+        });
+      }
+
+      // Buscar cursos del instructor (solo públicos)
+      const courses = await models.Course.find({
+        user: id,
+        state: 2 // Solo cursos públicos
+      })
+      .populate('categorie', 'title')
+      .select('title subtitle slug imagen price_usd price_mxn level avg_rating count_class')
+      .sort({ createdAt: -1 });
+
+      // Buscar proyectos del instructor (solo públicos)
+      // Estados: 1=Borrador, 2=Público, 3=Anulado
+      const rawProjects = await models.Project.find({
+        user: id,
+        state: 2 // ✅ CORREGIDO: 2 = Público (antes estaba mal con state: 1)
+      })
+      .populate('categorie', 'title')
+      .select('title subtitle imagen price_usd price_mxn description url_video state createdAt')
+      .sort({ createdAt: -1 });
+      
+      console.log('✅ [instructor_profile] Proyectos públicos encontrados:', rawProjects.length);
+
+      // ✅ Mapear proyectos con valores por defecto para campos opcionales
+      const projects = rawProjects.map(proj => ({
+        _id: proj._id,
+        title: proj.title,
+        subtitle: proj.subtitle,
+        imagen: proj.imagen,
+        price_usd: proj.price_usd,
+        price_mxn: proj.price_mxn || 0, // ✅ Valor por defecto
+        description: proj.description || '', // ✅ Valor por defecto
+        url_video: proj.url_video,
+        categorie: proj.categorie,
+        state: proj.state,
+        createdAt: proj.createdAt
+      }));
+
+      res.status(200).send({
+        instructor: resource.User.api_resource_user(instructor),
+        courses,
+        projects
+      });
+    } catch (error) {
+      console.error('❌ Error obteniendo perfil del instructor:', error);
+      res.status(500).send({
+        message: "Error al obtener el perfil del instructor"
+      });
+    }
+  },
 
   // Generar OTP para usuario existente (solo para testing)
   generate_otp_for_existing_user: async (req, res) => {

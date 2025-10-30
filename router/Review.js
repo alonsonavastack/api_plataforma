@@ -28,4 +28,10 @@ router.put("/reply/:review_id", auth.verifyInstructor, ReviewController.updateRe
 // ✅ NUEVO: Eliminar respuesta del instructor
 router.delete("/reply/:review_id", auth.verifyInstructor, ReviewController.deleteReply);
 
+// 🔔 NUEVO: Obtener reviews sin respuesta de los cursos del instructor (notificaciones)
+router.get("/instructor/pending-replies", auth.verifyInstructor, ReviewController.getPendingRepliesForInstructor);
+
+// 🧹 NUEVO: Marcar todas las notificaciones de reviews como leídas
+router.post("/instructor/mark-all-read", auth.verifyInstructor, ReviewController.markAllRepliesAsRead);
+
 export default router;

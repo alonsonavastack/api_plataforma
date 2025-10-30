@@ -18,6 +18,7 @@ import SettingRouter from './Setting.js'; // Importamos el nuevo router
 import ReportsRouter from './Reports.js'; // Nuevo router para reportes
 import CarouselRouter from './Carousel.js'; // Importamos el router del carrusel
 import ReviewRouter from './Review.js'; // Importamos el router de reviews/calificaciones
+import SystemConfigRouter from './SystemConfig.js'; // Router de configuración del sistema
 
 // SISTEMA DE PAGOS A INSTRUCTORES
 import InstructorPaymentRouter from './InstructorPayment.js';
@@ -50,6 +51,7 @@ router.use('/settings', SettingRouter); // Usamos el nuevo router para settings
 router.use('/reports', ReportsRouter); // Rutas de reportes
 router.use('/carousel', CarouselRouter); // Usamos el router del carrusel
 router.use('/reviews', ReviewRouter); // Rutas de reviews/calificaciones
+router.use('/system-config', SystemConfigRouter); // Rutas de configuración del sistema
 
 // SISTEMA DE PAGOS A INSTRUCTORES
 router.use('/instructor', InstructorPaymentRouter); // Rutas para instructores

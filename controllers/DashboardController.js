@@ -81,6 +81,7 @@ export default {
             label: "Ingresos (USD)",
             value: totalIncome,
             delta: parseFloat(incomeDelta),
+            isCurrency: true, // 🔥 NUEVO
           },
           { label: "Cursos Activos", value: totalActiveCourses, delta: +2.0 },
           { label: "Proyectos Activos", value: totalActiveProjects, delta: +1.5 },
@@ -194,6 +195,7 @@ export default {
             label: "Mis Ingresos (USD)",
             value: totalIncome,
             delta: parseFloat(incomeDelta),
+            isCurrency: true, // 🔥 NUEVO
           },
           { label: "Mis Cursos", value: instructorCourses.length, delta: 0 },
           { label: "Mis Proyectos", value: instructorProjects.length, delta: 0 },

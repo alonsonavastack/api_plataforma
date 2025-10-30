@@ -12,7 +12,7 @@
  * - 🇲🇽 México (RESICO, Honorarios, Act. Empresarial)
  * - 🌎 Internacional (Reglas genéricas, fácil de extender)
  * 
- * @author NeoCourse Platform
+ * @author Dev-Sharks Platform
  * @version 3.0.0
  */
 

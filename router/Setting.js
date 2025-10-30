@@ -1,29 +1,25 @@
-// /api/router/Setting.js
-import routerx from 'express-promise-router';
-import SettingController from '../controllers/SettingController.js';
-import auth from '../service/auth.js';
+import express from "express";
+import SettingController, { path_uploads } from "../controllers/SettingController.js";
+import auth from "../service/auth.js";
 
-const router = routerx();
+const router = express.Router();
 
-// Todas las rutas de ajustes requieren que el usuario sea administrador
-router.use(auth.verifyAdmin);
+// 📋 Obtener toda la configuración del sistema
+router.get("/all", auth.verifyAdmin, SettingController.getAll);
 
-// Listar todos los settings
-router.get('/list', SettingController.list);
+// 📝 Actualizar configuración del sistema (sin logo)
+router.put("/update", auth.verifyAdmin, SettingController.update);
 
-// Obtener settings por grupo (general, commissions, payments, etc.)
-router.get('/group/:group', SettingController.getByGroup);
+// 🖼️ Actualizar logo del sistema
+router.post("/update-logo", [auth.verifyAdmin, path_uploads], SettingController.updateLogo);
 
-// Obtener un setting específico por key
-router.get('/key/:key', SettingController.getByKey);
+// 🖼️ Obtener imagen del logo
+router.get("/logo/:filename", SettingController.getLogo);
 
-// Actualizar múltiples settings
-router.put('/update', SettingController.update);
+// 🗑️ Eliminar logo del sistema
+router.delete("/delete-logo", auth.verifyAdmin, SettingController.deleteLogo);
 
-// Actualizar un solo setting
-router.put('/update/:key', SettingController.updateOne);
-
-// Inicializar settings por defecto (útil después del seed)
-router.post('/initialize-defaults', SettingController.initializeDefaults);
+// 🔄 Restablecer configuración por defecto
+router.post("/reset", auth.verifyAdmin, SettingController.reset);
 
 export default router;

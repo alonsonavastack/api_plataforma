@@ -44,6 +44,35 @@ export default {
                 }
             }
 
+            // 🔥 MAPEAR REDES SOCIALES DESDE CAMPOS PLANOS A socialMedia
+            if (req.body.facebook || req.body.instagram || req.body.youtube || 
+                req.body.tiktok || req.body.twitch || req.body.website ||
+                req.body.discord || req.body.linkedin || req.body.twitter || req.body.github) {
+                req.body.socialMedia = {
+                    facebook: req.body.facebook || '',
+                    instagram: req.body.instagram || '',
+                    youtube: req.body.youtube || '',
+                    tiktok: req.body.tiktok || '',
+                    twitch: req.body.twitch || '',
+                    website: req.body.website || '',
+                    discord: req.body.discord || '',
+                    linkedin: req.body.linkedin || '',
+                    twitter: req.body.twitter || '',
+                    github: req.body.github || '',
+                };
+                // Limpiar campos planos
+                delete req.body.facebook;
+                delete req.body.instagram;
+                delete req.body.youtube;
+                delete req.body.tiktok;
+                delete req.body.twitch;
+                delete req.body.website;
+                delete req.body.discord;
+                delete req.body.linkedin;
+                delete req.body.twitter;
+                delete req.body.github;
+            }
+
             // Si se está cambiando la contraseña, encriptarla
             if(req.body.password){
                 req.body.password = await bcrypt.hash(req.body.password, 10);

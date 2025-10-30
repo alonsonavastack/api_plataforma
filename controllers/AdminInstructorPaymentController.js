@@ -709,10 +709,18 @@ export const getInstructorPaymentMethodFull = async (req, res) => {
         // Obtener configuración de pago
         const paymentConfig = await InstructorPaymentConfig.findOne({ instructor: instructorId });
 
+        // 🔥 Si no tiene configuración, retornar estructura vacía en lugar de error 404
         if (!paymentConfig) {
-            return res.status(404).json({
-                success: false,
-                message: 'El instructor no tiene configuración de pago'
+            return res.json({
+                success: true,
+                data: {
+                    instructor,
+                    paymentMethod: null,
+                    preferredMethod: 'none',
+                    paymentDetails: null,
+                    hasConfig: false,
+                    message: 'El instructor aún no ha configurado su método de pago'
+                }
             });
         }
 
@@ -829,6 +837,70 @@ export const verifyInstructorBank = async (req, res) => {
     }
 };
 
+/**
+ * Obtener lista de cuentas bancarias pendientes de verificación
+ * GET /api/admin/bank-verifications/pending
+ * 
+ * 🔥 ACTUALIZADO: Ahora detecta tanto cuentas nuevas como cuentas editadas pendientes
+ */
+export const getPendingBankVerifications = async (req, res) => {
+    try {
+        // Buscar todas las configuraciones de pago con cuentas bancarias NO verificadas
+        // Incluye:
+        // 1. Cuentas nuevas (verified: false)
+        // 2. Cuentas editadas (verified cambió a false)
+        const pendingConfigs = await InstructorPaymentConfig.find({
+            $and: [
+                { 'bank_account.verified': false }, // NO verificadas
+                { 
+                    $or: [
+                        { 'bank_account.account_number': { $exists: true, $ne: '', $ne: null } },
+                        { 'bank_account.clabe': { $exists: true, $ne: '', $ne: null } }
+                    ]
+                }
+            ]
+        })
+        .populate('instructor', 'name email surname avatar')
+        .sort({ updatedAt: -1 });
+
+        console.log(`🔔 [BankVerifications] Encontradas ${pendingConfigs.length} cuentas pendientes de verificación`);
+
+        // Formatear respuesta
+        const notifications = pendingConfigs.map(config => {
+            const notification = {
+                _id: config._id,
+                instructor: config.instructor,
+                bankDetails: {
+                    bank_name: config.bank_account?.bank_name || 'No especificado',
+                    account_type: config.bank_account?.account_type || 'No especificado',
+                    verified: config.bank_account?.verified || false
+                },
+                updatedAt: config.updatedAt,
+                createdAt: config.createdAt,
+                // 🔥 Detectar si es una edición reciente (menos de 1 hora)
+                isRecentEdit: config.updatedAt && (Date.now() - new Date(config.updatedAt).getTime()) < 3600000
+            };
+            
+            console.log(`  - ${config.instructor.name} ${config.instructor.surname}: ${config.bank_account?.bank_name} (${notification.isRecentEdit ? 'EDITADO RECIENTEMENTE' : 'Pendiente'})`);
+            
+            return notification;
+        });
+
+        res.json({
+            success: true,
+            notifications,
+            count: notifications.length
+        });
+    } catch (error) {
+        console.error('Error al obtener verificaciones pendientes:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error al obtener verificaciones pendientes',
+            error: error.message
+        });
+    }
+};
+
 export default {
     getInstructorsWithEarnings,
     getInstructorEarnings,
@@ -842,5 +914,6 @@ export default {
     removeCustomCommission,
     getEarningsReport,
     getInstructorPaymentMethodFull, // 🔥 Nuevo endpoint
-    verifyInstructorBank // 🔥 Nuevo endpoint de verificación
+    verifyInstructorBank, // 🔥 Nuevo endpoint de verificación
+    getPendingBankVerifications // 🔔 Notificaciones de cuentas pendientes
 };
