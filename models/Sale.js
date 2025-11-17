@@ -24,7 +24,10 @@ const SaleSchema = new Schema({
         type_discount: { type: Number, default: 0 },
     }],    
     price_dolar:{type: Number, default: 3.66},
-    n_transaccion:{type:String,maxlength: 200,required:true}
+    n_transaccion:{type:String,maxlength: 200,required:true},
+    // 🆕 Campos de billetera digital
+    wallet_amount: {type: Number, default: 0},
+    remaining_amount: {type: Number, default: 0}
 },{
     timestamps: true
 });

@@ -8,7 +8,7 @@ const UserSchema = new Schema({
     password:{type:String,maxlength: 250,required:true},
     avatar:{type:String,maxlength: 250,required:false},
     state:{type:Boolean,default: true},//true ES ACTIVO false ES INACTIVO
-    phone: {type: String, maxlength: 30,required:false},
+    phone: {type: String, maxlength: 30, required: false, unique: true, sparse: true},
     birthday: {type: Date, required:false},
     
     // ✅ Información de ubicación y pago
@@ -86,6 +86,16 @@ const UserSchema = new Schema({
         notas: {type: String}
     },
     
+    // 🆕 SLUG ÚNICO PARA PERFILES PÚBLICOS
+    slug: {
+        type: String,
+        unique: true,
+        sparse: true, // Permite valores null mientras se migran usuarios existentes
+        lowercase: true,
+        trim: true,
+        maxlength: 100
+    },
+    
     // Campos de verificación OTP
     isVerified: {type: Boolean, default: false},
     otp: {
@@ -106,6 +116,60 @@ const UserSchema = new Schema({
     },
 },{
     timestamps: true
+});
+
+// 🔧 Hook para generar slug automáticamente con protección anti-duplicados
+UserSchema.pre('save', async function(next) {
+    // Solo generar slug si es un usuario nuevo o si no tiene slug
+    if (this.isNew || !this.slug) {
+        const maxAttempts = 100; // Límite de intentos para evitar bucles infinitos
+        let attempts = 0;
+        
+        // Generar slug base desde nombre y apellido
+        const baseSlug = `${this.name} ${this.surname}`
+            .toLowerCase()
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '') // Remover tildes
+            .replace(/[^a-z0-9]+/g, '-')     // Reemplazar espacios y caracteres especiales
+            .replace(/^-+|-+$/g, '');         // Remover guiones al inicio/fin
+
+        let slug = baseSlug;
+        let counter = 1;
+        
+        // 🔒 Buscar slugs duplicados con límite de intentos
+        while (attempts < maxAttempts) {
+            try {
+                const existingUser = await mongoose.model('user').findOne({ 
+                    slug: slug, 
+                    _id: { $ne: this._id } 
+                });
+                
+                if (!existingUser) {
+                    break; // ✅ Slug único encontrado
+                }
+                
+                // ❌ Existe: agregar contador
+                slug = `${baseSlug}-${counter}`;
+                counter++;
+                attempts++;
+            } catch (error) {
+                console.error('❌ Error verificando slug único:', error);
+                // En caso de error, usar timestamp para garantizar unicidad
+                slug = `${baseSlug}-${Date.now()}`;
+                break;
+            }
+        }
+        
+        // 🚨 Si llegó al límite, usar timestamp
+        if (attempts >= maxAttempts) {
+            console.warn('⚠️ Límite de intentos alcanzado, usando timestamp');
+            slug = `${baseSlug}-${Date.now()}`;
+        }
+        
+        this.slug = slug;
+        console.log(`✅ Slug generado para ${this.name} ${this.surname}: ${slug}`);
+    }
+    next();
 });
 
 const User = mongoose.model("user",UserSchema);

@@ -89,4 +89,3 @@ SystemConfigSchema.pre('save', function(next) {
 
 const SystemConfig = mongoose.model('system_config', SystemConfigSchema);
 export default SystemConfig;
-

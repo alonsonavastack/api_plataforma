@@ -21,7 +21,11 @@ import InstructorEarnings from './InstructorEarnings.js'
 import InstructorPayment from './InstructorPayment.js'
 import PlatformCommissionSettings from './PlatformCommissionSettings.js'
 import CarouselImage from './CarouselImage.js'
-import Notification from './Notification.js' // 🔧 FIX BUG #67
+import Notification from './Notification.js'
+import ShortUrl from './ShortUrl.js' // 🆕 Sistema de enlaces cortos
+import Refund from './Refund.js' // 💸 Sistema de reembolsos
+import SystemConfig from './SystemConfig.js' // 🆕 Configuración del sistema
+import Wallet from './Wallet.js' // 💰 Sistema de billetera digital
 
 export default {
     User,
@@ -47,5 +51,9 @@ export default {
     InstructorPayment,
     PlatformCommissionSettings,
     CarouselImage,
-    Notification, // 🔧 FIX BUG #67
+    Notification,
+    ShortUrl, // 🆕 Sistema de enlaces cortos
+    Refund, // 💸 Sistema de reembolsos
+    SystemConfig, // 🆕 Configuración del sistema
+    Wallet, // 💰 Sistema de billetera digital
 }

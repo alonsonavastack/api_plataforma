@@ -3,6 +3,8 @@ import resource from "../resource/index.js";
 import bcrypt from 'bcryptjs';
 import fs from 'fs';
 import path from 'path';
+import * as RefundController from './RefundController.js';
+
 
 import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
@@ -53,7 +55,63 @@ export const client = async(req,res) => {
                         { path: 'user' }
                     ]
                 })
-                .sort({ createdAt: -1 });
+                .sort({ createdAt: -1 })
+                .lean(); // Usamos lean() para poder modificar los objetos
+
+            // 1.2. Añadir lógica de reembolsos MEJORADA
+            const now = new Date();
+            const aWeekInMilliseconds = 7 * 24 * 60 * 60 * 1000;
+
+            // ✅ Verificar elegibilidad con múltiples condiciones
+            for (const sale of sales) {
+                sale.isRefundable = false;
+                sale.refundReason = null;
+                
+                if (sale.status === 'Pagado') {
+                    const purchaseDate = new Date(sale.createdAt);
+                    const timeSincePurchase = now.getTime() - purchaseDate.getTime();
+                    const daysSincePurchase = Math.floor(timeSincePurchase / (24 * 60 * 60 * 1000));
+                    const isWithinTimeLimit = timeSincePurchase < aWeekInMilliseconds;
+                    
+                    // Verificar si ya existe un reembolso
+                    const existingRefund = await models.Refund.findOne({ 
+                        sale: sale._id, 
+                        status: { $in: ['pending', 'approved', 'processing', 'completed'] },
+                        state: 1
+                    });
+                    
+                    // Verificar si el instructor ya fue pagado
+                    let instructorAlreadyPaid = false;
+                    if (sale.detail && sale.detail.length > 0) {
+                        for (const item of sale.detail) {
+                            const paidEarnings = await models.InstructorEarnings.findOne({
+                                sale: sale._id,
+                                $or: [
+                                    { course: item.product },
+                                    { product_id: item.product }
+                                ],
+                                status: { $in: ['paid', 'completed'] }
+                            });
+                            if (paidEarnings) {
+                                instructorAlreadyPaid = true;
+                                break;
+                            }
+                        }
+                    }
+                    
+                    // Determinar elegibilidad y razón
+                    if (existingRefund) {
+                        sale.refundReason = 'Ya existe una solicitud de reembolso';
+                    } else if (!isWithinTimeLimit) {
+                        sale.refundReason = `Período expirado (${daysSincePurchase} de 7 días)`;
+                    } else if (instructorAlreadyPaid) {
+                        sale.refundReason = 'El instructor ya fue pagado';
+                    } else {
+                        sale.isRefundable = true;
+                        sale.daysRemaining = 7 - daysSincePurchase;
+                    }
+                }
+            }
 
             // 2.1. De la lista de ventas ya obtenida, filtramos para obtener solo los proyectos pagados.
             let projects = [];
@@ -242,6 +300,61 @@ export const getTransactions = async(req, res) => {
             })
             .sort({ createdAt: -1 }); // Ordenar por fecha descendente
 
+        // 1.2. Añadir lógica de reembolsos a las ventas obtenidas
+        const now = new Date();
+        const aWeekInMilliseconds = 7 * 24 * 60 * 60 * 1000;
+
+        // ✅ Verificar elegibilidad con múltiples condiciones
+        for (const sale of sales) {
+            const saleObj = sale.toObject ? sale.toObject() : sale;
+            saleObj.isRefundable = false;
+            saleObj.refundReason = null;
+            
+            if (sale.status === 'Pagado') {
+                const purchaseDate = new Date(sale.createdAt);
+                const timeSincePurchase = now.getTime() - purchaseDate.getTime();
+                const daysSincePurchase = Math.floor(timeSincePurchase / (24 * 60 * 60 * 1000));
+                const isWithinTimeLimit = timeSincePurchase < aWeekInMilliseconds;
+                
+                // Verificar si ya existe un reembolso
+                const existingRefund = await models.Refund.findOne({ 
+                    sale: sale._id, 
+                    status: { $in: ['pending', 'approved', 'processing', 'completed'] },
+                    state: 1
+                });
+                
+                // Verificar si el instructor ya fue pagado
+                let instructorAlreadyPaid = false;
+                const saleDetail = sale.detail || [];
+                for (const item of saleDetail) {
+                    const paidEarnings = await models.InstructorEarnings.findOne({
+                        sale: sale._id,
+                        $or: [
+                            { course: item.product },
+                            { product_id: item.product }
+                        ],
+                        status: { $in: ['paid', 'completed'] }
+                    });
+                    if (paidEarnings) {
+                        instructorAlreadyPaid = true;
+                        break;
+                    }
+                }
+                
+                // Determinar elegibilidad y razón
+                if (existingRefund) {
+                    saleObj.refundReason = 'Ya existe una solicitud de reembolso';
+                } else if (!isWithinTimeLimit) {
+                    saleObj.refundReason = `Período expirado (${daysSincePurchase} de 7 días)`;
+                } else if (instructorAlreadyPaid) {
+                    saleObj.refundReason = 'El instructor ya fue pagado';
+                } else {
+                    saleObj.isRefundable = true;
+                    saleObj.daysRemaining = 7 - daysSincePurchase;
+                }
+            }
+        }
+
         // Transformar las ventas a un formato de transacciones
         const transactions = sales.map(sale => {
             const saleObj = sale.toObject();
@@ -252,6 +365,7 @@ export const getTransactions = async(req, res) => {
                 total: saleObj.total,
                 currency_total: saleObj.currency_total,
                 status: saleObj.status,
+                isRefundable: saleObj.isRefundable, // ✅ Añadir la propiedad a la respuesta
                 items: saleObj.detail.map(item => ({
                     product: {
                         _id: item.product?._id || null,
@@ -271,5 +385,23 @@ export const getTransactions = async(req, res) => {
     } catch (error) {
         console.error('Error al obtener transacciones:', error);
         res.status(500).send({ message: 'HUBO UN ERROR AL OBTENER LAS TRANSACCIONES' });
+    }
+};
+
+// Nuevo endpoint para solicitar un reembolso
+export const requestRefund = async(req, res) => {
+    try {
+        if (!req.user) {
+            return res.status(401).send({ message: 'No autenticado.' });
+        }
+
+        const { sale_id, reason } = req.body;
+
+        // Llamar a la función de requestRefund del RefundController
+        return RefundController.requestRefund(req, res);
+
+    } catch (error) {
+        console.error('Error al solicitar reembolso desde el perfil del estudiante:', error);
+        res.status(500).send({ message: 'HUBO UN ERROR AL PROCESAR LA SOLICITUD DE REEMBOLSO' });
     }
 };

@@ -344,12 +344,40 @@ export const getEarnings = async (req, res) => {
             .skip(skip)
             .limit(limitNum);
 
+        // 🔥 NUEVO: Verificar si algún earning está reembolsado
+        const Refund = (await import('../models/Refund.js')).default;
+        const saleIds = earnings.map(e => e.sale?._id).filter(Boolean);
+        
+        const refunds = await Refund.find({
+            sale: { $in: saleIds },
+            status: 'completed'
+        });
+
+        // Mapear earnings con información de reembolso
+        const earningsWithRefundStatus = earnings.map(earning => {
+            const earningObj = earning.toObject();
+            
+            // Buscar si este earning tiene un reembolso completado
+            const hasRefund = refunds.some(r => 
+                r.sale.toString() === earning.sale?._id?.toString()
+            );
+            
+            if (hasRefund) {
+                earningObj.isRefunded = true;
+                earningObj.status_display = 'refunded';
+                earningObj.instructor_earning_original = earning.instructor_earning;
+                // La ganancia actual es $0 porque fue reembolsada
+            }
+            
+            return earningObj;
+        });
+
         // Contar total
         const total = await InstructorEarnings.countDocuments(filters);
 
         res.json({
             success: true,
-            earnings,
+            earnings: earningsWithRefundStatus,
             pagination: {
                 page: parseInt(page),
                 limit: limitNum,
@@ -374,32 +402,89 @@ export const getEarnings = async (req, res) => {
 export const getEarningsStats = async (req, res) => {
     try {
         const instructorId = req.user._id;
+        
+        console.log('📊 [getEarningsStats] Obteniendo stats para instructor:', instructorId);
 
-        // Obtener todas las ganancias del instructor
+        // 1️⃣ Obtener todas las ganancias del instructor
         const allEarnings = await InstructorEarnings.find({ instructor: instructorId });
+        console.log('📊 [getEarningsStats] Total earnings encontrados:', allEarnings.length);
 
-        // Calcular estadísticas por estado
+        // 2️⃣ Calcular estadísticas por estado (SIN ajustar por reembolsos aún)
         const statsByStatus = calculateEarningsStatsByStatus(allEarnings);
+        
+        // 3️⃣ Buscar reembolsos completados relacionados con las ventas del instructor
+        const saleIds = allEarnings.map(e => e.sale).filter(Boolean);
+        
+        // ⚠️ IMPORTANTE: Importar el modelo Refund al inicio del archivo
+        // import Refund from '../models/Refund.js';
+        const Refund = (await import('../models/Refund.js')).default;
+        
+        const refunds = await Refund.find({
+            sale: { $in: saleIds },
+            status: 'completed' // Solo reembolsos completados
+        }).populate('sale');
+        
+        console.log('💰 [getEarningsStats] Reembolsos completados encontrados:', refunds.length);
 
-        // Agrupar por mes (últimos 6 meses)
-        const earningsByMonth = groupEarningsByMonth(allEarnings).slice(0, 6);
+        // 4️⃣ Calcular el monto total que se debe restar por reembolsos
+        let refundedAmount = 0;
+        let refundedCount = 0;
+        
+        for (const refund of refunds) {
+            // Buscar el earning asociado a esta venta
+            const earning = allEarnings.find(e => 
+                e.sale && e.sale.toString() === refund.sale._id.toString()
+            );
+            
+            if (earning) {
+                // ✅ SUMAR solo la ganancia del instructor (NO el precio total)
+                refundedAmount += earning.instructor_earning;
+                refundedCount++;
+                
+                console.log('🔄 [getEarningsStats] Restando reembolso:', {
+                    saleId: refund.sale._id,
+                    instructorEarning: earning.instructor_earning,
+                    salePrice: earning.sale_price
+                });
+            }
+        }
 
-        // Estadísticas adicionales
+        // 5️⃣ Ajustar las estadísticas considerando los reembolsos
         const stats = {
-            ...statsByStatus,
-            byMonth: earningsByMonth,
+            available: {
+                total: Math.max(0, statsByStatus.available.total - refundedAmount),
+                count: statsByStatus.available.count
+            },
+            pending: statsByStatus.pending,
+            paid: statsByStatus.paid,
+            disputed: statsByStatus.disputed,
+            refunds: {
+                total: refundedAmount,
+                count: refundedCount
+            },
+            total: {
+                total: Math.max(0, statsByStatus.total.total - refundedAmount),
+                count: statsByStatus.total.count
+            },
+            byMonth: groupEarningsByMonth(allEarnings).slice(0, 6),
             totalCoursesSold: allEarnings.length,
             averagePerSale: allEarnings.length > 0 
-                ? (statsByStatus.total.total / allEarnings.length).toFixed(2)
+                ? ((statsByStatus.total.total - refundedAmount) / allEarnings.length).toFixed(2)
                 : 0
         };
+
+        console.log('✅ [getEarningsStats] Stats finales:', {
+            disponible: stats.available.total,
+            reembolsos: stats.refunds.total,
+            total: stats.total.total
+        });
 
         res.json({
             success: true,
             stats
         });
     } catch (error) {
-        console.error('Error al obtener estadísticas:', error);
+        console.error('❌ [getEarningsStats] Error:', error);
         res.status(500).json({
             success: false,
             message: 'Error al obtener estadísticas',

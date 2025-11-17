@@ -3,6 +3,7 @@ import bcrypt from "bcryptjs";
 import token from "../service/token.js";
 import resource from "../resource/index.js";
 import { sendOtpCode, sendRecoveryOtp, notifyNewRegistration, notifySuccessfulVerification } from "../helpers/telegram.js";
+import { generateUniqueSlug } from "../helpers/slugGenerator.js";
 
 import fs from "fs";
 import path from "path";
@@ -15,13 +16,28 @@ const __dirname = path.dirname(__filename);
 export default {
   register: async (req, res) => {
     try {
+      // Validar email único
       const VALID_USER = await models.User.findOne({ email: req.body.email });
 
       if (VALID_USER) {
-        return res.status(200).json({
-          message: 403,
+        return res.status(409).json({
+          message: 409,
           message_text: "EL USUARIO INGRESADO YA EXISTE",
         });
+      }
+
+      // 🔥 VALIDAR TELÉFONO ÚNICO
+      if (req.body.phone) {
+        console.log('📱 [Register] Validando teléfono único:', req.body.phone);
+        const PHONE_EXISTS = await models.User.findOne({ phone: req.body.phone });
+        if (PHONE_EXISTS) {
+          console.log('❌ [Register] Teléfono duplicado encontrado:', req.body.phone);
+          return res.status(409).json({
+            message: 409,
+            message_text: "EL NÚMERO DE TELÉFONO YA ESTÁ REGISTRADO",
+          });
+        }
+        console.log('✅ [Register] Teléfono disponible:', req.body.phone);
       }
 
       // Validar que el teléfono esté en formato E.164 (sin '+')
@@ -40,6 +56,14 @@ export default {
 
       // ENCRIPTACIÓN DE CONTRASEÑA
       req.body.password = await bcrypt.hash(req.body.password, 10);
+
+      // 🔥 GENERAR SLUG ÚNICO
+      req.body.slug = await generateUniqueSlug(
+        models.User, 
+        req.body.name, 
+        req.body.surname
+      );
+      console.log('🆔 [Register] Slug generado:', req.body.slug);
 
       // Generar código OTP de 6 dígitos
       const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
@@ -117,13 +141,25 @@ export default {
   },
   register_admin: async (req, res) => {
     try {
+      // Validar email único
       const VALID_USER = await models.User.findOne({ email: req.body.email });
 
       if (VALID_USER) {
-        res.status(200).json({
+        return res.status(200).json({
           message: 403,
           message_text: "EL USUARIO INGRESADO YA EXISTE",
         });
+      }
+
+      // 🔥 VALIDAR TELÉFONO ÚNICO (si se proporciona)
+      if (req.body.phone) {
+        const PHONE_EXISTS = await models.User.findOne({ phone: req.body.phone });
+        if (PHONE_EXISTS) {
+          return res.status(200).json({
+            message: 403,
+            message_text: "EL NÚMERO DE TELÉFONO YA ESTÁ REGISTRADO",
+          });
+        }
       }
 
       // ✅ FIX: Manejar código de país 'INTL' inválido también en el registro de admin
@@ -168,6 +204,25 @@ export default {
         });
       }
 
+      // 🔥 VALIDACIÓN DE TELÉFONO ÚNICO
+      // Solo validar si el teléfono cambió y no está vacío
+      if (req.body.phone && req.body.phone.trim() !== '') {
+        console.log('📱 [Update] Validando teléfono único:', req.body.phone, 'para usuario:', userIdToUpdate);
+        const PHONE_EXISTS = await models.User.findOne({
+          phone: req.body.phone,
+          _id: { $ne: userIdToUpdate },
+        });
+
+        if (PHONE_EXISTS) {
+          console.log('❌ [Update] Teléfono duplicado encontrado:', req.body.phone, 'usado por:', PHONE_EXISTS._id);
+          return res.status(200).json({
+            message: 403,
+            message_text: "EL NÚMERO DE TELÉFONO YA ESTÁ REGISTRADO POR OTRO USUARIO",
+          });
+        }
+        console.log('✅ [Update] Teléfono disponible:', req.body.phone);
+      }
+
       // ✅ FIX: Manejar código de país 'INTL' inválido también en la actualización
       // Si el frontend envía 'INTL', lo tratamos como si no se hubiera seleccionado país.
       if (req.body.country === 'INTL') {
@@ -203,10 +258,15 @@ export default {
         delete req.body.github;
       }
 
-      // No permitir que un usuario se cambie el rol a sí mismo
-      if (req.body.password) {
+      // 🔥 MANEJAR CONTRASEÑA: Solo encriptar si se envío una nueva
+      if (req.body.password && req.body.password.trim() !== '') {
+      console.log('🔑 [Update] Encriptando nueva contraseña para usuario:', userIdToUpdate);
         req.body.password = await bcrypt.hash(req.body.password, 10);
-      }
+    } else {
+      // Si no se envío contraseña o está vacía, eliminarla del body
+      console.log('✅ [Update] Actualización sin cambio de contraseña');
+      delete req.body.password;
+    }
 
       if (req.files && req.files.avatar) {
         // Si se sube una nueva imagen, eliminamos la anterior.
@@ -227,17 +287,25 @@ export default {
       }
 
       const updatedUser = await models.User.findByIdAndUpdate(
-        userIdToUpdate,
-        req.body,
-        {
-          new: true, // Devuelve el documento actualizado
-        }
+      userIdToUpdate,
+      req.body,
+      {
+      new: true, // Devuelve el documento actualizado
+      }
       );
 
-      res.status(200).json({
-        message: "EL USUARIO SE EDITO CORRECTAMENTE",
-        user: resource.User.api_resource_user(updatedUser),
-      });
+      console.log('✅ [Update] Usuario actualizado exitosamente:', {
+      userId: updatedUser._id,
+      email: updatedUser.email,
+        name: updatedUser.name,
+      hasPassword: !!updatedUser.password,
+      state: updatedUser.state
+    });
+
+    res.status(200).json({
+      message: "EL USUARIO SE EDITO CORRECTAMENTE",
+      user: resource.User.api_resource_user(updatedUser),
+    });
     } catch (error) {
       console.log(error);
       res.status(500).send({
@@ -404,35 +472,108 @@ export default {
       const User = await models.User.findById({ _id: _id });
 
       if (!User) {
-        return res.status(404).json({ message: "El usuario no existe." });
+        return res.status(404).json({ 
+          message: 404,
+          message_text: "El usuario no existe." 
+        });
       }
 
+      console.log(`🗑️ [Remove User] Validando eliminación de usuario: ${User.name} ${User.surname} (${User.rol})`);
+
+      // 🔒 VALIDACIONES SEGÚN EL ROL
       if (User.rol === "instructor") {
+        // Verificar si tiene cursos
         const courseCount = await models.Course.countDocuments({ user: _id });
+        console.log(`   📚 Cursos encontrados: ${courseCount}`);
+        
         if (courseCount > 0) {
-          return res
-            .status(200)
-            .json({
-              message: 403,
-              message_text:
-                "No se puede eliminar el instructor porque tiene cursos asignados.",
-            });
+          return res.status(403).json({
+            message: 403,
+            message_text: `No se puede eliminar al instructor porque tiene ${courseCount} curso(s) creado(s).`,
+            blockedBy: 'courses',
+            count: courseCount
+          });
+        }
+
+        // Verificar si tiene proyectos
+        const projectCount = await models.Project.countDocuments({ user: _id });
+        console.log(`   🎯 Proyectos encontrados: ${projectCount}`);
+        
+        if (projectCount > 0) {
+          return res.status(403).json({
+            message: 403,
+            message_text: `No se puede eliminar al instructor porque tiene ${projectCount} proyecto(s) creado(s).`,
+            blockedBy: 'projects',
+            count: projectCount
+          });
+        }
+
+        // Verificar si tiene ventas (como instructor)
+        const salesAsInstructor = await models.Sale.countDocuments({ 
+          'details.course.user': _id 
+        });
+        console.log(`   💰 Ventas como instructor: ${salesAsInstructor}`);
+        
+        if (salesAsInstructor > 0) {
+          return res.status(403).json({
+            message: 403,
+            message_text: `No se puede eliminar al instructor porque tiene ${salesAsInstructor} venta(s) registrada(s).`,
+            blockedBy: 'sales',
+            count: salesAsInstructor
+          });
         }
       }
 
-      if (User.avatar) {
-        const imagePath = path.join(__dirname, "../uploads/user/", User.avatar);
-        if (fs.existsSync(imagePath)) fs.unlinkSync(imagePath);
+      if (User.rol === "cliente") {
+        // Verificar si tiene compras
+        const purchaseCount = await models.Sale.countDocuments({ user: _id });
+        console.log(`   🛒 Compras encontradas: ${purchaseCount}`);
+        
+        if (purchaseCount > 0) {
+          return res.status(403).json({
+            message: 403,
+            message_text: `No se puede eliminar al estudiante porque tiene ${purchaseCount} compra(s) realizada(s).`,
+            blockedBy: 'purchases',
+            count: purchaseCount
+          });
+        }
+
+        // Verificar si tiene reviews
+        const reviewCount = await models.Review.countDocuments({ user: _id });
+        console.log(`   ⭐ Reviews encontradas: ${reviewCount}`);
+        
+        if (reviewCount > 0) {
+          return res.status(403).json({
+            message: 403,
+            message_text: `No se puede eliminar al estudiante porque tiene ${reviewCount} reseña(s) publicada(s).`,
+            blockedBy: 'reviews',
+            count: reviewCount
+          });
+        }
       }
 
+      // Si pasa todas las validaciones, eliminar el avatar si existe
+      if (User.avatar) {
+        const imagePath = path.join(__dirname, "../uploads/user/", User.avatar);
+        if (fs.existsSync(imagePath)) {
+          fs.unlinkSync(imagePath);
+          console.log(`   🖼️ Avatar eliminado: ${User.avatar}`);
+        }
+      }
+
+      // Eliminar usuario
       await models.User.findByIdAndDelete(_id);
+      console.log(`✅ [Remove User] Usuario eliminado exitosamente: ${User.name} ${User.surname}`);
+      
       res.status(200).json({
-        message: "EL USUARIO SE ELIMINO CORRECTAMENTE",
+        message: 200,
+        message_text: "El usuario se eliminó correctamente.",
       });
     } catch (error) {
-      console.log(error);
+      console.error('❌ [Remove User] Error:', error);
       res.status(500).send({
-        message: "OCURRIO UN PROBLEMA",
+        message: 500,
+        message_text: "Ocurrió un problema al eliminar el usuario.",
       });
     }
   },
@@ -484,22 +625,38 @@ export default {
   },
   login_general: async (req, res) => {
     try {
+      console.log('🔑 [Login] Intento de login para:', req.body.email);
+      
       const user = await models.User.findOne({
         email: req.body.email,
         state: true,
       });
+      
       if (!user) {
+        console.log('❌ [Login] Usuario no encontrado o inactivo:', req.body.email);
         return res.status(401).json({
           message: "El correo o la contraseña son incorrectos.",
         });
       }
 
+      console.log('👤 [Login] Usuario encontrado:', {
+        id: user._id,
+        email: user.email,
+        name: user.name,
+        hasPassword: !!user.password,
+        state: user.state,
+        isVerified: user.isVerified
+      });
+
       const match = await bcrypt.compare(req.body.password, user.password);
       if (!match) {
+        console.log('❌ [Login] Contraseña incorrecta para:', req.body.email);
         return res.status(401).json({
           message: "El correo o la contraseña son incorrectos.",
         });
       }
+
+      console.log('✅ [Login] Contraseña correcta para:', req.body.email);
 
       // Verificar si el usuario necesita verificación OTP
       if (!user.isVerified) {
@@ -1031,8 +1188,11 @@ export default {
         rol: 'instructor',
         state: true 
       })
-      .select('name surname email avatar profession description facebook instagram youtube tiktok twitch website')
+      .select('name surname email slug avatar profession description facebook instagram youtube tiktok twitch website')
       .sort({ createdAt: -1 });
+
+      console.log('✅ [list_instructors] Encontrados', instructors.length, 'instructores');
+      console.log('🆔 [list_instructors] Slugs:', instructors.map(i => ({ name: i.name, slug: i.slug || 'SIN SLUG' })));
 
       res.status(200).send({
         users: instructors
@@ -1045,28 +1205,50 @@ export default {
     }
   },
 
-  // 🆕 NUEVO: Perfil público del instructor
+  // 🆕 NUEVO: Perfil público del instructor POR SLUG O ID (compatible con transición)
   instructor_profile: async (req, res) => {
     try {
-      const { id } = req.params;
+      const { slug } = req.params;
 
-      // Buscar instructor
-      const instructor = await models.User.findOne({ 
-        _id: id,
-        rol: 'instructor',
-        state: true 
-      })
-      .select('name surname email avatar profession description phone birthday socialMedia createdAt');
+      // 🔍 Intentar buscar primero por SLUG, luego por ID (para transición)
+      let instructor;
+      
+      // Verificar si es un ID de MongoDB (24 caracteres hexadecimales)
+      const isMongoId = /^[0-9a-fA-F]{24}$/.test(slug);
+      
+      if (isMongoId) {
+        // Buscar por ID (para compatibilidad con URLs antiguas)
+        console.log('🔍 [instructor_profile] Buscando por ID (legado):', slug);
+        instructor = await models.User.findOne({ 
+          _id: slug,
+          rol: 'instructor',
+          state: true 
+        })
+        .select('name surname email avatar profession description phone birthday socialMedia createdAt slug');
+      } else {
+        // Buscar por slug (nuevo sistema)
+        console.log('🔍 [instructor_profile] Buscando por slug:', slug);
+        instructor = await models.User.findOne({ 
+          slug: slug,
+          rol: 'instructor',
+          state: true 
+        })
+        .select('name surname email avatar profession description phone birthday socialMedia createdAt slug');
+      }
 
       if (!instructor) {
+        console.log('❌ [instructor_profile] Instructor no encontrado:', slug);
         return res.status(404).send({
           message: "Instructor no encontrado"
         });
       }
+      
+      console.log('✅ [instructor_profile] Instructor encontrado:', instructor.name, instructor.surname);
+      console.log('🆔 [instructor_profile] Slug actual:', instructor.slug || 'SIN SLUG');
 
       // Buscar cursos del instructor (solo públicos)
       const courses = await models.Course.find({
-        user: id,
+        user: instructor._id, // 🔥 Usar instructor._id en lugar de id
         state: 2 // Solo cursos públicos
       })
       .populate('categorie', 'title')
@@ -1076,7 +1258,7 @@ export default {
       // Buscar proyectos del instructor (solo públicos)
       // Estados: 1=Borrador, 2=Público, 3=Anulado
       const rawProjects = await models.Project.find({
-        user: id,
+        user: instructor._id, // 🔥 Usar instructor._id en lugar de id
         state: 2 // ✅ CORREGIDO: 2 = Público (antes estaba mal con state: 1)
       })
       .populate('categorie', 'title')

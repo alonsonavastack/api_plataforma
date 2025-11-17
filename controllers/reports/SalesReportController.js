@@ -5,11 +5,20 @@ export default {
    * REPORTE: Ingresos por período (últimos 12 meses)
    * Admin: Ve todos los ingresos
    * Instructor: Ve solo sus ingresos
+   * ✅ MODIFICADO: Excluye ventas reembolsadas
    */
   incomeByPeriod: async (req, res) => {
     try {
       const user = req.user;
       const { period = 'month' } = req.query; // 'day', 'week', 'month', 'year'
+
+      // ✅ NUEVO: Obtener ventas reembolsadas
+      const refundedSales = await models.Refund.find({ 
+        status: 'completed',
+        state: 1 
+      }).distinct('sale');
+
+      console.log(`📈 [incomeByPeriod] Excluyendo ${refundedSales.length} ventas reembolsadas`);
 
       // Definir el formato de agrupación según el período
       let dateFormat;
@@ -37,7 +46,13 @@ export default {
       if (user.rol === 'admin') {
         // Admin ve todos los ingresos
         const incomeData = await models.Sale.aggregate([
-          { $match: { status: 'Pagado', createdAt: { $gte: dateRange } } },
+          { 
+            $match: { 
+              status: 'Pagado', 
+              createdAt: { $gte: dateRange },
+              _id: { $nin: refundedSales } // ✅ EXCLUIR reembolsadas
+            } 
+          },
           {
             $group: {
               _id: dateFormat,
@@ -61,7 +76,8 @@ export default {
 
         const sales = await models.Sale.find({
           status: 'Pagado',
-          createdAt: { $gte: dateRange }
+          createdAt: { $gte: dateRange },
+          _id: { $nin: refundedSales } // ✅ EXCLUIR reembolsadas
         });
 
         // Filtrar ventas del instructor y agrupar por período
@@ -106,16 +122,30 @@ export default {
    * REPORTE: Top productos más vendidos
    * Admin: Todos los productos
    * Instructor: Solo sus productos
+   * ✅ MODIFICADO: Excluye ventas reembolsadas
    */
   topProducts: async (req, res) => {
     try {
       const user = req.user;
       const { limit = 10 } = req.query;
 
+      // ✅ NUEVO: Obtener ventas reembolsadas
+      const refundedSales = await models.Refund.find({ 
+        status: 'completed',
+        state: 1 
+      }).distinct('sale');
+
+      console.log(`🏆 [topProducts] Excluyendo ${refundedSales.length} ventas reembolsadas`);
+
       if (user.rol === 'admin') {
         // Admin ve todos los productos
         const topProducts = await models.Sale.aggregate([
-          { $match: { status: 'Pagado' } },
+          { 
+            $match: { 
+              status: 'Pagado',
+              _id: { $nin: refundedSales } // ✅ EXCLUIR reembolsadas
+            } 
+          },
           { $unwind: '$detail' },
           {
             $group: {
@@ -157,7 +187,10 @@ export default {
 
         const allProductIds = [...Object.keys(courseMap), ...Object.keys(projectMap)];
 
-        const sales = await models.Sale.find({ status: 'Pagado' });
+        const sales = await models.Sale.find({ 
+          status: 'Pagado',
+          _id: { $nin: refundedSales } // ✅ EXCLUIR reembolsadas
+        });
 
         const productStats = {};
         
@@ -199,15 +232,29 @@ export default {
    * REPORTE: Ventas por categoría
    * Admin: Todas las categorías
    * Instructor: Solo categorías de sus productos
+   * ✅ MODIFICADO: Excluye ventas reembolsadas
    */
   salesByCategory: async (req, res) => {
     try {
       const user = req.user;
 
+      // ✅ NUEVO: Obtener ventas reembolsadas
+      const refundedSales = await models.Refund.find({ 
+        status: 'completed',
+        state: 1 
+      }).distinct('sale');
+
+      console.log(`📊 [salesByCategory] Excluyendo ${refundedSales.length} ventas reembolsadas`);
+
       if (user.rol === 'admin') {
         // Admin ve todas las categorías
         const salesByCategory = await models.Sale.aggregate([
-          { $match: { status: 'Pagado' } },
+          { 
+            $match: { 
+              status: 'Pagado',
+              _id: { $nin: refundedSales } // ✅ EXCLUIR reembolsadas
+            } 
+          },
           { $unwind: '$detail' },
           {
             $lookup: {
@@ -279,7 +326,10 @@ export default {
           ...instructorProjects.map(p => p._id.toString())
         ];
 
-        const sales = await models.Sale.find({ status: 'Pagado' });
+        const sales = await models.Sale.find({ 
+          status: 'Pagado',
+          _id: { $nin: refundedSales } // ✅ EXCLUIR reembolsadas
+        });
 
         const categoryStats = {};
 
@@ -328,6 +378,7 @@ export default {
   /**
    * REPORTE: Métodos de pago más usados
    * Solo Admin
+   * ✅ MODIFICADO: Excluye ventas reembolsadas
    */
   paymentMethods: async (req, res) => {
     try {
@@ -337,8 +388,21 @@ export default {
         return res.status(403).json({ message: 'Acceso denegado' });
       }
 
+      // ✅ NUEVO: Obtener ventas reembolsadas
+      const refundedSales = await models.Refund.find({ 
+        status: 'completed',
+        state: 1 
+      }).distinct('sale');
+
+      console.log(`💳 [paymentMethods] Excluyendo ${refundedSales.length} ventas reembolsadas`);
+
       const paymentMethods = await models.Sale.aggregate([
-        { $match: { status: 'Pagado' } },
+        { 
+          $match: { 
+            status: 'Pagado',
+            _id: { $nin: refundedSales } // ✅ EXCLUIR reembolsadas
+          } 
+        },
         {
           $group: {
             _id: '$method_payment',
@@ -368,11 +432,20 @@ export default {
   /**
    * REPORTE: Comparativa de períodos
    * Compara ventas actuales vs período anterior
+   * ✅ MODIFICADO: Excluye ventas reembolsadas
    */
   periodComparison: async (req, res) => {
     try {
       const user = req.user;
       const { period = 'month' } = req.query; // 'week', 'month', 'quarter', 'year'
+
+      // ✅ NUEVO: Obtener ventas reembolsadas
+      const refundedSales = await models.Refund.find({ 
+        status: 'completed',
+        state: 1 
+      }).distinct('sale');
+
+      console.log(`📉 [periodComparison] Excluyendo ${refundedSales.length} ventas reembolsadas`);
 
       const now = new Date();
       let currentStart, currentEnd, previousStart, previousEnd;
@@ -407,7 +480,13 @@ export default {
       const getStats = async (start, end) => {
         if (user.rol === 'admin') {
           const result = await models.Sale.aggregate([
-            { $match: { status: 'Pagado', createdAt: { $gte: start, $lte: end } } },
+            { 
+              $match: { 
+                status: 'Pagado', 
+                createdAt: { $gte: start, $lte: end },
+                _id: { $nin: refundedSales } // ✅ EXCLUIR reembolsadas
+              } 
+            },
             {
               $group: {
                 _id: null,
@@ -428,7 +507,8 @@ export default {
 
           const sales = await models.Sale.find({
             status: 'Pagado',
-            createdAt: { $gte: start, $lte: end }
+            createdAt: { $gte: start, $lte: end },
+            _id: { $nin: refundedSales } // ✅ EXCLUIR reembolsadas
           });
 
           let total_sales = 0;
@@ -478,6 +558,498 @@ export default {
     } catch (error) {
       console.error("Error en periodComparison:", error);
       res.status(500).send({ message: 'OCURRIÓ UN ERROR' });
+    }
+  },
+
+  /**
+   * 📋 NUEVO: Lista detallada de ventas
+   * Admin: Todas las ventas
+   * Instructor: Solo sus ventas
+   * Parámetros: start_date, end_date, status, product_type
+   */
+  salesList: async (req, res) => {
+    try {
+      const user = req.user;
+      const { start_date, end_date, status, product_type } = req.query;
+
+      // Construir filtros
+      const matchFilters = { status: 'Pagado' };
+
+      if (start_date || end_date) {
+        matchFilters.createdAt = {};
+        if (start_date) {
+          matchFilters.createdAt.$gte = new Date(start_date);
+        }
+        if (end_date) {
+          const endDateObj = new Date(end_date);
+          endDateObj.setHours(23, 59, 59, 999);
+          matchFilters.createdAt.$lte = endDateObj;
+        }
+      }
+
+      // ✅ Obtener ventas reembolsadas
+      const refundedSales = await models.Refund.find({ 
+        status: 'completed',
+        state: 1 
+      }).distinct('sale');
+
+      // ✅ EXCLUIR ventas reembolsadas
+      matchFilters._id = { $nin: refundedSales };
+
+      console.log(`📋 [salesList] Cargando ventas. Excluyendo ${refundedSales.length} reembolsadas`);
+
+      if (user.rol === 'admin') {
+        // Admin ve todas las ventas
+        let sales = await models.Sale.find(matchFilters)
+          .populate('user', 'name surname email')
+          .sort({ createdAt: -1 });
+
+        // Enriquecer con información de productos
+        const enrichedSales = [];
+        
+        for (const sale of sales) {
+          const saleObj = sale.toObject();
+          saleObj.detail = [];
+
+          for (const item of sale.detail) {
+            let productInfo = null;
+            
+            if (item.product_type === 'course') {
+              productInfo = await models.Course.findById(item.product)
+                .populate('categorie', 'title')
+                .populate('user', 'name surname')
+                .select('title categorie user');
+            } else if (item.product_type === 'project') {
+              productInfo = await models.Project.findById(item.product)
+                .populate('categorie', 'title')
+                .populate('user', 'name surname')
+                .select('title categorie user');
+            }
+
+            saleObj.detail.push({
+              ...item,
+              productDetails: productInfo ? {
+                title: productInfo.title,
+                category: productInfo.categorie?.title || 'Sin categoría',
+                instructor: productInfo.user ? 
+                  `${productInfo.user.name} ${productInfo.user.surname}` : 
+                  'Desconocido'
+              } : null
+            });
+          }
+
+          enrichedSales.push(saleObj);
+        }
+
+        // Filtrar por tipo de producto si se especifica
+        let filteredSales = enrichedSales;
+        if (product_type) {
+          filteredSales = enrichedSales.filter(sale => 
+            sale.detail.some(item => item.product_type === product_type)
+          );
+        }
+
+        return res.status(200).json({ 
+          success: true,
+          sales: filteredSales,
+          total: filteredSales.length
+        });
+
+      } else if (user.rol === 'instructor') {
+        // Instructor ve solo ventas de sus productos
+        const instructorCourses = await models.Course.find({ user: user._id }).select('_id title categorie');
+        const instructorProjects = await models.Project.find({ user: user._id }).select('_id title categorie');
+        
+        const productIds = [
+          ...instructorCourses.map(c => c._id.toString()),
+          ...instructorProjects.map(p => p._id.toString())
+        ];
+
+        const allSales = await models.Sale.find(matchFilters)
+          .populate('user', 'name surname email')
+          .sort({ createdAt: -1 });
+
+        // Filtrar ventas que contengan productos del instructor
+        const instructorSales = [];
+        
+        for (const sale of allSales) {
+          const relevantDetails = sale.detail.filter(item => 
+            productIds.includes(item.product.toString())
+          );
+
+          if (relevantDetails.length > 0) {
+            const saleObj = sale.toObject();
+            saleObj.detail = relevantDetails.map(item => {
+              let productInfo = null;
+              
+              if (item.product_type === 'course') {
+                productInfo = instructorCourses.find(c => 
+                  c._id.toString() === item.product.toString()
+                );
+              } else if (item.product_type === 'project') {
+                productInfo = instructorProjects.find(p => 
+                  p._id.toString() === item.product.toString()
+                );
+              }
+
+              return {
+                ...item,
+                productDetails: productInfo ? {
+                  title: productInfo.title,
+                  category: productInfo.categorie?.title || 'Sin categoría',
+                  instructor: `${user.name} ${user.surname}`
+                } : null
+              };
+            });
+
+            // Recalcular total solo con productos del instructor
+            saleObj.instructorTotal = relevantDetails.reduce(
+              (sum, item) => sum + item.price_unit, 0
+            );
+
+            instructorSales.push(saleObj);
+          }
+        }
+
+        // Filtrar por tipo de producto si se especifica
+        let filteredSales = instructorSales;
+        if (product_type) {
+          filteredSales = instructorSales.filter(sale => 
+            sale.detail.some(item => item.product_type === product_type)
+          );
+        }
+
+        return res.status(200).json({ 
+          success: true,
+          sales: filteredSales,
+          total: filteredSales.length
+        });
+      }
+
+      return res.status(403).json({ message: 'Acceso denegado' });
+
+    } catch (error) {
+      console.error("Error en salesList:", error);
+      res.status(500).send({ message: 'OCURRIÓ UN ERROR' });
+    }
+  },
+
+  /**
+   * ✅ NUEVO: REPORTE de Reembolsos
+   * Estadísticas completas de reembolsos
+   * Solo Admin
+   */
+  refundStatistics: async (req, res) => {
+    try {
+      console.log('📊 [refundStatistics] Generando reporte completo de reembolsos...');
+      
+      const user = req.user;
+      const { start_date, end_date, status } = req.query;
+
+      if (user.rol !== 'admin') {
+        console.error('❌ [refundStatistics] Acceso denegado para usuario no-admin');
+        return res.status(403).json({ message: 'Acceso denegado' });
+      }
+
+      console.log(`   • Usuario: ${user.name} (${user.rol})`);
+      console.log(`   • Fechas: ${start_date} - ${end_date}`);
+      console.log(`   • Estado: ${status || 'todos'}`);
+
+      // Construir filtro
+      const matchFilter = { state: 1 };
+
+      // Filtro por estado
+      if (status) {
+        matchFilter.status = status;
+      }
+
+      // Filtro por fechas
+      if (start_date || end_date) {
+        matchFilter.requestedAt = {};
+        if (start_date) matchFilter.requestedAt.$gte = new Date(start_date);
+        if (end_date) {
+          const endDateTime = new Date(end_date);
+          endDateTime.setHours(23, 59, 59, 999);
+          matchFilter.requestedAt.$lte = endDateTime;
+        }
+      }
+
+      // Obtener todos los reembolsos con filtro
+      const refunds = await models.Refund.find(matchFilter)
+        .populate('user', 'name surname email')
+        .populate('course', 'title')
+        .populate('project', 'title')
+        .populate('sale', 'n_transaccion total')
+        .sort({ requestedAt: -1 })
+        .lean();
+
+      console.log(`   📋 Reembolsos encontrados: ${refunds.length}`);
+
+      // Total de reembolsos por estado
+      const refundsByStatus = await models.Refund.aggregate([
+        { $match: { state: 1 } },
+        {
+          $group: {
+            _id: '$status',
+            count: { $sum: 1 },
+            totalAmount: { $sum: '$originalAmount' }
+          }
+        }
+      ]);
+
+      // Reembolsos completados para calcular totales
+      const completedRefunds = refunds.filter(r => r.status === 'completed');
+
+      const totalRefunded = completedRefunds.reduce((sum, r) => {
+        return sum + (r.calculations?.refundAmount || r.originalAmount || 0);
+      }, 0);
+
+      const totalPlatformFees = completedRefunds.reduce((sum, r) => {
+        return sum + (r.calculations?.platformFee || 0);
+      }, 0);
+
+      const totalProcessingFees = completedRefunds.reduce((sum, r) => {
+        return sum + (r.calculations?.processingFee || 0);
+      }, 0);
+
+      // Pendientes de aprobación
+      const pendingApproval = await models.Refund.countDocuments({ 
+        status: 'pending',
+        state: 1 
+      });
+
+      // Formatear reembolsos para el frontend
+      const formattedRefunds = refunds.map(r => ({
+        _id: r._id,
+        user: {
+          name: r.user?.name || 'Usuario',
+          surname: r.user?.surname || 'Desconocido',
+          email: r.user?.email || 'Sin email'
+        },
+        product: r.course ? {
+          type: 'course',
+          title: r.course.title
+        } : r.project ? {
+          type: 'project',
+          title: r.project.title
+        } : null,
+        originalAmount: r.originalAmount,
+        refundAmount: r.calculations?.refundAmount || r.originalAmount,
+        status: r.status,
+        reason: r.reason?.type || 'No especificado',
+        reasonDescription: r.reason?.description || '',
+        requestedAt: r.requestedAt,
+        completedAt: r.completedAt,
+        transactionId: r.sale?.n_transaccion || 'N/A'
+      }));
+
+      // Calcular estadísticas
+      const stats = {
+        totalRefunds: refunds.length,
+        totalAmount: refunds.reduce((sum, r) => sum + r.originalAmount, 0),
+        totalRefunded: totalRefunded,
+        pending: refunds.filter(r => r.status === 'pending').length,
+        processing: refunds.filter(r => r.status === 'processing').length,
+        completed: completedRefunds.length,
+        rejected: refunds.filter(r => r.status === 'rejected').length
+      };
+
+      console.log('   📊 Estadísticas:');
+      console.log(`      • Total reembolsos: ${stats.totalRefunds}`);
+      console.log(`      • Monto total: ${stats.totalAmount.toFixed(2)}`);
+      console.log(`      • Pendientes: ${stats.pending}`);
+      console.log(`      • Completados: ${stats.completed}`);
+
+      console.log('✅ [refundStatistics] Reporte generado exitosamente');
+
+      return res.status(200).json({
+        success: true,
+        refunds: formattedRefunds,
+        stats: stats,
+        byStatus: refundsByStatus
+      });
+
+    } catch (error) {
+      console.error('❌ [refundStatistics] Error:', error);
+      console.error('Stack:', error.stack);
+      res.status(500).json({
+        success: false,
+        message: 'Error al generar el reporte de reembolsos',
+        error: error.message
+      });
+    }
+  },
+
+  /**
+   * 📊 REPORTE COMPLETO DE VENTAS (Para el tab de ventas)
+   * Admin: Ve todas las ventas
+   * Instructor: Ve solo ventas con sus productos
+   * ✅ Excluye ventas reembolsadas
+   * ✅ Devuelve datos formateados para el frontend
+   */
+  salesReport: async (req, res) => {
+    try {
+      console.log('📊 [salesReport] Generando reporte completo de ventas...');
+      
+      const user = req.user;
+      const { start_date, end_date, product_type } = req.query;
+
+      console.log(`   • Usuario: ${user.name} (${user.rol})`);
+      console.log(`   • Fechas: ${start_date} - ${end_date}`);
+      console.log(`   • Tipo producto: ${product_type || 'todos'}`);
+
+      // ✅ Obtener ventas reembolsadas para excluirlas
+      const refundedSales = await models.Refund.find({
+        status: 'completed',
+        state: 1
+      }).distinct('sale');
+
+      console.log(`   🚫 Excluyendo ${refundedSales.length} ventas reembolsadas`);
+
+      // 📅 Construir filtro de fechas
+      let dateFilter = {};
+      if (start_date || end_date) {
+        dateFilter.createdAt = {};
+        if (start_date) dateFilter.createdAt.$gte = new Date(start_date);
+        if (end_date) {
+          const endDateTime = new Date(end_date);
+          endDateTime.setHours(23, 59, 59, 999);
+          dateFilter.createdAt.$lte = endDateTime;
+        }
+      }
+
+      // 🔐 Filtrar según rol del usuario
+      let sales;
+      let allProductIdStrings = [];
+      
+      if (user.rol === 'admin') {
+        // Admin ve todas las ventas
+        console.log('   👑 Modo Admin: Obteniendo todas las ventas');
+        
+        sales = await models.Sale.find({
+          status: 'Pagado',
+          _id: { $nin: refundedSales },
+          ...dateFilter
+        })
+        .populate('user', 'name surname email')
+        .populate('detail.product', 'title _id')
+        .sort({ createdAt: -1 })
+        .lean();
+
+        console.log(`   ✅ Encontradas ${sales.length} ventas totales`);
+
+      } else if (user.rol === 'instructor') {
+        // Instructor solo ve ventas con SUS productos
+        console.log('   👨‍🏫 Modo Instructor: Filtrando por productos propios');
+        
+        const instructorCourses = await models.Course.find({ user: user._id }).select('_id title');
+        const instructorProjects = await models.Project.find({ user: user._id }).select('_id title');
+        
+        const courseIds = instructorCourses.map(c => c._id);
+        const projectIds = instructorProjects.map(p => p._id);
+        const allProductIds = [...courseIds, ...projectIds];
+        allProductIdStrings = allProductIds.map(id => id.toString());
+
+        console.log(`   • Productos del instructor: ${allProductIds.length}`);
+
+        // Obtener ventas que contengan al menos uno de sus productos
+        sales = await models.Sale.find({
+          status: 'Pagado',
+          _id: { $nin: refundedSales },
+          ...dateFilter,
+          'detail.product': { $in: allProductIds }
+        })
+        .populate('user', 'name surname email')
+        .populate('detail.product', 'title _id')
+        .sort({ createdAt: -1 })
+        .lean();
+
+        console.log(`   ✅ Encontradas ${sales.length} ventas del instructor`);
+      }
+
+      // 🔄 Formatear los datos para el frontend
+      console.log('   🔄 Formateando datos para el frontend...');
+      
+      const formattedSales = [];
+
+      for (const sale of sales) {
+        // Para cada detalle de la venta
+        for (const item of sale.detail) {
+          // Si es instructor, verificar que el producto sea suyo
+          if (user.rol === 'instructor') {
+            const productId = item.product?._id || item.product;
+            const isOwn = allProductIdStrings.includes(productId.toString());
+            if (!isOwn) continue; // Skip productos que no son del instructor
+          }
+
+          // Filtrar por tipo de producto si se especificó
+          if (product_type && item.product_type !== product_type) {
+            continue;
+          }
+
+          // Determinar si es curso o proyecto
+          const isCourse = item.product_type === 'course';
+          const productData = item.product || {};
+
+          formattedSales.push({
+            _id: `${sale._id}_${item._id || Math.random()}`,
+            course: isCourse ? {
+              _id: productData._id || productData,
+              title: productData.title || item.title || 'Curso sin título'
+            } : null,
+            project: !isCourse ? {
+              _id: productData._id || productData,
+              title: productData.title || item.title || 'Proyecto sin título'
+            } : null,
+            user: {
+              name: sale.user?.name || 'Usuario',
+              surname: sale.user?.surname || 'Desconocido',
+              email: sale.user?.email || 'Sin email'
+            },
+            salePrice: item.price_unit,
+            dateCreated: sale.createdAt,
+            paymentMethod: sale.method_payment || 'N/A',
+            transactionId: sale.n_transaccion
+          });
+        }
+      }
+
+      console.log(`   ✅ Formateadas ${formattedSales.length} ventas individuales`);
+
+      // 📊 Calcular estadísticas
+      const stats = {
+        totalSales: formattedSales.length,
+        totalRevenue: formattedSales.reduce((sum, s) => sum + s.salePrice, 0),
+        averageTicket: formattedSales.length > 0 
+          ? formattedSales.reduce((sum, s) => sum + s.salePrice, 0) / formattedSales.length 
+          : 0,
+        coursesSales: formattedSales.filter(s => s.course).length,
+        projectsSales: formattedSales.filter(s => s.project).length
+      };
+
+      console.log('   📊 Estadísticas:');
+      console.log(`      • Total ventas: ${stats.totalSales}`);
+      console.log(`      • Ingresos totales: ${stats.totalRevenue.toFixed(2)}`);
+      console.log(`      • Ticket promedio: ${stats.averageTicket.toFixed(2)}`);
+      console.log(`      • Cursos: ${stats.coursesSales}`);
+      console.log(`      • Proyectos: ${stats.projectsSales}`);
+
+      console.log('✅ [salesReport] Reporte generado exitosamente');
+
+      res.status(200).json({
+        success: true,
+        sales: formattedSales,
+        stats: stats
+      });
+
+    } catch (error) {
+      console.error('❌ [salesReport] Error:', error);
+      console.error('Stack:', error.stack);
+      res.status(500).json({
+        success: false,
+        message: 'Error al generar el reporte de ventas',
+        error: error.message
+      });
     }
   }
 };

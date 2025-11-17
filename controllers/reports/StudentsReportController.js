@@ -332,5 +332,217 @@ export default {
       console.error("Error en topStudents:", error);
       res.status(500).send({ message: 'OCURRIÓ UN ERROR' });
     }
+  },
+
+  /**
+   * 📊 REPORTE COMPLETO DE ESTUDIANTES (Para el tab de estudiantes)
+   * Admin: Ve todos los estudiantes
+   * Instructor: Ve solo sus estudiantes (inscritos en sus cursos)
+   * ✅ Devuelve datos formateados para el frontend
+   */
+  studentsReport: async (req, res) => {
+    try {
+      console.log('📊 [studentsReport] Generando reporte completo de estudiantes...');
+      
+      const user = req.user;
+      const { start_date, end_date } = req.query;
+
+      console.log(`   • Usuario: ${user.name} (${user.rol})`);
+      console.log(`   • Fechas: ${start_date} - ${end_date}`);
+
+      // 📅 Construir filtro de fechas
+      let dateFilter = {};
+      if (start_date || end_date) {
+        dateFilter.createdAt = {};
+        if (start_date) dateFilter.createdAt.$gte = new Date(start_date);
+        if (end_date) {
+          const endDateTime = new Date(end_date);
+          endDateTime.setHours(23, 59, 59, 999);
+          dateFilter.createdAt.$lte = endDateTime;
+        }
+      }
+
+      if (user.rol === 'admin') {
+        // Admin ve todos los estudiantes
+        console.log('   👑 Modo Admin: Obteniendo todos los estudiantes');
+        
+        const students = await models.User.find({
+          rol: 'cliente',
+          ...dateFilter
+        })
+        .sort({ createdAt: -1 })
+        .lean();
+
+        // Obtener estadísticas de cada estudiante
+        const enrichedStudents = [];
+        
+        for (const student of students) {
+          // Contar cursos inscritos
+          const enrolledCourses = await models.CourseStudent.countDocuments({
+            user: student._id
+          });
+
+          // Calcular total gastado
+          const purchases = await models.Sale.find({
+            user: student._id,
+            status: 'Pagado'
+          });
+
+          const totalSpent = purchases.reduce((sum, sale) => sum + sale.total, 0);
+          const totalPurchases = purchases.length;
+
+          enrichedStudents.push({
+            _id: student._id,
+            name: student.name,
+            surname: student.surname,
+            email: student.email,
+            enrolledCourses,
+            totalPurchases,
+            totalSpent,
+            dateJoined: student.createdAt
+          });
+        }
+
+        console.log(`   ✅ Encontrados ${enrichedStudents.length} estudiantes`);
+
+        // Calcular estadísticas
+        const stats = {
+          totalStudents: enrichedStudents.length,
+          totalEnrollments: enrichedStudents.reduce((sum, s) => sum + s.enrolledCourses, 0),
+          totalRevenue: enrichedStudents.reduce((sum, s) => sum + s.totalSpent, 0),
+          averageSpent: enrichedStudents.length > 0 
+            ? enrichedStudents.reduce((sum, s) => sum + s.totalSpent, 0) / enrichedStudents.length 
+            : 0
+        };
+
+        console.log('   📊 Estadísticas:');
+        console.log(`      • Total estudiantes: ${stats.totalStudents}`);
+        console.log(`      • Total inscripciones: ${stats.totalEnrollments}`);
+        console.log(`      • Ingresos totales: ${stats.totalRevenue.toFixed(2)}`);
+        console.log(`      • Gasto promedio: ${stats.averageSpent.toFixed(2)}`);
+
+        return res.status(200).json({
+          success: true,
+          students: enrichedStudents,
+          stats: stats
+        });
+
+      } else if (user.rol === 'instructor') {
+        // Instructor ve solo estudiantes de sus cursos
+        console.log('   👨‍🏫 Modo Instructor: Filtrando por cursos propios');
+        
+        const instructorCourses = await models.Course.find({ user: user._id }).select('_id title');
+        const courseIds = instructorCourses.map(c => c._id);
+
+        console.log(`   • Cursos del instructor: ${courseIds.length}`);
+
+        // Obtener estudiantes inscritos en esos cursos
+        const enrollments = await models.CourseStudent.find({
+          course: { $in: courseIds },
+          ...dateFilter
+        })
+        .populate('user', 'name surname email createdAt')
+        .populate('course', 'title')
+        .lean();
+
+        // Agrupar por estudiante
+        const studentMap = new Map();
+
+        for (const enrollment of enrollments) {
+          if (!enrollment.user) continue;
+
+          const studentId = enrollment.user._id.toString();
+          
+          if (!studentMap.has(studentId)) {
+            studentMap.set(studentId, {
+              _id: enrollment.user._id,
+              name: enrollment.user.name,
+              surname: enrollment.user.surname,
+              email: enrollment.user.email,
+              dateJoined: enrollment.user.createdAt,
+              enrolledCourses: [],
+              totalPurchases: 0,
+              totalSpent: 0
+            });
+          }
+
+          const student = studentMap.get(studentId);
+          student.enrolledCourses.push(enrollment.course?.title || 'Sin título');
+        }
+
+        // Calcular compras de cada estudiante (solo de productos del instructor)
+        const instructorProjects = await models.Project.find({ user: user._id }).select('_id');
+        const productIds = [
+          ...courseIds.map(id => id.toString()),
+          ...instructorProjects.map(p => p._id.toString())
+        ];
+
+        const sales = await models.Sale.find({
+          status: 'Pagado',
+          ...dateFilter
+        }).lean();
+
+        for (const sale of sales) {
+          const studentId = sale.user.toString();
+          
+          if (!studentMap.has(studentId)) continue;
+
+          let studentSpent = 0;
+          let hasPurchase = false;
+
+          sale.detail.forEach(item => {
+            if (productIds.includes(item.product.toString())) {
+              studentSpent += item.price_unit;
+              hasPurchase = true;
+            }
+          });
+
+          if (hasPurchase) {
+            const student = studentMap.get(studentId);
+            student.totalPurchases++;
+            student.totalSpent += studentSpent;
+          }
+        }
+
+        const enrichedStudents = Array.from(studentMap.values()).map(s => ({
+          ...s,
+          enrolledCourses: s.enrolledCourses.length
+        }));
+
+        console.log(`   ✅ Encontrados ${enrichedStudents.length} estudiantes del instructor`);
+
+        // Calcular estadísticas
+        const stats = {
+          totalStudents: enrichedStudents.length,
+          totalEnrollments: enrichedStudents.reduce((sum, s) => sum + s.enrolledCourses, 0),
+          totalRevenue: enrichedStudents.reduce((sum, s) => sum + s.totalSpent, 0),
+          averageSpent: enrichedStudents.length > 0 
+            ? enrichedStudents.reduce((sum, s) => sum + s.totalSpent, 0) / enrichedStudents.length 
+            : 0
+        };
+
+        console.log('   📊 Estadísticas:');
+        console.log(`      • Total estudiantes: ${stats.totalStudents}`);
+        console.log(`      • Total inscripciones: ${stats.totalEnrollments}`);
+        console.log(`      • Ingresos totales: ${stats.totalRevenue.toFixed(2)}`);
+
+        return res.status(200).json({
+          success: true,
+          students: enrichedStudents,
+          stats: stats
+        });
+      }
+
+      return res.status(403).json({ message: 'Acceso denegado' });
+
+    } catch (error) {
+      console.error('❌ [studentsReport] Error:', error);
+      console.error('Stack:', error.stack);
+      res.status(500).json({
+        success: false,
+        message: 'Error al generar el reporte de estudiantes',
+        error: error.message
+      });
+    }
   }
 };

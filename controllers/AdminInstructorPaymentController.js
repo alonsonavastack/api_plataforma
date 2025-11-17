@@ -22,12 +22,26 @@ import { groupEarningsByMonth, getDateRange } from '../utils/dateHelpers.js';
  */
 export const getInstructorsWithEarnings = async (req, res) => {
     try {
-        const { status = 'available', minAmount = 0 } = req.query;
+        const { status = 'all', minAmount = 0 } = req.query;
+
+        console.log(`🔍 [AdminPayments] Buscando instructores con status='${status}', minAmount=${minAmount}`);
+
+        // Construir filtro de status
+        // 🔥 CLAVE: Si status='all', no filtrar por status para ver TODAS las ganancias
+        const statusFilter = status !== 'all' ? { status } : {};
+
+        console.log('📊 [AdminPayments] Filtro de status:', statusFilter);
 
         // Obtener todos los instructores que tienen ganancias
+        // 🔥 EXCLUIR GANANCIAS REEMBOLSADAS Y PAGADAS
         const earningsAggregation = await InstructorEarnings.aggregate([
             {
-                $match: status !== 'all' ? { status } : {}
+                $match: {
+                    ...statusFilter,
+                    status: { 
+                        $nin: ['refunded', 'paid', 'completed'] // 🔥 No contar reembolsadas NI pagadas
+                    }
+                }
             },
             {
                 $group: {
@@ -47,6 +61,12 @@ export const getInstructorsWithEarnings = async (req, res) => {
                 $sort: { totalEarnings: -1 }
             }
         ]);
+
+        console.log(`✅ [AdminPayments] Encontrados ${earningsAggregation.length} instructores con ganancias`);
+        console.log(`📊 [AdminPayments] Desglose:`);
+        for (const item of earningsAggregation) {
+            console.log(`   • Instructor ${item._id}: ${item.totalEarnings.toFixed(2)} (${item.count} items)`);
+        }
 
         // Poblar información de instructores
         const instructorsWithEarnings = await Promise.all(
@@ -117,11 +137,21 @@ export const getInstructorEarnings = async (req, res) => {
         }
 
         // Obtener earnings
+        console.log(`🔍 [getInstructorEarnings] Buscando earnings con filtros:`, filters);
+        
         const earnings = await InstructorEarnings.find(filters)
             .populate('course', 'title imagen')
             .populate('product_id')
             .populate('sale', 'n_transaccion created_at user')
             .sort({ earned_at: -1 });
+        
+        console.log(`✅ [getInstructorEarnings] Encontrados ${earnings.length} earnings`);
+        console.log(`📊 [getInstructorEarnings] Desglose por estado:`);
+        const countByStatus = {};
+        earnings.forEach(e => {
+            countByStatus[e.status] = (countByStatus[e.status] || 0) + 1;
+        });
+        console.log(`   Estados:`, countByStatus);
         
         // Formatear earnings para mostrar curso o proyecto correctamente
         const formattedEarnings = earnings.map(earning => {
@@ -196,6 +226,45 @@ export const createPayment = async (req, res) => {
                 message: 'Algunas ganancias no están disponibles o no pertenecen al instructor'
             });
         }
+
+        // 🔥 VALIDACIÓN ADICIONAL: Verificar reembolsos
+        console.log('🔒 [createPayment] Verificando reembolsos...');
+        
+        const Refund = (await import('../models/Refund.js')).default;
+        const earningsWithRefund = [];
+        const validEarnings = [];
+        
+        for (const earning of earnings) {
+            // Verificar si tiene reembolso completado
+            const refund = await Refund.findOne({
+                sale: earning.sale,
+                status: 'completed'
+            });
+            
+            if (refund || earning.status === 'refunded') {
+                earningsWithRefund.push({
+                    earning_id: earning._id,
+                    sale_id: earning.sale,
+                    refund_id: refund?._id,
+                    status: earning.status
+                });
+            } else {
+                validEarnings.push(earning);
+            }
+        }
+
+        if (earningsWithRefund.length > 0) {
+            console.log('❌ [createPayment] Ganancias con reembolso detectadas:', earningsWithRefund.length);
+            
+            return res.status(400).json({
+                success: false,
+                message: 'Algunas ganancias seleccionadas tienen reembolsos completados',
+                earnings_with_refund: earningsWithRefund,
+                valid_earnings: validEarnings.map(e => e._id)
+            });
+        }
+
+        console.log('✅ [createPayment] Todas las ganancias son válidas');
 
         // Calcular totales
         const totalEarnings = earnings.reduce((sum, e) => sum + e.instructor_earning, 0);

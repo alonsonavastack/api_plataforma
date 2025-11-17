@@ -43,40 +43,75 @@ export const register = async(req,res) => {
     };
 export const update = async(req,res) => {
         try {
-            // TITLE
-            // NUEVA IMAGEN
-            // _ID
-            // STATE
-            const VALID_CATEGORIE = await models.Categorie.findOne({title: req.body.title, _id: {$ne: req.body._id}});
+            // Buscar la categoría actual ANTES de hacer cambios
+            const oldCategorie = await models.Categorie.findById(req.body._id);
+            
+            if (!oldCategorie) {
+                return res.status(404).json({
+                    message: 404,
+                    message_text: 'CATEGORIA NO ENCONTRADA'
+                });
+            }
+
+            // Validar título duplicado
+            const VALID_CATEGORIE = await models.Categorie.findOne({
+                title: req.body.title, 
+                _id: {$ne: req.body._id}
+            });
+            
             if(VALID_CATEGORIE){
-                res.status(200).json({
+                return res.status(200).json({
                     message: 403,
                     message_text: 'LA CATEGORIA YA EXISTE'
                 });
-                return;
             }
 
+            // 🎯 CRÍTICO: Manejo correcto de imágenes
             if(req.files && req.files.imagen){
-                // Si se sube una nueva imagen, eliminamos la anterior.
-                const oldCategorie = await models.Categorie.findById(req.body._id);
-                if (oldCategorie.imagen && fs.existsSync(path.join(__dirname, '../uploads/categorie/', oldCategorie.imagen))) {
-                    fs.unlinkSync(path.join(__dirname, '../uploads/categorie/', oldCategorie.imagen));
+                // Si se sube una nueva imagen, eliminamos la anterior
+                if (oldCategorie.imagen) {
+                    const oldImagePath = path.join(__dirname, '../uploads/categorie/', oldCategorie.imagen);
+                    if (fs.existsSync(oldImagePath)) {
+                        try {
+                            fs.unlinkSync(oldImagePath);
+                            console.log('✅ Imagen anterior eliminada:', oldCategorie.imagen);
+                        } catch (err) {
+                            console.warn('⚠️ No se pudo eliminar imagen anterior:', err);
+                        }
+                    }
                 }
 
+                // Guardar la nueva imagen
                 const img_path = req.files.imagen.path;
                 const imagen_name = path.basename(img_path);
                 req.body.imagen = imagen_name;
+                
+                console.log('✅ Nueva imagen guardada:', imagen_name);
+            } else {
+                // 🔥 IMPORTANTE: Si NO se sube imagen nueva, mantener la anterior
+                if (oldCategorie.imagen) {
+                    req.body.imagen = oldCategorie.imagen;
+                    console.log('✅ Manteniendo imagen anterior:', oldCategorie.imagen);
+                }
             }
 
-            const NEditCategorie = await models.Categorie.findByIdAndUpdate(req.body._id, req.body, { new: true });
+            // Actualizar la categoría
+            const NEditCategorie = await models.Categorie.findByIdAndUpdate(
+                req.body._id, 
+                req.body, 
+                { new: true }
+            );
+
+            console.log('✅ Categoría actualizada:', NEditCategorie.title);
 
             res.status(200).json({
                 categorie: resource.Categorie.api_resource_categorie(NEditCategorie),
-            })
+            });
+            
         } catch (error) {
-            console.log(error);
+            console.error('❌ Error en update:', error);
             res.status(500).json({
-                message: 'Hubo un error'
+                message: 'Hubo un error al actualizar la categoría'
             });
         }
     };
@@ -154,26 +189,31 @@ export const remove = async(req,res) => {
 export const get_imagen = async(req,res) => {
         try {
             const img = req.params["img"];
+            
             if(!img){
-                res.status(500).send({
-                    message: 'OCURRIO UN PROBLEMA'
+                return res.status(400).send({
+                    message: 'NO SE PROPORCIONÓ NOMBRE DE IMAGEN'
                 });
-            }else{
-                fs.stat('./uploads/categorie/'+img, function(err) {
-                    if(!err){
-                        let path_img = './uploads/categorie/'+img;
-                        res.status(200).sendFile(path.resolve(path_img));
-                    }else{
-                        let path_img = path.join(__dirname, '../uploads/default.jpg');
-                        res.status(200).sendFile(path.resolve(path_img));
-                    }
-                })
             }
-        } catch (error) {
-            console.log(error);
-            res.status(500).send({
-                message: 'OCURRIO UN PROBLEMA'
+
+            const imagePath = path.join(__dirname, '../uploads/categorie/', img);
+            
+            fs.stat(imagePath, function(err) {
+                if(!err && fs.existsSync(imagePath)){
+                    // Imagen existe, enviarla
+                    res.status(200).sendFile(path.resolve(imagePath));
+                } else {
+                    // Imagen no existe, enviar placeholder
+                    console.warn('⚠️ Imagen no encontrada:', img);
+                    const defaultPath = path.join(__dirname, '../uploads/default.jpg');
+                    res.status(200).sendFile(path.resolve(defaultPath));
+                }
             });
+            
+        } catch (error) {
+            console.error('❌ Error en get_imagen:', error);
+            const defaultPath = path.join(__dirname, '../uploads/default.jpg');
+            res.status(200).sendFile(path.resolve(defaultPath));
         }
     };
 

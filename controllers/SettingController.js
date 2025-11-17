@@ -36,22 +36,12 @@ export default {
 
       const settings = await models.Setting.find().sort({ group: 1, key: 1 });
 
-      // Formatear respuesta agrupada
-      const formattedSettings = {};
-      settings.forEach(setting => {
-        formattedSettings[setting.key] = {
-          value: setting.value,
-          name: setting.name,
-          description: setting.description,
-          group: setting.group
-        };
-      });
+      console.log('✅ [SETTINGS] Configuración obtenida:', settings.length, 'registros');
 
-      console.log('✅ [SETTINGS] Configuración obtenida:', Object.keys(formattedSettings));
-
+      // 🔥 Devolver array directo (el frontend espera array, no objeto)
       res.status(200).json({
         success: true,
-        settings: formattedSettings
+        settings: settings // Array de documentos Setting
       });
 
     } catch (error) {
@@ -71,27 +61,51 @@ export default {
     try {
       console.log('📝 [SETTINGS] Actualizando configuración:', req.body);
 
-      const updates = req.body;
+      let updates;
       const results = [];
 
-      // Actualizar o crear cada configuración
-      for (const [key, value] of Object.entries(updates)) {
-        // Saltar campos que no son configuraciones
-        if (key === 'logo' || key === 'currentLogo') continue;
+      // 🔥 Soportar ambos formatos:
+      // 1. Array: { settings: [{ key, value }, ...] }
+      // 2. Objeto: { key1: value1, key2: value2, ... }
+      if (req.body.settings && Array.isArray(req.body.settings)) {
+        // Formato array (desde appearance component)
+        updates = req.body.settings;
+        
+        for (const item of updates) {
+          const setting = await models.Setting.findOneAndUpdate(
+            { key: item.key },
+            { 
+              key: item.key,
+              value: item.value,
+              name: getSettingName(item.key),
+              description: getSettingDescription(item.key),
+              group: getSettingGroup(item.key)
+            },
+            { upsert: true, new: true }
+          );
+          results.push(setting);
+        }
+      } else {
+        // Formato objeto (desde system-config component)
+        updates = req.body;
+        
+        for (const [key, value] of Object.entries(updates)) {
+          // Saltar campos que no son configuraciones
+          if (key === 'logo' || key === 'currentLogo' || key === 'settings') continue;
 
-        const setting = await models.Setting.findOneAndUpdate(
-          { key },
-          { 
-            key,
-            value,
-            name: getSettingName(key),
-            description: getSettingDescription(key),
-            group: getSettingGroup(key)
-          },
-          { upsert: true, new: true }
-        );
-
-        results.push(setting);
+          const setting = await models.Setting.findOneAndUpdate(
+            { key },
+            { 
+              key,
+              value,
+              name: getSettingName(key),
+              description: getSettingDescription(key),
+              group: getSettingGroup(key)
+            },
+            { upsert: true, new: true }
+          );
+          results.push(setting);
+        }
       }
 
       console.log('✅ [SETTINGS] Configuración actualizada:', results.length, 'registros');

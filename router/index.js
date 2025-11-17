@@ -18,7 +18,10 @@ import SettingRouter from './Setting.js'; // Importamos el nuevo router
 import ReportsRouter from './Reports.js'; // Nuevo router para reportes
 import CarouselRouter from './Carousel.js'; // Importamos el router del carrusel
 import ReviewRouter from './Review.js'; // Importamos el router de reviews/calificaciones
-import SystemConfigRouter from './SystemConfig.js'; // Router de configuración del sistema
+import ShortUrlRouter from './short-url.js'; // 🆕 Router de short URLs
+import RefundRouter from './Refund.js'; // 💸 Router de reembolsos
+import SystemConfigRouter from './SystemConfig.js'; // 🆕 Router de configuración del sistema
+import WalletRouter from './Wallet.js'; // 💰 Router de billetera digital
 
 // SISTEMA DE PAGOS A INSTRUCTORES
 import InstructorPaymentRouter from './InstructorPayment.js';
@@ -43,7 +46,7 @@ router.use('/cart',Cart);
 router.use('/checkout',Sale);
 router.use('/sales',Sale); // Agregado para notificaciones
 router.use('/profile-student',ProfileStudent);
-router.use('/project',Project); // Corregido: de plural a singular
+router.use('/projects',Project); // Cambiado a plural para consistencia
 router.use('/profile-instructor', ProfileInstructorRouter);
 router.use('/profile-admin', ProfileAdminRouter);
 router.use('/dashboard', DashboardRouter);
@@ -51,7 +54,10 @@ router.use('/settings', SettingRouter); // Usamos el nuevo router para settings
 router.use('/reports', ReportsRouter); // Rutas de reportes
 router.use('/carousel', CarouselRouter); // Usamos el router del carrusel
 router.use('/reviews', ReviewRouter); // Rutas de reviews/calificaciones
-router.use('/system-config', SystemConfigRouter); // Rutas de configuración del sistema
+router.use('/short-url', ShortUrlRouter); // 🆕 Rutas de short URLs
+router.use('/refunds', RefundRouter); // 💸 Rutas de reembolsos
+router.use('/system-config', SystemConfigRouter); // 🆕 Rutas de configuración del sistema
+router.use('/wallet', WalletRouter); // 💰 Rutas de billetera digital
 
 // SISTEMA DE PAGOS A INSTRUCTORES
 router.use('/instructor', InstructorPaymentRouter); // Rutas para instructores

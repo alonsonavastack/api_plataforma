@@ -14,4 +14,8 @@ router.put('/update', auth.verifyTienda, ProfileStudentController.update); // Ya
 router.post('/update-password', auth.verifyTienda, ProfileStudentController.updatePassword); // Nueva ruta para cambiar contraseña
 router.put('/update-avatar', [ path, auth.verifyTienda], ProfileStudentController.update_avatar); // Nueva ruta para el avatar
 
+// Ruta para solicitar un reembolso
+router.post('/request-refund', auth.verifyTienda, ProfileStudentController.requestRefund);
+
+
 export default router;

@@ -7,7 +7,7 @@ export default {
 
         // Construye la URL de la imagen correctamente dependiendo del tipo de producto.
         const imagePath = cart.product_type === 'project' 
-            ? `project/imagen-project/${cart.product.imagen}` 
+            ? `projects/imagen-project/${cart.product.imagen}`  // ✅ projects (plural) - CORREGIDO
             : `courses/imagen-course/${cart.product.imagen}`;
 
         const product_info = {

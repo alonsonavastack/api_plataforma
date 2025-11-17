@@ -4,9 +4,9 @@ import auth from '../service/auth.js';
 
 const router = routerx();
 
-router.post("/register",[auth.verifyAdmin],courseSectionController.register);
-router.put("/update",[auth.verifyAdmin],courseSectionController.update);
-router.get("/list",[auth.verifyAdmin],courseSectionController.list);
-router.delete("/remove/:id",[auth.verifyAdmin],courseSectionController.remove);
+router.post("/register",auth.verifyInstructor,courseSectionController.register);
+router.put("/update",auth.verifyInstructor,courseSectionController.update);
+router.get("/list",auth.verifyInstructor,courseSectionController.list);
+router.delete("/remove/:id",auth.verifyInstructor,courseSectionController.remove);
 
 export default router;

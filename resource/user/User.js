@@ -11,6 +11,7 @@ export default {
             rol:user.rol,
             state: user.state,
             avatar: user.avatar,
+            slug: user.slug, // 🆕 NUEVO: Slug único para perfiles públicos
             // 🆕 REDES SOCIALES (desde socialMedia)
             facebook: user.socialMedia?.facebook,
             instagram: user.socialMedia?.instagram,

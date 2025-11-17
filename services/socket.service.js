@@ -130,3 +130,35 @@ export function emitToInstructor(instructorId, eventName, data) {
     io.to(`instructor_${instructorId}`).emit(eventName, data);
     console.log(`📢 Evento "${eventName}" emitido al instructor ${instructorId}`);
 }
+
+/**
+ * Emite una nueva solicitud de reembolso a los administradores
+ * @param {*} refund - Datos del reembolso con usuario y venta poblados
+ */
+export function emitNewRefundRequestToAdmins(refund) {
+    if (!io) {
+        console.warn('⚠️  Socket.IO no inicializado, no se puede emitir nueva solicitud de reembolso');
+        return;
+    }
+
+    // Asegurarse de que los datos necesarios están presentes
+    const refundData = {
+        _id: refund._id,
+        sale: {
+            _id: refund.sale._id,
+            n_transaccion: refund.sale.n_transaccion,
+        },
+        user: {
+            _id: refund.user._id,
+            name: refund.user.name,
+            surname: refund.user.surname,
+            email: refund.user.email
+        },
+        reason: refund.reason,
+        status: refund.status,
+        createdAt: refund.createdAt
+    };
+
+    io.to('admins').emit('new_refund_request', refundData);
+    console.log('📢 Nueva solicitud de reembolso emitida a admins:', refund._id);
+}

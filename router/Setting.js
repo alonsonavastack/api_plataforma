@@ -6,6 +6,7 @@ const router = express.Router();
 
 // 📋 Obtener toda la configuración del sistema
 router.get("/all", auth.verifyAdmin, SettingController.getAll);
+router.get("/list", auth.verifyAdmin, SettingController.getAll); // Alias para compatibilidad
 
 // 📝 Actualizar configuración del sistema (sin logo)
 router.put("/update", auth.verifyAdmin, SettingController.update);

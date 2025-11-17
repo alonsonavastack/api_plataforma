@@ -2,6 +2,7 @@ import models from "../models/index.js";
 import token from "../service/token.js";
 import { emitNewSaleToAdmins, emitSaleStatusUpdate } from '../services/socket.service.js';
 import { notifyNewSale } from '../services/telegram.service.js';
+import { useWalletBalance } from './WalletController.js'; // ✅ IMPORTAR FUNCIÓN DE WALLET
 
 import fs from 'fs';
 import handlebars from 'handlebars';
@@ -71,27 +72,146 @@ async function send_email (sale_id) {
 export default {
     register: async(req,res) => {
         try {
+            console.log('🛍️ [SaleController.register] Iniciando registro de venta...');
+            console.log('💰 Uso de billetera:', req.body.use_wallet);
+            console.log('💵 Monto de billetera:', req.body.wallet_amount);
+            
             const Carts = await models.Cart.find({user: req.user._id}).populate('product');
 
             if (Carts.length === 0) {
                 return res.status(400).send({ message: 'No hay artículos en el carrito.' });
             }
 
+            const total = req.body.total;
+
+            // 🆕 VALIDAR Y PROCESAR BILLETERA
+            let walletAmount = 0;
+            let remainingAmount = total;
+            let walletTransaction = null;
+            
+            if (req.body.use_wallet && req.body.wallet_amount > 0) {
+                walletAmount = parseFloat(req.body.wallet_amount);
+                remainingAmount = total - walletAmount;
+                
+                console.log(`💰 [SaleController] Total: ${total}`);
+                console.log(`💰 [SaleController] Usando: ${walletAmount} de billetera`);
+                console.log(`💳 [SaleController] Restante: ${remainingAmount}`);
+                
+                // 🔥 VALIDAR QUE EL USUARIO TENGA SALDO SUFICIENTE EN LA WALLET
+                const wallet = await models.Wallet.findOne({ user: req.user._id });
+                const currentBalance = wallet?.balance || 0;
+                
+                console.log(`💼 [SaleController] Saldo actual en wallet: ${currentBalance}`);
+                console.log(`📋 [SaleController] Solicitado: ${walletAmount}`);
+                
+                if (currentBalance < walletAmount) {
+                    console.error(`❌ [SaleController] Saldo insuficiente: disponible ${currentBalance}, solicitado ${walletAmount}`);
+                    return res.status(400).send({ 
+                        message: 'Saldo insuficiente en la billetera',
+                        available: currentBalance,
+                        requested: walletAmount
+                    });
+                }
+                
+                console.log('✅ [SaleController] Validación de saldo exitosa');
+                
+                // ✅ USAR FUNCIÓN DEL WALLETCONTROLLER
+                try {
+                    const productNames = Carts.map(c => c.product.title).join(', ');
+                    const description = `Compra de ${Carts.length} producto(s): ${productNames.substring(0, 100)}`;
+                    
+                    // Llamar a la función de WalletController (pasará null como saleId por ahora)
+                    const walletResult = await useWalletBalance(
+                        req.user._id,
+                        walletAmount,
+                        null, // saleId - se actualizará después
+                        description
+                    );
+                    
+                    walletTransaction = walletResult.transaction;
+                    console.log(`✅ [SaleController] Debitado ${walletAmount} de billetera. Nuevo saldo: ${walletResult.balance}`);
+                } catch (walletError) {
+                    console.error('❌ [SaleController] Error al debitar billetera:', walletError);
+                    return res.status(500).send({
+                        message: 'Error al procesar pago con billetera',
+                        error: walletError.message
+                    });
+                }
+            }
+
+            // Crear detalle de la venta
+            const saleDetail = Carts.map(cart => ({
+                product: cart.product._id,
+                product_type: cart.product_type,
+                title: cart.product.title,
+                price_unit: cart.price_unit,
+                discount: cart.discount,
+                type_discount: cart.type_discount,
+            }));
+
+            // Determinar estado de la venta y método de pago
+            let saleStatus = 'Pendiente';
+            let methodPayment = req.body.method_payment || 'wallet'; // Default 'wallet' si no hay otro método
+            
+            if (walletAmount >= total) {
+                // Pago 100% con billetera
+                saleStatus = 'Pagado';
+                methodPayment = 'wallet'; // 🔥 Método de pago es billetera
+                console.log('✅ [SaleController] Pago 100% con billetera - Marcando como Pagado');
+            } else if (remainingAmount > 0 && req.body.method_payment) {
+                // Pago mixto o solo con otro método
+                methodPayment = req.body.method_payment;
+                if (methodPayment !== 'transfer') {
+                    // Métodos como PayPal, Stripe, etc. se confirman automáticamente
+                    saleStatus = req.body.status || 'Pendiente';
+                } else {
+                    // Transferencia requiere confirmación manual
+                    saleStatus = 'Pendiente';
+                }
+            }
+
+            // Crear la venta
             const saleData = {
                 ...req.body,
                 user: req.user._id,
-                detail: Carts.map(cart => ({
-                    product: cart.product._id,
-                    product_type: cart.product_type,
-                    title: cart.product.title,
-                    price_unit: cart.price_unit,
-                    discount: cart.discount,
-                    type_discount: cart.type_discount,
-                })),
-                status: req.body.method_payment !== 'transfer' ? 'Pagado' : 'Pendiente'
+                detail: saleDetail,
+                status: saleStatus,
+                method_payment: methodPayment, // 🔥 Asegurar que method_payment esté definido
+                // 🆕 Campos de billetera
+                wallet_amount: walletAmount,
+                remaining_amount: remainingAmount
             };
             
             const Sale = await models.Sale.create(saleData);
+            console.log(`✅ [SaleController] Venta creada: ${Sale._id} - Status: ${Sale.status}`);
+
+            // Actualizar metadata de la transacción de billetera con el ID de la venta
+            if (walletTransaction) {
+                // Buscar la billetera y actualizar la transacción
+                const wallet = await models.Wallet.findOne({ user: req.user._id });
+                if (wallet) {
+                    const transaction = wallet.transactions.id(walletTransaction._id);
+                    if (transaction && transaction.metadata) {
+                        transaction.metadata.orderId = Sale._id;
+                        await wallet.save();
+                        console.log(`✅ [SaleController] Transacción de wallet actualizada con sale_id: ${Sale._id}`);
+                    }
+                }
+            }
+
+            // 💰 CREAR GANANCIAS DEL INSTRUCTOR (InstructorEarnings)
+            if (Sale.status === 'Pagado') {
+                await createInstructorEarnings(Sale);
+                
+                // 📚 INSCRIBIR AUTOMÁTICAMENTE EN CURSOS
+                console.log('📚 [SaleController] Inscribiendo estudiante en cursos...');
+                for (const item of Sale.detail) {
+                    if (item.product_type === 'course') {
+                        await enrollStudent(req.user._id, item.product);
+                    }
+                }
+                console.log('✅ [SaleController] Estudiante inscrito en todos los cursos');
+            }
 
             // Emitir evento de nueva venta a los admins via WebSocket
             const saleWithUser = await models.Sale.findById(Sale._id).populate('user', 'name surname email');
@@ -105,38 +225,114 @@ export default {
                 console.error('⚠️  La notificación de Telegram falló, pero la venta se registró correctamente:', telegramError.message);
             }
 
+            // 📧 Enviar email solo si está pagado
             if (Sale.status === 'Pagado') {
-                for (const item of Sale.detail) {
-                    if (item.product_type === 'course') {
-                        await enrollStudent(req.user._id, item.product);
-                    }
+                try {
+                    await send_email(Sale._id);
+                    console.log('📧 Email de confirmación enviado');
+                } catch (emailError) {
+                    console.error('❌ Error al enviar email:', emailError);
                 }
             }
 
+            // Limpiar carrito
             await models.Cart.deleteMany({ user: req.user._id });
+            console.log('🧹 Carrito limpiado');
 
-            try {
-                await send_email(Sale._id);
-            } catch (emailError) {
-                console.error("El registro de la venta fue exitoso, pero el correo de confirmación no pudo ser enviado.");
+            // Mensaje de respuesta según tipo de pago
+            let responseMessage = '✅ Venta registrada exitosamente';
+            
+            if (walletAmount >= total) {
+                responseMessage = '✅ ¡Compra completada con tu billetera! Ya puedes acceder a tu contenido.';
+            } else if (walletAmount > 0) {
+                responseMessage = `✅ Venta registrada. Usaste ${walletAmount.toFixed(2)} de tu billetera. Completa el pago de ${remainingAmount.toFixed(2)} para activar tu acceso.`;
             }
 
-            res.status(200).json({
-                message: 'LA ORDEN SE GENERO CORRECTAMENTE',
+            res.status(200).send({
+                message: responseMessage,
+                sale: Sale,
+                wallet_used: walletAmount,
+                remaining_amount: remainingAmount,
+                fully_paid: walletAmount >= total
             });
         } catch (error) {
             console.log(error);
             res.status(500).send({
-                message: 'OCURRIO UN PROBLEMA'
+                message: 'OCURRIO UN PROBLEMA',
+                error: error.message
+            });
+        }
+    },
+
+    // 🔧 ENDPOINT TEMPORAL: Procesar ventas existentes para crear ganancias
+    process_existing_sales: async (req, res) => {
+        try {
+            console.log('🔧 Procesando ventas existentes...');
+
+            // Buscar todas las ventas pagadas que no tengan ganancias creadas
+            const sales = await models.Sale.find({ status: 'Pagado' });
+            
+            let processedCount = 0;
+            let skippedCount = 0;
+
+            for (const sale of sales) {
+                // Verificar si ya existen ganancias para esta venta
+                const existingEarnings = await models.InstructorEarnings.findOne({ sale: sale._id });
+                
+                if (existingEarnings) {
+                    console.log(`⏩ Venta ${sale._id} ya tiene ganancias creadas, skip...`);
+                    skippedCount++;
+                    continue;
+                }
+
+                // Crear ganancias para esta venta
+                await createInstructorEarnings(sale);
+                processedCount++;
+            }
+
+            console.log(`✅ Proceso completado: ${processedCount} ventas procesadas, ${skippedCount} omitidas`);
+
+            res.status(200).json({
+                success: true,
+                message: 'Ventas existentes procesadas correctamente',
+                processed: processedCount,
+                skipped: skippedCount,
+                total: sales.length
+            });
+        } catch (error) {
+            console.error('❌ Error al procesar ventas existentes:', error);
+            res.status(500).json({
+                success: false,
+                message: 'Error al procesar ventas existentes',
+                error: error.message
             });
         }
     },
 
     list: async (req, res) => {
         try {
-            const { search, status, month, year } = req.query;
+            console.log('📋 [SaleController.list] Iniciando listado de ventas...');
+            
+            const { search, status, month, year, exclude_refunded } = req.query;
+            const user = req.user;
+
+            console.log(`   • Usuario: ${user.name} (${user.rol})`);
+            console.log(`   • Filtros: search="${search}", status="${status}", month="${month}", year="${year}"`);
 
             let filter = { status: { $ne: 'Anulado' } };
+
+            // 🔥 NUEVO: Filtro para excluir ventas reembolsadas
+            if (exclude_refunded === 'true') {
+                const refundedSales = await models.Refund.find({ 
+                    status: 'completed',
+                    state: 1 
+                }).distinct('sale');
+                
+                if (refundedSales.length > 0) {
+                    filter._id = { $nin: refundedSales };
+                }
+                console.log(`🚫 Excluyendo ${refundedSales.length} ventas reembolsadas`);
+            }
 
             if (status) {
                 filter.status = status;
@@ -171,18 +367,22 @@ export default {
             }
 
             // Si el usuario es un instructor, filtramos las ventas para mostrar solo las de sus cursos y proyectos.
-            if (req.user.rol === 'instructor') {
+            if (user.rol === 'instructor') {
+                console.log('   🔍 Filtrando ventas del instructor...');
+                
                 // Encontrar cursos del instructor
-                const instructorCourses = await models.Course.find({ user: req.user._id }).select('_id');
+                const instructorCourses = await models.Course.find({ user: user._id }).select('_id');
                 const courseIds = instructorCourses.map(c => c._id);
 
                 // Encontrar proyectos del instructor
-                const instructorProjects = await models.Project.find({ user: req.user._id }).select('_id');
+                const instructorProjects = await models.Project.find({ user: user._id }).select('_id');
                 const projectIds = instructorProjects.map(p => p._id);
 
                 // Combinar ambos arrays
                 const allProductIds = [...courseIds, ...projectIds];
                 const allProductIdStrings = allProductIds.map(id => id.toString());
+
+                console.log(`   • Productos del instructor: ${allProductIds.length}`);
 
                 // Filtrar ventas que contengan al menos uno de esos productos
                 filter['detail'] = {
@@ -205,6 +405,22 @@ export default {
                     .sort({ createdAt: -1 })
                     .lean(); // Usar lean() para poder modificar los objetos
 
+                console.log(`   ✅ Encontradas ${sales.length} ventas del instructor`);
+
+                // 🔥 NUEVO: Agregar información de reembolsos para instructor
+                const saleIds = sales.map(s => s._id);
+                const refunds = await models.Refund.find({ 
+                    sale: { $in: saleIds },
+                    state: 1 
+                }).lean();
+
+                const refundMap = new Map();
+                refunds.forEach(r => {
+                    refundMap.set(r.sale.toString(), r);
+                });
+
+                console.log(`   🔄 Reembolsos encontrados: ${refunds.length}`);
+
                 // FILTRAR los detalles para mostrar SOLO los productos del instructor
                 sales = sales.map(sale => {
                     // Filtrar el array de detalles
@@ -219,17 +435,30 @@ export default {
                         ...sale,
                         detail: filteredDetails,
                         total: instructorTotal, // Total solo de sus productos
-                        _id: sale._id.toString() // Asegurar que el ID sea string
+                        _id: sale._id.toString(), // Asegurar que el ID sea string
+                        refund: refundMap.get(sale._id.toString()) || null // 🔥 AGREGAR REFUND
                     };
                 });
 
                 // Eliminar ventas que quedaron sin detalles (por si acaso)
                 sales = sales.filter(sale => sale.detail.length > 0);
 
+                // 📊 Estadísticas para logs
+                const stats = {
+                    total: sales.length,
+                    withRefund: sales.filter(s => s.refund).length,
+                    completed: sales.filter(s => s.refund?.status === 'completed').length
+                };
+
+                console.log(`   📊 Stats: Total=${stats.total}, Con reembolso=${stats.withRefund}, Completados=${stats.completed}`);
+                console.log('✅ [SaleController.list] Ventas del instructor procesadas');
+
                 return res.status(200).json({ sales });
 
             } else {
                 // Admin ve todas las ventas sin filtrar
+                console.log('   👑 Cargando todas las ventas (admin)...');
+                
                 const sales = await models.Sale.find(filter)
                     .populate('user', 'name surname email')
                     .populate({
@@ -240,13 +469,59 @@ export default {
                             select: 'name surname'
                         }
                     })
-                    .sort({ createdAt: -1 });
+                    .sort({ createdAt: -1 })
+                    .lean();
 
-                return res.status(200).json({ sales });
+                console.log(`   ✅ Encontradas ${sales.length} ventas totales`);
+
+                // 🔥 CRÍTICO: Cargar reembolsos asociados
+                console.log('   🔄 Cargando información de reembolsos...');
+                const saleIds = sales.map(s => s._id);
+                const refunds = await models.Refund.find({ 
+                    sale: { $in: saleIds },
+                    state: 1 
+                }).lean();
+
+                console.log(`   ✅ Reembolsos encontrados: ${refunds.length}`);
+
+                // 🔥 CRÍTICO: Mapear reembolsos a ventas
+                const refundMap = new Map();
+                refunds.forEach(r => {
+                    refundMap.set(r.sale.toString(), r);
+                });
+
+                // 🔥 CRÍTICO: Agregar info de reembolso a cada venta
+                const salesWithRefunds = sales.map(sale => ({
+                    ...sale,
+                    refund: refundMap.get(sale._id.toString()) || null
+                }));
+
+                // 📊 Calcular estadísticas
+                const stats = {
+                    total: salesWithRefunds.length,
+                    refunded: salesWithRefunds.filter(s => s.refund?.status === 'completed').length,
+                    active: salesWithRefunds.filter(s => !s.refund || s.refund.status !== 'completed').length,
+                    pagado: salesWithRefunds.filter(s => s.status === 'Pagado' && (!s.refund || s.refund.status !== 'completed')).length,
+                    pendiente: salesWithRefunds.filter(s => s.status === 'Pendiente').length
+                };
+
+                console.log('   📊 Estadísticas finales:');
+                console.log(`      • Total ventas: ${stats.total}`);
+                console.log(`      • Ventas activas: ${stats.active}`);
+                console.log(`      • Ventas reembolsadas: ${stats.refunded}`);
+                console.log(`      • Pagadas: ${stats.pagado}`);
+                console.log(`      • Pendientes: ${stats.pendiente}`);
+                console.log('✅ [SaleController.list] Proceso completado exitosamente');
+
+                return res.status(200).json({ 
+                    sales: salesWithRefunds,
+                    stats: stats 
+                });
             }
 
         } catch (error) {
-            console.error("Error en SaleController.list:", error);
+            console.error("❌ Error en SaleController.list:", error);
+            console.error('Stack:', error.stack);
             res.status(500).send({ message: "OCURRIÓ UN ERROR AL OBTENER LAS VENTAS" });
         }
     },
@@ -472,6 +747,96 @@ export default {
             });
         }
     },
+}
+
+/**
+ * 💰 Crear registros de ganancias para el instructor cuando se completa una venta
+ * @param {Object} sale - Venta completa con todos los detalles
+ */
+async function createInstructorEarnings(sale) {
+    try {
+        console.log(`💰 Creando ganancias para venta ${sale._id}...`);
+
+        // Obtener configuración de comisiones
+        const commissionSettings = await models.PlatformCommissionSettings.findOne();
+        const defaultCommissionRate = commissionSettings?.default_commission_rate || 30;
+        const daysUntilAvailable = commissionSettings?.days_until_available || 0;
+
+        // Calcular fecha de disponibilidad
+        const availableAt = new Date();
+        availableAt.setDate(availableAt.getDate() + daysUntilAvailable);
+
+        // Procesar cada producto de la venta
+        for (const item of sale.detail) {
+            let instructorId = null;
+            let productModel = null;
+
+            // Obtener el instructor según el tipo de producto
+            if (item.product_type === 'course') {
+                const course = await models.Course.findById(item.product).select('user');
+                if (course && course.user) {
+                    instructorId = course.user;
+                    productModel = 'course';
+                }
+            } else if (item.product_type === 'project') {
+                const project = await models.Project.findById(item.product).select('user');
+                if (project && project.user) {
+                    instructorId = project.user;
+                    productModel = 'project';
+                }
+            }
+
+            // Si no hay instructor, skip (puede ser un producto de la plataforma)
+            if (!instructorId) {
+                console.log(`⚠️  Producto ${item.product} no tiene instructor asignado`);
+                continue;
+            }
+
+            // Verificar si el instructor tiene comisión personalizada
+            let commissionRate = defaultCommissionRate;
+            const customRate = commissionSettings?.instructor_custom_rates?.find(
+                rate => rate.instructor.toString() === instructorId.toString()
+            );
+            if (customRate) {
+                commissionRate = customRate.commission_rate;
+            }
+
+            // Calcular montos
+            const salePrice = item.price_unit; // Precio después de descuento
+            const platformCommissionAmount = (salePrice * commissionRate) / 100;
+            const instructorEarning = salePrice - platformCommissionAmount;
+
+            // Crear registro de ganancia
+            const earningData = {
+                instructor: instructorId,
+                sale: sale._id,
+                product_id: item.product,
+                product_type: item.product_type,
+                
+                // Montos
+                sale_price: salePrice,
+                currency: sale.currency_total || 'USD',
+                platform_commission_rate: commissionRate,
+                platform_commission_amount: platformCommissionAmount,
+                instructor_earning: instructorEarning,
+                instructor_earning_usd: instructorEarning, // Por ahora USD = USD
+                
+                // Estado y fechas
+                status: daysUntilAvailable === 0 ? 'available' : 'pending',
+                earned_at: new Date(),
+                available_at: availableAt,
+            };
+
+            // Guardar en base de datos
+            await models.InstructorEarnings.create(earningData);
+            console.log(`✅ Ganancia creada: ${instructorEarning.toFixed(2)} ${sale.currency_total || 'USD'} para instructor ${instructorId}`);
+        }
+
+        console.log(`✅ Todas las ganancias fueron creadas para la venta ${sale._id}`);
+    } catch (error) {
+        console.error(`❌ Error al crear ganancias para venta ${sale._id}:`, error);
+        // No lanzar error para no bloquear el flujo de la venta
+    }
 }
 
 /**

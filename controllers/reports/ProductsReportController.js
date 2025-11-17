@@ -384,5 +384,209 @@ export default {
       console.error("Error en reviewsAnalysis:", error);
       res.status(500).send({ message: 'OCURRIÓ UN ERROR' });
     }
+  },
+
+  /**
+   * 📊 REPORTE COMPLETO DE PRODUCTOS (Para el tab de productos)
+   * Admin: Todos los productos
+   * Instructor: Solo sus productos
+   * ✅ Incluye estadísticas completas de ventas y reviews
+   * ✅ Excluye ventas reembolsadas
+   * ✅ Devuelve datos formateados para el frontend
+   */
+  productsReport: async (req, res) => {
+    try {
+      console.log('📊 [productsReport] Generando reporte completo de productos...');
+      
+      const user = req.user;
+      const { product_type, sort_by = 'revenue' } = req.query; // 'course', 'project', o undefined para ambos
+
+      console.log(`   • Usuario: ${user.name} (${user.rol})`);
+      console.log(`   • Tipo producto: ${product_type || 'todos'}`);
+      console.log(`   • Ordenar por: ${sort_by}`);
+
+      // ✅ Obtener ventas reembolsadas para excluirlas
+      const refundedSales = await models.Refund.find({
+        status: 'completed',
+        state: 1
+      }).distinct('sale');
+
+      console.log(`   🚫 Excluyendo ${refundedSales.length} ventas reembolsadas`);
+
+      let courses = [];
+      let projects = [];
+
+      if (user.rol === 'admin') {
+        // Admin ve todos los productos
+        console.log('   👑 Modo Admin: Obteniendo todos los productos');
+        
+        if (!product_type || product_type === 'course') {
+          courses = await models.Course.find()
+            .populate('categorie', 'title')
+            .populate('user', 'name surname')
+            .lean();
+        }
+        if (!product_type || product_type === 'project') {
+          projects = await models.Project.find()
+            .populate('categorie', 'title')
+            .populate('user', 'name surname')
+            .lean();
+        }
+
+        console.log(`   • Cursos encontrados: ${courses.length}`);
+        console.log(`   • Proyectos encontrados: ${projects.length}`);
+
+      } else if (user.rol === 'instructor') {
+        // Instructor ve solo sus productos
+        console.log('   👨‍🏫 Modo Instructor: Filtrando por productos propios');
+        
+        if (!product_type || product_type === 'course') {
+          courses = await models.Course.find({ user: user._id })
+            .populate('categorie', 'title')
+            .lean();
+        }
+        if (!product_type || product_type === 'project') {
+          projects = await models.Project.find({ user: user._id })
+            .populate('categorie', 'title')
+            .lean();
+        }
+
+        console.log(`   • Cursos del instructor: ${courses.length}`);
+        console.log(`   • Proyectos del instructor: ${projects.length}`);
+      }
+
+      // Obtener todas las ventas (excluyendo reembolsadas)
+      const sales = await models.Sale.find({ 
+        status: 'Pagado',
+        _id: { $nin: refundedSales }
+      }).lean();
+
+      console.log(`   📊 Procesando ${sales.length} ventas...`);
+
+      // Crear mapa de estadísticas por producto
+      const productStatsMap = new Map();
+
+      // Inicializar stats para todos los productos
+      [...courses, ...projects].forEach(product => {
+        productStatsMap.set(product._id.toString(), {
+          product,
+          type: product.hasOwnProperty('sections') ? 'course' : 'project',
+          totalSales: 0,
+          totalRevenue: 0,
+          ratings: []
+        });
+      });
+
+      // Procesar ventas
+      sales.forEach(sale => {
+        sale.detail.forEach(item => {
+          const productId = item.product.toString();
+          const stats = productStatsMap.get(productId);
+          
+          if (stats) {
+            stats.totalSales += 1;
+            stats.totalRevenue += item.price_unit || 0;
+          }
+        });
+      });
+
+      // Obtener reviews
+      const allProductIds = Array.from(productStatsMap.keys());
+      const reviews = await models.Review.find({ 
+        course: { $in: allProductIds }
+      }).lean();
+
+      console.log(`   ⭐ Procesando ${reviews.length} reviews...`);
+
+      // Procesar reviews
+      reviews.forEach(review => {
+        const productId = review.course.toString();
+        const stats = productStatsMap.get(productId);
+        
+        if (stats && review.rating) {
+          stats.ratings.push(review.rating);
+        }
+      });
+
+      // Formatear datos para el frontend
+      const formattedProducts = [];
+
+      productStatsMap.forEach((stats, productId) => {
+        const product = stats.product;
+        const avgRating = stats.ratings.length > 0
+          ? stats.ratings.reduce((sum, r) => sum + r, 0) / stats.ratings.length
+          : 0;
+
+        formattedProducts.push({
+          _id: product._id,
+          title: product.title,
+          slug: product.slug,
+          type: stats.type,
+          category: product.categorie?.title || 'Sin categoría',
+          instructor: user.rol === 'admin' && product.user 
+            ? `${product.user.name} ${product.user.surname}`
+            : null,
+          price: product.price_usd || 0,
+          status: product.state === 1 ? 'Borrador' : product.state === 2 ? 'Público' : 'Anulado',
+          totalSales: stats.totalSales,
+          totalRevenue: stats.totalRevenue,
+          avgRating: parseFloat(avgRating.toFixed(2)),
+          totalReviews: stats.ratings.length,
+          createdAt: product.createdAt
+        });
+      });
+
+      // Ordenar según criterio
+      formattedProducts.sort((a, b) => {
+        switch (sort_by) {
+          case 'sales':
+            return b.totalSales - a.totalSales;
+          case 'rating':
+            return b.avgRating - a.avgRating;
+          case 'revenue':
+          default:
+            return b.totalRevenue - a.totalRevenue;
+        }
+      });
+
+      console.log(`   ✅ Formateados ${formattedProducts.length} productos`);
+
+      // Calcular estadísticas globales
+      const stats = {
+        totalProducts: formattedProducts.length,
+        totalCourses: formattedProducts.filter(p => p.type === 'course').length,
+        totalProjects: formattedProducts.filter(p => p.type === 'project').length,
+        totalSales: formattedProducts.reduce((sum, p) => sum + p.totalSales, 0),
+        totalRevenue: formattedProducts.reduce((sum, p) => sum + p.totalRevenue, 0),
+        avgRating: formattedProducts.length > 0
+          ? formattedProducts.reduce((sum, p) => sum + p.avgRating, 0) / formattedProducts.length
+          : 0
+      };
+
+      console.log('   📊 Estadísticas:');
+      console.log(`      • Total productos: ${stats.totalProducts}`);
+      console.log(`      • Cursos: ${stats.totalCourses}`);
+      console.log(`      • Proyectos: ${stats.totalProjects}`);
+      console.log(`      • Ventas totales: ${stats.totalSales}`);
+      console.log(`      • Ingresos totales: ${stats.totalRevenue.toFixed(2)}`);
+      console.log(`      • Rating promedio: ${stats.avgRating.toFixed(2)}`);
+
+      console.log('✅ [productsReport] Reporte generado exitosamente');
+
+      res.status(200).json({
+        success: true,
+        products: formattedProducts,
+        stats: stats
+      });
+
+    } catch (error) {
+      console.error('❌ [productsReport] Error:', error);
+      console.error('Stack:', error.stack);
+      res.status(500).json({
+        success: false,
+        message: 'Error al generar el reporte de productos',
+        error: error.message
+      });
+    }
   }
 };

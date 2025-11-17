@@ -104,8 +104,21 @@ const InstructorEarningsSchema = new Schema({
     // ESTADO
     status: {
         type: String,
-        enum: ['pending', 'available', 'paid', 'disputed', 'blocked'],
+        enum: ['pending', 'available', 'paid', 'disputed', 'blocked', 'refunded'],
         default: 'pending'
+    },
+    
+    // 🆕 REFERENCIA AL REEMBOLSO (si existe)
+    refund_reference: {
+        type: Schema.ObjectId,
+        ref: 'Refund',
+        required: false
+    },
+    
+    // 🆕 FECHA DEL REEMBOLSO
+    refunded_at: {
+        type: Date,
+        required: false
     },
     
     // FECHAS

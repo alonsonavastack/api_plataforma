@@ -38,6 +38,11 @@ const __dirname = path.dirname(__filename);
 app.use(express.json());
 app.use(express.urlencoded({extended: true}))
 app.use(express.static(path.join(__dirname,'public')))
+
+// 🆕 Ruta de redireccionamiento de Short URLs (debe ir ANTES de /api/)
+import ShortUrlController from './controllers/ShortUrlController.js';
+app.get('/s/:shortCode', ShortUrlController.redirect);
+
 app.use('/api/',router)
 
 // Custom error handler
