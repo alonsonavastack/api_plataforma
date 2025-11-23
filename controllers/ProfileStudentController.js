@@ -29,8 +29,13 @@ export const client = async(req,res) => {
                         path: "user" // Popula el instructor del curso
                     }
                 });
+            
+            // 🔥 NUEVO: FILTRAR CURSOS QUE NO TENGAN MÁS INSCRIPCIONES ACTIVAS
+            // Si un usuario compró 2 veces y reembolsó ambas, enrolled_courses ya estaría vacío
+            // Este filtro ya está funcionando correctamente porque CourseStudent se elimina en el reembolso
+            console.log(`📚 [ProfileStudentController] Cursos inscritos encontrados: ${enrolled_courses.length}`);
 
-            // 1.1 Calcular el porcentaje de completado para cada curso
+            // 1.1 Calcular el porcentaje de completado para cada curso  
             enrolled_courses = await Promise.all(enrolled_courses.map(async (enrollment) => {
                 const enrollmentObj = enrollment.toObject();
                 const courseId = enrollmentObj.course._id;
@@ -45,6 +50,8 @@ export const client = async(req,res) => {
                 enrollmentObj.percentage = totalClases > 0 ? Math.round((checkedClases / totalClases) * 100) : 0;
                 return enrollmentObj;
             }));
+            
+            console.log(`✅ [ProfileStudentController] Cursos con porcentaje calculado: ${enrolled_courses.length}`);
 
             // 2. Obtener el historial de compras (opcional, pero útil para el perfil)
             let sales = await models.Sale.find({ user: req.user._id })
@@ -170,6 +177,24 @@ export const client = async(req,res) => {
                             
                             console.log(`      🔑 Project ID extraído: ${projectId}`);
                             
+                            // 🔥 NUEVO: VERIFICAR SI ESTE PROYECTO ESPECÍFICO FUE REEMBOLSADO
+                            console.log(`      🔍 Verificando si proyecto fue reembolsado...`);
+                            const projectRefund = await models.Refund.findOne({
+                                sale: sale._id,
+                                'sale_detail_item.product': projectId,
+                                'sale_detail_item.product_type': 'project',
+                                status: 'completed',
+                                state: 1
+                            });
+                            
+                            if (projectRefund) {
+                                console.log(`      ❌ PROYECTO REEMBOLSADO - NO se agregará a la lista`);
+                                console.log(`         Refund ID: ${projectRefund._id}`);
+                                console.log(`         Fecha reembolso: ${projectRefund.completedAt}`);
+                                continue; // Saltar este proyecto
+                            }
+                            console.log(`      ✅ Proyecto NO reembolsado, continuando...`);
+                            
                             if (!projectData || typeof projectData === 'string' || !projectData.title) {
                                 console.log(`      🔄 Proyecto no populado correctamente, buscando en BD...`);
                                 projectData = await models.Project.findById(projectId)
@@ -203,6 +228,7 @@ export const client = async(req,res) => {
             
             console.log('\n' + '='.repeat(60));
             console.log(`📊 RESULTADO FINAL: ${projects.length} proyectos encontrados`);
+            console.log(`📚 RESULTADO FINAL: ${enrolled_courses.length} cursos activos`);
             console.log('='.repeat(60) + '\n');
 
             // 🔥 NUEVO: Eliminar proyectos duplicados (mismo _id)

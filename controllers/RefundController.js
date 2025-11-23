@@ -3,6 +3,7 @@ import { emitNewRefundRequestToAdmins, emitRefundStatusToClient } from '../servi
 
 // Configuración de días para reembolso
 const REFUND_DAYS_LIMIT = 7; // 7 días para solicitar reembolso
+const MAX_REFUNDS_PER_PRODUCT = 2; // 🔥 NUEVO: Máximo 2 reembolsos por producto
 
 // Listar reembolsos (Admin ve todos, Instructor/Cliente solo los suyos)
 export async function list(req, res) {
@@ -145,6 +146,30 @@ export async function create(req, res) {
             });
         }
         console.log('✅ [RefundController.create] No hay reembolsos existentes');
+
+        // 🔥 NUEVO: VALIDAR MÁXIMO 2 REEMBOLSOS POR PRODUCTO
+        console.log('🔍 [RefundController.create] Verificando límite de reembolsos...');
+        const completedRefundsCount = await models.Refund.countDocuments({
+            user: userObj._id,
+            'sale_detail_item.product': data.product_id,
+            'sale_detail_item.product_type': data.product_type,
+            status: 'completed',
+            state: 1
+        });
+
+        console.log(`   📊 Reembolsos completados para este producto: ${completedRefundsCount} / ${MAX_REFUNDS_PER_PRODUCT}`);
+
+        if (completedRefundsCount >= MAX_REFUNDS_PER_PRODUCT) {
+            console.error(`❌ [RefundController.create] Límite de reembolsos alcanzado: ${completedRefundsCount}`);
+            return res.status(400).send({ 
+                message: `Has alcanzado el límite máximo de ${MAX_REFUNDS_PER_PRODUCT} reembolsos para este producto.`,
+                reason: 'max_refunds_reached',
+                current_refunds: completedRefundsCount,
+                max_allowed: MAX_REFUNDS_PER_PRODUCT
+            });
+        }
+
+        console.log(`✅ [RefundController.create] Reembolsos disponibles: ${MAX_REFUNDS_PER_PRODUCT - completedRefundsCount}`);
 
         // ✅ NUEVO: Usar el precio del ítem específico
         console.log('💰 [RefundController.create] Creando objeto refund...');
@@ -409,18 +434,37 @@ export async function review(req, res) {
                         courseId: productIdToDelete.toString()
                     });
                     
-                    const deletedEnrollment = await models.CourseStudent.deleteOne({
+                    // 🔥 FIX: Contar cuántas inscripciones activas tiene el usuario para este curso
+                    const enrollmentCount = await models.CourseStudent.countDocuments({
                         user: userId,
                         course: productIdToDelete
                     });
                     
-                    if (deletedEnrollment.deletedCount > 0) {
-                        console.log('✅ [RefundController.review] ✓ Acceso al curso eliminado exitosamente');
-                        console.log('   • Usuario:', userId.toString());
-                        console.log('   • Curso eliminado:', refund.sale_detail_item.title);
-                        console.log('   • Registros eliminados:', deletedEnrollment.deletedCount);
+                    console.log(`   📊 Inscripciones encontradas: ${enrollmentCount}`);
+                    
+                    // 🔥 ELIMINAR SOLO UNA INSCRIPCIÓN (la más reciente)
+                    // Esto permite recompras: si compró 2 veces, al reembolsar una queda con acceso
+                    const deletedEnrollment = await models.CourseStudent.findOneAndDelete({
+                        user: userId,
+                        course: productIdToDelete
+                    }, {
+                        sort: { createdAt: -1 } // Eliminar la más reciente
+                    });
+                    
+                    if (deletedEnrollment) {
+                        const remainingEnrollments = enrollmentCount - 1;
+                        console.log('✅ [RefundController.review] ✓ Inscripción eliminada exitosamente');
+                        console.log(`   • Usuario: ${userId.toString()}`);
+                        console.log(`   • Curso: ${refund.sale_detail_item.title}`);
+                        console.log(`   • Inscripciones restantes: ${remainingEnrollments}`);
+                        
+                        if (remainingEnrollments > 0) {
+                            console.log(`   ℹ️ Usuario mantiene acceso (compró ${remainingEnrollments} veces más)`);
+                        } else {
+                            console.log(`   ❌ Usuario perdió acceso completamente`);
+                        }
                     } else {
-                        console.log('⚠️ [RefundController.review] No se encontró inscripción para eliminar (puede que ya fue eliminada)');
+                        console.log('⚠️ [RefundController.review] No se encontró inscripción para eliminar');
                     }
                 } catch (deleteError) {
                     console.error('❌ [RefundController.review] Error al eliminar acceso:', deleteError);
@@ -584,6 +628,43 @@ export async function requestRefund(req, res) {
                 message: 'Ya existe una solicitud de reembolso activa para este producto.' 
             });
         }
+
+        // 🔥 NUEVO: VALIDAR MÁXIMO 2 REEMBOLSOS POR PRODUCTO (considerando TODOS los reembolsos del usuario)
+        console.log('🔍 [RefundController.requestRefund] Verificando límite de reembolsos...');
+        
+        // ✅ FIX: Validar que product_id no sea undefined antes de consultar
+        if (!product_id) {
+            console.error('❌ [RefundController.requestRefund] product_id es undefined');
+            return res.status(400).send({ 
+                message: 'Producto inválido. Por favor, intenta nuevamente.',
+                reason: 'invalid_product_id'
+            });
+        }
+        
+        const completedRefundsCount = await models.Refund.countDocuments({
+            user: userId,
+            'sale_detail_item.product': product_id,
+            'sale_detail_item.product_type': product_type,
+            status: 'completed',
+            state: 1
+        });
+
+        console.log(`   📊 Reembolsos completados para este producto: ${completedRefundsCount} / ${MAX_REFUNDS_PER_PRODUCT}`);
+
+        if (completedRefundsCount >= MAX_REFUNDS_PER_PRODUCT) {
+            console.error(`❌ [RefundController.requestRefund] Límite de reembolsos alcanzado: ${completedRefundsCount}`);
+            
+            // 🎨 USAR TOAST: Mostrar mensaje amigable en lugar de error HTTP
+            return res.status(400).send({ 
+                message: `Ya has solicitado el máximo de reembolsos permitidos (${MAX_REFUNDS_PER_PRODUCT}) para este producto.`,
+                reason: 'max_refunds_reached',
+                current_refunds: completedRefundsCount,
+                max_allowed: MAX_REFUNDS_PER_PRODUCT,
+                show_toast: true // 🔥 Flag para mostrar toast en el frontend
+            });
+        }
+
+        console.log(`✅ [RefundController.requestRefund] Reembolsos disponibles: ${MAX_REFUNDS_PER_PRODUCT - completedRefundsCount}`);
 
         // 4. ✅ VALIDACIÓN: Verificar si ya se pagó al instructor
         const paidEarnings = await models.InstructorEarnings.findOne({
