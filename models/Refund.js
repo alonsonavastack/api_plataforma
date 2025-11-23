@@ -7,6 +7,14 @@ const RefundSchema = new Schema({
     // Referencia a la venta original
     sale: { type: Schema.ObjectId, ref: 'sale', required: true },
     
+    // 🆕 NUEVO: Ítem específico de la venta a reembolsar
+    sale_detail_item: {
+        product: { type: Schema.ObjectId, required: true, refPath: 'sale_detail_item.product_type' },
+        product_type: { type: String, required: true, enum: ['course', 'project'] },
+        title: { type: String },
+        price_unit: { type: Number, required: true } // Precio del ítem específico
+    },
+    
     // Usuario que solicita el reembolso
     user: { type: Schema.ObjectId, ref: 'user', required: true },
     
@@ -42,12 +50,15 @@ const RefundSchema = new Schema({
         type: { 
             type: String, 
             enum: [
-                'course_not_started', 
-                'dissatisfied', 
-                'technical_issues',
-                'duplicate_purchase',
-                'instructor_request',
-                'other'
+                'not_expected',      // 🆕 No era lo que esperaba
+                'technical_issues',  // ✅ Problemas técnicos
+                'quality',           // 🆕 Problemas de calidad
+                'duplicate_purchase',// ✅ Compra duplicada
+                'other',             // ✅ Otro motivo
+                // Legacy (mantener compatibilidad):
+                'course_not_started',
+                'dissatisfied',
+                'instructor_request'
             ],
             required: true
         },
@@ -95,7 +106,8 @@ const RefundSchema = new Schema({
 
 // Método para calcular el reembolso
 RefundSchema.methods.calculateRefund = function() {
-    const original = this.originalAmount;
+    // 🔥 USAR EL PRECIO DEL ÍTEM ESPECÍFICO, NO EL TOTAL DE LA VENTA
+    const original = this.sale_detail_item?.price_unit || this.originalAmount;
     
     // Inicializar calculations si no existe
     if (!this.calculations) {

@@ -47,16 +47,32 @@ export const client = async(req,res) => {
             }));
 
             // 2. Obtener el historial de compras (opcional, pero útil para el perfil)
-            const sales = await models.Sale.find({ user: req.user._id })
-                .populate({
-                    path: 'detail.product',
-                    populate: [ // Populamos los campos anidados dentro del producto
-                        { path: 'categorie' },
-                        { path: 'user' }
-                    ]
-                })
+            let sales = await models.Sale.find({ user: req.user._id })
                 .sort({ createdAt: -1 })
                 .lean(); // Usamos lean() para poder modificar los objetos
+
+            // 🔥 POPULATE MANUAL DE PRODUCTOS (cursos y proyectos)
+            // Necesario porque refPath puede fallar silenciosamente
+            for (const sale of sales) {
+                if (sale.detail && sale.detail.length > 0) {
+                    for (const item of sale.detail) {
+                        if (item.product_type === 'course') {
+                            const course = await models.Course.findById(item.product)
+                                .populate('categorie')
+                                .populate('user')
+                                .lean();
+                            item.product = course;
+                        } else if (item.product_type === 'project') {
+                            const project = await models.Project.findById(item.product)
+                                .populate('categorie')
+                                .populate('user')
+                                .lean();
+                            item.product = project;
+                        }
+                    }
+                }
+            }
+            console.log(`📦 [ProfileStudentController] Ventas cargadas y populadas: ${sales.length}`);
 
             // 1.2. Añadir lógica de reembolsos MEJORADA
             const now = new Date();
@@ -115,17 +131,95 @@ export const client = async(req,res) => {
 
             // 2.1. De la lista de ventas ya obtenida, filtramos para obtener solo los proyectos pagados.
             let projects = [];
-            sales.forEach(sale => {
+            console.log('\n' + '='.repeat(60));
+            console.log(`🔍 [ProfileStudentController] DIAGNÓSTICO DE PROYECTOS`);
+            console.log('='.repeat(60));
+            console.log(`📋 Total ventas del usuario: ${sales.length}`);
+            console.log(`👤 Usuario ID: ${req.user._id}`);
+            
+            for (const sale of sales) {
+                console.log('\n------- VENTA -------');
+                console.log(`   🆔 Sale ID: ${sale._id}`);
+                console.log(`   📊 Status: ${sale.status}`);
+                console.log(`   💰 Total: ${sale.total}`);
+                console.log(`   📦 Items en detail: ${sale.detail?.length || 0}`);
+                console.log(`   📅 Creada: ${sale.createdAt}`);
+                
                 if (sale.status === 'Pagado') {
-                    sale.detail.forEach(item => {
-                        if (item.product && item.product_type === 'project') {
-                            // CORRECCIÓN: Pasamos el proyecto por el resource para asegurar que tenga
-                            // todos los campos necesarios, incluyendo 'video_link'.
-                            projects.push(resource.Project.api_resource_project(item.product));
+                    for (let i = 0; i < sale.detail.length; i++) {
+                        const item = sale.detail[i];
+                        console.log(`\n   📦 Item ${i + 1}:`);
+                        console.log(`      • product_type: ${item.product_type}`);
+                        console.log(`      • title guardado: ${item.title}`);
+                        console.log(`      • price_unit: ${item.price_unit}`);
+                        console.log(`      • product (raw): ${JSON.stringify(item.product).substring(0, 100)}`);
+                        
+                        if (item.product_type === 'project') {
+                            // 🔥 Si item.product es solo el ID (no fue populado), buscar el proyecto
+                            let projectData = item.product;
+                            
+                            // Determinar el ID del proyecto
+                            let projectId;
+                            if (typeof item.product === 'string') {
+                                projectId = item.product;
+                            } else if (item.product && item.product._id) {
+                                projectId = item.product._id;
+                            } else {
+                                projectId = item.product;
+                            }
+                            
+                            console.log(`      🔑 Project ID extraído: ${projectId}`);
+                            
+                            if (!projectData || typeof projectData === 'string' || !projectData.title) {
+                                console.log(`      🔄 Proyecto no populado correctamente, buscando en BD...`);
+                                projectData = await models.Project.findById(projectId)
+                                    .populate('categorie')
+                                    .populate('user')
+                                    .lean();
+                                
+                                if (projectData) {
+                                    console.log(`      ✅ Proyecto encontrado en BD: "${projectData.title}"`);
+                                } else {
+                                    console.log(`      ❌ PROYECTO NO EXISTE EN BD con ID: ${projectId}`);
+                                }
+                            } else {
+                                console.log(`      ✅ Proyecto ya estaba populado: "${projectData.title}"`);
+                            }
+                            
+                            if (projectData && projectData.title) {
+                                console.log(`      ➕ Agregando proyecto: "${projectData.title}" (${projectData._id})`);
+                                projects.push(resource.Project.api_resource_project(projectData));
+                            } else {
+                                console.log(`      ⚠️ ALERTA: No se pudo agregar proyecto - datos inválidos`);
+                            }
+                        } else {
+                            console.log(`      ℹ️  Saltando item (no es proyecto): ${item.product_type}`);
                         }
-                    });
+                    }
+                } else {
+                    console.log(`   ⏭️  Saltando venta (status no es Pagado): ${sale.status}`);
                 }
-            });
+            }
+            
+            console.log('\n' + '='.repeat(60));
+            console.log(`📊 RESULTADO FINAL: ${projects.length} proyectos encontrados`);
+            console.log('='.repeat(60) + '\n');
+
+            // 🔥 NUEVO: Eliminar proyectos duplicados (mismo _id)
+            const uniqueProjects = [];
+            const seenIds = new Set();
+            
+            for (const project of projects) {
+                const projectId = project._id.toString();
+                if (!seenIds.has(projectId)) {
+                    seenIds.add(projectId);
+                    uniqueProjects.push(project);
+                }
+            }
+            
+            console.log(`✅ [ProfileStudentController] Proyectos únicos (sin duplicados): ${uniqueProjects.length}`);
+            projects = uniqueProjects;
+
 
             // 3. Calcular contadores de cursos
             const enrolled_course_count = enrolled_courses.length;
@@ -391,17 +485,24 @@ export const getTransactions = async(req, res) => {
 // Nuevo endpoint para solicitar un reembolso
 export const requestRefund = async(req, res) => {
     try {
+        console.log('💰 [ProfileStudentController.requestRefund] Iniciando solicitud...');
+        console.log('📝 [ProfileStudentController.requestRefund] Body recibido:', req.body);
+        
         if (!req.user) {
+            console.error('❌ [ProfileStudentController.requestRefund] Usuario no autenticado');
             return res.status(401).send({ message: 'No autenticado.' });
         }
 
-        const { sale_id, reason } = req.body;
-
-        // Llamar a la función de requestRefund del RefundController
-        return RefundController.requestRefund(req, res);
+        // 🔥 CRÍTICO: Llamar directamente al método create del RefundController
+        // El método se llama 'create', NO 'requestRefund'
+        return RefundController.create(req, res);
 
     } catch (error) {
-        console.error('Error al solicitar reembolso desde el perfil del estudiante:', error);
-        res.status(500).send({ message: 'HUBO UN ERROR AL PROCESAR LA SOLICITUD DE REEMBOLSO' });
+        console.error('❌ [ProfileStudentController.requestRefund] Error:', error);
+        console.error('❌ [ProfileStudentController.requestRefund] Stack:', error.stack);
+        res.status(500).send({ 
+            message: 'HUBO UN ERROR AL PROCESAR LA SOLICITUD DE REEMBOLSO',
+            error: error.message 
+        });
     }
 };

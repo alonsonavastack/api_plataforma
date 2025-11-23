@@ -13,8 +13,7 @@ router.post("/update",[auth.verifyInstructor,path],courseController.update);
 
 router.post("/upload_vimeo",[auth.verifyDashboard,path2],courseController.upload_vimeo);
 
-
-router.get("/list-settings",[auth.verifyDashboard],courseController.list_settings);
+// 🗑️ ELIMINADO: /list-settings - No usado en frontend
 router.put("/toggle-featured/:id",[auth.verifyAdmin],courseController.toggle_featured);
 
 router.get("/show/:id",[auth.verifyDashboard],courseController.show_course);

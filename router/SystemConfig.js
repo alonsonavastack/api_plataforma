@@ -15,7 +15,7 @@ const multipartyMiddleware = multiparty({
 // Rutas de configuración del sistema
 router.get('/get', auth.verifyAdmin, SystemConfigController.get); // Solo admin
 router.get('/get-public', SystemConfigController.getPublic); // Público
-router.get('/debug', SystemConfigController.debug); // 🔍 DEBUG temporal
+// 🗑️ ELIMINADO: /debug - Era temporal para debugging
 router.put('/update', [auth.verifyAdmin, multipartyMiddleware], SystemConfigController.update);
 
 // Rutas públicas para obtener imágenes

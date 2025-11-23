@@ -1,4 +1,5 @@
 import models from '../models/index.js';
+import { emitNewRefundRequestToAdmins, emitRefundStatusToClient } from '../services/socket.service.js';
 
 // Configuración de días para reembolso
 const REFUND_DAYS_LIMIT = 7; // 7 días para solicitar reembolso
@@ -54,9 +55,9 @@ export async function list(req, res) {
         console.log('🔍 [RefundController.list] Filtro aplicado:', JSON.stringify(filter));
 
         const refunds = await models.Refund.find(filter)
-            .populate('user', 'name surname email')
-            .populate('course', 'title')
-            .populate('project', 'title')
+            .populate('user', 'name surname email avatar') // 🆕 Agregar avatar
+            .populate('course', 'title imagen')
+            .populate('project', 'title imagen')
             .populate('sale')
             .populate('reviewedBy', 'name surname')
             .sort({ requestedAt: -1 });
@@ -76,37 +77,91 @@ export async function list(req, res) {
 // Crear solicitud de reembolso (Cliente)
 export async function create(req, res) {
     try {
+        console.log('💰 [RefundController.create] Iniciando creación de reembolso...');
+        console.log('📝 [RefundController.create] Body:', req.body);
+        console.log('👤 [RefundController.create] Usuario:', req.user?.name, req.user?._id);
+        
         const user = req.user;
         const userObj = user.toObject ? user.toObject() : user;
         const data = req.body;
 
+        console.log('🔍 [RefundController.create] Buscando venta:', data.sale_id);
         const sale = await models.Sale.findById(data.sale_id);
         if (!sale) {
+            console.error('❌ [RefundController.create] Venta no encontrada:', data.sale_id);
             return res.status(404).send({ message: 'Venta no encontrada' });
         }
+        console.log('✅ [RefundController.create] Venta encontrada:', sale._id);
 
         if (sale.user.toString() !== userObj._id.toString()) {
+            console.error('❌ [RefundController.create] Usuario no autorizado');
             return res.status(403).send({ message: 'No tienes permiso para solicitar este reembolso' });
         }
 
+        // 🔥 NUEVO: Validar que se especifique el producto a reembolsar
+        if (!data.product_id || !data.product_type) {
+            console.error('❌ [RefundController.create] Falta product_id o product_type');
+            return res.status(400).send({ 
+                message: 'Debes especificar el producto a reembolsar (product_id y product_type)' 
+            });
+        }
+        console.log('📦 [RefundController.create] Producto a reembolsar:', {
+            product_id: data.product_id,
+            product_type: data.product_type
+        });
+
+        // 🔥 BUSCAR EL ÍTEM ESPECÍFICO EN EL DETALLE DE LA VENTA
+        console.log('🔍 [RefundController.create] Buscando item en venta...');
+        const saleItem = sale.detail.find(item => 
+            item.product.toString() === data.product_id && 
+            item.product_type === data.product_type
+        );
+
+        if (!saleItem) {
+            console.error('❌ [RefundController.create] Producto no encontrado en la venta');
+            console.error('   Sale detail:', sale.detail);
+            return res.status(404).send({ 
+                message: 'El producto no se encontró en esta venta' 
+            });
+        }
+        console.log('✅ [RefundController.create] Item encontrado:', {
+            title: saleItem.title,
+            price: saleItem.price_unit
+        });
+
+        // 🔥 VERIFICAR SI YA EXISTE UN REEMBOLSO PARA ESTE PRODUCTO ESPECÍFICO
+        console.log('🔍 [RefundController.create] Verificando reembolsos existentes...');
         const existingRefund = await models.Refund.findOne({ 
-            sale: data.sale_id, 
+            sale: data.sale_id,
+            'sale_detail_item.product': data.product_id,
+            'sale_detail_item.product_type': data.product_type,
             status: { $nin: ['rejected', 'failed'] } 
         });
         
         if (existingRefund) {
+            console.error('❌ [RefundController.create] Ya existe un reembolso para este producto');
             return res.status(400).send({ 
-                message: 'Ya existe una solicitud de reembolso para esta compra' 
+                message: 'Ya existe una solicitud de reembolso para este producto' 
             });
         }
+        console.log('✅ [RefundController.create] No hay reembolsos existentes');
 
-        // 🆕 YA NO SE REQUIEREN DATOS BANCARIOS - solo motivo y descripción
+        // ✅ NUEVO: Usar el precio del ítem específico
+        console.log('💰 [RefundController.create] Creando objeto refund...');
         const refund = new models.Refund({
             sale: data.sale_id,
             user: userObj._id,
-            course: sale.course || null,
-            project: sale.project || null,
-            originalAmount: sale.total,
+            // 🔥 GUARDAR INFORMACIÓN DEL ÍTEM ESPECÍFICO
+            sale_detail_item: {
+                product: data.product_id,
+                product_type: data.product_type,
+                title: saleItem.title,
+                price_unit: saleItem.price_unit
+            },
+            // Legacy: mantener para compatibilidad
+            course: data.product_type === 'course' ? data.product_id : null,
+            project: data.product_type === 'project' ? data.product_id : null,
+            originalAmount: saleItem.price_unit, // 🔥 Precio del ítem, NO el total
             currency: sale.currency_total || 'USD',
             reason: {
                 type: data.reason_type,
@@ -120,16 +175,42 @@ export async function create(req, res) {
             }
         });
 
+        console.log('📊 [RefundController.create] Calculando reembolso...');
         refund.calculateRefund();
+        
+        console.log('💾 [RefundController.create] Guardando en base de datos...');
         await refund.save();
+        
+        console.log('✅ [RefundController.create] Reembolso creado exitosamente:', refund._id);
 
+        // 🔥 POBLAR DATOS PARA LA RESPUESTA Y SOCKET
+        const populatedRefund = await models.Refund.findById(refund._id)
+            .populate('user', 'name surname email avatar')
+            .populate('course', 'title imagen')
+            .populate('project', 'title imagen')
+            .populate('sale');
+
+        // 🔥 EMITIR NOTIFICACIÓN A ADMINS VÍA SOCKET
+        console.log('🔔 [RefundController.create] Emitiendo notificación a admins...');
+        try {
+            emitNewRefundRequestToAdmins(populatedRefund);
+            console.log('✅ [RefundController.create] Notificación enviada a admins vía WebSocket');
+        } catch (socketError) {
+            console.error('❌ [RefundController.create] Error al emitir WebSocket (no crítico):', socketError);
+            // No fallar el proceso si WebSocket falla
+        }
+        
         res.status(201).send({ 
             message: 'Solicitud de reembolso creada exitosamente',
-            refund: refund
+            refund: populatedRefund
         });
     } catch (error) {
-        console.error('❌ Error al crear reembolso:', error);
-        res.status(500).send({ message: 'Error al crear solicitud de reembolso' });
+        console.error('❌ [RefundController.create] Error completo:', error);
+        console.error('❌ [RefundController.create] Stack:', error.stack);
+        res.status(500).send({ 
+            message: 'Error al crear solicitud de reembolso',
+            error: error.message 
+        });
     }
 }
 
@@ -175,8 +256,8 @@ export async function review(req, res) {
         console.log(`📋 [RefundController.review] Iniciando revisión para refund: ${id}, nuevo status: ${status}`);
 
         const refund = await models.Refund.findById(id)
-            .populate('course')
-            .populate('project')
+            .populate('course', 'title imagen user')
+            .populate('project', 'title imagen user')
             .populate('user');
 
         if (!refund) {
@@ -309,23 +390,50 @@ export async function review(req, res) {
                 });
             }
             
-            // 🗑️ PASO 4: ELIMINAR ACCESO DEL ESTUDIANTE
+            // 🗑️ PASO 4: ELIMINAR ACCESO DEL ESTUDIANTE (SOLO EL PRODUCTO ESPECÍFICO)
             console.log('🗑️ [RefundController.review] Eliminando acceso del estudiante...');
+            console.log('🔍 [RefundController.review] Producto a eliminar:', {
+                product_id: refund.sale_detail_item?.product,
+                product_type: refund.sale_detail_item?.product_type,
+                title: refund.sale_detail_item?.title
+            });
             
-            if (refund.course) {
+            // 🔥 USAR sale_detail_item para saber QUÉ producto eliminar
+            if (refund.sale_detail_item && refund.sale_detail_item.product_type === 'course') {
                 try {
+                    const productIdToDelete = refund.sale_detail_item.product;
+                    const userId = refund.user._id || refund.user;
+                    
+                    console.log('📚 [RefundController.review] Eliminando acceso al curso:', {
+                        userId: userId.toString(),
+                        courseId: productIdToDelete.toString()
+                    });
+                    
                     const deletedEnrollment = await models.CourseStudent.deleteOne({
-                        user: refund.user._id || refund.user,
-                        course: refund.course
+                        user: userId,
+                        course: productIdToDelete
                     });
                     
                     if (deletedEnrollment.deletedCount > 0) {
-                        console.log('✅ [RefundController.review] Acceso al curso eliminado');
+                        console.log('✅ [RefundController.review] ✓ Acceso al curso eliminado exitosamente');
+                        console.log('   • Usuario:', userId.toString());
+                        console.log('   • Curso eliminado:', refund.sale_detail_item.title);
+                        console.log('   • Registros eliminados:', deletedEnrollment.deletedCount);
+                    } else {
+                        console.log('⚠️ [RefundController.review] No se encontró inscripción para eliminar (puede que ya fue eliminada)');
                     }
                 } catch (deleteError) {
                     console.error('❌ [RefundController.review] Error al eliminar acceso:', deleteError);
                     // No fallar el proceso completo
                 }
+            } else if (refund.sale_detail_item && refund.sale_detail_item.product_type === 'project') {
+                // Los proyectos NO tienen tabla de acceso (CourseStudent)
+                // Se filtran en el frontend
+                console.log('📁 [RefundController.review] Proyecto reembolsado - se filtra en frontend');
+                console.log('   • Proyecto:', refund.sale_detail_item.title);
+                console.log('   • No requiere eliminación de acceso (no hay tabla de enrollment)');
+            } else {
+                console.log('⚠️ [RefundController.review] No se encontró información del producto en sale_detail_item');
             }
             
         } else if (status === 'rejected') {
@@ -333,6 +441,32 @@ export async function review(req, res) {
         }
 
         await refund.save();
+
+        // 🔥 EMITIR NOTIFICACIÓN AL CLIENTE VÍA SOCKET
+        console.log('🔔 [RefundController.review] Emitiendo notificación al cliente...');
+        try {
+            const userId = (refund.user._id || refund.user).toString();
+            
+            const notificationData = {
+                type: status === 'approved' ? 'refund_approved' : 'refund_rejected',
+                refund: {
+                    _id: refund._id,
+                    status: refund.status,
+                    product: refund.sale_detail_item?.title || refund.course?.title || refund.project?.title,
+                    amount: refund.calculations?.refundAmount || refund.originalAmount,
+                    currency: refund.currency || 'USD'
+                },
+                message: status === 'approved' 
+                    ? `Tu reembolso de ${refund.sale_detail_item?.title || 'producto'} ha sido aprobado`
+                    : `Tu reembolso de ${refund.sale_detail_item?.title || 'producto'} ha sido rechazado`,
+                createdAt: new Date()
+            };
+            
+            emitRefundStatusToClient(userId, notificationData);
+            console.log(`✅ [RefundController.review] Notificación enviada al cliente ${userId}`);
+        } catch (socketError) {
+            console.error('❌ [RefundController.review] Error al emitir WebSocket (no crítico):', socketError);
+        }
 
         const message = status === 'approved' 
             ? '✅ Reembolso aprobado, ganancia bloqueada y acreditado a billetera'
@@ -356,18 +490,26 @@ export async function requestRefund(req, res) {
         const user = req.user;
         const userObj = user.toObject ? user.toObject() : user;
         const userId = userObj._id;
-        const { sale_id, reason_type, reason_description, bank_account, bank_name, account_holder } = req.body;
+        const { sale_id, product_id, product_type, reason_type, reason_description } = req.body;
 
         console.log('🔍 [RefundController.requestRefund] Datos recibidos:', {
             userId: userId.toString(),
             sale_id,
+            product_id, // 🔥 NUEVO
+            product_type, // 🔥 NUEVO
             reason_type,
-            hasDescription: !!reason_description,
-            hasBankInfo: !!bank_account
+            hasDescription: !!reason_description
         });
 
         if (!sale_id) {
             return res.status(400).send({ message: 'El ID de la venta es requerido.' });
+        }
+
+        // 🔥 NUEVO: Validar producto específico
+        if (!product_id || !product_type) {
+            return res.status(400).send({ 
+                message: 'Debes especificar el producto a reembolsar (product_id y product_type)' 
+            });
         }
 
         // 1. Validar la venta
@@ -392,6 +534,24 @@ export async function requestRefund(req, res) {
             return res.status(403).send({ message: 'No tienes permiso para solicitar un reembolso por esta venta.' });
         }
 
+        // 🔥 BUSCAR EL ÍTEM ESPECÍFICO EN EL DETALLE DE LA VENTA
+        const saleItem = sale.detail.find(item => 
+            item.product.toString() === product_id && 
+            item.product_type === product_type
+        );
+
+        if (!saleItem) {
+            return res.status(404).send({ 
+                message: 'El producto no se encontró en esta venta' 
+            });
+        }
+
+        console.log('🔍 [RefundController.requestRefund] Producto encontrado:', {
+            title: saleItem.title,
+            price: saleItem.price_unit,
+            type: product_type
+        });
+
         // 2. Verificar si la venta es reembolsable (7 días)
         const now = new Date();
         const purchaseDate = new Date(sale.createdAt);
@@ -410,86 +570,71 @@ export async function requestRefund(req, res) {
             });
         }
 
-        // 3. Verificar que no exista ya una solicitud de reembolso activa
+        // 3. 🔥 VERIFICAR SI YA EXISTE REEMBOLSO PARA ESTE PRODUCTO ESPECÍFICO
         const existingRefund = await models.Refund.findOne({ 
-            sale: sale_id, 
+            sale: sale_id,
+            'sale_detail_item.product': product_id,
+            'sale_detail_item.product_type': product_type,
             status: { $in: ['pending', 'approved', 'processing'] },
             state: 1
         });
         
         if (existingRefund) {
             return res.status(400).send({ 
-                message: 'Ya existe una solicitud de reembolso activa para esta compra.' 
+                message: 'Ya existe una solicitud de reembolso activa para este producto.' 
             });
         }
 
-        // 4. Extraer course y project del detalle de la venta
-        let courseId = null;
-        let projectId = null;
-        
-        if (sale.detail && sale.detail.length > 0) {
-            for (const item of sale.detail) {
-                if (item.product_type === 'course' && !courseId) {
-                    courseId = item.product;
-                }
-                if (item.product_type === 'project' && !projectId) {
-                    projectId = item.product;
-                }
-            }
-        }
-
-        console.log('🔍 [RefundController.requestRefund] Productos encontrados:', {
-            courseId: courseId ? courseId.toString() : 'ninguno',
-            projectId: projectId ? projectId.toString() : 'ninguno'
+        // 4. ✅ VALIDACIÓN: Verificar si ya se pagó al instructor
+        const paidEarnings = await models.InstructorEarnings.findOne({
+            sale: sale_id,
+            $or: [
+                { course: product_type === 'course' ? product_id : null },
+                { product_id: product_type === 'project' ? product_id : null }
+            ],
+            status: { $in: ['paid', 'completed'] }
         });
 
-        // 5. ✅ NUEVA VALIDACIÓN: Verificar si ya se pagó al instructor
-        let instructorAlreadyPaid = false;
-        
-        if (courseId || projectId) {
-            const paidEarnings = await models.InstructorEarnings.findOne({
-                sale: sale_id,
-                $or: [
-                    { course: courseId },
-                    { product_id: projectId }
-                ],
-                status: { $in: ['paid', 'completed'] }
+        if (paidEarnings) {
+            console.log('⚠️ [RefundController.requestRefund] Instructor ya fue pagado:', {
+                earning_id: paidEarnings._id,
+                status: paidEarnings.status
             });
-
-            if (paidEarnings) {
-                instructorAlreadyPaid = true;
-                console.log('⚠️ [RefundController.requestRefund] Instructor ya fue pagado:', {
-                    earning_id: paidEarnings._id,
-                    status: paidEarnings.status
-                });
-                
-                return res.status(400).send({ 
-                    message: 'No se puede procesar el reembolso porque el pago al instructor ya fue realizado.',
-                    reason: 'instructor_already_paid'
-                });
-            }
+            
+            return res.status(400).send({ 
+                message: 'No se puede procesar el reembolso porque el pago al instructor ya fue realizado.',
+                reason: 'instructor_already_paid'
+            });
         }
 
         console.log('✅ [RefundController.requestRefund] Validaciones pasadas, instructor no ha sido pagado');
 
-        // 6. Crear la solicitud de reembolso
+        // 5. Crear la solicitud de reembolso
         console.log('💾 [RefundController.requestRefund] Creando nuevo reembolso...');
         
         const newRefund = new models.Refund({
             user: userId,
             sale: sale_id,
-            course: courseId,
-            project: projectId,
-            originalAmount: sale.total,
+            // 🔥 GUARDAR INFORMACIÓN DEL ÍTEM ESPECÍFICO
+            sale_detail_item: {
+                product: product_id,
+                product_type: product_type,
+                title: saleItem.title,
+                price_unit: saleItem.price_unit
+            },
+            // Legacy: mantener para compatibilidad
+            course: product_type === 'course' ? product_id : null,
+            project: product_type === 'project' ? product_id : null,
+            originalAmount: saleItem.price_unit, // 🔥 Precio del ítem, NO el total
             currency: sale.currency_total || 'USD',
             reason: {
                 type: reason_type || 'other',
                 description: reason_description || 'Sin descripción'
             },
             refundDetails: {
-                bankAccount: bank_account || '',
-                bankName: bank_name || '',
-                accountHolder: account_holder || ''
+                bankAccount: '',
+                bankName: '',
+                accountHolder: ''
             },
             status: 'pending',
             state: 1
@@ -510,12 +655,22 @@ export async function requestRefund(req, res) {
 
         console.log('✅ [RefundController.requestRefund] Reembolso creado:', newRefund._id);
 
-        // 7. Poblar datos para la respuesta
+        // 6. Poblar datos para la respuesta
         const populatedRefund = await models.Refund.findById(newRefund._id)
             .populate('user', 'name surname email')
-            .populate('course', 'title')
-            .populate('project', 'title')
+            .populate('course', 'title imagen')
+            .populate('project', 'title imagen')
             .populate('sale');
+
+        // 🔥 PASO 7: EMITIR NOTIFICACIÓN A ADMINS VÍA SOCKET
+        console.log('🔔 [RefundController.requestRefund] Emitiendo notificación a admins...');
+        try {
+            emitNewRefundRequestToAdmins(populatedRefund);
+            console.log('✅ [RefundController.requestRefund] Notificación enviada a admins vía WebSocket');
+        } catch (socketError) {
+            console.error('❌ [RefundController.requestRefund] Error al emitir WebSocket (no crítico):', socketError);
+            // No fallar el proceso si WebSocket falla
+        }
 
         res.status(201).send({ 
             message: 'Tu solicitud de reembolso ha sido enviada correctamente. Te notificaremos cuando sea procesada.',

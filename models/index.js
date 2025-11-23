@@ -6,7 +6,6 @@ import CourseClase from './CourseClase.js'
 import CourseClaseFile from './CourseClaseFile.js';
 // import Coupon from './Cupone.js'; // ELIMINADO - Módulo no usado
 import Discount from './Discount.js'
-import Cart from './Cart.js'
 import Project from './Project.js';
 import Setting from './Setting.js';
 
@@ -36,7 +35,6 @@ export default {
     CourseClaseFile,
     // Coupon, // ELIMINADO - Módulo no usado
     Discount,
-    Cart,
     Project,
     Setting,
 

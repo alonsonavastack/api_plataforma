@@ -12,7 +12,7 @@ router.post("/register", [auth.verifyDashboard, path], projectController.registe
 router.post("/update", [auth.verifyDashboard, path], projectController.update);
 router.get("/list", [auth.verifyDashboard], projectController.list);
 router.get("/check-sales/:id", [auth.verifyDashboard], projectController.checkSales);
-router.get("/list-settings", [auth.verifyDashboard], projectController.list_settings);
+// 🗑️ ELIMINADO: /list-settings - No usado en frontend
 router.put("/toggle-featured/:id", [auth.verifyAdmin], projectController.toggle_featured);
 router.delete("/remove/:id", [auth.verifyDashboard], projectController.remove);
 

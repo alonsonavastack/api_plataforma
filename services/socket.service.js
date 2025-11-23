@@ -30,6 +30,10 @@ export function initializeSocketIO(server) {
             } else if (role === 'instructor') {
                 socket.join(`instructor_${userId}`);
                 console.log(`👨‍🏫 Instructor ${userId} (${socket.id}) unido a su sala`);
+            } else if (role === 'cliente' || role === 'customer') {
+                // Clientes también se unen a su sala personal para recibir notificaciones
+                socket.join(`instructor_${userId}`); // Reutilizamos el mismo patrón
+                console.log(`👨‍💼 Cliente ${userId} (${socket.id}) unido a su sala`);
             }
             
             // Confirmar autenticación
@@ -141,12 +145,13 @@ export function emitNewRefundRequestToAdmins(refund) {
         return;
     }
 
-    // Asegurarse de que los datos necesarios están presentes
+    // 🔥 Construir objeto completo con todos los datos necesarios
     const refundData = {
         _id: refund._id,
         sale: {
             _id: refund.sale._id,
             n_transaccion: refund.sale.n_transaccion,
+            total: refund.sale.total
         },
         user: {
             _id: refund.user._id,
@@ -154,11 +159,42 @@ export function emitNewRefundRequestToAdmins(refund) {
             surname: refund.user.surname,
             email: refund.user.email
         },
+        course: refund.course ? {
+            _id: refund.course._id,
+            title: refund.course.title
+        } : undefined,
+        project: refund.project ? {
+            _id: refund.project._id,
+            title: refund.project.title
+        } : undefined,
         reason: refund.reason,
+        originalAmount: refund.originalAmount,
         status: refund.status,
-        createdAt: refund.createdAt
+        createdAt: refund.createdAt,
+        requestedAt: refund.requestedAt
     };
 
+    console.log('📡 [Socket.IO] Emitiendo new_refund_request a sala "admins":', {
+        refundId: refundData._id,
+        user: `${refundData.user.name} ${refundData.user.surname}`,
+        amount: refundData.originalAmount
+    });
+
     io.to('admins').emit('new_refund_request', refundData);
-    console.log('📢 Nueva solicitud de reembolso emitida a admins:', refund._id);
+    console.log('✅ [Socket.IO] Evento new_refund_request emitido exitosamente');
+}
+
+/**
+ * Emite notificación de estado de reembolso a un cliente
+ * @param {string} userId - ID del cliente
+ * @param {*} refundData - Datos del reembolso
+ */
+export function emitRefundStatusToClient(userId, refundData) {
+    if (!io) {
+        console.warn('⚠️  Socket.IO no inicializado, no se puede emitir actualización de reembolso');
+        return;
+    }
+
+    io.to(`instructor_${userId}`).emit('refund_status_updated', refundData);
+    console.log(`🔔 Actualización de reembolso emitida al cliente ${userId}:`, refundData.type);
 }

@@ -6,14 +6,7 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon --env-file .env index.js",
-    "seed:import": "node --env-file .env scripts/seed.js --import",
-    "seed:destroy": "node --env-file .env scripts/seed.js --destroy",
-    "seed:admin": "node --env-file .env seeders/adminSeeder.js",
-    "add:user-slugs": "node --env-file .env scripts/add-user-slugs.js",
-    "fix:earnings": "node --env-file .env scripts/fix-earnings.js",
-    "update:earnings": "node --env-file .env scripts/update-earnings-status.js",
-    "fix:index": "node --env-file .env fix-index.js",
-    "migrate:slugs": "node scripts/migrate-slugs-standalone.js"
+    "fix:index": "node --env-file .env fix-index.js"
   },
   "author": "ECHODEVELOPERS",
   "license": "ISC",

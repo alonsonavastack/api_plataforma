@@ -11,8 +11,9 @@ router.get("/list", [auth.verifyTienda], saleController.list);
 router.get("/recent-notifications", [auth.verifyAdmin], saleController.recent_notifications);
 router.post("/mark-notifications-read", [auth.verifyAdmin], saleController.mark_notifications_read);
 
-// 🔧 ENDPOINT TEMPORAL: Procesar ventas existentes para crear ganancias (Solo admin)
-router.post("/process-existing-sales", [auth.verifyAdmin], saleController.process_existing_sales);
+// 🔧 Procesar ventas existentes - Crear ganancias de instructores
+// ⚠️ COMENTADO: Función no implementada
+// router.post("/process-existing-sales", [auth.verifyAdmin], saleController.process_existing_sales);
 
 // Actualizar estado - Solo administradores
 router.put("/update-status/:id", [auth.verifyAdmin], saleController.update_status_sale);

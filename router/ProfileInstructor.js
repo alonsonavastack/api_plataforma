@@ -7,7 +7,7 @@ const path = multiparty({uploadDir : './uploads/user'});
 
 const router = routerx();
 
-router.get("/profile", [auth.verifyDashboard], profileInstructorController.profile);
+// 🗑️ ELIMINADO: /profile - Frontend usa /users/profile en su lugar
 router.put("/update", [auth.verifyDashboard], profileInstructorController.update);
 router.post("/update-avatar", [path, auth.verifyDashboard], profileInstructorController.update_avatar);
 router.post("/update-password", [auth.verifyDashboard], profileInstructorController.update_password);

@@ -27,50 +27,91 @@ export const getInstructorsWithEarnings = async (req, res) => {
         console.log(`🔍 [AdminPayments] Buscando instructores con status='${status}', minAmount=${minAmount}`);
 
         // Construir filtro de status
-        // 🔥 CLAVE: Si status='all', no filtrar por status para ver TODAS las ganancias
-        const statusFilter = status !== 'all' ? { status } : {};
+        // 🔥 CLAVE: Si status='all', obtener ganancias 'available' Y 'pending' (listos para pagar)
+        let statusFilter = {};
+        if (status && status.toLowerCase() !== 'all') {
+            // Si se especifica un estado, usarlo
+            statusFilter = { status };
+        } else {
+            // Si es 'all' o no se especifica, incluir todos los estados que no han sido pagados ni reembolsados.
+            statusFilter = { status: { $nin: ['paid', 'completed', 'refunded'] } };
+        }
 
         console.log('📊 [AdminPayments] Filtro de status:', statusFilter);
 
-        // Obtener todos los instructores que tienen ganancias
-        // 🔥 EXCLUIR GANANCIAS REEMBOLSADAS Y PAGADAS
-        const earningsAggregation = await InstructorEarnings.aggregate([
-            {
-                $match: {
-                    ...statusFilter,
-                    status: { 
-                        $nin: ['refunded', 'paid', 'completed'] // 🔥 No contar reembolsadas NI pagadas
-                    }
-                }
-            },
-            {
-                $group: {
-                    _id: '$instructor',
-                    totalEarnings: { $sum: '$instructor_earning' },
-                    count: { $sum: 1 },
-                    oldestEarning: { $min: '$earned_at' },
-                    newestEarning: { $max: '$earned_at' }
-                }
-            },
-            {
-                $match: {
-                    totalEarnings: { $gte: parseFloat(minAmount) }
-                }
-            },
-            {
-                $sort: { totalEarnings: -1 }
-            }
-        ]);
+        // 🔥 OBTENER GANANCIAS: Se confía en el statusFilter para excluir 'refunded', 'paid', etc.
+        // Se elimina el filtrado manual complejo basado en la tabla de Refunds.
+        const validEarnings = await InstructorEarnings.find({
+            ...statusFilter
+        }).populate('course').populate('product_id');
 
-        console.log(`✅ [AdminPayments] Encontrados ${earningsAggregation.length} instructores con ganancias`);
-        console.log(`📊 [AdminPayments] Desglose:`);
-        for (const item of earningsAggregation) {
-            console.log(`   • Instructor ${item._id}: ${item.totalEarnings.toFixed(2)} (${item.count} items)`);
+        console.log(`✅ [AdminPayments] Ganancias válidas después de filtrar: ${validEarnings.length}`);
+
+        // 🔥 Agrupar por instructor
+        const earningsAggregation = validEarnings.reduce((acc, earning) => {
+            const instructorId = earning.instructor.toString();
+            
+            if (!acc[instructorId]) {
+                acc[instructorId] = {
+                    _id: earning.instructor,
+                    totalEarnings: 0,
+                    count: 0,
+                    oldestEarning: earning.earned_at,
+                    newestEarning: earning.earned_at
+                };
+            }
+            
+            acc[instructorId].totalEarnings += earning.instructor_earning;
+            acc[instructorId].count++;
+            
+            if (earning.earned_at < acc[instructorId].oldestEarning) {
+                acc[instructorId].oldestEarning = earning.earned_at;
+            }
+            if (earning.earned_at > acc[instructorId].newestEarning) {
+                acc[instructorId].newestEarning = earning.earned_at;
+            }
+            
+            return acc;
+        }, {});
+
+        // Convertir a array y filtrar por minAmount
+        const earningsArray = Object.values(earningsAggregation)
+            .filter(item => {
+                // 🔥 CORRECCIÓN: Aplicar filtro de monto mínimo solo si es > 0
+                return parseFloat(minAmount) > 0 ? item.totalEarnings >= parseFloat(minAmount) : true;
+            })
+            .sort((a, b) => b.totalEarnings - a.totalEarnings);
+
+        console.log(`✅ [AdminPayments] Encontrados ${earningsArray.length} instructores con ganancias >= ${minAmount}`);
+
+        // 🔥 PASO 5: Logs detallados por instructor
+        console.log(`📊 [AdminPayments] Desglose por instructor:`);
+        for (const item of earningsArray) {
+            const instructorEarnings = validEarnings.filter(
+                e => e.instructor.toString() === item._id.toString()
+            );
+            
+            const statusCounts = {};
+            const statusTotals = {};
+            instructorEarnings.forEach(e => {
+                statusCounts[e.status] = (statusCounts[e.status] || 0) + 1;
+                statusTotals[e.status] = (statusTotals[e.status] || 0) + e.instructor_earning;
+            });
+            
+            console.log(`   • Instructor ${item._id}:`);
+            console.log(`     - Total: ${item.totalEarnings.toFixed(2)} USD`);
+            console.log(`     - Items: ${item.count}`);
+            console.log(`     - Estados:`);
+            Object.keys(statusCounts).forEach(status => {
+                console.log(`       * ${status}: ${statusCounts[status]} items, ${statusTotals[status].toFixed(2)} USD`);
+            });
         }
+
+
 
         // Poblar información de instructores
         const instructorsWithEarnings = await Promise.all(
-            earningsAggregation.map(async (item) => {
+            earningsArray.map(async (item) => {
                 const instructor = await User.findById(item._id).select('name email surname avatar');
                 
                 // Obtener configuración de pago
@@ -106,10 +147,12 @@ export const getInstructorsWithEarnings = async (req, res) => {
         });
     } catch (error) {
         console.error('Error al obtener instructores con ganancias:', error);
+        console.error(error.stack);
         res.status(500).json({
             success: false,
             message: 'Error al obtener instructores con ganancias',
-            error: error.message
+            error: error.message,
+            stack: error.stack
         });
     }
 };
@@ -123,11 +166,18 @@ export const getInstructorEarnings = async (req, res) => {
         const { id: instructorId } = req.params;
         const { status, startDate, endDate } = req.query;
 
+        console.log(`\ud83d\udd0d [getInstructorEarnings] Instructor: ${instructorId}, status: ${status || 'all'}`);
+
         // Construir filtros
-        const filters = { instructor: instructorId };
+        const filters = { 
+            instructor: instructorId
+        };
 
         if (status && status !== 'all') {
             filters.status = status;
+        } else {
+            // Si es 'all' o no se especifica, usar el mismo filtro robusto que la lista general
+            filters.status = { $nin: ['paid', 'completed', 'refunded'] };
         }
 
         if (startDate || endDate) {
@@ -136,30 +186,31 @@ export const getInstructorEarnings = async (req, res) => {
             if (endDate) filters.earned_at.$lte = new Date(endDate);
         }
 
-        // Obtener earnings
-        console.log(`🔍 [getInstructorEarnings] Buscando earnings con filtros:`, filters);
+        console.log(`\ud83d\udd0d [getInstructorEarnings] Buscando earnings con filtros:`, filters);
         
-        const earnings = await InstructorEarnings.find(filters)
+        const validEarnings = await InstructorEarnings.find(filters)
             .populate('course', 'title imagen')
-            .populate('product_id')
+            .populate('product_id', 'title imagen')
             .populate('sale', 'n_transaccion created_at user')
             .sort({ earned_at: -1 });
+
+        console.log(`\u2705 [getInstructorEarnings] Ganancias válidas después de filtrar: ${validEarnings.length}`);
         
-        console.log(`✅ [getInstructorEarnings] Encontrados ${earnings.length} earnings`);
-        console.log(`📊 [getInstructorEarnings] Desglose por estado:`);
+        console.log(`\ud83d\udcca [getInstructorEarnings] Desglose por estado:`);
         const countByStatus = {};
-        earnings.forEach(e => {
+        validEarnings.forEach(e => {
             countByStatus[e.status] = (countByStatus[e.status] || 0) + 1;
         });
         console.log(`   Estados:`, countByStatus);
         
         // Formatear earnings para mostrar curso o proyecto correctamente
-        const formattedEarnings = earnings.map(earning => {
+        const formattedEarnings = validEarnings.map(earning => {
             const earningObj = earning.toObject();
             
             // Si tiene product_id (nuevo formato para proyectos)
             if (earningObj.product_id) {
                 earningObj.product = earningObj.product_id;
+                earningObj.product_type = 'project';
             } 
             // Si tiene course (formato legacy)
             else if (earningObj.course) {
@@ -171,7 +222,7 @@ export const getInstructorEarnings = async (req, res) => {
         });
 
         // Calcular totales
-        const totals = calculateTotalEarnings(earnings);
+        const totals = calculateTotalEarnings(validEarnings);
 
         // Obtener configuración del instructor
         const instructor = await User.findById(instructorId).select('name email surname');
@@ -217,7 +268,7 @@ export const createPayment = async (req, res) => {
         const earnings = await InstructorEarnings.find({
             _id: { $in: earnings_ids },
             instructor: instructorId,
-            status: 'available'
+            status: { $in: ['available', 'pending'] } // 🔥 CORRECCIÓN: Permitir pagar ganancias pendientes y disponibles
         });
 
         if (earnings.length !== earnings_ids.length) {
@@ -235,13 +286,21 @@ export const createPayment = async (req, res) => {
         const validEarnings = [];
         
         for (const earning of earnings) {
-            // Verificar si tiene reembolso completado
+            // 🔥 CORRECCIÓN: Verificar si existe un reembolso para el PRODUCTO ESPECÍFICO de esta ganancia.
+            // No basta con que la venta tenga "algún" reembolso.
+            const productId = earning.course?._id || earning.product_id?._id;
+            if (!productId) {
+                validEarnings.push(earning); // Si no hay producto, no puede haber reembolso específico.
+                continue;
+            }
+
             const refund = await Refund.findOne({
                 sale: earning.sale,
-                status: 'completed'
+                'sale_detail_item.product': productId,
+                status: 'completed' // Solo reembolsos completados
             });
             
-            if (refund || earning.status === 'refunded') {
+            if (refund) {
                 earningsWithRefund.push({
                     earning_id: earning._id,
                     sale_id: earning.sale,
@@ -678,34 +737,24 @@ export const getEarningsReport = async (req, res) => {
     try {
         const { period = 'month', startDate, endDate } = req.query;
 
-        // Determinar rango de fechas
         let dateFilter = {};
         if (startDate && endDate) {
             dateFilter = {
-                earned_at: {
-                    $gte: new Date(startDate),
-                    $lte: new Date(endDate)
-                }
+                earned_at: { $gte: new Date(startDate), $lte: new Date(endDate) }
             };
         } else {
             const range = getDateRange(period);
             dateFilter = {
-                earned_at: {
-                    $gte: range.startDate,
-                    $lte: range.endDate
-                }
+                earned_at: { $gte: range.startDate, $lte: range.endDate }
             };
         }
 
-        // Obtener todas las ganancias del período
         const earnings = await InstructorEarnings.find(dateFilter)
             .populate('instructor', 'name email')
             .populate('course', 'title');
 
-        // Calcular estadísticas generales
         const stats = calculateEarningsStatsByStatus(earnings);
 
-        // Agrupar por instructor
         const byInstructor = {};
         earnings.forEach(earning => {
             const instructorId = earning.instructor._id.toString();
@@ -722,7 +771,6 @@ export const getEarningsReport = async (req, res) => {
             byInstructor[instructorId].count++;
         });
 
-        // Convertir a array y ordenar
         const instructorStats = Object.values(byInstructor)
             .sort((a, b) => b.totalEarnings - a.totalEarnings)
             .map(item => ({
@@ -731,7 +779,6 @@ export const getEarningsReport = async (req, res) => {
                 platformCommission: parseFloat(item.platformCommission.toFixed(2))
             }));
 
-        // Agrupar por mes
         const byMonth = groupEarningsByMonth(earnings);
 
         res.json({
@@ -748,14 +795,12 @@ export const getEarningsReport = async (req, res) => {
             }
         });
     } catch (error) {
-        console.error('Error al generar reporte:', error);
-        res.status(500).json({
-            success: false,
-            message: 'Error al generar reporte',
-            error: error.message
-        });
+        console.error('❌ Error al generar reporte:', error);
+        res.status(500).json({ success: false, message: 'Error al generar reporte', error: error.message });
     }
 };
+
+
 
 /**
  * 🔥 NUEVO: Obtener datos bancarios completos de un instructor (solo para admin)

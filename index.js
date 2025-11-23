@@ -12,12 +12,12 @@ mongoose.Promise = global.Promise
 const dbUrl = process.env.MONGO_URI;
 mongoose.connect(
     dbUrl, {
-        useNewUrlParser: true,
-        useUnifiedTopology:true,
-    }
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+}
 ).then(async mongoose => {
     console.log("Conectado a la base de datos MongoDB.");
-    
+
     // Intentar inicializar CRON jobs (solo si node-cron está instalado)
     try {
         const { initializeCronJobs } = await import('./cron/index.js');
@@ -27,7 +27,7 @@ mongoose.connect(
         console.log('   El sistema funcionará normalmente sin CRON jobs automáticos.\n');
     }
 })
-.catch(err => console.log(err));
+    .catch(err => console.log(err));
 
 const app = express();
 app.use(cors());
@@ -36,14 +36,14 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 app.use(express.json());
-app.use(express.urlencoded({extended: true}))
-app.use(express.static(path.join(__dirname,'public')))
+app.use(express.urlencoded({ extended: true }))
+app.use(express.static(path.join(__dirname, 'public')))
 
 // 🆕 Ruta de redireccionamiento de Short URLs (debe ir ANTES de /api/)
 import ShortUrlController from './controllers/ShortUrlController.js';
 app.get('/s/:shortCode', ShortUrlController.redirect);
 
-app.use('/api/',router)
+app.use('/api/', router)
 
 // Custom error handler
 app.use((err, req, res, next) => {
