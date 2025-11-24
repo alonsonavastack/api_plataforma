@@ -4,10 +4,10 @@ import InstructorPayment from '../models/InstructorPayment.js';
 import PlatformCommissionSettings from '../models/PlatformCommissionSettings.js';
 import User from '../models/User.js';
 import { decrypt, maskAccountNumber } from '../utils/encryption.js';
-import { 
-    calculateTotalEarnings, 
+import {
+    calculateTotalEarnings,
     calculatePaymentAmount,
-    calculateEarningsStatsByStatus 
+    calculateEarningsStatsByStatus
 } from '../utils/commissionCalculator.js';
 import { groupEarningsByMonth, getDateRange } from '../utils/dateHelpers.js';
 
@@ -50,7 +50,7 @@ export const getInstructorsWithEarnings = async (req, res) => {
         // 🔥 Agrupar por instructor
         const earningsAggregation = validEarnings.reduce((acc, earning) => {
             const instructorId = earning.instructor.toString();
-            
+
             if (!acc[instructorId]) {
                 acc[instructorId] = {
                     _id: earning.instructor,
@@ -60,17 +60,17 @@ export const getInstructorsWithEarnings = async (req, res) => {
                     newestEarning: earning.earned_at
                 };
             }
-            
+
             acc[instructorId].totalEarnings += earning.instructor_earning;
             acc[instructorId].count++;
-            
+
             if (earning.earned_at < acc[instructorId].oldestEarning) {
                 acc[instructorId].oldestEarning = earning.earned_at;
             }
             if (earning.earned_at > acc[instructorId].newestEarning) {
                 acc[instructorId].newestEarning = earning.earned_at;
             }
-            
+
             return acc;
         }, {});
 
@@ -90,14 +90,14 @@ export const getInstructorsWithEarnings = async (req, res) => {
             const instructorEarnings = validEarnings.filter(
                 e => e.instructor.toString() === item._id.toString()
             );
-            
+
             const statusCounts = {};
             const statusTotals = {};
             instructorEarnings.forEach(e => {
                 statusCounts[e.status] = (statusCounts[e.status] || 0) + 1;
                 statusTotals[e.status] = (statusTotals[e.status] || 0) + e.instructor_earning;
             });
-            
+
             console.log(`   • Instructor ${item._id}:`);
             console.log(`     - Total: ${item.totalEarnings.toFixed(2)} USD`);
             console.log(`     - Items: ${item.count}`);
@@ -113,10 +113,10 @@ export const getInstructorsWithEarnings = async (req, res) => {
         const instructorsWithEarnings = await Promise.all(
             earningsArray.map(async (item) => {
                 const instructor = await User.findById(item._id).select('name email surname avatar');
-                
+
                 // Obtener configuración de pago
-                const paymentConfig = await InstructorPaymentConfig.findOne({ 
-                    instructor: item._id 
+                const paymentConfig = await InstructorPaymentConfig.findOne({
+                    instructor: item._id
                 }).select('preferred_payment_method paypal_connected bank_account.verified');
 
                 return {
@@ -169,7 +169,7 @@ export const getInstructorEarnings = async (req, res) => {
         console.log(`\ud83d\udd0d [getInstructorEarnings] Instructor: ${instructorId}, status: ${status || 'all'}`);
 
         // Construir filtros
-        const filters = { 
+        const filters = {
             instructor: instructorId
         };
 
@@ -187,7 +187,7 @@ export const getInstructorEarnings = async (req, res) => {
         }
 
         console.log(`\ud83d\udd0d [getInstructorEarnings] Buscando earnings con filtros:`, filters);
-        
+
         const validEarnings = await InstructorEarnings.find(filters)
             .populate('course', 'title imagen')
             .populate('product_id', 'title imagen')
@@ -195,29 +195,29 @@ export const getInstructorEarnings = async (req, res) => {
             .sort({ earned_at: -1 });
 
         console.log(`\u2705 [getInstructorEarnings] Ganancias válidas después de filtrar: ${validEarnings.length}`);
-        
+
         console.log(`\ud83d\udcca [getInstructorEarnings] Desglose por estado:`);
         const countByStatus = {};
         validEarnings.forEach(e => {
             countByStatus[e.status] = (countByStatus[e.status] || 0) + 1;
         });
         console.log(`   Estados:`, countByStatus);
-        
+
         // Formatear earnings para mostrar curso o proyecto correctamente
         const formattedEarnings = validEarnings.map(earning => {
             const earningObj = earning.toObject();
-            
+
             // Si tiene product_id (nuevo formato para proyectos)
             if (earningObj.product_id) {
                 earningObj.product = earningObj.product_id;
                 earningObj.product_type = 'project';
-            } 
+            }
             // Si tiene course (formato legacy)
             else if (earningObj.course) {
                 earningObj.product = earningObj.course;
                 earningObj.product_type = 'course';
             }
-            
+
             return earningObj;
         });
 
@@ -280,11 +280,11 @@ export const createPayment = async (req, res) => {
 
         // 🔥 VALIDACIÓN ADICIONAL: Verificar reembolsos
         console.log('🔒 [createPayment] Verificando reembolsos...');
-        
+
         const Refund = (await import('../models/Refund.js')).default;
         const earningsWithRefund = [];
         const validEarnings = [];
-        
+
         for (const earning of earnings) {
             // 🔥 CORRECCIÓN: Verificar si existe un reembolso para el PRODUCTO ESPECÍFICO de esta ganancia.
             // No basta con que la venta tenga "algún" reembolso.
@@ -299,7 +299,7 @@ export const createPayment = async (req, res) => {
                 'sale_detail_item.product': productId,
                 status: 'completed' // Solo reembolsos completados
             });
-            
+
             if (refund) {
                 earningsWithRefund.push({
                     earning_id: earning._id,
@@ -314,7 +314,7 @@ export const createPayment = async (req, res) => {
 
         if (earningsWithRefund.length > 0) {
             console.log('❌ [createPayment] Ganancias con reembolso detectadas:', earningsWithRefund.length);
-            
+
             return res.status(400).json({
                 success: false,
                 message: 'Algunas ganancias seleccionadas tienen reembolsos completados',
@@ -341,11 +341,19 @@ export const createPayment = async (req, res) => {
 
         // Preparar detalles del pago según el método
         const paymentDetails = {};
-        
+
         if (paymentConfig.preferred_payment_method === 'paypal') {
             paymentDetails.paypal_email = paymentConfig.paypal_email;
         } else if (paymentConfig.preferred_payment_method === 'bank_transfer') {
-            const accountNumber = paymentConfig.bank_account?.account_number 
+            // 🔥 VALIDACIÓN: Verificar que la cuenta esté aprobada
+            if (!paymentConfig.bank_account || !paymentConfig.bank_account.verified) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'La cuenta bancaria del instructor no ha sido verificada por un administrador. Por favor verifique la cuenta en la sección "Verificar Bancos" antes de procesar el pago.'
+                });
+            }
+
+            const accountNumber = paymentConfig.bank_account?.account_number
                 ? decrypt(paymentConfig.bank_account.account_number)
                 : '';
             paymentDetails.bank_account_number = maskAccountNumber(accountNumber);
@@ -371,7 +379,7 @@ export const createPayment = async (req, res) => {
         // Actualizar estado de las ganancias a 'paid'
         await InstructorEarnings.updateMany(
             { _id: { $in: earnings_ids } },
-            { 
+            {
                 status: 'paid',
                 payment_reference: payment._id,
                 paid_at: new Date()
@@ -516,11 +524,11 @@ export const completePayment = async (req, res) => {
  */
 export const getPaymentHistory = async (req, res) => {
     try {
-        const { 
-            status, 
-            instructor, 
-            page = 1, 
-            limit = 20 
+        const {
+            status,
+            instructor,
+            page = 1,
+            limit = 20
         } = req.query;
 
         // Construir filtros
@@ -843,11 +851,12 @@ export const getInstructorPaymentMethodFull = async (req, res) => {
             instructor,
             paymentMethod: paymentConfig.preferred_payment_method,
             preferredMethod: paymentConfig.preferred_payment_method,
-            paymentDetails: null
+            paymentDetails: null,
+            bankDetails: null // 🔥 Nuevo campo: Siempre devolver detalles bancarios si existen
         };
 
-        if (paymentConfig.preferred_payment_method === 'bank_transfer' && paymentConfig.bank_account) {
-            // 🔥 Desencriptar datos bancarios completos para admin
+        // 🔥 SIEMPRE intentar poblar bankDetails si existen datos, independientemente del método preferido
+        if (paymentConfig.bank_account && (paymentConfig.bank_account.account_number || paymentConfig.bank_account.clabe)) {
             let accountNumber = '';
             let clabe = '';
 
@@ -860,23 +869,25 @@ export const getInstructorPaymentMethodFull = async (req, res) => {
                 }
             } catch (decryptError) {
                 console.error('Error al desencriptar:', decryptError);
-                return res.status(500).json({
-                    success: false,
-                    message: 'Error al desencriptar datos bancarios'
-                });
+                // No fallar todo el request, solo dejar vacío
             }
 
-            response.paymentDetails = {
+            response.bankDetails = {
                 type: 'bank_transfer',
                 bank_name: paymentConfig.bank_account.bank_name,
-                account_number: accountNumber, // 🔥 Número completo sin asteriscos
-                clabe: clabe, // 🔥 CLABE completa sin asteriscos
+                account_number: accountNumber,
+                clabe: clabe,
                 account_holder_name: paymentConfig.bank_account.account_holder_name,
                 account_type: paymentConfig.bank_account.account_type,
                 card_brand: paymentConfig.bank_account.card_brand || '',
                 swift_code: paymentConfig.bank_account.swift_code || '',
                 verified: paymentConfig.bank_account.verified
             };
+        }
+
+        // Poblar paymentDetails según el método PREFERIDO (comportamiento original)
+        if (paymentConfig.preferred_payment_method === 'bank_transfer' && response.bankDetails) {
+            response.paymentDetails = response.bankDetails;
         } else if (paymentConfig.preferred_payment_method === 'paypal') {
             response.paymentDetails = {
                 type: 'paypal',
@@ -952,11 +963,48 @@ export const verifyInstructorBank = async (req, res) => {
 };
 
 /**
- * Obtener lista de cuentas bancarias pendientes de verificación
- * GET /api/admin/bank-verifications/pending
- * 
- * 🔥 ACTUALIZADO: Ahora detecta tanto cuentas nuevas como cuentas editadas pendientes
+ * Obtener todos los instructores con cuenta bancaria configurada (Verificada o No)
+ * GET /api/admin/bank-accounts/all
  */
+export const getAllBankAccounts = async (req, res) => {
+    try {
+        // Buscar configuraciones que tengan datos bancarios
+        const configs = await InstructorPaymentConfig.find({
+            $or: [
+                { 'bank_account.account_number': { $exists: true, $ne: '', $ne: null } },
+                { 'bank_account.clabe': { $exists: true, $ne: '', $ne: null } }
+            ]
+        })
+            .populate('instructor', 'name email surname avatar')
+            .sort({ updatedAt: -1 });
+
+        console.log(`📋 [getAllBankAccounts] Encontradas ${configs.length} cuentas bancarias`);
+
+        // Mapear para devolver formato consistente con lo que espera el frontend
+        // El frontend espera un array de objetos que tengan una propiedad 'instructor' o sean el instructor mismo
+        const instructors = configs.map(config => ({
+            _id: config.instructor._id,
+            instructor: config.instructor,
+            // Enviamos metadatos útiles por si se quieren usar en la lista antes de cargar detalles
+            hasBankAccount: true,
+            isVerified: config.bank_account?.verified || false,
+            updatedAt: config.updatedAt
+        }));
+
+        res.json({
+            success: true,
+            instructors
+        });
+    } catch (error) {
+        console.error('Error al obtener cuentas bancarias:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error al obtener cuentas bancarias',
+            error: error.message
+        });
+    }
+};
+
 export const getPendingBankVerifications = async (req, res) => {
     try {
         // Buscar todas las configuraciones de pago con cuentas bancarias NO verificadas
@@ -966,7 +1014,7 @@ export const getPendingBankVerifications = async (req, res) => {
         const pendingConfigs = await InstructorPaymentConfig.find({
             $and: [
                 { 'bank_account.verified': false }, // NO verificadas
-                { 
+                {
                     $or: [
                         { 'bank_account.account_number': { $exists: true, $ne: '', $ne: null } },
                         { 'bank_account.clabe': { $exists: true, $ne: '', $ne: null } }
@@ -974,8 +1022,8 @@ export const getPendingBankVerifications = async (req, res) => {
                 }
             ]
         })
-        .populate('instructor', 'name email surname avatar')
-        .sort({ updatedAt: -1 });
+            .populate('instructor', 'name email surname avatar')
+            .sort({ updatedAt: -1 });
 
         console.log(`🔔 [BankVerifications] Encontradas ${pendingConfigs.length} cuentas pendientes de verificación`);
 
@@ -994,9 +1042,9 @@ export const getPendingBankVerifications = async (req, res) => {
                 // 🔥 Detectar si es una edición reciente (menos de 1 hora)
                 isRecentEdit: config.updatedAt && (Date.now() - new Date(config.updatedAt).getTime()) < 3600000
             };
-            
+
             console.log(`  - ${config.instructor.name} ${config.instructor.surname}: ${config.bank_account?.bank_name} (${notification.isRecentEdit ? 'EDITADO RECIENTEMENTE' : 'Pendiente'})`);
-            
+
             return notification;
         });
 
@@ -1029,5 +1077,6 @@ export default {
     getEarningsReport,
     getInstructorPaymentMethodFull, // 🔥 Nuevo endpoint
     verifyInstructorBank, // 🔥 Nuevo endpoint de verificación
-    getPendingBankVerifications // 🔔 Notificaciones de cuentas pendientes
+    getPendingBankVerifications, // 🔔 Notificaciones de cuentas pendientes
+    getAllBankAccounts // 🔥 Nuevo endpoint para lista completa
 };

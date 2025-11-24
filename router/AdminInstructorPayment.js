@@ -13,7 +13,8 @@ import {
     getEarningsReport,
     getInstructorPaymentMethodFull, // 🔥 Nuevo import
     verifyInstructorBank, // 🔥 Endpoint de verificación de cuenta bancaria
-    getPendingBankVerifications // 🔔 Notificaciones de cuentas pendientes
+    getPendingBankVerifications, // 🔔 Notificaciones de cuentas pendientes
+    getAllBankAccounts // 🔥 Nuevo endpoint lista completa
 } from '../controllers/AdminInstructorPaymentController.js';
 import auth from '../service/auth.js';
 
@@ -58,6 +59,13 @@ router.get('/instructors/:id/payment-method-full', auth.verifyAdmin, getInstruct
  * @access  Private (Admin ONLY)
  */
 router.put('/instructors/:id/verify-bank', auth.verifyAdmin, verifyInstructorBank);
+
+/**
+ * @route   GET /api/admin/bank-accounts/all
+ * @desc    Obtener TODOS los instructores con cuenta bancaria (Verificada o No)
+ * @access  Private (Admin ONLY)
+ */
+router.get('/bank-accounts/all', auth.verifyAdmin, getAllBankAccounts);
 
 /**
  * @route   GET /api/admin/bank-verifications/pending

@@ -12,8 +12,7 @@ router.get("/recent-notifications", [auth.verifyAdmin], saleController.recent_no
 router.post("/mark-notifications-read", [auth.verifyAdmin], saleController.mark_notifications_read);
 
 // 🔧 Procesar ventas existentes - Crear ganancias de instructores
-// ⚠️ COMENTADO: Función no implementada
-// router.post("/process-existing-sales", [auth.verifyAdmin], saleController.process_existing_sales);
+router.post("/process-existing-sales", [auth.verifyAdmin], saleController.process_existing_sales);
 
 // Actualizar estado - Solo administradores
 router.put("/update-status/:id", [auth.verifyAdmin], saleController.update_status_sale);

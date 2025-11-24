@@ -59,8 +59,8 @@ export default {
 
       // 🔥 GENERAR SLUG ÚNICO
       req.body.slug = await generateUniqueSlug(
-        models.User, 
-        req.body.name, 
+        models.User,
+        req.body.name,
         req.body.surname
       );
       console.log('🆔 [Register] Slug generado:', req.body.slug);
@@ -84,10 +84,10 @@ export default {
       // Enviar OTP por Telegram
       try {
         console.log(`📤 Intentando enviar OTP a Telegram para ${req.body.name}...`);
-        const telegramResponse = await sendOtpCode({ 
-          code: otpCode, 
-          phone: req.body.phone, 
-          userName: req.body.name 
+        const telegramResponse = await sendOtpCode({
+          code: otpCode,
+          phone: req.body.phone,
+          userName: req.body.name
         });
         console.log(`✅ OTP enviado exitosamente a Telegram:`, telegramResponse);
         console.log(`   📱 Teléfono: ${req.body.phone}`);
@@ -230,9 +230,9 @@ export default {
       }
 
       // 🔥 MAPEAR REDES SOCIALES DESDE CAMPOS PLANOS A socialMedia
-      if (req.body.facebook || req.body.instagram || req.body.youtube || 
-          req.body.tiktok || req.body.twitch || req.body.website ||
-          req.body.discord || req.body.linkedin || req.body.twitter || req.body.github) {
+      if (req.body.facebook || req.body.instagram || req.body.youtube ||
+        req.body.tiktok || req.body.twitch || req.body.website ||
+        req.body.discord || req.body.linkedin || req.body.twitter || req.body.github) {
         req.body.socialMedia = {
           facebook: req.body.facebook || '',
           instagram: req.body.instagram || '',
@@ -260,13 +260,13 @@ export default {
 
       // 🔥 MANEJAR CONTRASEÑA: Solo encriptar si se envío una nueva
       if (req.body.password && req.body.password.trim() !== '') {
-      console.log('🔑 [Update] Encriptando nueva contraseña para usuario:', userIdToUpdate);
+        console.log('🔑 [Update] Encriptando nueva contraseña para usuario:', userIdToUpdate);
         req.body.password = await bcrypt.hash(req.body.password, 10);
-    } else {
-      // Si no se envío contraseña o está vacía, eliminarla del body
-      console.log('✅ [Update] Actualización sin cambio de contraseña');
-      delete req.body.password;
-    }
+      } else {
+        // Si no se envío contraseña o está vacía, eliminarla del body
+        console.log('✅ [Update] Actualización sin cambio de contraseña');
+        delete req.body.password;
+      }
 
       if (req.files && req.files.avatar) {
         // Si se sube una nueva imagen, eliminamos la anterior.
@@ -287,25 +287,25 @@ export default {
       }
 
       const updatedUser = await models.User.findByIdAndUpdate(
-      userIdToUpdate,
-      req.body,
-      {
-      new: true, // Devuelve el documento actualizado
-      }
+        userIdToUpdate,
+        req.body,
+        {
+          new: true, // Devuelve el documento actualizado
+        }
       );
 
       console.log('✅ [Update] Usuario actualizado exitosamente:', {
-      userId: updatedUser._id,
-      email: updatedUser.email,
+        userId: updatedUser._id,
+        email: updatedUser.email,
         name: updatedUser.name,
-      hasPassword: !!updatedUser.password,
-      state: updatedUser.state
-    });
+        hasPassword: !!updatedUser.password,
+        state: updatedUser.state
+      });
 
-    res.status(200).json({
-      message: "EL USUARIO SE EDITO CORRECTAMENTE",
-      user: resource.User.api_resource_user(updatedUser),
-    });
+      res.status(200).json({
+        message: "EL USUARIO SE EDITO CORRECTAMENTE",
+        user: resource.User.api_resource_user(updatedUser),
+      });
     } catch (error) {
       console.log(error);
       res.status(500).send({
@@ -313,66 +313,66 @@ export default {
       });
     }
   },
-  update_password: async(req,res) => {
+  update_password: async (req, res) => {
     try {
-        if (!req.user) {
-            return res.status(401).send({ message: 'No autenticado.' });
-        }
+      if (!req.user) {
+        return res.status(401).send({ message: 'No autenticado.' });
+      }
 
-        const { currentPassword, newPassword } = req.body;
+      const { currentPassword, newPassword } = req.body;
 
-        const user = await models.User.findById(req.user._id);
-        if (!user) {
-            return res.status(404).send({ message: 'Usuario no encontrado.' });
-        }
+      const user = await models.User.findById(req.user._id);
+      if (!user) {
+        return res.status(404).send({ message: 'Usuario no encontrado.' });
+      }
 
-        const match = await bcrypt.compare(currentPassword, user.password);
-        if (!match) {
-            return res.status(400).json({ message_text: 'La contraseña actual es incorrecta.' });
-        }
+      const match = await bcrypt.compare(currentPassword, user.password);
+      if (!match) {
+        return res.status(400).json({ message_text: 'La contraseña actual es incorrecta.' });
+      }
 
-        const hashedNewPassword = await bcrypt.hash(newPassword, 10);
-        await models.User.findByIdAndUpdate(req.user._id, { password: hashedNewPassword });
+      const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+      await models.User.findByIdAndUpdate(req.user._id, { password: hashedNewPassword });
 
-        res.status(200).json({
-            message: 'La contraseña se actualizó correctamente.',
-        });
+      res.status(200).json({
+        message: 'La contraseña se actualizó correctamente.',
+      });
 
     } catch (error) {
-        console.log(error);
-        res.status(500).send({ message: 'HUBO UN ERROR' });
+      console.log(error);
+      res.status(500).send({ message: 'HUBO UN ERROR' });
     }
   },
-  update_avatar: async(req,res) => {
-      try {
-          if (!req.user) {
-              return res.status(401).send({ message: 'No autenticado.' });
-          }
-
-          // Usar siempre el ID del usuario autenticado para la actualización de su propio avatar.
-          const userIdToUpdate = req.user._id;
-
-          if(req.files && req.files.avatar){
-              const oldUser = await models.User.findById(userIdToUpdate);
-              if (oldUser.avatar && fs.existsSync(path.join(__dirname, '../uploads/user/', oldUser.avatar))) {
-                  fs.unlinkSync(path.join(__dirname, '../uploads/user/', oldUser.avatar));
-              }
-              const img_path = req.files.avatar.path;
-              const avatar_name = path.basename(img_path);
-              
-              const updatedUser = await models.User.findByIdAndUpdate(userIdToUpdate, { avatar: avatar_name }, { new: true });
-
-              res.status(200).json({
-                  message: 'El avatar se actualizó correctamente.',
-                  user: resource.User.api_resource_user(updatedUser),
-              });
-          } else {
-            return res.status(400).send({ message: 'No se proporcionó ningún archivo de avatar.' });
-          }
-      } catch (error) {
-          console.log(error);
-          res.status(500).send({ message: 'HUBO UN ERROR' });
+  update_avatar: async (req, res) => {
+    try {
+      if (!req.user) {
+        return res.status(401).send({ message: 'No autenticado.' });
       }
+
+      // Usar siempre el ID del usuario autenticado para la actualización de su propio avatar.
+      const userIdToUpdate = req.user._id;
+
+      if (req.files && req.files.avatar) {
+        const oldUser = await models.User.findById(userIdToUpdate);
+        if (oldUser.avatar && fs.existsSync(path.join(__dirname, '../uploads/user/', oldUser.avatar))) {
+          fs.unlinkSync(path.join(__dirname, '../uploads/user/', oldUser.avatar));
+        }
+        const img_path = req.files.avatar.path;
+        const avatar_name = path.basename(img_path);
+
+        const updatedUser = await models.User.findByIdAndUpdate(userIdToUpdate, { avatar: avatar_name }, { new: true });
+
+        res.status(200).json({
+          message: 'El avatar se actualizó correctamente.',
+          user: resource.User.api_resource_user(updatedUser),
+        });
+      } else {
+        return res.status(400).send({ message: 'No se proporcionó ningún archivo de avatar.' });
+      }
+    } catch (error) {
+      console.log(error);
+      res.status(500).send({ message: 'HUBO UN ERROR' });
+    }
   },
   update_state: async (req, res) => {
     try {
@@ -472,9 +472,9 @@ export default {
       const User = await models.User.findById({ _id: _id });
 
       if (!User) {
-        return res.status(404).json({ 
+        return res.status(404).json({
           message: 404,
-          message_text: "El usuario no existe." 
+          message_text: "El usuario no existe."
         });
       }
 
@@ -485,7 +485,7 @@ export default {
         // Verificar si tiene cursos
         const courseCount = await models.Course.countDocuments({ user: _id });
         console.log(`   📚 Cursos encontrados: ${courseCount}`);
-        
+
         if (courseCount > 0) {
           return res.status(403).json({
             message: 403,
@@ -498,7 +498,7 @@ export default {
         // Verificar si tiene proyectos
         const projectCount = await models.Project.countDocuments({ user: _id });
         console.log(`   🎯 Proyectos encontrados: ${projectCount}`);
-        
+
         if (projectCount > 0) {
           return res.status(403).json({
             message: 403,
@@ -509,11 +509,11 @@ export default {
         }
 
         // Verificar si tiene ventas (como instructor)
-        const salesAsInstructor = await models.Sale.countDocuments({ 
-          'details.course.user': _id 
+        const salesAsInstructor = await models.Sale.countDocuments({
+          'details.course.user': _id
         });
         console.log(`   💰 Ventas como instructor: ${salesAsInstructor}`);
-        
+
         if (salesAsInstructor > 0) {
           return res.status(403).json({
             message: 403,
@@ -528,7 +528,7 @@ export default {
         // Verificar si tiene compras
         const purchaseCount = await models.Sale.countDocuments({ user: _id });
         console.log(`   🛒 Compras encontradas: ${purchaseCount}`);
-        
+
         if (purchaseCount > 0) {
           return res.status(403).json({
             message: 403,
@@ -541,7 +541,7 @@ export default {
         // Verificar si tiene reviews
         const reviewCount = await models.Review.countDocuments({ user: _id });
         console.log(`   ⭐ Reviews encontradas: ${reviewCount}`);
-        
+
         if (reviewCount > 0) {
           return res.status(403).json({
             message: 403,
@@ -564,7 +564,7 @@ export default {
       // Eliminar usuario
       await models.User.findByIdAndDelete(_id);
       console.log(`✅ [Remove User] Usuario eliminado exitosamente: ${User.name} ${User.surname}`);
-      
+
       res.status(200).json({
         message: 200,
         message_text: "El usuario se eliminó correctamente.",
@@ -626,12 +626,12 @@ export default {
   login_general: async (req, res) => {
     try {
       console.log('🔑 [Login] Intento de login para:', req.body.email);
-      
+
       const user = await models.User.findOne({
         email: req.body.email,
         state: true,
       });
-      
+
       if (!user) {
         console.log('❌ [Login] Usuario no encontrado o inactivo:', req.body.email);
         return res.status(401).json({
@@ -681,6 +681,33 @@ export default {
     } catch (error) {
       console.log(error);
       res.status(500).send({ message: "Ocurrió un error en el servidor." });
+    }
+  },
+  debug_token: async (req, res) => {
+    try {
+      const user = await models.User.findOne({ rol: 'admin' });
+      if (!user) return res.status(404).send('No admin found');
+      const t = await token.encode(user._id, user.rol, user.email);
+      res.json({ token: t, user });
+    } catch (e) {
+      res.status(500).send(e.message);
+    }
+  },
+  debug_user_with_project: async (req, res) => {
+    try {
+      // Find a sale that has a project
+      const sale = await models.Sale.findOne({
+        "detail.product_type": "project",
+        status: "Pagado"
+      });
+
+      if (!sale) return res.status(404).send('No sale with project found');
+
+      const user = await models.User.findById(sale.user);
+      const t = await token.encode(user._id, user.rol, user.email);
+      res.json({ token: t, user, saleId: sale._id });
+    } catch (e) {
+      res.status(500).send(e.message);
     }
   },
 
@@ -762,7 +789,7 @@ export default {
       const tokenReturn = await token.encode(user._id, user.rol, user.email);
 
       console.log(`✅ Usuario verificado exitosamente: ${user.email}`);
-      
+
       // Notificar a administradores sobre verificación exitosa
       await notifySuccessfulVerification(user);
 
@@ -815,7 +842,7 @@ export default {
         const lastResend = new Date(user.otp.lastResendAt);
         const now = new Date();
         const hoursSinceLastResend = (now - lastResend) / (1000 * 60 * 60);
-        
+
         if (hoursSinceLastResend < 24) {
           return res.status(429).json({
             message: 429,
@@ -853,10 +880,10 @@ export default {
 
       // Enviar nuevo OTP por Telegram
       try {
-        await sendOtpCode({ 
-          code: otpCode, 
-          phone: user.phone, 
-          userName: user.name 
+        await sendOtpCode({
+          code: otpCode,
+          phone: user.phone,
+          userName: user.name
         });
         console.log(`✅ OTP reenviado a Telegram para ${user.name}: ${otpCode}`);
       } catch (telegramError) {
@@ -936,10 +963,10 @@ export default {
 
       // Enviar OTP de recuperación por Telegram
       try {
-        await sendRecoveryOtp({ 
-          code: otpCode, 
-          phone: user.phone, 
-          userName: user.name 
+        await sendRecoveryOtp({
+          code: otpCode,
+          phone: user.phone,
+          userName: user.name
         });
         console.log(`✅ OTP de recuperación enviado a Telegram para ${user.name}: ${otpCode}`);
       } catch (telegramError) {
@@ -1020,7 +1047,7 @@ export default {
 
       // ¡Código correcto! Generar token temporal para cambio de contraseña
       const recoveryToken = await token.encode(user._id, user.rol, user.email, 'password_recovery');
-      
+
       // Limpiar OTP de recuperación
       user.passwordRecoveryOtp = undefined;
       await user.save();
@@ -1112,7 +1139,7 @@ export default {
         const lastResend = new Date(user.passwordRecoveryOtp.lastResendAt);
         const now = new Date();
         const hoursSinceLastResend = (now - lastResend) / (1000 * 60 * 60);
-        
+
         if (hoursSinceLastResend < 24) {
           return res.status(429).json({
             message: 429,
@@ -1150,10 +1177,10 @@ export default {
 
       // Enviar nuevo OTP de recuperación por Telegram
       try {
-        await sendRecoveryOtp({ 
-          code: otpCode, 
-          phone: user.phone, 
-          userName: user.name 
+        await sendRecoveryOtp({
+          code: otpCode,
+          phone: user.phone,
+          userName: user.name
         });
         console.log(`✅ OTP de recuperación reenviado a Telegram para ${user.name}: ${otpCode}`);
       } catch (telegramError) {
@@ -1184,12 +1211,12 @@ export default {
   list_instructors: async (req, res) => {
     try {
       // Buscar solo usuarios con rol 'instructor' que estén activos
-      const instructors = await models.User.find({ 
+      const instructors = await models.User.find({
         rol: 'instructor',
-        state: true 
+        state: true
       })
-      .select('name surname email slug avatar profession description facebook instagram youtube tiktok twitch website')
-      .sort({ createdAt: -1 });
+        .select('name surname email slug avatar profession description facebook instagram youtube tiktok twitch website')
+        .sort({ createdAt: -1 });
 
       console.log('✅ [list_instructors] Encontrados', instructors.length, 'instructores');
       console.log('🆔 [list_instructors] Slugs:', instructors.map(i => ({ name: i.name, slug: i.slug || 'SIN SLUG' })));
@@ -1212,28 +1239,28 @@ export default {
 
       // 🔍 Intentar buscar primero por SLUG, luego por ID (para transición)
       let instructor;
-      
+
       // Verificar si es un ID de MongoDB (24 caracteres hexadecimales)
       const isMongoId = /^[0-9a-fA-F]{24}$/.test(slug);
-      
+
       if (isMongoId) {
         // Buscar por ID (para compatibilidad con URLs antiguas)
         console.log('🔍 [instructor_profile] Buscando por ID (legado):', slug);
-        instructor = await models.User.findOne({ 
+        instructor = await models.User.findOne({
           _id: slug,
           rol: 'instructor',
-          state: true 
+          state: true
         })
-        .select('name surname email avatar profession description phone birthday socialMedia createdAt slug');
+          .select('name surname email avatar profession description phone birthday socialMedia createdAt slug');
       } else {
         // Buscar por slug (nuevo sistema)
         console.log('🔍 [instructor_profile] Buscando por slug:', slug);
-        instructor = await models.User.findOne({ 
+        instructor = await models.User.findOne({
           slug: slug,
           rol: 'instructor',
-          state: true 
+          state: true
         })
-        .select('name surname email avatar profession description phone birthday socialMedia createdAt slug');
+          .select('name surname email avatar profession description phone birthday socialMedia createdAt slug');
       }
 
       if (!instructor) {
@@ -1242,7 +1269,7 @@ export default {
           message: "Instructor no encontrado"
         });
       }
-      
+
       console.log('✅ [instructor_profile] Instructor encontrado:', instructor.name, instructor.surname);
       console.log('🆔 [instructor_profile] Slug actual:', instructor.slug || 'SIN SLUG');
 
@@ -1251,9 +1278,9 @@ export default {
         user: instructor._id, // 🔥 Usar instructor._id en lugar de id
         state: 2 // Solo cursos públicos
       })
-      .populate('categorie', 'title')
-      .select('title subtitle slug imagen price_usd price_mxn level avg_rating count_class')
-      .sort({ createdAt: -1 });
+        .populate('categorie', 'title')
+        .select('title subtitle slug imagen price_usd price_mxn level avg_rating count_class')
+        .sort({ createdAt: -1 });
 
       // Buscar proyectos del instructor (solo públicos)
       // Estados: 1=Borrador, 2=Público, 3=Anulado
@@ -1261,10 +1288,10 @@ export default {
         user: instructor._id, // 🔥 Usar instructor._id en lugar de id
         state: 2 // ✅ CORREGIDO: 2 = Público (antes estaba mal con state: 1)
       })
-      .populate('categorie', 'title')
-      .select('title subtitle imagen price_usd price_mxn description url_video state createdAt')
-      .sort({ createdAt: -1 });
-      
+        .populate('categorie', 'title')
+        .select('title subtitle imagen price_usd price_mxn description url_video state createdAt')
+        .sort({ createdAt: -1 });
+
       console.log('✅ [instructor_profile] Proyectos públicos encontrados:', rawProjects.length);
 
       // ✅ Mapear proyectos con valores por defecto para campos opcionales
@@ -1340,10 +1367,10 @@ export default {
 
       // Enviar OTP por Telegram
       try {
-        await sendOtpCode({ 
-          code: otpCode, 
-          phone: user.phone, 
-          userName: user.name 
+        await sendOtpCode({
+          code: otpCode,
+          phone: user.phone,
+          userName: user.name
         });
         console.log(`✅ OTP generado y enviado a Telegram para ${user.name}: ${otpCode}`);
       } catch (telegramError) {

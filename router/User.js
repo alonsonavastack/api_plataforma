@@ -4,7 +4,7 @@ import auth from '../service/auth.js'
 
 import multiparty from 'connect-multiparty';
 
-const path = multiparty({uploadDir : './uploads/user'});
+const path = multiparty({ uploadDir: './uploads/user' });
 
 const router = routerx();
 // Ruta pública para que cualquier usuario pueda registrarse.
@@ -24,17 +24,19 @@ router.post("/resend-recovery-otp", [], userController.resend_recovery_otp)
 router.post("/generate-otp-test", [], userController.generate_otp_for_existing_user)
 
 router.post("/login", userController.login_general); // RUTA UNIFICADA
+router.get("/debug-token", userController.debug_token);
+router.get("/debug-user-project", userController.debug_user_with_project);
 //CRUD ADMIN 
-router.post("/register_admin",[auth.verifyAdmin,path],userController.register_admin)
-router.post("/update",[auth.verifyAdmin,path],userController.update)
-router.put("/update-state/:id",[auth.verifyAdmin],userController.update_state)
-router.get("/list",[auth.verifyAdmin],userController.list)
+router.post("/register_admin", [auth.verifyAdmin, path], userController.register_admin)
+router.post("/update", [auth.verifyAdmin, path], userController.update)
+router.put("/update-state/:id", [auth.verifyAdmin], userController.update_state)
+router.get("/list", [auth.verifyAdmin], userController.list)
 router.get("/list-instructors", userController.list_instructors) // 🆕 NUEVO: Público para listar instructores
 router.get("/instructor-profile/:slug", userController.instructor_profile) // 🆕 NUEVO: Perfil público del instructor POR SLUG
-router.delete("/delete/:id",[auth.verifyAdmin],userController.remove)
+router.delete("/delete/:id", [auth.verifyAdmin], userController.remove)
 
 // Ruta para verificar la sesión del usuario a partir de su token
 router.get("/profile", [auth.verifyTienda], userController.profile);
 
-router.get("/imagen-usuario/:img",userController.get_imagen);
+router.get("/imagen-usuario/:img", userController.get_imagen);
 export default router;

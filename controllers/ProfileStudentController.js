@@ -177,20 +177,23 @@ export const client = async(req,res) => {
                             
                             console.log(`      🔑 Project ID extraído: ${projectId}`);
                             
-                            // 🔥 NUEVO: VERIFICAR SI ESTE PROYECTO ESPECÍFICO FUE REEMBOLSADO
+                            // 🔥 VERIFICAR SI ESTE PROYECTO ESPECÍFICO FUE REEMBOLSADO COMPLETAMENTE
                             console.log(`      🔍 Verificando si proyecto fue reembolsado...`);
                             const projectRefund = await models.Refund.findOne({
                                 sale: sale._id,
                                 'sale_detail_item.product': projectId,
                                 'sale_detail_item.product_type': 'project',
-                                status: 'completed',
+                                status: 'completed', // ✅ SOLO reembolsos COMPLETADOS
                                 state: 1
                             });
                             
                             if (projectRefund) {
                                 console.log(`      ❌ PROYECTO REEMBOLSADO - NO se agregará a la lista`);
                                 console.log(`         Refund ID: ${projectRefund._id}`);
-                                console.log(`         Fecha reembolso: ${projectRefund.completedAt}`);
+                                console.log(`         Status del reembolso: ${projectRefund.status}`);
+                                console.log(`         Fecha creación reembolso: ${projectRefund.createdAt}`);
+                                console.log(`         Fecha completado: ${projectRefund.completedAt || 'N/A'}`);
+                                console.log(`         Sale ID del reembolso: ${projectRefund.sale}`);
                                 continue; // Saltar este proyecto
                             }
                             console.log(`      ✅ Proyecto NO reembolsado, continuando...`);

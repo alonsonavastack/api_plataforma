@@ -33,7 +33,7 @@ async function sendConfirmationEmail(sale_id) {
         const mappedDetail = sale.detail.map((detail) => {
             const imagePath = detail.product?.imagen || 'default.jpg';
             const imageType = detail.product_type === 'course' ? 'courses/imagen-course' : 'projects/imagen-project';
-            
+
             return {
                 ...detail.toObject(),
                 portada: `${process.env.URL_BACKEND}/api/${imageType}/${imagePath}`
@@ -79,7 +79,7 @@ async function createEarningForProduct(sale, item) {
     try {
         // Obtener instructor del producto
         let instructorId = null;
-        
+
         if (item.product_type === 'course') {
             const course = await models.Course.findById(item.product).select('user');
             instructorId = course?.user;
@@ -155,14 +155,14 @@ async function processPaidSale(sale, userId) {
     console.log(`\n🎯 [processPaidSale] Procesando venta ${sale._id}...`);
     console.log(`   👤 Usuario: ${userId}`);
     console.log(`   📦 Total items: ${sale.detail.length}`);
-    
+
     for (const item of sale.detail) {
         console.log(`\n   ─────────────────────────────────`);
         console.log(`   📦 Item: ${item.title}`);
         console.log(`   🏷️  Tipo: ${item.product_type}`);
         console.log(`   🆔 Product ID: ${item.product}`);
         console.log(`   💰 Precio: ${item.price_unit}`);
-        
+
         // 📚 Inscribir en CURSOS (tiene modelo CourseStudent)
         if (item.product_type === 'course') {
             console.log(`   📚 Inscribiendo en curso...`);
@@ -173,12 +173,12 @@ async function processPaidSale(sale, userId) {
             console.log(`   📦 Proyecto: acceso otorgado automáticamente (sin modelo de inscripción)`);
             console.log(`   ✅ Acceso verificado mediante: Sale.status='Pagado' + detail.product_type='project'`);
         }
-        
+
         // 💰 Crear ganancias del instructor (para cursos Y proyectos)
         console.log(`   💰 Creando ganancia para instructor...`);
         await createEarningForProduct(sale, item);
     }
-    
+
     console.log(`\n✅ [processPaidSale] Venta ${sale._id} procesada completamente`);
     console.log(`✅ Acceso activado para ${sale.detail.length} producto(s)\n`);
 }
@@ -198,7 +198,7 @@ export default {
             console.log('\n🛍️ ═══════════════════════════════════════════════');
             console.log('🛍️ [SaleController] NUEVA VENTA - COMPRA DIRECTA');
             console.log('🛍️ ═══════════════════════════════════════════════');
-            
+
             const { detail, total, use_wallet, wallet_amount, method_payment } = req.body;
             const userId = req.user._id;
 
@@ -231,10 +231,10 @@ export default {
             // ════════════════════════════════════════════════
             const expectedTotal = parseFloat(item.price_unit) || 0;
             const receivedTotal = parseFloat(total) || 0;
-            
+
             if (Math.abs(expectedTotal - receivedTotal) > 0.01) {
                 console.error(`❌ Total no coincide: esperado=${expectedTotal}, recibido=${receivedTotal}`);
-                return res.status(400).json({ 
+                return res.status(400).json({
                     message: 'El total no coincide con el precio del producto',
                     expected: expectedTotal,
                     received: receivedTotal
@@ -250,7 +250,7 @@ export default {
 
             if (use_wallet && wallet_amount > 0) {
                 walletUsed = parseFloat(wallet_amount);
-                
+
                 // Validar saldo
                 const wallet = await models.Wallet.findOne({ user: userId });
                 const balance = wallet?.balance || 0;
@@ -294,7 +294,7 @@ export default {
                 status = 'Pagado';
                 finalMethod = 'wallet';
                 console.log('✅ Pago 100% con billetera → Estado: Pagado (APROBACIÓN AUTOMÁTICA)');
-            } 
+            }
             // 🔥 PAGO MIXTO o 100% TRANSFERENCIA → REQUIERE APROBACIÓN
             else if (remainingToPay > 0.01) {
                 if (!method_payment) {
@@ -357,9 +357,9 @@ export default {
             if (sale.status === 'Pagado') {
                 console.log('🚀 [ACTIVACIÓN AUTOMÁTICA] Procesando inscripciones y ganancias...');
                 await processPaidSale(sale, userId);
-                
+
                 // Enviar email
-                sendConfirmationEmail(sale._id).catch(err => 
+                sendConfirmationEmail(sale._id).catch(err =>
                     console.error('⚠️ Error enviando email:', err.message)
                 );
             }
@@ -369,8 +369,8 @@ export default {
             // ════════════════════════════════════════════════
             const saleWithUser = await models.Sale.findById(sale._id).populate('user', 'name surname email');
             emitNewSaleToAdmins(saleWithUser);
-            
-            notifyNewSale(saleWithUser).catch(err => 
+
+            notifyNewSale(saleWithUser).catch(err =>
                 console.error('⚠️ Error en notificación Telegram:', err.message)
             );
 
@@ -378,7 +378,7 @@ export default {
             // 9️⃣ RESPUESTA
             // ════════════════════════════════════════════════
             let message = '';
-            
+
             if (walletUsed >= receivedTotal) {
                 message = '✅ ¡Compra completada con billetera! Ya puedes acceder a tu contenido.';
             } else {
@@ -414,10 +414,10 @@ export default {
 
             // Filtro para excluir ventas reembolsadas
             if (exclude_refunded === 'true') {
-                const refundedSales = await models.Refund.find({ 
-                    status: 'completed', state: 1 
+                const refundedSales = await models.Refund.find({
+                    status: 'completed', state: 1
                 }).distinct('sale');
-                
+
                 if (refundedSales.length > 0) {
                     filter._id = { $nin: refundedSales };
                 }
@@ -445,7 +445,7 @@ export default {
                         { email: new RegExp(search, "i") }
                     ]
                 }).select('_id');
-                
+
                 filter.$or = [
                     { n_transaccion: new RegExp(search, "i") },
                     { user: { $in: users.map(u => u._id) } }
@@ -481,12 +481,12 @@ export default {
             // Filtrar para instructores
             if (user.rol === 'instructor') {
                 const productIdStrings = [...await models.Course.find({ user: user._id }).select('_id'),
-                                          ...await models.Project.find({ user: user._id }).select('_id')]
-                                          .map(p => p._id.toString());
+                ...await models.Project.find({ user: user._id }).select('_id')]
+                    .map(p => p._id.toString());
 
                 sales = sales.map(sale => ({
                     ...sale,
-                    detail: sale.detail.filter(item => 
+                    detail: sale.detail.filter(item =>
                         item.product && productIdStrings.includes(item.product._id.toString())
                     )
                 })).filter(sale => sale.detail.length > 0);
@@ -584,12 +584,12 @@ export default {
         try {
             const { n_transaccion } = req.params;
 
-            const sale = await models.Sale.findOne({ 
-                n_transaccion, 
-                user: req.user._id 
+            const sale = await models.Sale.findOne({
+                n_transaccion,
+                user: req.user._id
             })
-            .populate({ path: 'detail.product', select: 'title imagen' })
-            .lean();
+                .populate({ path: 'detail.product', select: 'title imagen' })
+                .lean();
 
             if (!sale) {
                 return res.status(404).json({ message: 'Transacción no encontrada' });
@@ -641,5 +641,53 @@ export default {
      */
     mark_notifications_read: async (req, res) => {
         res.status(200).json({ success: true });
+    },
+
+    /**
+     * 🔧 PROCESAR VENTAS EXISTENTES
+     * Busca ventas pagadas que no tengan ganancias generadas y las crea.
+     * Útil para migración o corrección de datos.
+     */
+    process_existing_sales: async (req, res) => {
+        try {
+            console.log('🔧 [process_existing_sales] Iniciando procesamiento manual...');
+
+            // Buscar todas las ventas pagadas
+            const sales = await models.Sale.find({ status: 'Pagado' });
+            console.log(`🔧 Encontradas ${sales.length} ventas pagadas.`);
+
+            let processedCount = 0;
+            let earningsCreated = 0;
+
+            for (const sale of sales) {
+                for (const item of sale.detail) {
+                    // Verificar si ya existe ganancia (doble verificación para evitar logs innecesarios)
+                    const existing = await models.InstructorEarnings.findOne({
+                        sale: sale._id,
+                        product_id: item.product
+                    });
+
+                    if (!existing) {
+                        // createEarningForProduct ya maneja la lógica de creación y validación interna
+                        await createEarningForProduct(sale, item);
+                        earningsCreated++;
+                    }
+                }
+                processedCount++;
+            }
+
+            console.log(`✅ [process_existing_sales] Finalizado. Ventas revisadas: ${processedCount}, Ganancias creadas: ${earningsCreated}`);
+
+            res.status(200).json({
+                success: true,
+                message: 'Procesamiento completado',
+                sales_checked: processedCount,
+                earnings_created: earningsCreated
+            });
+
+        } catch (error) {
+            console.error('❌ Error en process_existing_sales:', error);
+            res.status(500).json({ message: 'Error al procesar ventas existentes', error: error.message });
+        }
     }
 };
