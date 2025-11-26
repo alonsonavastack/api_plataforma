@@ -26,4 +26,7 @@ router.get("/my-transactions", auth.verifyTienda, saleController.my_transactions
 // Buscar transacción por número
 router.get("/transaction/:n_transaccion", auth.verifyTienda, saleController.get_by_transaction);
 
+// Obtener imagen del voucher
+router.get("/voucher-image/:image", saleController.get_voucher_image);
+
 export default router;

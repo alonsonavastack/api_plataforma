@@ -104,7 +104,7 @@ const InstructorEarningsSchema = new Schema({
     // ESTADO
     status: {
         type: String,
-        enum: ['pending', 'available', 'paid', 'disputed', 'blocked', 'refunded'],
+        enum: ['pending', 'available', 'paid', 'disputed', 'blocked', 'refunded', 'cancelled'],
         default: 'pending'
     },
     
@@ -125,6 +125,7 @@ const InstructorEarningsSchema = new Schema({
     earned_at: { type: Date, required: true, default: Date.now },
     available_at: { type: Date, required: true },
     paid_at: { type: Date, required: false },
+    cancelled_at: { type: Date, required: false },
     
     // REFERENCIA Y NOTAS
     payment_reference: { type: Schema.ObjectId, ref: 'instructor_payment', required: false },

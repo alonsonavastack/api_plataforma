@@ -1,12 +1,17 @@
 import models from "../models/index.js";
 import { emitNewSaleToAdmins, emitSaleStatusUpdate } from '../services/socket.service.js';
-import { notifyNewSale } from '../services/telegram.service.js';
+import { notifyNewSale, notifyPaymentApproved } from '../services/telegram.service.js';
 import { useWalletBalance } from './WalletController.js';
 
 import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import ejs from 'ejs';
 import nodemailer from 'nodemailer';
 import smtpTransport from 'nodemailer-smtp-transport';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 /**
  * 📧 Enviar email de confirmación de compra
@@ -90,7 +95,7 @@ async function createEarningForProduct(sale, item) {
 
         if (!instructorId) {
             console.log(`   ⚠️  Producto ${item.product} sin instructor`);
-            return;
+            return false;
         }
 
         // Verificar si ya existe
@@ -101,7 +106,7 @@ async function createEarningForProduct(sale, item) {
 
         if (existing) {
             console.log(`   ℹ️  Ganancia ya existe para producto ${item.product}`);
-            return;
+            return false;
         }
 
         // Obtener configuración de comisiones
@@ -142,8 +147,10 @@ async function createEarningForProduct(sale, item) {
         });
 
         console.log(`   ✅ Ganancia creada: $${instructorEarning.toFixed(2)} para instructor ${instructorId}`);
+        return true;
     } catch (error) {
         console.error(`   ❌ Error al crear ganancia:`, error.message);
+        throw error; // Re-lanzar para que el llamador lo maneje
     }
 }
 
@@ -213,13 +220,13 @@ export default {
             console.log(`📦 Producto: ${item.title} (${item.product_type}) - $${item.price_unit}`);
 
             // ════════════════════════════════════════════════
-            // 2️⃣ VALIDAR QUE EL PRODUCTO EXISTE
+            // 2️⃣ VALIDAR QUE EL PRODUCTO EXISTE Y OBTENER PRECIO REAL
             // ════════════════════════════════════════════════
             let product = null;
             if (item.product_type === 'course') {
-                product = await models.Course.findById(item.product);
+                product = await models.Course.findById(item.product).populate('categorie');
             } else if (item.product_type === 'project') {
-                product = await models.Project.findById(item.product);
+                product = await models.Project.findById(item.product).populate('categorie');
             }
 
             if (!product) {
@@ -227,18 +234,93 @@ export default {
             }
 
             // ════════════════════════════════════════════════
+            // 2.5️⃣ BUSCAR DESCUENTOS ACTIVOS
+            // ════════════════════════════════════════════════
+            const now = new Date();
+
+            // Buscar descuentos que estén activos por fecha y estado
+            const activeDiscounts = await models.Discount.find({
+                state: true,
+                start_date: { $lte: now },
+                end_date: { $gte: now }
+            });
+
+            let bestDiscount = null;
+            let finalPrice = product.price_usd; // Precio base original
+
+            // Filtrar el mejor descuento aplicable
+            for (const discount of activeDiscounts) {
+                let applies = false;
+
+                // 1. Por Curso
+                if (discount.type_segment === 1 && item.product_type === 'course') {
+                    if (discount.courses.map(c => c.toString()).includes(product._id.toString())) {
+                        applies = true;
+                    }
+                }
+                // 2. Por Categoría
+                else if (discount.type_segment === 2) {
+                    if (product.categorie && discount.categories.map(c => c.toString()).includes(product.categorie._id.toString())) {
+                        applies = true;
+                    }
+                }
+                // 3. Por Proyecto
+                else if (discount.type_segment === 3 && item.product_type === 'project') {
+                    if (discount.projects.map(c => c.toString()).includes(product._id.toString())) {
+                        applies = true;
+                    }
+                }
+
+                if (applies) {
+                    let calculatedPrice = finalPrice;
+                    if (discount.type_discount === 1) { // Porcentaje
+                        calculatedPrice = product.price_usd - (product.price_usd * discount.discount / 100);
+                    } else { // Monto fijo
+                        calculatedPrice = product.price_usd - discount.discount;
+                    }
+
+                    // Asegurar que no sea negativo
+                    if (calculatedPrice < 0) calculatedPrice = 0;
+
+                    // Nos quedamos con el precio más bajo (mejor descuento para el usuario)
+                    if (calculatedPrice < finalPrice) {
+                        finalPrice = calculatedPrice;
+                        bestDiscount = discount;
+                    }
+                }
+            }
+
+            if (bestDiscount) {
+                console.log(`🎉 Descuento aplicado: ${bestDiscount.discount}${bestDiscount.type_discount === 1 ? '%' : 'USD'} OFF`);
+                console.log(`   Precio Original: $${product.price_usd} -> Precio Final: $${finalPrice}`);
+            } else {
+                console.log(`ℹ️  No hay descuentos aplicables. Precio: $${finalPrice}`);
+            }
+
+            // ════════════════════════════════════════════════
             // 3️⃣ VALIDAR TOTAL
             // ════════════════════════════════════════════════
-            const expectedTotal = parseFloat(item.price_unit) || 0;
+            // Permitimos que el usuario pague el precio con descuento O el precio full (si no aplicó cupón en front)
+            // Pero idealmente validamos contra el precio calculado (finalPrice)
+
             const receivedTotal = parseFloat(total) || 0;
 
-            if (Math.abs(expectedTotal - receivedTotal) > 0.01) {
-                console.error(`❌ Total no coincide: esperado=${expectedTotal}, recibido=${receivedTotal}`);
-                return res.status(400).json({
-                    message: 'El total no coincide con el precio del producto',
-                    expected: expectedTotal,
-                    received: receivedTotal
-                });
+            // Margen de error pequeño por decimales
+            if (Math.abs(finalPrice - receivedTotal) > 0.5) {
+                // Si no coincide con el precio descontado, verificamos si coincide con el precio full
+                // (Por si el descuento expiró justo en ese segundo o el front no lo detectó)
+                if (Math.abs(product.price_usd - receivedTotal) > 0.5) {
+                    console.error(`❌ Total no coincide: esperado=$${finalPrice} (o $${product.price_usd}), recibido=$${receivedTotal}`);
+                    return res.status(400).json({
+                        message: 'El total no coincide con el precio del producto (verifique descuentos)',
+                        expected: finalPrice,
+                        received: receivedTotal
+                    });
+                } else {
+                    console.log('⚠️ El usuario pagó el precio completo (sin descuento). Aceptando transacción.');
+                    finalPrice = product.price_usd; // Ajustamos finalPrice a lo que pagó
+                    bestDiscount = null; // Quitamos descuento
+                }
             }
 
             // ════════════════════════════════════════════════
@@ -326,9 +408,10 @@ export default {
                     product: item.product,
                     product_type: item.product_type,
                     title: item.title,
-                    price_unit: item.price_unit,
-                    discount: item.discount || 0,
-                    type_discount: item.type_discount || 0
+                    price_unit: finalPrice, // Usamos el precio validado/calculado
+                    discount: bestDiscount ? bestDiscount.discount : 0,
+                    type_discount: bestDiscount ? bestDiscount.type_discount : 0,
+                    campaign_discount: bestDiscount ? bestDiscount.type_campaign : null
                 }],
                 price_dolar: req.body.price_dolar || 1,
                 n_transaccion: req.body.n_transaccion,
@@ -503,7 +586,9 @@ export default {
     /**
      * 🔄 ACTUALIZAR ESTADO DE VENTA (Solo Admin)
      * 
-     * 🔥 IMPORTANTE: Cuando cambia de Pendiente → Pagado, activa automáticamente el acceso
+     * 🔥 IMPORTANTE: 
+     * - Cuando cambia de Pendiente → Pagado: activa automáticamente el acceso
+     * - Cuando cambia a Anulado: revierte billetera + elimina accesos + cancela ganancias
      */
     update_status_sale: async (req, res) => {
         try {
@@ -512,7 +597,7 @@ export default {
             }
 
             const { id } = req.params;
-            const { status } = req.body;
+            const { status, admin_notes } = req.body;
 
             const sale = await models.Sale.findById(id).populate('user');
             if (!sale) {
@@ -520,19 +605,160 @@ export default {
             }
 
             const oldStatus = sale.status;
+
+            // ════════════════════════════════════════════════
+            // 🔥 CASO 1: RECHAZAR VENTA (Anulado)
+            // ════════════════════════════════════════════════
+            if (status === 'Anulado' && oldStatus !== 'Anulado') {
+                console.log('\n🚨 ═══════════════════════════════════════════════');
+                console.log('🚨 [RECHAZO] Anulando venta:', sale._id);
+                console.log('🚨 ═══════════════════════════════════════════════');
+                console.log(`   📊 Estado anterior: ${oldStatus}`);
+                console.log(`   👤 Usuario: ${sale.user.name} ${sale.user.surname}`);
+                console.log(`   💰 Total venta: ${sale.total}`);
+                console.log(`   💳 Método: ${sale.method_payment}`);
+
+                // ────────────────────────────────────────────────
+                // 💸 1. DEVOLVER SALDO DE BILLETERA SI SE USÓ
+                // ────────────────────────────────────────────────
+                if (sale.wallet_amount && sale.wallet_amount > 0) {
+                    console.log(`\n💸 [RECHAZO] Devolviendo ${sale.wallet_amount} a billetera...`);
+
+                    try {
+                        // Obtener billetera del usuario
+                        const wallet = await models.Wallet.findOne({ user: sale.user._id });
+
+                        if (!wallet) {
+                            console.error('❌ [RECHAZO] Billetera no encontrada para usuario');
+                        } else {
+                            // Crear transacción de reembolso
+                            const refundTransaction = {
+                                type: 'refund',
+                                amount: sale.wallet_amount,
+                                description: `Devolución por venta rechazada: ${sale.n_transaccion || sale._id}`,
+                                date: new Date(),
+                                metadata: {
+                                    orderId: sale._id,
+                                    reason: 'Venta anulada por administrador',
+                                    admin_notes: admin_notes || 'Sin observaciones'
+                                }
+                            };
+
+                            // Acreditar saldo
+                            wallet.balance += sale.wallet_amount;
+                            wallet.transactions.push(refundTransaction);
+                            await wallet.save();
+
+                            console.log(`✅ [RECHAZO] Billetera reacreditada exitosamente`);
+                            console.log(`   💰 Monto devuelto: ${sale.wallet_amount}`);
+                            console.log(`   💵 Nuevo saldo: ${wallet.balance}`);
+                        }
+
+                    } catch (walletError) {
+                        console.error('❌ [RECHAZO] Error al reacreditar billetera:', walletError.message);
+                        // Continuar con la anulación, pero loguear el error
+                    }
+                } else {
+                    console.log('ℹ️  [RECHAZO] No se usó billetera en esta venta');
+                }
+
+                // ────────────────────────────────────────────────
+                // 🗑️ 2. ELIMINAR INSCRIPCIONES SI EXISTEN
+                // ────────────────────────────────────────────────
+                if (oldStatus === 'Pagado') {
+                    console.log('\n🗑️ [RECHAZO] Venta estaba pagada, eliminando accesos...');
+
+                    for (const item of sale.detail) {
+                        // Solo los CURSOS tienen modelo CourseStudent
+                        if (item.product_type === 'course') {
+                            try {
+                                const deleted = await models.CourseStudent.deleteMany({
+                                    user: sale.user._id,
+                                    course: item.product
+                                });
+
+                                if (deleted.deletedCount > 0) {
+                                    console.log(`   ✅ Acceso eliminado: curso ${item.product}`);
+                                } else {
+                                    console.log(`   ℹ️  Sin acceso previo: curso ${item.product}`);
+                                }
+                            } catch (deleteError) {
+                                console.error(`   ❌ Error eliminando acceso al curso:`, deleteError.message);
+                            }
+                        } else if (item.product_type === 'project') {
+                            console.log(`   📦 Proyecto ${item.product}: acceso controlado por venta (no requiere eliminación)`);
+                        }
+                    }
+                } else {
+                    console.log('ℹ️  [RECHAZO] Venta no estaba pagada, no hay accesos que eliminar');
+                }
+
+                // ────────────────────────────────────────────────
+                // 💰 3. MARCAR GANANCIAS COMO ANULADAS
+                // ────────────────────────────────────────────────
+                console.log('\n💰 [RECHAZO] Cancelando ganancias de instructores...');
+
+                try {
+                    const earningsUpdate = await models.InstructorEarnings.updateMany(
+                        {
+                            sale: sale._id,
+                            status: { $in: ['pending', 'available'] }
+                        },
+                        {
+                            $set: {
+                                status: 'cancelled',
+                                admin_notes: admin_notes || 'Venta anulada por administrador',
+                                cancelled_at: new Date()
+                            }
+                        }
+                    );
+
+                    if (earningsUpdate.modifiedCount > 0) {
+                        console.log(`✅ [RECHAZO] ${earningsUpdate.modifiedCount} ganancia(s) marcadas como anuladas`);
+                    } else {
+                        console.log('ℹ️  [RECHAZO] No había ganancias pendientes/disponibles para anular');
+                    }
+
+                } catch (earningsError) {
+                    console.error('❌ [RECHAZO] Error al cancelar ganancias:', earningsError.message);
+                }
+
+                console.log('\n✅ [RECHAZO] Proceso de anulación completado');
+                console.log('🚨 ═══════════════════════════════════════════════\n');
+            }
+
+            // ════════════════════════════════════════════════
+            // 🔥 CASO 2: APROBAR VENTA (Pagado)
+            // ════════════════════════════════════════════════
+            if (oldStatus !== 'Pagado' && status === 'Pagado') {
+                console.log('\n🚀 ═══════════════════════════════════════════════');
+                console.log('🚀 [APROBACIÓN] Activando acceso para venta:', sale._id);
+                console.log('🚀 ═══════════════════════════════════════════════\n');
+
+                await processPaidSale(sale, sale.user._id);
+                sendConfirmationEmail(sale._id).catch(console.error);
+
+                // 🔔 Notificar al estudiante por Telegram
+                notifyPaymentApproved(sale).catch(console.error);
+            }
+
+            // ────────────────────────────────────────────────
+            // ACTUALIZAR ESTADO DE LA VENTA
+            // ────────────────────────────────────────────────
             sale.status = status;
+            if (admin_notes) {
+                sale.admin_notes = admin_notes;
+            }
             await sale.save();
 
             emitSaleStatusUpdate(sale);
 
-            // 🔥 SI CAMBIA A PAGADO, ACTIVAR ACCESO AUTOMÁTICAMENTE
-            if (oldStatus !== 'Pagado' && status === 'Pagado') {
-                console.log('🚀 [ADMIN APROBÓ] Activando acceso para venta:', sale._id);
-                await processPaidSale(sale, sale.user._id);
-                sendConfirmationEmail(sale._id).catch(console.error);
-            }
-
-            res.status(200).json({ message: 'Estado actualizado', sale });
+            res.status(200).json({
+                message: status === 'Anulado'
+                    ? '❌ Venta anulada y saldo devuelto'
+                    : '✅ Estado actualizado',
+                sale
+            });
 
         } catch (error) {
             console.error('❌ Error en update_status_sale:', error);
@@ -656,38 +882,124 @@ export default {
             const sales = await models.Sale.find({ status: 'Pagado' });
             console.log(`🔧 Encontradas ${sales.length} ventas pagadas.`);
 
-            let processedCount = 0;
-            let earningsCreated = 0;
+            let sales_reviewed = 0;
+            let processed = 0;
+            let skipped = 0;
+            let total = 0;
+
+            const processed_details = [];
+            const skipped_details = [];
 
             for (const sale of sales) {
-                for (const item of sale.detail) {
-                    // Verificar si ya existe ganancia (doble verificación para evitar logs innecesarios)
-                    const existing = await models.InstructorEarnings.findOne({
-                        sale: sale._id,
-                        product_id: item.product
-                    });
+                sales_reviewed++;
 
-                    if (!existing) {
-                        // createEarningForProduct ya maneja la lógica de creación y validación interna
-                        await createEarningForProduct(sale, item);
-                        earningsCreated++;
+                for (const item of sale.detail) {
+                    total++;
+
+                    try {
+                        // 1. Validar Instructor
+                        let instructorId = null;
+                        if (item.product_type === 'course') {
+                            const course = await models.Course.findById(item.product).select('user title');
+                            instructorId = course?.user;
+                            if (course) item.title = course.title; // Asegurar título
+                        } else if (item.product_type === 'project') {
+                            const project = await models.Project.findById(item.product).select('user title');
+                            instructorId = project?.user;
+                            if (project) item.title = project.title;
+                        }
+
+                        if (!instructorId) {
+                            skipped++;
+                            skipped_details.push({
+                                sale: sale.n_transaccion || sale._id,
+                                product: item.product,
+                                title: item.title,
+                                reason: 'Producto sin instructor asignado'
+                            });
+                            continue;
+                        }
+
+                        // 2. Verificar si ya existe ganancia
+                        const existing = await models.InstructorEarnings.findOne({
+                            sale: sale._id,
+                            product_id: item.product
+                        });
+
+                        if (existing) {
+                            skipped++;
+                            // No agregamos a skipped_details para no saturar, ya que es el caso común
+                            continue;
+                        }
+
+                        // 3. Crear ganancia
+                        const created = await createEarningForProduct(sale, item);
+
+                        if (created) {
+                            processed++;
+                            processed_details.push({
+                                sale: sale.n_transaccion || sale._id,
+                                product: item.product,
+                                title: item.title
+                            });
+                        } else {
+                            // Si retornó false pero no lanzó error (ej. ya existía o sin instructor, aunque esos casos ya los filtramos arriba)
+                            // En realidad createEarningForProduct tiene sus propios chequeos, pero nosotros ya hicimos algunos.
+                            // Si createEarningForProduct retorna false es porque falló algo interno o validación extra.
+                            // Asumimos que si no es created, es skipped.
+                            skipped++;
+                            // No agregamos detalle genérico
+                        }
+
+                    } catch (err) {
+                        skipped++;
+                        skipped_details.push({
+                            sale: sale.n_transaccion || sale._id,
+                            product: item.product,
+                            title: item.title,
+                            reason: 'Error interno',
+                            error: err.message
+                        });
                     }
                 }
-                processedCount++;
             }
 
-            console.log(`✅ [process_existing_sales] Finalizado. Ventas revisadas: ${processedCount}, Ganancias creadas: ${earningsCreated}`);
+            console.log(`✅ [process_existing_sales] Finalizado. Procesados: ${processed}, Omitidos: ${skipped}, Total: ${total}`);
 
             res.status(200).json({
                 success: true,
                 message: 'Procesamiento completado',
-                sales_checked: processedCount,
-                earnings_created: earningsCreated
+                processed,
+                skipped,
+                total,
+                sales_reviewed,
+                processed_details,
+                skipped_details
             });
 
         } catch (error) {
             console.error('❌ Error en process_existing_sales:', error);
             res.status(500).json({ message: 'Error al procesar ventas existentes', error: error.message });
+        }
+    },
+
+    /**
+     * 🖼️ OBTENER IMAGEN DEL VOUCHER
+     */
+    get_voucher_image: async (req, res) => {
+        try {
+            const img = req.params.image;
+            const path_img = path.join(__dirname, '../uploads/transfers/', img);
+
+            if (fs.existsSync(path_img)) {
+                res.sendFile(path.resolve(path_img));
+            } else {
+                const path_default = path.join(__dirname, '../uploads/default.jpg');
+                res.sendFile(path.resolve(path_default));
+            }
+        } catch (error) {
+            console.log(error);
+            res.status(500).send({ message: 'HUBO UN ERROR' });
         }
     }
 };

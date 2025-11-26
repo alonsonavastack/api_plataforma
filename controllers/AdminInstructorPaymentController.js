@@ -10,11 +10,97 @@ import {
     calculateEarningsStatsByStatus
 } from '../utils/commissionCalculator.js';
 import { groupEarningsByMonth, getDateRange } from '../utils/dateHelpers.js';
+import { sendPaymentProcessedEmail } from '../utils/emailService.js';
+import { notifyPaymentProcessed } from '../services/telegram.service.js';
 
 /**
  * CONTROLADOR PARA ADMINISTRADORES
  * Gestiona pagos a instructores y configuración de comisiones
  */
+
+// ============================================================================
+// 🎯 FUNCIONES AUXILIARES PARA FILTRAR EARNINGS CON REFUNDS
+// ============================================================================
+
+/**
+ * Filtra earnings que tienen refunds completados
+ * @param {Array} earnings - Array de earnings populados con sale
+ * @returns {Array} Earnings válidos (sin refunds completados)
+ */
+async function filterEarningsWithRefunds(earnings) {
+    const Refund = (await import('../models/Refund.js')).default;
+
+    console.log(`🔍 [filterEarnings] Validando ${earnings.length} earnings...`);
+
+    const validEarnings = [];
+    const excludedEarnings = [];
+
+    for (const earning of earnings) {
+        // Validar que tenga sale
+        if (!earning.sale) {
+            console.warn(`⚠️ [filterEarnings] Earning ${earning._id} sin sale`);
+            excludedEarnings.push({
+                earning_id: earning._id,
+                reason: 'sin_sale'
+            });
+            continue;
+        }
+
+        // Obtener product_id (puede ser course o product_id)
+        const productId = earning.course?._id || earning.product_id?._id || earning.course || earning.product_id;
+
+        if (!productId) {
+            console.warn(`⚠️ [filterEarnings] Earning ${earning._id} sin product_id`);
+            excludedEarnings.push({
+                earning_id: earning._id,
+                reason: 'sin_producto'
+            });
+            continue;
+        }
+
+        // Buscar refund COMPLETADO para este producto específico
+        const refund = await Refund.findOne({
+            sale: earning.sale._id || earning.sale,
+            $or: [
+                { 'sale_detail_item.product': productId },
+                { course: productId },
+                { project: productId }
+            ],
+            status: { $in: ['approved', 'completed'] }
+        });
+
+        if (refund) {
+            console.log(`🚫 [filterEarnings] Earning ${earning._id} excluido por refund ${refund._id} (${refund.status})`);
+            excludedEarnings.push({
+                earning_id: earning._id,
+                sale_id: earning.sale._id || earning.sale,
+                product_id: productId,
+                refund_id: refund._id,
+                refund_status: refund.status,
+                reason: 'refund_completado'
+            });
+            continue;
+        }
+
+        // Earning válido
+        validEarnings.push(earning);
+    }
+
+    console.log(`✅ [filterEarnings] Válidos: ${validEarnings.length}, Excluidos: ${excludedEarnings.length}`);
+
+    if (excludedEarnings.length > 0) {
+        console.log('📊 [filterEarnings] Desglose de exclusiones:');
+        const reasonCounts = {};
+        excludedEarnings.forEach(e => {
+            reasonCounts[e.reason] = (reasonCounts[e.reason] || 0) + 1;
+        });
+        Object.entries(reasonCounts).forEach(([reason, count]) => {
+            console.log(`   - ${reason}: ${count}`);
+        });
+    }
+
+    return validEarnings;
+}
 
 /**
  * Obtener lista de instructores con ganancias disponibles
@@ -39,15 +125,20 @@ export const getInstructorsWithEarnings = async (req, res) => {
 
         console.log('📊 [AdminPayments] Filtro de status:', statusFilter);
 
-        // 🔥 OBTENER GANANCIAS: Se confía en el statusFilter para excluir 'refunded', 'paid', etc.
-        // Se elimina el filtrado manual complejo basado en la tabla de Refunds.
-        const validEarnings = await InstructorEarnings.find({
-            ...statusFilter
-        }).populate('course').populate('product_id');
+        // 🔥 PASO 1: Obtener earnings con populate de sale
+        const allEarnings = await InstructorEarnings.find(statusFilter)
+            .populate('course')
+            .populate('product_id')
+            .populate('sale'); // 🔥 CRÍTICO: Popular sale para verificar refunds
 
-        console.log(`✅ [AdminPayments] Ganancias válidas después de filtrar: ${validEarnings.length}`);
+        console.log(`📦 [AdminPayments] Earnings obtenidos: ${allEarnings.length}`);
 
-        // 🔥 Agrupar por instructor
+        // 🔥 PASO 2: Filtrar earnings con refunds completados
+        const validEarnings = await filterEarningsWithRefunds(allEarnings);
+
+        console.log(`✅ [AdminPayments] Ganancias válidas después de filtrar refunds: ${validEarnings.length}`);
+
+        // 🔥 PASO 3: Agrupar por instructor
         const earningsAggregation = validEarnings.reduce((acc, earning) => {
             const instructorId = earning.instructor.toString();
 
@@ -188,13 +279,19 @@ export const getInstructorEarnings = async (req, res) => {
 
         console.log(`\ud83d\udd0d [getInstructorEarnings] Buscando earnings con filtros:`, filters);
 
-        const validEarnings = await InstructorEarnings.find(filters)
+        // \ud83d\udd25 PASO 1: Obtener earnings con populate de sale
+        const allEarnings = await InstructorEarnings.find(filters)
             .populate('course', 'title imagen')
             .populate('product_id', 'title imagen')
             .populate('sale', 'n_transaccion created_at user')
             .sort({ earned_at: -1 });
 
-        console.log(`\u2705 [getInstructorEarnings] Ganancias válidas después de filtrar: ${validEarnings.length}`);
+        console.log(`\ud83d\udce6 [getInstructorEarnings] Earnings obtenidos: ${allEarnings.length}`);
+
+        // \ud83d\udd25 PASO 2: Filtrar earnings con refunds completados
+        const validEarnings = await filterEarningsWithRefunds(allEarnings);
+
+        console.log(`\u2705 [getInstructorEarnings] Ganancias válidas después de filtrar refunds: ${validEarnings.length}`);
 
         console.log(`\ud83d\udcca [getInstructorEarnings] Desglose por estado:`);
         const countByStatus = {};
@@ -456,6 +553,19 @@ export const processPayment = async (req, res) => {
             message: 'Pago marcado como en proceso',
             payment: populatedPayment
         });
+
+        // 🔥 NOTIFICACIONES ASÍNCRONAS
+        try {
+            // 1. Enviar email al instructor
+            await sendPaymentProcessedEmail(populatedPayment.instructor, populatedPayment);
+
+            // 2. Enviar notificación a Telegram (Admin)
+            await notifyPaymentProcessed(populatedPayment, populatedPayment.instructor);
+
+            console.log('✅ Notificaciones de pago enviadas correctamente');
+        } catch (notifyError) {
+            console.error('⚠️ Error al enviar notificaciones de pago:', notifyError);
+        }
     } catch (error) {
         console.error('Error al procesar pago:', error);
         res.status(500).json({

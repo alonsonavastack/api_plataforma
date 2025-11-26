@@ -2,13 +2,13 @@ export default {
     api_resource_user: (user) => {
         return {
             _id: user._id,
-            name:user.name,
-            surname:user.surname,
-            email:user.email,
+            name: user.name,
+            surname: user.surname,
+            email: user.email,
             phone: user.phone,
-            profession:user.profession,
-            description:user.description,
-            rol:user.rol,
+            profession: user.profession,
+            description: user.description,
+            rol: user.rol,
             state: user.state,
             avatar: user.avatar,
             slug: user.slug, // 🆕 NUEVO: Slug único para perfiles públicos
@@ -23,6 +23,7 @@ export default {
             linkedin: user.socialMedia?.linkedin,
             twitter: user.socialMedia?.twitter,
             github: user.socialMedia?.github,
+            createdAt: user.createdAt,
         }
     },
 }

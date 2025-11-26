@@ -1,4 +1,5 @@
 import models from "../models/index.js";
+import mongoose from "mongoose";
 
 export default {
   // ✅ NUEVO: Métricas Financieras Ejecutivas (Con Reembolsos y Comisiones)
@@ -19,37 +20,59 @@ export default {
       const firstDayCurrentYear = new Date(now.getFullYear(), 0, 1);
 
       // 🔄 OBTENER VENTAS REEMBOLSADAS
-      const refundedSales = await models.Refund.find({ 
+      const { excludeTests } = req.query; // AGREGAR ESTA LÍNEA
+
+      const refundedSalesFilter = {
         status: 'completed',
-        state: 1 
-      }).distinct('sale');
+        state: 1
+      };
+
+      if (excludeTests === 'true') {
+        const testSaleIds = await models.Sale.find({ isTest: true }).distinct('_id');
+        refundedSalesFilter.sale = { $nin: testSaleIds };
+      }
+
+      const refundedSales = await models.Refund.find(refundedSalesFilter).distinct('sale');
 
       console.log(`   • Ventas reembolsadas: ${refundedSales.length}`);
 
       // 💰 1. INGRESOS BRUTOS (Sin filtrar reembolsos)
       const grossIncomeResult = await models.Sale.aggregate([
-        { $match: { status: 'Pagado' } },
+        {
+          $match: {
+            status: 'Pagado',
+            ...(excludeTests === 'true' ? { isTest: { $ne: true } } : {})
+          }
+        },
         { $group: { _id: null, total: { $sum: '$total' } } }
       ]);
       const grossIncome = grossIncomeResult[0]?.total || 0;
 
       // 💵 2. INGRESOS NETOS (Filtrando reembolsos)
       const netIncomeResult = await models.Sale.aggregate([
-        { 
-          $match: { 
+        {
+          $match: {
             status: 'Pagado',
-            _id: { $nin: refundedSales }
-          } 
+            _id: { $nin: refundedSales },
+            ...(excludeTests === 'true' ? { isTest: { $ne: true } } : {})
+          }
         },
         { $group: { _id: null, total: { $sum: '$total' } } }
       ]);
       const netIncome = netIncomeResult[0]?.total || 0;
 
       // 🔄 3. TOTAL REEMBOLSADO
-      const completedRefunds = await models.Refund.find({ 
+      const refundFilter = {
         status: 'completed',
-        state: 1 
-      });
+        state: 1
+      };
+
+      if (excludeTests === 'true') {
+        const testSaleIds = await models.Sale.find({ isTest: true }).distinct('_id');
+        refundFilter.sale = { $nin: testSaleIds };
+      }
+
+      const completedRefunds = await models.Refund.find(refundFilter);
 
       const totalRefunded = completedRefunds.reduce((sum, r) => {
         return sum + (r.calculations?.refundAmount || r.originalAmount || 0);
@@ -65,23 +88,25 @@ export default {
 
       // 📊 4. INGRESOS DEL MES ACTUAL
       const currentMonthGrossResult = await models.Sale.aggregate([
-        { 
-          $match: { 
+        {
+          $match: {
             status: 'Pagado',
-            createdAt: { $gte: firstDayCurrentMonth }
-          } 
+            createdAt: { $gte: firstDayCurrentMonth },
+            ...(excludeTests === 'true' ? { isTest: { $ne: true } } : {})
+          }
         },
         { $group: { _id: null, total: { $sum: '$total' } } }
       ]);
       const currentMonthGross = currentMonthGrossResult[0]?.total || 0;
 
       const currentMonthNetResult = await models.Sale.aggregate([
-        { 
-          $match: { 
+        {
+          $match: {
             status: 'Pagado',
             createdAt: { $gte: firstDayCurrentMonth },
-            _id: { $nin: refundedSales }
-          } 
+            _id: { $nin: refundedSales },
+            ...(excludeTests === 'true' ? { isTest: { $ne: true } } : {})
+          }
         },
         { $group: { _id: null, total: { $sum: '$total' } } }
       ]);
@@ -89,12 +114,13 @@ export default {
 
       // 📊 5. INGRESOS DEL MES ANTERIOR
       const lastMonthNetResult = await models.Sale.aggregate([
-        { 
-          $match: { 
+        {
+          $match: {
             status: 'Pagado',
             createdAt: { $gte: firstDayLastMonth, $lt: firstDayCurrentMonth },
-            _id: { $nin: refundedSales }
-          } 
+            _id: { $nin: refundedSales },
+            ...(excludeTests === 'true' ? { isTest: { $ne: true } } : {})
+          }
         },
         { $group: { _id: null, total: { $sum: '$total' } } }
       ]);
@@ -121,25 +147,30 @@ export default {
       const totalActiveProjects = await models.Project.countDocuments({ state: 2 });
 
       // 🔔 9. REEMBOLSOS PENDIENTES
-      const pendingRefunds = await models.Refund.countDocuments({ 
+      const pendingRefunds = await models.Refund.countDocuments({
         status: 'pending',
-        state: 1 
+        state: 1
       });
 
       // 🔄 10. TASA DE REEMBOLSO
-      const totalSales = await models.Sale.countDocuments({ status: 'Pagado' });
-      const refundRate = totalSales > 0 
+      // 🔄 10. TASA DE REEMBOLSO
+      const totalSales = await models.Sale.countDocuments({
+        status: 'Pagado',
+        ...(excludeTests === 'true' ? { isTest: { $ne: true } } : {})
+      });
+      const refundRate = totalSales > 0
         ? ((completedRefunds.length / totalSales) * 100).toFixed(2)
         : 0;
 
       // 📊 11. INGRESOS DEL AÑO ACTUAL
       const currentYearNetResult = await models.Sale.aggregate([
-        { 
-          $match: { 
+        {
+          $match: {
             status: 'Pagado',
             createdAt: { $gte: firstDayCurrentYear },
-            _id: { $nin: refundedSales }
-          } 
+            _id: { $nin: refundedSales },
+            ...(excludeTests === 'true' ? { isTest: { $ne: true } } : {})
+          }
         },
         { $group: { _id: null, total: { $sum: '$total' } } }
       ]);
@@ -180,7 +211,8 @@ export default {
           pending: pendingRefunds,
           rate: parseFloat(refundRate),
           label: 'Reembolsos',
-          description: `${refundRate}% de las ventas totales`
+          description: `${refundRate}% de las ventas totales`,
+          testDataExcluded: excludeTests === 'true' // AGREGAR ESTA LÍNEA
         },
 
         // COMISIONES
@@ -256,20 +288,20 @@ export default {
         // KPIs para el Administrador (Globales)
 
         // 🔄 OBTENER VENTAS REEMBOLSADAS
-        const refundedSales = await models.Refund.find({ 
+        const refundedSales = await models.Refund.find({
           status: 'completed',
-          state: 1 
+          state: 1
         }).distinct('sale');
 
         console.log(`📊 [kpis] Excluyendo ${refundedSales.length} ventas reembolsadas`);
 
         // ✅ Ingresos totales EXCLUYENDO REEMBOLSOS
         const totalIncomeResult = await models.Sale.aggregate([
-          { 
-            $match: { 
+          {
+            $match: {
               status: "Pagado",
               _id: { $nin: refundedSales } // ✅ EXCLUIR
-            } 
+            }
           },
           { $group: { _id: null, total: { $sum: "$total" } } },
         ]);
@@ -326,25 +358,25 @@ export default {
         const incomeDelta =
           lastMonthIncome > 0
             ? (
-                ((currentMonthIncome - lastMonthIncome) / lastMonthIncome) *
-                100
-              ).toFixed(1)
+              ((currentMonthIncome - lastMonthIncome) / lastMonthIncome) *
+              100
+            ).toFixed(1)
             : currentMonthIncome > 0
-            ? 100
-            : 0;
+              ? 100
+              : 0;
 
         const totalStudents = await models.User.countDocuments({
           rol: "cliente",
         });
         const totalActiveCourses = await models.Course.countDocuments({ state: 2 });
         const totalActiveProjects = await models.Project.countDocuments({ state: 2 });
-        
+
         // ✅ Calcular conversión real
-        const totalSales = await models.Sale.countDocuments({ 
+        const totalSales = await models.Sale.countDocuments({
           status: 'Pagado',
           _id: { $nin: refundedSales }
         });
-        const conversionRate = totalStudents > 0 
+        const conversionRate = totalStudents > 0
           ? ((totalSales / totalStudents) * 100).toFixed(1)
           : 0;
 
@@ -367,7 +399,7 @@ export default {
         ];
 
         console.log(`✅ [kpis] Ingresos Netos: ${totalIncome.toFixed(2)}`);
-        
+
         return res.status(200).json(kpis);
       } else if (user.rol === "instructor") {
         // KPIs para el Instructor (Personales)
@@ -458,12 +490,12 @@ export default {
         const incomeDelta =
           lastMonthIncome > 0
             ? (
-                ((currentMonthIncome - lastMonthIncome) / lastMonthIncome) *
-                100
-              ).toFixed(1)
+              ((currentMonthIncome - lastMonthIncome) / lastMonthIncome) *
+              100
+            ).toFixed(1)
             : currentMonthIncome > 0
-            ? 100
-            : 0;
+              ? 100
+              : 0;
 
         const kpis = [
           {
@@ -497,9 +529,9 @@ export default {
       console.log(`   • Usuario: ${user.name} (${user.rol})`);
 
       // 🔄 OBTENER VENTAS REEMBOLSADAS (GLOBAL)
-      const refundedSales = await models.Refund.find({ 
+      const refundedSales = await models.Refund.find({
         status: 'completed',
-        state: 1 
+        state: 1
       }).distinct('sale');
 
       console.log(`   • Ventas reembolsadas a excluir: ${refundedSales.length}`);
@@ -518,13 +550,26 @@ export default {
         console.log(`   • Productos del instructor: ${productIds.length}`);
 
         // ✅ EXCLUIR VENTAS REEMBOLSADAS
-        studentIds = await models.Sale.distinct('user', {
+        const studentIdsFromSales = await models.Sale.distinct('user', {
           status: 'Pagado',
           'detail.product': { $in: productIds },
-          _id: { $nin: refundedSales } // 🔥 NUEVO
+          _id: { $nin: refundedSales }
         });
 
-        console.log(`   • Estudiantes únicos del instructor: ${studentIds.length}`);
+        // ✅ NUEVO: Buscar también por inscripciones (para cursos GRATIS)
+        const studentIdsFromEnrollments = await models.CourseStudent.distinct('user', {
+          course: { $in: instructorCourses.map(c => c._id) }
+        });
+
+        // Combinar y eliminar duplicados
+        const allStudentIds = [...new Set([...studentIdsFromSales.map(id => id.toString()), ...studentIdsFromEnrollments.map(id => id.toString())])];
+
+        // Convertir de nuevo a ObjectId
+        studentIds = allStudentIds.map(id => new mongoose.Types.ObjectId(id));
+
+        console.log(`   • Estudiantes por ventas: ${studentIdsFromSales.length}`);
+        console.log(`   • Estudiantes por inscripción: ${studentIdsFromEnrollments.length}`);
+        console.log(`   • Total estudiantes únicos: ${studentIds.length}`);
       }
 
       // La agregación ahora es más completa y funciona para ambos roles
@@ -549,15 +594,22 @@ export default {
             as: "purchases"
           },
         },
+        // ✅ NUEVO: Buscar inscripciones a cursos (incluye GRATIS y PAGADOS)
+        // Usamos sintaxis simple para evitar problemas de tipos
+        {
+          $lookup: {
+            from: "course_students",
+            localField: "_id",
+            foreignField: "user",
+            as: "enrollments"
+          }
+        },
         {
           $addFields: {
-            // Contar cursos comprados (SIN REEMBOLSOS)
-            purchased_courses_count: {
-              $size: {
-                $filter: { input: "$purchases", as: "p", cond: { $eq: ["$p.detail.product_type", "course"] } }
-              }
-            },
-            // Contar proyectos comprados (SIN REEMBOLSOS)
+            // ✅ CORREGIDO: Contar inscripciones reales (cubre gratis y pagados)
+            purchased_courses_count: { $size: "$enrollments" },
+
+            // Contar proyectos comprados (Sigue usando ventas porque no hay "inscripción" a proyectos)
             purchased_projects_count: {
               $size: {
                 $filter: { input: "$purchases", as: "p", cond: { $eq: ["$p.detail.product_type", "project"] } }
@@ -565,17 +617,18 @@ export default {
             }
           },
         },
-        { $project: { password: 0, token: 0, purchases: 0 } }, // Excluir campos sensibles
+        { $project: { password: 0, token: 0, purchases: 0, enrollments: 0 } }, // Excluir campos sensibles
         { $sort: { createdAt: -1 } }
       ];
 
       const students = await models.User.aggregate(aggregationPipeline);
 
       console.log(`✅ [listStudents] Estudiantes cargados: ${students.length}`);
-      console.log(`   • Ejemplo contadores (primer estudiante):`);
       if (students.length > 0) {
-        console.log(`     - Cursos: ${students[0].purchased_courses_count || 0}`);
-        console.log(`     - Proyectos: ${students[0].purchased_projects_count || 0}`);
+        const s = students[0];
+        console.log(`   • Ejemplo (ID: ${s._id}):`);
+        console.log(`     - Cursos (Backend): ${s.purchased_courses_count}`);
+        console.log(`     - Proyectos (Backend): ${s.purchased_projects_count}`);
       }
 
       res.status(200).json({ students });
