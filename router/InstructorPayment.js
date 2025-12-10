@@ -3,8 +3,10 @@ import {
     getPaymentConfig,
     updatePaypalConfig,
     updateBankConfig,
+    updateMercadoPagoConfig,
     deletePaypalConfig,
     deleteBankConfig,
+    deleteMercadoPagoConfig,
     updatePreferredPaymentMethod,
     getEarnings,
     getEarningsStats,
@@ -57,6 +59,20 @@ router.delete('/payment-config/paypal', auth.verifyInstructor, deletePaypalConfi
  * @access  Private (Instructor)
  */
 router.delete('/payment-config/bank', auth.verifyInstructor, deleteBankConfig);
+
+/**
+ * @route   POST /api/instructor/payment-config/mercadopago
+ * @desc    Conectar/actualizar cuenta de Mercado Pago
+ * @access  Private (Instructor)
+ */
+router.post('/payment-config/mercadopago', auth.verifyInstructor, updateMercadoPagoConfig);
+
+/**
+ * @route   DELETE /api/instructor/payment-config/mercadopago
+ * @desc    Eliminar configuración de Mercado Pago
+ * @access  Private (Instructor)
+ */
+router.delete('/payment-config/mercadopago', auth.verifyInstructor, deleteMercadoPagoConfig);
 
 /**
  * @route   PUT /api/instructor/payment-config

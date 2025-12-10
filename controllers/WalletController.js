@@ -6,23 +6,25 @@ import models from '../models/index.js';
 export async function getMyWallet(req, res) {
     try {
         const user = req.user;
+        console.log('🔍 [WalletController.getMyWallet] User:', user ? user._id : 'No user');
         const userObj = user.toObject ? user.toObject() : user;
-        
+
         // Obtener o crear billetera
+        console.log('🔍 [WalletController.getMyWallet] Getting wallet for:', userObj._id);
         const wallet = await models.Wallet.getOrCreateWallet(userObj._id);
-        
+
         res.status(200).send({
             balance: wallet.balance,
             currency: wallet.currency,
-            transactions: wallet.transactions.sort((a, b) => 
+            transactions: wallet.transactions.sort((a, b) =>
                 new Date(b.createdAt) - new Date(a.createdAt)
             )
         });
     } catch (error) {
         console.error('❌ [WalletController.getMyWallet] Error:', error);
-        res.status(500).send({ 
+        res.status(500).send({
             message: 'Error al obtener billetera',
-            error: error.message 
+            error: error.message
         });
     }
 }
@@ -34,18 +36,18 @@ export async function getBalance(req, res) {
     try {
         const user = req.user;
         const userObj = user.toObject ? user.toObject() : user;
-        
+
         const wallet = await models.Wallet.getOrCreateWallet(userObj._id);
-        
+
         res.status(200).send({
             balance: wallet.balance,
             currency: wallet.currency
         });
     } catch (error) {
         console.error('❌ [WalletController.getBalance] Error:', error);
-        res.status(500).send({ 
+        res.status(500).send({
             message: 'Error al obtener balance',
-            error: error.message 
+            error: error.message
         });
     }
 }
@@ -56,21 +58,21 @@ export async function getBalance(req, res) {
 export async function addCredit(req, res) {
     try {
         const { userId, amount, description } = req.body;
-        
+
         if (!userId || !amount || amount <= 0) {
-            return res.status(400).send({ 
-                message: 'userId y amount (mayor a 0) son requeridos' 
+            return res.status(400).send({
+                message: 'userId y amount (mayor a 0) son requeridos'
             });
         }
-        
+
         const wallet = await models.Wallet.getOrCreateWallet(userId);
-        
+
         const transaction = await wallet.addCredit(
-            amount, 
+            amount,
             description || 'Crédito manual por administrador',
             { reason: 'manual_credit' }
         );
-        
+
         res.status(200).send({
             message: 'Crédito agregado exitosamente',
             transaction,
@@ -78,9 +80,9 @@ export async function addCredit(req, res) {
         });
     } catch (error) {
         console.error('❌ [WalletController.addCredit] Error:', error);
-        res.status(500).send({ 
+        res.status(500).send({
             message: 'Error al agregar crédito',
-            error: error.message 
+            error: error.message
         });
     }
 }
@@ -92,22 +94,22 @@ export async function addCredit(req, res) {
 export async function useWalletBalance(userId, amount, saleId, description) {
     try {
         const wallet = await models.Wallet.getOrCreateWallet(userId);
-        
+
         if (wallet.balance < amount) {
             throw new Error(`Saldo insuficiente. Disponible: $${wallet.balance}, Requerido: $${amount}`);
         }
-        
+
         const transaction = await wallet.addDebit(
             amount,
             description || 'Compra con saldo de billetera',
-            { 
+            {
                 orderId: saleId,
                 reason: 'purchase'
             }
         );
-        
-        console.log(`✅ [WalletController] Compra realizada con billetera: -$${amount} USD`);
-        
+
+        console.log(`✅ [WalletController] Compra realizada con billetera: -$${amount} MXN`);
+
         return {
             success: true,
             transaction,
@@ -126,18 +128,18 @@ export async function useWalletBalance(userId, amount, saleId, description) {
 export async function creditRefund(userId, amount, refundId, description) {
     try {
         const wallet = await models.Wallet.getOrCreateWallet(userId);
-        
+
         const transaction = await wallet.addCredit(
             amount,
             description || 'Reembolso acreditado',
-            { 
+            {
                 refundId: refundId,
                 reason: 'refund'
             }
         );
-        
-        console.log(`✅ [WalletController] Reembolso acreditado: +${amount} USD para usuario ${userId}`);
-        
+
+        console.log(`✅ [WalletController] Reembolso acreditado: +${amount} MXN para usuario ${userId}`);
+
         return {
             success: true,
             transaction,
@@ -156,53 +158,53 @@ export async function creditRefund(userId, amount, refundId, description) {
 export async function getAllWallets(req, res) {
     try {
         console.log('💰 [getAllWallets] Iniciando carga de billeteras...');
-        
+
         // 🔥 PASO 1: Obtener todos los usuarios CLIENTES (rol: 'cliente' o 'customer')
         // ✅ FIX: Buscar ambos valores para compatibilidad
-        const customers = await models.User.find({ 
+        const customers = await models.User.find({
             rol: { $in: ['cliente', 'customer'] },  // ✅ ACEPTA AMBOS
-            state: true 
+            state: true
         }).select('_id name surname email rol');
-        
+
         console.log(`👥 [getAllWallets] Clientes encontrados: ${customers.length}`);
-        
+
         if (customers.length === 0) {
             console.log('⚠️ [getAllWallets] No se encontraron clientes activos');
             return res.status(200).send([]);
         }
-        
+
         // 🔥 PASO 2: Obtener billeteras de esos usuarios
         const customerIds = customers.map(c => c._id);
-        const wallets = await models.Wallet.find({ 
+        const wallets = await models.Wallet.find({
             user: { $in: customerIds },
-            state: 1 
+            state: 1
         }).sort({ balance: -1 });
-        
+
         console.log(`💰 [getAllWallets] Billeteras encontradas: ${wallets.length}`);
-        
+
         // 🔥 PASO 3: Crear mapa de usuarios para acceso rápido
         const userMap = new Map();
         customers.forEach(customer => {
             userMap.set(customer._id.toString(), customer);
         });
-        
+
         // 🔥 PASO 4: Crear billeteras faltantes y mapear respuesta
         const walletsResponse = [];
-        
+
         for (const customer of customers) {
             let wallet = wallets.find(w => w.user.toString() === customer._id.toString());
-            
+
             // Si no existe billetera, crearla
             if (!wallet) {
                 console.log(`🆕 [getAllWallets] Creando billetera para: ${customer.name} ${customer.surname}`);
                 wallet = await models.Wallet.create({
                     user: customer._id,
                     balance: 0,
-                    currency: 'USD',
+                    currency: 'MXN',
                     transactions: []
                 });
             }
-            
+
             // Mapear respuesta con datos del usuario
             walletsResponse.push({
                 _id: wallet._id,
@@ -221,16 +223,16 @@ export async function getAllWallets(req, res) {
                 updatedAt: wallet.updatedAt
             });
         }
-        
+
         console.log(`✅ [getAllWallets] Billeteras de clientes cargadas: ${walletsResponse.length}`);
         console.log(`📊 [getAllWallets] Balance total: $${walletsResponse.reduce((sum, w) => sum + w.balance, 0).toFixed(2)}`);
-        
+
         res.status(200).send(walletsResponse);
     } catch (error) {
         console.error('❌ [WalletController.getAllWallets] Error:', error);
-        res.status(500).send({ 
+        res.status(500).send({
             message: 'Error al obtener billeteras',
-            error: error.message 
+            error: error.message
         });
     }
 }
@@ -241,21 +243,21 @@ export async function getAllWallets(req, res) {
 export async function getUserWallet(req, res) {
     try {
         const { userId } = req.params;
-        
+
         const wallet = await models.Wallet.getOrCreateWallet(userId);
-        
+
         res.status(200).send({
             balance: wallet.balance,
             currency: wallet.currency,
-            transactions: wallet.transactions.sort((a, b) => 
+            transactions: wallet.transactions.sort((a, b) =>
                 new Date(b.createdAt) - new Date(a.createdAt)
             )
         });
     } catch (error) {
         console.error('❌ [WalletController.getUserWallet] Error:', error);
-        res.status(500).send({ 
+        res.status(500).send({
             message: 'Error al obtener billetera del usuario',
-            error: error.message 
+            error: error.message
         });
     }
 }

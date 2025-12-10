@@ -86,7 +86,7 @@ export default {
 
       const sections = await models.CourseSection.aggregate([
         { $match: { course: new mongoose.Types.ObjectId(course_id) } },
-        { $sort: { createdAt: -1 } },
+        { $sort: { order: 1 } }, // 🔄 Ordenar por campo 'order' ascendente
         {
           $lookup: {
             from: "course_clases",
@@ -101,6 +101,7 @@ export default {
             title: 1,
             course: 1,
             state: 1,
+            order: 1, // Incluir order en la proyección
             num_clases: { $size: "$clases" },
           },
         },
@@ -110,6 +111,23 @@ export default {
     } catch (error) {
       console.error("[CourseSectionController.list] error:", error);
       return res.status(500).json({ success: false, message: "Hubo un error" });
+    }
+  },
+
+  reorder: async (req, res) => {
+    try {
+      const { ids } = req.body;
+      const bulkOps = ids.map((id, index) => ({
+        updateOne: {
+          filter: { _id: id },
+          update: { $set: { order: index } },
+        },
+      }));
+      await models.CourseSection.bulkWrite(bulkOps);
+      res.status(200).json({ message: "Orden de las secciones actualizado." });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: "Error al reordenar las secciones", error });
     }
   },
 

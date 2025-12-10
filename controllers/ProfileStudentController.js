@@ -7,6 +7,7 @@ import * as RefundController from './RefundController.js';
 
 
 import { notifyVoucherUpload } from '../services/telegram.service.js';
+import { emitSaleStatusUpdate } from '../services/socket.service.js';
 
 import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
@@ -572,12 +573,16 @@ export const upload_voucher = async (req, res) => {
             }
 
             sale.voucher_image = voucher_name;
+            sale.status = 'En Revisión';
             await sale.save();
 
             // 🔔 Notificar a Telegram
             notifyVoucherUpload(sale).catch(err =>
                 console.error('⚠️ Error notificando voucher:', err.message)
             );
+
+            // 🔔 Notificar por Socket.IO a los admins
+            emitSaleStatusUpdate(sale);
 
             res.status(200).json({
                 message: 'Comprobante subido correctamente.',

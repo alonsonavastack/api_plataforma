@@ -19,112 +19,75 @@ export default {
       const firstDayLastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
       const firstDayCurrentYear = new Date(now.getFullYear(), 0, 1);
 
-      // 🔄 OBTENER VENTAS REEMBOLSADAS
-      const { excludeTests } = req.query; // AGREGAR ESTA LÍNEA
-
-      const refundedSalesFilter = {
-        status: 'completed',
-        state: 1
+      // 🔍 CONFIGURAR FILTROS
+      const { excludeTests } = req.query;
+      const baseMatch = {
+        status: 'Pagado',
+        ...(excludeTests === 'true' ? { isTest: { $ne: true } } : {})
       };
 
-      if (excludeTests === 'true') {
-        const testSaleIds = await models.Sale.find({ isTest: true }).distinct('_id');
-        refundedSalesFilter.sale = { $nin: testSaleIds };
-      }
+      // 🔄 HELPER: Calcular monto de reembolsos para un set de ventas
+      const calculateRefundsForSales = async (salesMatch) => {
+        // 1. Encontrar IDs de ventas que coincidan con el filtro
+        const sales = await models.Sale.find(salesMatch).select('_id');
+        const saleIds = sales.map(s => s._id);
 
-      const refundedSales = await models.Refund.find(refundedSalesFilter).distinct('sale');
+        if (saleIds.length === 0) return 0;
 
-      console.log(`   • Ventas reembolsadas: ${refundedSales.length}`);
+        // 2. Encontrar reembolsos completados para estas ventas
+        const refunds = await models.Refund.find({
+          sale: { $in: saleIds },
+          status: 'completed',
+          state: 1
+        });
 
-      // 💰 1. INGRESOS BRUTOS (Sin filtrar reembolsos)
+        // 3. Sumar el monto reembolsado
+        return refunds.reduce((sum, r) => {
+          return sum + (r.calculations?.refundAmount || r.originalAmount || 0);
+        }, 0);
+      };
+
+      // 💰 1. INGRESOS BRUTOS (Total de ventas)
       const grossIncomeResult = await models.Sale.aggregate([
-        {
-          $match: {
-            status: 'Pagado',
-            ...(excludeTests === 'true' ? { isTest: { $ne: true } } : {})
-          }
-        },
+        { $match: baseMatch },
         { $group: { _id: null, total: { $sum: '$total' } } }
       ]);
       const grossIncome = grossIncomeResult[0]?.total || 0;
 
-      // 💵 2. INGRESOS NETOS (Filtrando reembolsos)
-      const netIncomeResult = await models.Sale.aggregate([
-        {
-          $match: {
-            status: 'Pagado',
-            _id: { $nin: refundedSales },
-            ...(excludeTests === 'true' ? { isTest: { $ne: true } } : {})
-          }
-        },
-        { $group: { _id: null, total: { $sum: '$total' } } }
-      ]);
-      const netIncome = netIncomeResult[0]?.total || 0;
+      // 🔄 2. TOTAL REEMBOLSADO (Global)
+      const totalRefunded = await calculateRefundsForSales(baseMatch);
 
-      // 🔄 3. TOTAL REEMBOLSADO
-      const refundFilter = {
-        status: 'completed',
-        state: 1
+      // 💵 3. INGRESOS NETOS (Brutos - Reembolsos)
+      // ✅ CORREGIDO: Restar monto reembolsado en lugar de excluir ventas completas
+      const netIncome = Math.max(0, grossIncome - totalRefunded);
+
+      // 📊 4. DATOS DEL MES ACTUAL
+      const currentMonthMatch = {
+        ...baseMatch,
+        createdAt: { $gte: firstDayCurrentMonth }
       };
 
-      if (excludeTests === 'true') {
-        const testSaleIds = await models.Sale.find({ isTest: true }).distinct('_id');
-        refundFilter.sale = { $nin: testSaleIds };
-      }
-
-      const completedRefunds = await models.Refund.find(refundFilter);
-
-      const totalRefunded = completedRefunds.reduce((sum, r) => {
-        return sum + (r.calculations?.refundAmount || r.originalAmount || 0);
-      }, 0);
-
-      const totalPlatformFeesFromRefunds = completedRefunds.reduce((sum, r) => {
-        return sum + (r.calculations?.platformFee || 0);
-      }, 0);
-
-      const totalProcessingFeesFromRefunds = completedRefunds.reduce((sum, r) => {
-        return sum + (r.calculations?.processingFee || 0);
-      }, 0);
-
-      // 📊 4. INGRESOS DEL MES ACTUAL
       const currentMonthGrossResult = await models.Sale.aggregate([
-        {
-          $match: {
-            status: 'Pagado',
-            createdAt: { $gte: firstDayCurrentMonth },
-            ...(excludeTests === 'true' ? { isTest: { $ne: true } } : {})
-          }
-        },
+        { $match: currentMonthMatch },
         { $group: { _id: null, total: { $sum: '$total' } } }
       ]);
       const currentMonthGross = currentMonthGrossResult[0]?.total || 0;
+      const currentMonthRefunded = await calculateRefundsForSales(currentMonthMatch);
+      const currentMonthNet = Math.max(0, currentMonthGross - currentMonthRefunded);
 
-      const currentMonthNetResult = await models.Sale.aggregate([
-        {
-          $match: {
-            status: 'Pagado',
-            createdAt: { $gte: firstDayCurrentMonth },
-            _id: { $nin: refundedSales },
-            ...(excludeTests === 'true' ? { isTest: { $ne: true } } : {})
-          }
-        },
+      // 📊 5. DATOS DEL MES ANTERIOR
+      const lastMonthMatch = {
+        ...baseMatch,
+        createdAt: { $gte: firstDayLastMonth, $lt: firstDayCurrentMonth }
+      };
+
+      const lastMonthGrossResult = await models.Sale.aggregate([
+        { $match: lastMonthMatch },
         { $group: { _id: null, total: { $sum: '$total' } } }
       ]);
-      const currentMonthNet = currentMonthNetResult[0]?.total || 0;
-
-      // 📊 5. INGRESOS DEL MES ANTERIOR
-      const lastMonthNetResult = await models.Sale.aggregate([
-        {
-          $match: {
-            status: 'Pagado',
-            createdAt: { $gte: firstDayLastMonth, $lt: firstDayCurrentMonth },
-            _id: { $nin: refundedSales },
-            ...(excludeTests === 'true' ? { isTest: { $ne: true } } : {})
-          }
-        },
-        { $group: { _id: null, total: { $sum: '$total' } } }
-      ]);
-      const lastMonthNet = lastMonthNetResult[0]?.total || 0;
+      const lastMonthGross = lastMonthGrossResult[0]?.total || 0; // Usado para debug si se necesita
+      const lastMonthRefunded = await calculateRefundsForSales(lastMonthMatch);
+      const lastMonthNet = Math.max(0, lastMonthGross - lastMonthRefunded);
 
       // 📈 6. CALCULAR DELTA (Mes actual vs mes anterior)
       const incomeDelta = lastMonthNet > 0
@@ -132,11 +95,9 @@ export default {
         : currentMonthNet > 0 ? 100 : 0;
 
       // 💳 7. COMISIONES DE LA PLATAFORMA
-      // Obtener configuración de comisiones
       const commissionSettings = await models.PlatformCommissionSettings.findOne();
       const defaultCommissionRate = commissionSettings?.default_commission_rate || 30;
 
-      // Calcular comisiones basadas en ventas activas (sin reembolsos)
       const platformCommissions = netIncome * (defaultCommissionRate / 100);
       const instructorEarnings = netIncome - platformCommissions;
 
@@ -146,35 +107,42 @@ export default {
       const totalActiveCourses = await models.Course.countDocuments({ state: 2 });
       const totalActiveProjects = await models.Project.countDocuments({ state: 2 });
 
-      // 🔔 9. REEMBOLSOS PENDIENTES
+      // 🔔 9. PROCESAR ALERTAS Y OTROS DATOS DE REEMBOLSOS
       const pendingRefunds = await models.Refund.countDocuments({
         status: 'pending',
         state: 1
       });
 
-      // 🔄 10. TASA DE REEMBOLSO
-      // 🔄 10. TASA DE REEMBOLSO
-      const totalSales = await models.Sale.countDocuments({
-        status: 'Pagado',
-        ...(excludeTests === 'true' ? { isTest: { $ne: true } } : {})
+      const completedRefunds = await models.Refund.find({
+        status: 'completed',
+        state: 1
       });
-      const refundRate = totalSales > 0
-        ? ((completedRefunds.length / totalSales) * 100).toFixed(2)
+
+      // Cálculo de fees retenidos (solo informativo)
+      const totalPlatformFeesFromRefunds = completedRefunds.reduce((sum, r) => sum + (r.calculations?.platformFee || 0), 0);
+      const totalProcessingFeesFromRefunds = completedRefunds.reduce((sum, r) => sum + (r.calculations?.processingFee || 0), 0);
+
+      const totalSalesCount = await models.Sale.countDocuments(baseMatch);
+
+      // Tasa de reembolso basándose en # de transacciones
+      // Nota: Esto sigue siendo por # de reembolsos vs # ventas, que es estándar
+      const refundRate = totalSalesCount > 0
+        ? ((completedRefunds.length / totalSalesCount) * 100).toFixed(2)
         : 0;
 
       // 📊 11. INGRESOS DEL AÑO ACTUAL
-      const currentYearNetResult = await models.Sale.aggregate([
-        {
-          $match: {
-            status: 'Pagado',
-            createdAt: { $gte: firstDayCurrentYear },
-            _id: { $nin: refundedSales },
-            ...(excludeTests === 'true' ? { isTest: { $ne: true } } : {})
-          }
-        },
+      const currentYearMatch = {
+        ...baseMatch,
+        createdAt: { $gte: firstDayCurrentYear }
+      };
+
+      const currentYearGrossResult = await models.Sale.aggregate([
+        { $match: currentYearMatch },
         { $group: { _id: null, total: { $sum: '$total' } } }
       ]);
-      const currentYearNet = currentYearNetResult[0]?.total || 0;
+      const currentYearGross = currentYearGrossResult[0]?.total || 0;
+      const currentYearRefunded = await calculateRefundsForSales(currentYearMatch);
+      const currentYearNet = Math.max(0, currentYearGross - currentYearRefunded);
 
       // 🎯 12. ARMANDO RESPUESTA
       const metrics = {
@@ -196,8 +164,8 @@ export default {
             description: 'Ingresos después de restar reembolsos'
           },
           difference: {
-            amount: grossIncome - netIncome,
-            percentage: grossIncome > 0 ? ((grossIncome - netIncome) / grossIncome * 100).toFixed(2) : 0,
+            amount: totalRefunded, // Difference is exactly the refunded amount
+            percentage: grossIncome > 0 ? (totalRefunded / grossIncome * 100).toFixed(2) : 0,
             label: 'Impacto de Reembolsos'
           }
         },
@@ -212,7 +180,7 @@ export default {
           rate: parseFloat(refundRate),
           label: 'Reembolsos',
           description: `${refundRate}% de las ventas totales`,
-          testDataExcluded: excludeTests === 'true' // AGREGAR ESTA LÍNEA
+          testDataExcluded: excludeTests === 'true'
         },
 
         // COMISIONES
@@ -237,8 +205,8 @@ export default {
           instructors: totalInstructors,
           activeCourses: totalActiveCourses,
           activeProjects: totalActiveProjects,
-          totalSales: totalSales,
-          activeSales: totalSales - refundedSales.length
+          totalSales: totalSalesCount,
+          activeSales: totalSalesCount // Ventas no se eliminan del contador, solo se ajusta el $
         },
 
         // ALERTAS
@@ -263,10 +231,8 @@ export default {
 
       console.log('✅ [executiveMetrics] Métricas generadas exitosamente');
       console.log(`   • Ingresos Brutos: ${grossIncome.toFixed(2)}`);
-      console.log(`   • Ingresos Netos: ${netIncome.toFixed(2)}`);
-      console.log(`   • Total Reembolsado: ${totalRefunded.toFixed(2)}`);
-      console.log(`   • Comisiones Plataforma: ${platformCommissions.toFixed(2)}`);
-      console.log(`   • Ganancias Instructores: ${instructorEarnings.toFixed(2)}`);
+      console.log(`   • Reembolsos:      ${totalRefunded.toFixed(2)}`);
+      console.log(`   • Ingresos Netos:  ${netIncome.toFixed(2)}`);
 
       return res.status(200).json(metrics);
 

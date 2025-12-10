@@ -20,6 +20,9 @@ router.put("/update-status/:id", [auth.verifyAdmin], saleController.update_statu
 // Registrar venta - Cualquier usuario autenticado
 router.post("/register", auth.verifyTienda, saleController.register);
 
+// Webhook Mercado Pago
+router.post("/webhook", saleController.webhook);
+
 // Obtener mis transacciones (estudiante)
 router.get("/my-transactions", auth.verifyTienda, saleController.my_transactions);
 

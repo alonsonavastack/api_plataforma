@@ -7,7 +7,7 @@ const InstructorPaymentConfigSchema = new Schema({
         required: true,
         unique: true // Un instructor solo puede tener una configuración
     },
-    
+
     // CONFIGURACIÓN DE PAYPAL
     paypal_email: {
         type: String,
@@ -27,7 +27,7 @@ const InstructorPaymentConfigSchema = new Schema({
         type: Boolean,
         default: false
     },
-    
+
     // CONFIGURACIÓN DE CUENTA BANCARIA
     bank_account: {
         account_holder_name: {
@@ -70,14 +70,38 @@ const InstructorPaymentConfigSchema = new Schema({
             default: false
         }
     },
-    
+
+    // CONFIGURACIÓN DE MERCADO PAGO
+    mercadopago: {
+        account_type: {
+            type: String,
+            enum: ['email', 'phone', 'cvu'],
+            default: 'email'
+        },
+        account_value: {
+            type: String,
+            maxlength: 100,
+            required: false
+        },
+        country: {
+            type: String,
+            maxlength: 2,
+            uppercase: true,
+            default: 'MX'
+        },
+        verified: {
+            type: Boolean,
+            default: false
+        }
+    },
+
     // CONFIGURACIÓN GENERAL
     preferred_payment_method: {
         type: String,
-        enum: ['paypal', 'bank_transfer', ''],
+        enum: ['paypal', 'bank_transfer', 'mercadopago', ''],
         default: ''
     },
-    
+
     // ESTADO
     state: {
         type: Boolean,

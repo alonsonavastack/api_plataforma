@@ -22,4 +22,7 @@ router.put('/update', [auth.verifyAdmin, multipartyMiddleware], SystemConfigCont
 router.get('/logo/:img', SystemConfigController.getLogo);
 router.get('/favicon/:img', SystemConfigController.getFavicon);
 
+// 🌎 RUTA PÚBLICA: Obtener países soportados para pagos
+router.get('/supported-countries', SystemConfigController.getSupportedCountriesEndpoint);
+
 export default router;

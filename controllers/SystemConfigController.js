@@ -2,6 +2,7 @@ import SystemConfig from '../models/SystemConfig.js';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { getSupportedCountries, getExchangeRate } from '../services/exchangeRate.service.js'; // 🔥 IMPORTAR PAÍSES SOPORTADOS Y TASA
 
 // 🔥 FIX: Obtener __dirname en ES Modules
 const __filename = fileURLToPath(import.meta.url);
@@ -45,10 +46,14 @@ const getPublic = async (req, res) => {
       });
     }
 
+    // Obtener tipo de cambio actual
+    const rate = await getExchangeRate();
     console.log('✅ [SystemConfigController] Configuración pública obtenida:', config.siteName);
+    console.log('💱 [SystemConfigController] Tipo de cambio incluido:', rate);
 
     res.status(200).send({
-      config: config
+      config: config,
+      exchange_rate: rate // 🔥 EXPORNER TASA DE CAMBIO
     });
 
   } catch (error) {
@@ -120,11 +125,11 @@ const update = async (req, res) => {
     if (req.body.supportEmail !== undefined) config.supportEmail = req.body.supportEmail;
 
     // Actualizar redes sociales (campos planos → objeto anidado)
-    if (req.body.facebook !== undefined || req.body.instagram !== undefined || 
-        req.body.youtube !== undefined || req.body.tiktok !== undefined ||
-        req.body.twitch !== undefined || req.body.twitter !== undefined ||
-        req.body.linkedin !== undefined || req.body.website !== undefined) {
-      
+    if (req.body.facebook !== undefined || req.body.instagram !== undefined ||
+      req.body.youtube !== undefined || req.body.tiktok !== undefined ||
+      req.body.twitch !== undefined || req.body.twitter !== undefined ||
+      req.body.linkedin !== undefined || req.body.website !== undefined) {
+
       config.socialMedia = {
         facebook: req.body.facebook || '',
         instagram: req.body.instagram || '',
@@ -148,14 +153,14 @@ const update = async (req, res) => {
     // Manejar logo
     if (req.files && req.files.logo) {
       const logoFile = req.files.logo;
-      
+
       // 🔥 Asegurar que el directorio existe
       const systemDir = path.join(__dirname, '../uploads/system');
       if (!fs.existsSync(systemDir)) {
         console.log('📁 Creando directorio para logo:', systemDir);
         fs.mkdirSync(systemDir, { recursive: true });
       }
-      
+
       // Eliminar logo anterior si existe
       if (config.logo) {
         const oldLogoPath = path.join(__dirname, '../uploads/system', config.logo);
@@ -190,14 +195,14 @@ const update = async (req, res) => {
     // Manejar favicon
     if (req.files && req.files.favicon) {
       const faviconFile = req.files.favicon;
-      
+
       // 🔥 Asegurar que el directorio existe
       const systemDir = path.join(__dirname, '../uploads/system');
       if (!fs.existsSync(systemDir)) {
         console.log('📁 Creando directorio para favicon:', systemDir);
         fs.mkdirSync(systemDir, { recursive: true });
       }
-      
+
       // Eliminar favicon anterior si existe
       if (config.favicon) {
         const oldFaviconPath = path.join(__dirname, '../uploads/system', config.favicon);
@@ -289,16 +294,16 @@ const getFavicon = async (req, res) => {
 const debug = async (req, res) => {
   try {
     console.log('🔍 [SystemConfigController] DEBUG - Verificando BD');
-    
+
     const config = await SystemConfig.findOne();
-    
+
     if (!config) {
       return res.status(200).send({
         message: 'No hay configuración en la BD',
         config: null
       });
     }
-    
+
     return res.status(200).send({
       message: 'Configuración encontrada',
       config: {
@@ -329,11 +334,33 @@ const debug = async (req, res) => {
   }
 };
 
+// 🌎 OBTENER PAÍSES SOPORTADOS PARA PAGOS
+const getSupportedCountriesEndpoint = async (req, res) => {
+  try {
+    console.log('🌎 [SystemConfigController] Obteniendo países soportados');
+
+    const countries = getSupportedCountries();
+
+    res.status(200).send({
+      success: true,
+      countries
+    });
+  } catch (error) {
+    console.error('❌ [SystemConfigController] Error al obtener países:', error);
+    res.status(500).send({
+      success: false,
+      message: 'Error al obtener países soportados',
+      error: error.message
+    });
+  }
+};
+
 export {
   get,
   getPublic,
   debug,
   update,
   getLogo,
-  getFavicon
+  getFavicon,
+  getSupportedCountriesEndpoint
 };

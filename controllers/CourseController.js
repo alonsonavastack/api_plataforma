@@ -13,11 +13,11 @@ const __dirname = path.dirname(__filename);
 import { UploadVideoVimeo } from "../utils/vimeo.js";
 
 export default {
-    register: async(req,res) => {
+    register: async (req, res) => {
         try {
-            
-            let IS_VALID_COURSE = await models.Course.findOne({title: req.body.title});
-            if(IS_VALID_COURSE){
+
+            let IS_VALID_COURSE = await models.Course.findOne({ title: req.body.title });
+            if (IS_VALID_COURSE) {
                 res.status(200).json({
                     message: 403,
                     message_text: "EL CURSO INGRESADO YA EXISTE, INTENTE CON OTRO TITULO"
@@ -25,14 +25,14 @@ export default {
                 return;
             }
 
-            req.body.slug = req.body.title.toLowerCase().replace(/ /g,'-').replace(/[^\w-]+/g,'');
+            req.body.slug = req.body.title.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
 
             // 🔥 NUEVO: Convertir isFree de string a boolean
             if (req.body.isFree !== undefined) {
                 req.body.isFree = req.body.isFree === 'true' || req.body.isFree === true;
             }
 
-            if(req.files && req.files.portada){
+            if (req.files && req.files.portada) {
                 const img_path = req.files.portada.path;
                 const imagen_name = path.basename(img_path);
                 req.body.imagen = imagen_name;
@@ -72,10 +72,10 @@ export default {
             });
         }
     },
-    update: async(req,res) => {
+    update: async (req, res) => {
         try {
-            const IS_VALID_COURSE = await models.Course.findOne({title: req.body.title, _id: {$ne: req.body._id}});
-            if(IS_VALID_COURSE){
+            const IS_VALID_COURSE = await models.Course.findOne({ title: req.body.title, _id: { $ne: req.body._id } });
+            if (IS_VALID_COURSE) {
                 res.status(200).json({
                     message: 403,
                     message_text: "EL CURSO INGRESADO YA EXISTE, INTENTE CON OTRO TITULO"
@@ -83,14 +83,14 @@ export default {
                 return;
             }
 
-            req.body.slug = req.body.title.toLowerCase().replace(/ /g,'-').replace(/[^\w-]+/g,'');
+            req.body.slug = req.body.title.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
 
             // 🔥 NUEVO: Convertir isFree de string a boolean
             if (req.body.isFree !== undefined) {
                 req.body.isFree = req.body.isFree === 'true' || req.body.isFree === true;
             }
 
-            if(req.files && req.files.portada){
+            if (req.files && req.files.portada) {
                 // Si se sube una nueva imagen, eliminamos la anterior.
                 const oldCourse = await models.Course.findById(req.body._id);
                 if (oldCourse.imagen && fs.existsSync(path.join(__dirname, '../uploads/course/', oldCourse.imagen))) {
@@ -122,9 +122,9 @@ export default {
             });
         }
     },
-    list: async(req,res) => {
+    list: async (req, res) => {
         try {
-            
+
             const search = req.query.search;
             const state = req.query.state;
             const categorie = req.query.categorie;
@@ -132,17 +132,17 @@ export default {
             const filter = {};
 
             // 🔧 FIX BUG #45: Búsqueda con collation para ignorar tildes
-            if(search){
+            if (search) {
                 // Usamos $text search que respeta el índice de texto con collation
                 // Esto permite buscar "programacion" y encontrar "Programación"
                 filter.$text = { $search: search };
             }
 
-            if(state){
+            if (state) {
                 filter.state = state;
             }
 
-            if(categorie){
+            if (categorie) {
                 filter.categorie = categorie;
             }
 
@@ -153,7 +153,7 @@ export default {
 
             // 🔧 FIX BUG #45: Aplicar collation en la query para búsqueda insensible a tildes
             const courses = await models.Course.find(filter)
-                .populate(["categorie","user"])
+                .populate(["categorie", "user"])
                 .collation({ locale: 'es', strength: 1 }) // Ignora mayúsculas y tildes
                 .sort({ createdAt: -1 });
 
@@ -167,10 +167,10 @@ export default {
             });
         }
     },
-    config_all: async(req,res) => {
+    config_all: async (req, res) => {
         try {
-            
-            let Categories = await models.Categorie.find({state: 1});
+
+            let Categories = await models.Categorie.find({ state: 1 });
 
             Categories = Categories.map((categorie) => {
                 return {
@@ -205,12 +205,12 @@ export default {
             });
         }
     },
-    show_course: async(req,res) => {
+    show_course: async (req, res) => {
         try {
             const course_id = req.params["id"];
-            const Course = await models.Course.findById({_id: course_id});
+            const Course = await models.Course.findById({ _id: course_id });
 
-            
+
             res.status(200).json({
                 course: resource.Course.api_resource_course(Course),
             });
@@ -221,7 +221,7 @@ export default {
             });
         }
     },
-    checkSales: async(req,res) => {
+    checkSales: async (req, res) => {
         try {
             const courseId = req.params.id;
             console.log('🔍 Verificando ventas y estudiantes para curso:', courseId);
@@ -229,7 +229,7 @@ export default {
             // Verificar permisos: solo el propietario o admin pueden verificar
             const course = await models.Course.findById(courseId).lean();
             if (!course) {
-                return res.status(404).json({ 
+                return res.status(404).json({
                     message: 'Curso no encontrado',
                     hasSales: false,
                     hasStudents: false
@@ -238,7 +238,7 @@ export default {
 
             // Si es instructor, solo puede verificar sus propios cursos
             if (req.user.rol === 'instructor' && course.user.toString() !== req.user._id.toString()) {
-                return res.status(403).json({ 
+                return res.status(403).json({
                     message: 'No tienes permiso para verificar este curso.',
                     hasSales: false,
                     hasStudents: false
@@ -247,21 +247,21 @@ export default {
 
             // 🔥 VALIDACIÓN 1: Buscar ventas donde el curso aparece en detail.product
             // Sale.detail es un subdocumento, no una colección separada
-            const sales = await models.Sale.find({ 
+            const sales = await models.Sale.find({
                 'detail.product': courseId,
                 'detail.product_type': 'course'
             }).lean();
 
             // 🔥 VALIDACIÓN 2: Buscar estudiantes inscritos
-            const students = await models.CourseStudent.find({ 
-                course: courseId 
+            const students = await models.CourseStudent.find({
+                course: courseId
             }).lean();
 
             const hasSales = sales.length > 0;
             const hasStudents = students.length > 0;
-            
+
             console.log(`📊 Curso tiene ${sales.length} venta(s) y ${students.length} estudiante(s)`);
-            
+
             // Contar cuántos estudiantes diferentes compraron el curso
             const uniqueUsers = new Set(sales.map(sale => sale.user.toString()));
             console.log(`👥 Estudiantes únicos que compraron: ${uniqueUsers.size}`);
@@ -283,7 +283,7 @@ export default {
             });
         }
     },
-    remove: async(req,res) => {
+    remove: async (req, res) => {
         try {
             const course_id = req.params.id;
             console.log('🛠️ Intentando eliminar curso:', course_id);
@@ -293,9 +293,9 @@ export default {
             const course = await models.Course.findById(course_id).lean();
             if (!course) {
                 console.log('❌ Curso no encontrado');
-                return res.status(404).send({ 
+                return res.status(404).send({
                     message: 'El curso no existe.',
-                    code: 404 
+                    code: 404
                 });
             }
 
@@ -306,29 +306,29 @@ export default {
             // Los instructores solo pueden eliminar sus propios cursos
             if (req.user.rol === 'instructor' && course.user.toString() !== req.user._id.toString()) {
                 console.log('⛔ Permiso denegado: no es el propietario');
-                return res.status(403).send({ 
+                return res.status(403).send({
                     message: 'No tienes permiso para eliminar este curso. Solo puedes eliminar tus propios cursos.',
-                    code: 403 
+                    code: 403
                 });
             }
 
             console.log('🔍 Verificando ventas y estudiantes del curso...');
-            
+
             // 🔒 VALIDACIÓN 2: Verificar si el curso tiene ventas (integridad de datos)
             // Sale.detail es un subdocumento, no una colección separada
-            const sales = await models.Sale.find({ 
+            const sales = await models.Sale.find({
                 'detail.product': course_id,
                 'detail.product_type': 'course'
             }).lean();
 
             console.log('📊 Total de ventas encontradas:', sales.length);
-            
+
             if (sales.length > 0) {
                 console.log('⚠️ Curso tiene ventas, bloqueando eliminación');
                 console.log('📄 IDs de ventas:', sales.map(s => s._id));
                 const uniqueUsers = new Set(sales.map(s => s.user.toString()));
                 console.log('👥 Estudiantes únicos:', uniqueUsers.size);
-                
+
                 return res.status(200).json({
                     message: `EL CURSO NO SE PUEDE ELIMINAR PORQUE TIENE ${sales.length} VENTA(S) REGISTRADA(S) DE ${uniqueUsers.size} ESTUDIANTE(S). Esto protege la integridad de los registros de compra y ganancias de los estudiantes.`,
                     code: 403,
@@ -345,7 +345,7 @@ export default {
             if (students.length > 0) {
                 console.log('⚠️ Curso tiene estudiantes inscritos, bloqueando eliminación');
                 console.log('🎓 IDs de estudiantes:', students.map(s => s.user));
-                
+
                 return res.status(200).json({
                     message: `EL CURSO NO SE PUEDE ELIMINAR PORQUE TIENE ${students.length} ESTUDIANTE(S) INSCRITO(S). Esto protege el acceso de los estudiantes a su contenido educativo.`,
                     code: 403,
@@ -367,11 +367,11 @@ export default {
             // 3. ELIMINAR SECCIONES, CLASES Y ARCHIVOS
             const sections = await models.CourseSection.find({ course: course_id });
             console.log(`📚 Eliminando ${sections.length} sección(es)...`);
-            
+
             for (const section of sections) {
                 const clases = await models.CourseClase.find({ section: section._id });
                 console.log(`  🎬 Eliminando ${clases.length} clase(s) de la sección "${section.title}"...`);
-                
+
                 for (const clase of clases) {
                     const claseFiles = await models.CourseClaseFile.find({ clase: clase._id });
                     for (const file of claseFiles) {
@@ -402,20 +402,20 @@ export default {
             });
         }
     },
-    get_imagen: async(req,res) => {
+    get_imagen: async (req, res) => {
         try {
             const img = req.params["img"];
-            if(!img){
+            if (!img) {
                 res.status(500).send({
                     message: 'OCURRIO UN PROBLEMA'
                 });
-            }else{
-                fs.stat('./uploads/course/'+img, function(err) {
+            } else {
+                fs.stat('./uploads/course/' + img, function (err) {
                     let path_img;
-                    if(!err){
-                        path_img = './uploads/course/'+img;
+                    if (!err) {
+                        path_img = './uploads/course/' + img;
                         res.status(200).sendFile(path.resolve(path_img));
-                    }else{
+                    } else {
                         // Si la imagen específica no se encuentra, servir una imagen por defecto
                         path_img = './uploads/default.jpg';
                         // Puedes agregar un log aquí para saber cuándo se está sirviendo la imagen por defecto
@@ -431,34 +431,34 @@ export default {
             });
         }
     },
-    upload_vimeo: async(req,res) => {
+    upload_vimeo: async (req, res) => {
         try {
             const PathFile = req.files.video.path;
             const VideoMetaDato = {
                 name: 'Video de prueba',
                 description: 'Es un video para saber si la integración es correcta',
-                privacy:{
+                privacy: {
                     view: 'anybody' // O 'nobody' si quieres que solo se vea embebido
                 }
             }
             let vimeo_id_result = '';
-            const result = await UploadVideoVimeo(PathFile,VideoMetaDato);
-            if(result.message == 403){
+            const result = await UploadVideoVimeo(PathFile, VideoMetaDato);
+            if (result.message == 403) {
                 res.status(500).send({
                     message: 'HUBO UN ERROR'
                 });
-            }else{
+            } else {
                 const ARRAY_VALUES = result.value.split("/");
                 // /videos/852927231
                 // ["","videos","852927231"]
                 vimeo_id_result = ARRAY_VALUES[2];
-                await models.Course.findByIdAndUpdate({_id: req.body._id},{
+                await models.Course.findByIdAndUpdate({ _id: req.body._id }, {
                     vimeo_id: vimeo_id_result
                 })
-    
+
                 res.status(200).json({
                     message: 'LA PRUEBA FUE UN EXITO',
-                    vimeo_id: "https://player.vimeo.com/video/"+vimeo_id_result,
+                    vimeo_id: "https://player.vimeo.com/video/" + vimeo_id_result,
                 });
             }
         } catch (error) {
@@ -468,12 +468,12 @@ export default {
             });
         }
     },
-    list_settings: async(req,res) => {
+    list_settings: async (req, res) => {
         try {
             // Obtenemos todos los cursos, seleccionando solo los campos necesarios.
             // CORRECCIÓN: Se popula la información del usuario y la categoría para que la respuesta sea completa.
-            const courses = await models.Course.find({}, { title: 1, subtitle: 1, imagen: 1, price_usd: 1, slug: 1, featured: 1 })
-                                              .populate('user', 'name surname').populate('categorie', 'title');
+            const courses = await models.Course.find({}, { title: 1, subtitle: 1, imagen: 1, price_mxn: 1, slug: 1, featured: 1 })
+                .populate('user', 'name surname').populate('categorie', 'title');
 
             res.status(200).json({
                 courses: courses // Devolvemos la propiedad 'courses' que el frontend espera
@@ -486,7 +486,7 @@ export default {
             });
         }
     },
-    toggle_featured: async(req,res) => {
+    toggle_featured: async (req, res) => {
         // Lógica para marcar/desmarcar un curso como destacado.
         try {
             const courseId = req.params.id;

@@ -1,5 +1,5 @@
 function resource_project(project, discount_g = null, N_REVIEWS = 0, AVG_RATING = 0) {
-    let final_price_usd = project.price_usd;
+    // let final_price_usd = project.price_usd; // REMOVED
     let final_price_mxn = project.price_mxn;
     let discount_active = null;
 
@@ -12,11 +12,11 @@ function resource_project(project, discount_g = null, N_REVIEWS = 0, AVG_RATING 
             end_date: discount_g.end_date,
         };
         if (discount_g.type_discount == 1) { // Porcentaje
-            final_price_usd = parseFloat((final_price_usd - (final_price_usd * discount_g.discount * 0.01)).toFixed(2));
+            // final_price_usd = parseFloat((final_price_usd - (final_price_usd * discount_g.discount * 0.01)).toFixed(2));
             final_price_mxn = parseFloat((final_price_mxn - (final_price_mxn * discount_g.discount * 0.01)).toFixed(2));
         } else { // Monto fijo
-            final_price_usd = Math.max(0, parseFloat((final_price_usd - discount_g.discount).toFixed(2)));
-            // Asumimos que el descuento fijo es en USD y se aplica de forma similar a MXN por simplicidad.
+            // final_price_usd = Math.max(0, parseFloat((final_price_usd - discount_g.discount).toFixed(2)));
+            // Se asume que el descuento fijo es en MXN
             final_price_mxn = Math.max(0, parseFloat((final_price_mxn - discount_g.discount).toFixed(2)));
         }
     }
@@ -31,9 +31,9 @@ function resource_project(project, discount_g = null, N_REVIEWS = 0, AVG_RATING 
         url_video: project.url_video,
         categorie: project.categorie ? { _id: project.categorie._id, title: project.categorie.title } : null,
         price_mxn: project.price_mxn,
-        price_usd: project.price_usd,
+        // price_usd: project.price_usd, // REMOVED
         final_price_mxn: final_price_mxn,
-        final_price_usd: final_price_usd,
+        // final_price_usd: final_price_usd, // REMOVED
         state: project.state,
         user: project.user ? {
             _id: project.user._id,

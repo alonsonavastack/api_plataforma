@@ -23,10 +23,13 @@ import SystemConfigRouter from './SystemConfig.js'; // 🆕 Router de configurac
 import WalletRouter from './Wallet.js'; // 💰 Router de billetera digital
 import TransferRouter from './Transfer.js'; // 🏦 Router de verificación de transferencias
 import PaymentDashboardRouter from './PaymentDashboard.js'; // 📊 Dashboard de pagos
+import TestingRouter from './Testing.js'; // 🧪 Router de testing (solo desarrollo)
 
 // SISTEMA DE PAGOS A INSTRUCTORES
 import InstructorPaymentRouter from './InstructorPayment.js';
 import AdminInstructorPaymentRouter from './AdminInstructorPayment.js';
+import MercadoPagoRouter from './mercadopago.js'; // 🔥 Router de Mercado Pago
+import PaymentSettingsRouter from './PaymentSettings.js'; // 💳 Configuración de pagos
 
 // SISTEMA FISCAL MULTI-PAÍS
 // import FiscalRouter from './Fiscal.js'; // 🗑️ DESHABILITADO - No usado en frontend (decidir si eliminar)
@@ -35,18 +38,18 @@ import AdminInstructorPaymentRouter from './AdminInstructorPayment.js';
 // http://localhost:3000/api/users/register
 const router = routerx();
 
-router.use('/users',User);
-router.use('/categories',Categorie);
-router.use('/courses',Course);
-router.use('/course-sections',CourseSection); // Renombrado para consistencia
-router.use('/course_clase',CourseClase);
+router.use('/users', User);
+router.use('/categories', Categorie);
+router.use('/courses', Course);
+router.use('/course-sections', CourseSection); // Renombrado para consistencia
+router.use('/course_clase', CourseClase);
 // router.use('/coupon',Coupon); // MÓDULO ELIMINADO - No se usaba (0% implementación frontend)
-router.use('/discount',Discount);
-router.use('/home',Home);
-router.use('/checkout',Sale);
-router.use('/sales',Sale); // Agregado para notificaciones
-router.use('/profile-student',ProfileStudent);
-router.use('/projects',Project); // Cambiado a plural para consistencia
+router.use('/discount', Discount);
+router.use('/home', Home);
+router.use('/checkout', Sale);
+router.use('/sales', Sale); // Agregado para notificaciones
+router.use('/profile-student', ProfileStudent);
+router.use('/projects', Project); // Cambiado a plural para consistencia
 router.use('/profile-instructor', ProfileInstructorRouter);
 router.use('/profile-admin', ProfileAdminRouter);
 router.use('/dashboard', DashboardRouter);
@@ -64,6 +67,14 @@ router.use('/payment-dashboard', PaymentDashboardRouter); // 📊 Dashboard de p
 // SISTEMA DE PAGOS A INSTRUCTORES
 router.use('/instructor', InstructorPaymentRouter); // Rutas para instructores
 router.use('/admin', AdminInstructorPaymentRouter); // Rutas para administradores
+router.use('/mercadopago', MercadoPagoRouter); // 🔥 Rutas de Mercado Pago
+router.use('/payment-settings', PaymentSettingsRouter); // 💳 Rutas de configuración de pagos
+
+// 🧪 TESTING - SOLO DESARROLLO
+if (process.env.NODE_ENV !== 'production') {
+    router.use('/testing', TestingRouter); // 🧪 Rutas de testing multi-país
+    console.log('🧪 [ROUTER] Rutas de testing habilitadas (solo desarrollo)');
+}
 
 // SISTEMA FISCAL MULTI-PAÍS
 // router.use('/fiscal', FiscalRouter); // 🗑️ DESHABILITADO - No usado en frontend

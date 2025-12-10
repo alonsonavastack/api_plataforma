@@ -24,22 +24,26 @@ const SaleSchema = new Schema({
         type: String,
         maxlength: 200,
         required: true,
-        enum: ['wallet', 'transfer', 'paypal', 'card', 'mercadopago', 'other']
+        enum: ['wallet', 'transfer', 'paypal', 'card', 'mercadopago', 'mixed_mercadopago', 'mixed_transfer', 'other']
     },
 
     // Moneda
-    currency_total: { type: String, default: 'USD' },
-    currency_payment: { type: String, default: 'USD' },
+    currency_total: { type: String, default: 'MXN' },
+    currency_payment: { type: String, default: 'MXN' },
 
     // Estado de la venta
     status: {
         type: String,
         default: 'Pendiente',
-        enum: ['Pendiente', 'Pagado', 'Anulado']
+        enum: ['Pendiente', 'Pagado', 'Anulado', 'En Revisión']
     },
 
     // Total de la venta
     total: { type: Number, required: true },
+
+    // 🔥 CONVERSIÓN DE MONEDA (USD → MXN)
+    // conversion_rate removed
+    // total_mxn removed
 
     // Detalle del producto (siempre 1 en compra directa)
     detail: [{
@@ -64,7 +68,7 @@ const SaleSchema = new Schema({
     voucher_image: { type: String, default: null },
 
     // Tipo de cambio al momento de la compra
-    price_dolar: { type: Number, default: 1 },
+    // price_dolar removed
 
     // Número de transacción único
     n_transaccion: {
@@ -78,6 +82,9 @@ const SaleSchema = new Schema({
     wallet_amount: { type: Number, default: 0 },
     remaining_amount: { type: Number, default: 0 },
     auto_verified: { type: Boolean, default: false },
+
+    // === CONVERSIÓN DE MONEDA MULTI-PAÍS ===
+    // Multi-country conversion fields removed
 
     // === VERIFICACIÓN DE TRANSFERENCIAS ===
     transfer_receipt: {

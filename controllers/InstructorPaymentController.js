@@ -1,6 +1,7 @@
 import InstructorPaymentConfig from '../models/InstructorPaymentConfig.js';
 import InstructorEarnings from '../models/InstructorEarnings.js';
 import InstructorPayment from '../models/InstructorPayment.js';
+import User from '../models/User.js';
 import { encrypt, decrypt, maskAccountNumber } from '../utils/encryption.js';
 import { calculateEarningsStatsByStatus } from '../utils/commissionCalculator.js';
 import { formatDate, formatDateTime, groupEarningsByMonth } from '../utils/dateHelpers.js';
@@ -132,7 +133,8 @@ export const updateBankConfig = async (req, res) => {
             clabe,
             swift_code,
             account_type,
-            card_brand
+            card_brand,
+            country // 🔥 NUEVO: Recibir país
         } = req.body;
 
         // Validaciones
@@ -186,6 +188,14 @@ export const updateBankConfig = async (req, res) => {
             });
         }
 
+        // 🔥 SINCRONIZAR: Actualizar país en User también
+        if (country) {
+            await User.findByIdAndUpdate(instructorId, {
+                country: country.toUpperCase()
+            });
+            console.log(`🌎 País sincronizado: ${country.toUpperCase()} para instructor ${instructorId}`);
+        }
+
         // Actualizar datos bancarios
         config.bank_account = {
             account_holder_name,
@@ -195,6 +205,7 @@ export const updateBankConfig = async (req, res) => {
             swift_code: swift_code || '',
             account_type: account_type || 'ahorros',
             card_brand: card_brand || '',
+            country: country ? country.toUpperCase() : 'MX', // 🔥 NUEVO: Guardar país
             verified: false // 🔥 SIEMPRE marcar como NO verificado al actualizar/crear
         };
 
@@ -251,7 +262,7 @@ export const updatePreferredPaymentMethod = async (req, res) => {
         const { preferred_payment_method } = req.body;
 
         // Validaciones
-        if (!['paypal', 'bank_transfer'].includes(preferred_payment_method)) {
+        if (!['paypal', 'bank_transfer', 'mercadopago'].includes(preferred_payment_method)) {
             return res.status(400).json({
                 success: false,
                 message: 'Método de pago inválido'
@@ -279,6 +290,13 @@ export const updatePreferredPaymentMethod = async (req, res) => {
             return res.status(400).json({
                 success: false,
                 message: 'Debe configurar cuenta bancaria primero'
+            });
+        }
+
+        if (preferred_payment_method === 'mercadopago' && !config.mercadopago?.account_value) {
+            return res.status(400).json({
+                success: false,
+                message: 'Debe configurar Mercado Pago primero'
             });
         }
 
@@ -645,12 +663,156 @@ export const deleteBankConfig = async (req, res) => {
     }
 };
 
+/**
+ * Actualizar/agregar configuración de Mercado Pago
+ * POST /api/instructor/payment-config/mercadopago
+ */
+export const updateMercadoPagoConfig = async (req, res) => {
+    try {
+        const instructorId = req.user._id;
+        const { account_type, account_value, country } = req.body;
+
+        if (!account_type || !account_value) {
+            return res.status(400).json({
+                success: false,
+                message: 'El tipo de cuenta y valor son requeridos'
+            });
+        }
+
+        // 🔥 SINCRONIZAR: Actualizar país en User también
+        if (country) {
+            await User.findByIdAndUpdate(instructorId, {
+                country: country.toUpperCase()
+            });
+            console.log(`🌎 País sincronizado: ${country.toUpperCase()} para instructor ${instructorId}`);
+        }
+
+        if (!['email', 'phone', 'cvu'].includes(account_type)) {
+            return res.status(400).json({
+                success: false,
+                message: 'Tipo de cuenta inválido'
+            });
+        }
+
+        // Validaciones
+        if (account_type === 'email') {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(account_value)) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Email inválido'
+                });
+            }
+        } else if (account_type === 'phone') {
+            const phoneRegex = /^\+?[0-9]{10,15}$/;
+            if (!phoneRegex.test(account_value.replace(/\s/g, ''))) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Número de teléfono inválido'
+                });
+            }
+        } else if (account_type === 'cvu') {
+            if (!/^\d{22}$/.test(account_value)) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'CVU inválido. Debe contener 22 dígitos'
+                });
+            }
+        }
+
+        let config = await InstructorPaymentConfig.findOne({ instructor: instructorId });
+
+        if (!config) {
+            config = new InstructorPaymentConfig({ instructor: instructorId });
+        }
+
+        config.mercadopago = {
+            account_type,
+            account_value,
+            country: country || 'MX',
+            verified: false
+        };
+
+        if (!config.preferred_payment_method) {
+            config.preferred_payment_method = 'mercadopago';
+        }
+
+        await config.save();
+
+        res.json({
+            success: true,
+            message: 'Configuración de Mercado Pago actualizada exitosamente',
+            config
+        });
+    } catch (error) {
+        console.error('Error al actualizar Mercado Pago:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error al actualizar configuración de Mercado Pago',
+            error: error.message
+        });
+    }
+};
+
+/**
+ * Eliminar configuración de Mercado Pago
+ * DELETE /api/instructor/payment-config/mercadopago
+ */
+export const deleteMercadoPagoConfig = async (req, res) => {
+    try {
+        const instructorId = req.user._id;
+
+        const config = await InstructorPaymentConfig.findOne({ instructor: instructorId });
+
+        if (!config) {
+            return res.status(404).json({
+                success: false,
+                message: 'Configuración no encontrada'
+            });
+        }
+
+        config.mercadopago = {
+            account_type: 'email',
+            account_value: '',
+            country: 'MX',
+            verified: false
+        };
+
+        if (config.preferred_payment_method === 'mercadopago') {
+            if (config.paypal_email) {
+                config.preferred_payment_method = 'paypal';
+            } else if (config.bank_account?.account_number) {
+                config.preferred_payment_method = 'bank_transfer';
+            } else {
+                config.preferred_payment_method = '';
+            }
+        }
+
+        await config.save();
+
+        res.json({
+            success: true,
+            message: 'Configuración de Mercado Pago eliminada exitosamente',
+            config
+        });
+    } catch (error) {
+        console.error('Error al eliminar Mercado Pago:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error al eliminar configuración de Mercado Pago',
+            error: error.message
+        });
+    }
+};
+
 export default {
     getPaymentConfig,
     updatePaypalConfig,
     updateBankConfig,
+    updateMercadoPagoConfig,
     deletePaypalConfig,
     deleteBankConfig,
+    deleteMercadoPagoConfig,
     updatePreferredPaymentMethod,
     getEarnings,
     getEarningsStats,

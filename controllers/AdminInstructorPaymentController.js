@@ -12,6 +12,7 @@ import {
 import { groupEarningsByMonth, getDateRange } from '../utils/dateHelpers.js';
 import { sendPaymentProcessedEmail } from '../utils/emailService.js';
 import { notifyPaymentProcessed } from '../services/telegram.service.js';
+import { createMercadoPagoPayout, getMercadoPagoPayoutStatus, validateTransactionLimits } from '../services/mercadopago-payout.service.js';
 
 /**
  * CONTROLADOR PARA ADMINISTRADORES
@@ -203,15 +204,24 @@ export const getInstructorsWithEarnings = async (req, res) => {
         // Poblar información de instructores
         const instructorsWithEarnings = await Promise.all(
             earningsArray.map(async (item) => {
-                const instructor = await User.findById(item._id).select('name email surname avatar');
+                const instructor = await User.findById(item._id).select('name email surname avatar country'); // 🔥 Agregar country
 
                 // Obtener configuración de pago
                 const paymentConfig = await InstructorPaymentConfig.findOne({
                     instructor: item._id
-                }).select('preferred_payment_method paypal_connected bank_account.verified');
+                }).select('preferred_payment_method paypal_connected bank_account.verified bank_account.country mercadopago.country');
+
+                // 🔥 NUEVO: Obtener país (priorizar User.country > PaymentConfig.country)
+                const country = instructor.country ||
+                    paymentConfig?.bank_account?.country ||
+                    paymentConfig?.mercadopago?.country ||
+                    'INTL';
 
                 return {
-                    instructor,
+                    instructor: {
+                        ...instructor.toObject(),
+                        country // 🔥 Asegurar que country esté en la respuesta
+                    },
                     earnings: {
                         total: parseFloat(item.totalEarnings.toFixed(2)),
                         count: item.count,
@@ -222,7 +232,8 @@ export const getInstructorsWithEarnings = async (req, res) => {
                         hasConfig: !!paymentConfig,
                         preferredMethod: paymentConfig?.preferred_payment_method || 'none',
                         paypalConnected: paymentConfig?.paypal_connected || false,
-                        bankVerified: paymentConfig?.bank_account?.verified || false
+                        bankVerified: paymentConfig?.bank_account?.verified || false,
+                        country // 🔥 NUEVO: Incluir país
                     }
                 };
             })
@@ -455,6 +466,35 @@ export const createPayment = async (req, res) => {
                 : '';
             paymentDetails.bank_account_number = maskAccountNumber(accountNumber);
             paymentDetails.bank_name = paymentConfig.bank_account?.bank_name || '';
+        } else if (paymentConfig.preferred_payment_method === 'mercadopago') {
+            if (!paymentConfig.mercadopago || !paymentConfig.mercadopago.account_value) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'El instructor no ha configurado correctamente Mercado Pago'
+                });
+            }
+
+            if (!paymentConfig.mercadopago.verified) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'La cuenta de Mercado Pago del instructor no ha sido verificada'
+                });
+            }
+
+            // 🔥 NUEVO: Agregar respuesta completa para Mercado Pago también
+            if (response.paymentDetails === null) {
+                response.paymentDetails = {
+                    type: 'mercadopago',
+                    mercadopago_account_type: paymentConfig.mercadopago.account_type,
+                    mercadopago_account_value: paymentConfig.mercadopago.account_value,
+                    mercadopago_country: paymentConfig.mercadopago.country,
+                    verified: paymentConfig.mercadopago.verified
+                };
+            }
+
+            paymentDetails.mercadopago_account_type = paymentConfig.mercadopago.account_type;
+            paymentDetails.mercadopago_account_value = paymentConfig.mercadopago.account_value;
+            paymentDetails.mercadopago_country = paymentConfig.mercadopago.country;
         }
 
         // Crear el pago
@@ -930,7 +970,7 @@ export const getInstructorPaymentMethodFull = async (req, res) => {
         const { id: instructorId } = req.params;
 
         // Verificar que el instructor existe
-        const instructor = await User.findById(instructorId).select('name email surname');
+        const instructor = await User.findById(instructorId).select('name email surname country'); // 🔥 Agregar country
         if (!instructor) {
             return res.status(404).json({
                 success: false,
@@ -956,11 +996,21 @@ export const getInstructorPaymentMethodFull = async (req, res) => {
             });
         }
 
+        // 🔥 Obtener país del instructor (prioridad: User > PaymentConfig)
+        const country = instructor.country ||
+            paymentConfig.bank_account?.country ||
+            paymentConfig.mercadopago?.country ||
+            'INTL';
+
         // Preparar respuesta con datos COMPLETOS (desencriptados)
         const response = {
-            instructor,
+            instructor: {
+                ...instructor.toObject(),
+                country // 🔥 Asegurar que country esté en la respuesta
+            },
             paymentMethod: paymentConfig.preferred_payment_method,
             preferredMethod: paymentConfig.preferred_payment_method,
+            country, // 🔥 NUEVO: País del instructor
             paymentDetails: null,
             bankDetails: null // 🔥 Nuevo campo: Siempre devolver detalles bancarios si existen
         };
@@ -991,20 +1041,35 @@ export const getInstructorPaymentMethodFull = async (req, res) => {
                 account_type: paymentConfig.bank_account.account_type,
                 card_brand: paymentConfig.bank_account.card_brand || '',
                 swift_code: paymentConfig.bank_account.swift_code || '',
+                country: paymentConfig.bank_account.country || 'MX', // 🔥 NUEVO
                 verified: paymentConfig.bank_account.verified
+            };
+        }
+
+        // 🔥 NUEVO: SIEMPRE intentar poblar mercadopagoDetails si existen datos
+        if (paymentConfig.mercadopago && paymentConfig.mercadopago.account_value) {
+            response.mercadopagoDetails = {
+                type: 'mercadopago',
+                account_type: paymentConfig.mercadopago.account_type,
+                account_value: paymentConfig.mercadopago.account_value,
+                country: paymentConfig.mercadopago.country || 'MX',
+                verified: paymentConfig.mercadopago.verified
             };
         }
 
         // Poblar paymentDetails según el método PREFERIDO (comportamiento original)
         if (paymentConfig.preferred_payment_method === 'bank_transfer' && response.bankDetails) {
             response.paymentDetails = response.bankDetails;
+        } else if (paymentConfig.preferred_payment_method === 'mercadopago' && response.mercadopagoDetails) {
+            response.paymentDetails = response.mercadopagoDetails;
         } else if (paymentConfig.preferred_payment_method === 'paypal') {
             response.paymentDetails = {
                 type: 'paypal',
                 paypal_email: paymentConfig.paypal_email, // Email completo
                 paypal_merchant_id: paymentConfig.paypal_merchant_id || '',
                 paypal_connected: paymentConfig.paypal_connected,
-                paypal_verified: paymentConfig.paypal_verified
+                paypal_verified: paymentConfig.paypal_verified,
+                country: 'INTL' // 🔥 PayPal es internacional
             };
         }
 
@@ -1023,6 +1088,57 @@ export const getInstructorPaymentMethodFull = async (req, res) => {
 };
 
 /**
+ * 🔥 NUEVO: Verificar cuenta de Mercado Pago de un instructor
+ * PUT /api/admin/instructors/:id/verify-mercadopago
+ */
+export const verifyInstructorMercadoPago = async (req, res) => {
+    try {
+        const { id: instructorId } = req.params;
+        const adminId = req.user._id;
+
+        console.log(`🔍 [VerifyMercadoPago] Verificando cuenta MP de instructor: ${instructorId} por admin: ${adminId}`);
+
+        const config = await InstructorPaymentConfig.findOne({ instructor: instructorId });
+
+        if (!config) {
+            return res.status(404).json({
+                success: false,
+                message: 'Configuración de pago no encontrada'
+            });
+        }
+
+        if (!config.mercadopago || !config.mercadopago.account_value) {
+            return res.status(400).json({
+                success: false,
+                message: 'El instructor no tiene configurado Mercado Pago'
+            });
+        }
+
+        // Marcar como verificado
+        config.mercadopago.verified = true;
+        config.mercadopago.verified_at = new Date();
+        config.mercadopago.verified_by = adminId;
+
+        await config.save();
+
+        console.log(`✅ [VerifyMercadoPago] Cuenta MP verificada exitosamente`);
+
+        res.json({
+            success: true,
+            message: 'Cuenta de Mercado Pago verificada exitosamente',
+            config
+        });
+    } catch (error) {
+        console.error('Error al verificar Mercado Pago:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error al verificar Mercado Pago',
+            error: error.message
+        });
+    }
+};
+
+/**
  * Verificar cuenta bancaria de un instructor
  * PUT /api/admin/instructors/:id/verify-bank
  */
@@ -1030,7 +1146,7 @@ export const verifyInstructorBank = async (req, res) => {
     try {
         const { id: instructorId } = req.params;
 
-        const instructor = await User.findById(instructorId).select('name email surname');
+        const instructor = await User.findById(instructorId).select('name email surname country'); // 🔥 Agregar country
         if (!instructor) {
             return res.status(404).json({
                 success: false,
@@ -1094,10 +1210,14 @@ export const getAllBankAccounts = async (req, res) => {
         // El frontend espera un array de objetos que tengan una propiedad 'instructor' o sean el instructor mismo
         const instructors = configs.map(config => ({
             _id: config.instructor._id,
-            instructor: config.instructor,
+            instructor: {
+                ...config.instructor.toObject(),
+                country: config.instructor.country || config.bank_account?.country || 'INTL' // 🔥 NUEVO
+            },
             // Enviamos metadatos útiles por si se quieren usar en la lista antes de cargar detalles
             hasBankAccount: true,
             isVerified: config.bank_account?.verified || false,
+            country: config.bank_account?.country || config.instructor.country || 'INTL', // 🔥 NUEVO
             updatedAt: config.updatedAt
         }));
 
@@ -1173,6 +1293,217 @@ export const getPendingBankVerifications = async (req, res) => {
     }
 };
 
+/**
+ * 💰 FASE 2: Procesar pago a instructor vía Mercado Pago
+ * POST /api/admin/instructors/:id/payout/mercadopago
+ * Body: { earnings_ids: [], notes: '' }
+ */
+export const processPayoutMercadoPago = async (req, res) => {
+    try {
+        const { id: instructorId } = req.params;
+        const { earnings_ids, notes } = req.body;
+        const adminId = req.user._id;
+
+        console.log('💰 [MercadoPagoPayout] Iniciando pago:', { instructorId, earningsCount: earnings_ids.length });
+
+        // 1. Validar que el instructor tiene MP configurado
+        const paymentConfig = await InstructorPaymentConfig.findOne({
+            instructor: instructorId
+        });
+
+        if (!paymentConfig?.mercadopago?.account_value) {
+            return res.status(400).json({
+                success: false,
+                message: 'El instructor no tiene Mercado Pago configurado'
+            });
+        }
+
+        if (!paymentConfig.mercadopago.verified) {
+            return res.status(400).json({
+                success: false,
+                message: 'La cuenta de Mercado Pago no ha sido verificada'
+            });
+        }
+
+        // 2. Obtener ganancias y validar
+        const earnings = await InstructorEarnings.find({
+            _id: { $in: earnings_ids },
+            instructor: instructorId,
+            status: { $in: ['available', 'pending'] }
+        }).populate('sale');
+
+        if (earnings.length !== earnings_ids.length) {
+            return res.status(400).json({
+                success: false,
+                message: 'Algunas ganancias no están disponibles'
+            });
+        }
+
+        // 3. Filtrar earnings con refunds
+        const validEarnings = await filterEarningsWithRefunds(earnings);
+
+        if (validEarnings.length === 0) {
+            return res.status(400).json({
+                success: false,
+                message: 'Todas las ganancias seleccionadas tienen reembolsos'
+            });
+        }
+
+        const totalAmount = validEarnings.reduce((sum, e) => sum + e.instructor_earning, 0);
+
+        // 4. Validar límites de transacción
+        const country = paymentConfig.mercadopago.country;
+        const limitValidation = validateTransactionLimits(totalAmount, country);
+
+        if (!limitValidation.valid) {
+            return res.status(400).json({
+                success: false,
+                message: `El monto excede el límite de ${limitValidation.max} ${limitValidation.currency} para ${country}`
+            });
+        }
+
+        // 5. Crear pago en Mercado Pago
+        console.log('🚀 [MercadoPagoPayout] Creando payout en MP...');
+
+        const mpResponse = await createMercadoPagoPayout({
+            amount: totalAmount,
+            currency: 'USD',
+            recipient: {
+                type: paymentConfig.mercadopago.account_type,
+                value: paymentConfig.mercadopago.account_value,
+                country: paymentConfig.mercadopago.country
+            },
+            reference: `instructor-${instructorId}-${Date.now()}`
+        });
+
+        console.log('✅ [MercadoPagoPayout] Payout creado:', mpResponse.id);
+
+        // 6. Crear registro de pago en DB
+        const payment = await InstructorPayment.create({
+            instructor: instructorId,
+            total_earnings: totalAmount,
+            amount_to_pay: totalAmount,
+            final_amount: totalAmount,
+            currency: 'USD',
+            payment_method: 'mercadopago',
+            payment_details: {
+                mercadopago_payout_id: mpResponse.id,
+                mercadopago_status: mpResponse.status,
+                mercadopago_account_type: paymentConfig.mercadopago.account_type,
+                mercadopago_account_value: paymentConfig.mercadopago.account_value,
+                mercadopago_country: paymentConfig.mercadopago.country,
+                mercadopago_currency: mpResponse.currency_id,
+                mercadopago_local_amount: mpResponse.transaction_amount
+            },
+            earnings_included: validEarnings.map(e => e._id),
+            status: 'processing',
+            created_by: adminId,
+            processed_at: new Date(),
+            admin_notes: notes
+        });
+
+        // 7. Actualizar earnings
+        await InstructorEarnings.updateMany(
+            { _id: { $in: validEarnings.map(e => e._id) } },
+            {
+                status: 'paid',
+                payment_reference: payment._id,
+                paid_at: new Date()
+            }
+        );
+
+        // 8. Poblar respuesta
+        const populatedPayment = await InstructorPayment.findById(payment._id)
+            .populate('instructor', 'name email surname')
+            .populate('created_by', 'name email');
+
+        console.log('✅ [MercadoPagoPayout] Pago completado exitosamente');
+
+        res.json({
+            success: true,
+            message: 'Pago procesado vía Mercado Pago',
+            payment: populatedPayment,
+            mercadopago: mpResponse
+        });
+
+        // 9. Enviar notificaciones (asíncrono)
+        try {
+            await sendPaymentProcessedEmail(populatedPayment.instructor, populatedPayment);
+            await notifyPaymentProcessed(populatedPayment, populatedPayment.instructor);
+        } catch (notifyError) {
+            console.error('⚠️ Error al enviar notificaciones:', notifyError);
+        }
+
+    } catch (error) {
+        console.error('❌ Error al procesar pago MP:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error al procesar pago',
+            error: error.message
+        });
+    }
+};
+
+/**
+ * Consultar estado de payout de Mercado Pago
+ * GET /api/admin/payments/:id/mercadopago-status
+ */
+export const getMercadoPagoStatus = async (req, res) => {
+    try {
+        const { id: paymentId } = req.params;
+
+        const payment = await InstructorPayment.findById(paymentId);
+
+        if (!payment) {
+            return res.status(404).json({
+                success: false,
+                message: 'Pago no encontrado'
+            });
+        }
+
+        if (payment.payment_method !== 'mercadopago') {
+            return res.status(400).json({
+                success: false,
+                message: 'Este pago no es de Mercado Pago'
+            });
+        }
+
+        const mpPayoutId = payment.payment_details.mercadopago_payout_id;
+        const country = payment.payment_details.mercadopago_country;
+
+        if (!mpPayoutId || !country) {
+            return res.status(400).json({
+                success: false,
+                message: 'Información de Mercado Pago incompleta'
+            });
+        }
+
+        // Consultar estado en Mercado Pago
+        const mpStatus = await getMercadoPagoPayoutStatus(mpPayoutId, country);
+
+        // Actualizar estado en nuestra DB si cambió
+        if (mpStatus.status === 'approved' && payment.status !== 'completed') {
+            payment.status = 'completed';
+            payment.completed_at = new Date();
+            await payment.save();
+        }
+
+        res.json({
+            success: true,
+            payment_status: payment.status,
+            mercadopago_status: mpStatus
+        });
+
+    } catch (error) {
+        console.error('Error al consultar estado MP:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error al consultar estado',
+            error: error.message
+        });
+    }
+};
+
 export default {
     getInstructorsWithEarnings,
     getInstructorEarnings,
@@ -1185,8 +1516,10 @@ export default {
     setCustomCommission,
     removeCustomCommission,
     getEarningsReport,
-    getInstructorPaymentMethodFull, // 🔥 Nuevo endpoint
-    verifyInstructorBank, // 🔥 Nuevo endpoint de verificación
-    getPendingBankVerifications, // 🔔 Notificaciones de cuentas pendientes
-    getAllBankAccounts // 🔥 Nuevo endpoint para lista completa
+    getInstructorPaymentMethodFull,
+    verifyInstructorBank,
+    getPendingBankVerifications,
+    getAllBankAccounts,
+    processPayoutMercadoPago, // 🔥 NUEVO: Payout Mercado Pago
+    getMercadoPagoStatus // 🔥 NUEVO: Estado de payout MP
 };

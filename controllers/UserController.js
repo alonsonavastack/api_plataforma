@@ -13,9 +13,24 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// 🛡️ SECURITY: Input Sanitization
+import { JSDOM } from 'jsdom';
+import createDOMPurify from 'dompurify';
+
+const window = new JSDOM('').window;
+const DOMPurify = createDOMPurify(window);
+
 export default {
   register: async (req, res) => {
     try {
+      // 🛡️ SANITIZE INPUTS
+      if (req.body.name) req.body.name = DOMPurify.sanitize(req.body.name);
+      if (req.body.surname) req.body.surname = DOMPurify.sanitize(req.body.surname);
+      if (req.body.email) req.body.email = DOMPurify.sanitize(req.body.email);
+      if (req.body.phone) req.body.phone = DOMPurify.sanitize(req.body.phone);
+      if (req.body.profession) req.body.profession = DOMPurify.sanitize(req.body.profession);
+      if (req.body.description) req.body.description = DOMPurify.sanitize(req.body.description);
+
       // Validar email único
       const VALID_USER = await models.User.findOne({ email: req.body.email });
 
@@ -141,6 +156,12 @@ export default {
   },
   register_admin: async (req, res) => {
     try {
+      // 🛡️ SANITIZE INPUTS
+      if (req.body.name) req.body.name = DOMPurify.sanitize(req.body.name);
+      if (req.body.surname) req.body.surname = DOMPurify.sanitize(req.body.surname);
+      if (req.body.email) req.body.email = DOMPurify.sanitize(req.body.email);
+      if (req.body.phone) req.body.phone = DOMPurify.sanitize(req.body.phone);
+
       // Validar email único
       const VALID_USER = await models.User.findOne({ email: req.body.email });
 
@@ -186,6 +207,20 @@ export default {
   },
   update: async (req, res) => {
     try {
+      // 🛡️ SANITIZE INPUTS
+      if (req.body.name) req.body.name = DOMPurify.sanitize(req.body.name);
+      if (req.body.surname) req.body.surname = DOMPurify.sanitize(req.body.surname);
+      if (req.body.email) req.body.email = DOMPurify.sanitize(req.body.email);
+      if (req.body.phone) req.body.phone = DOMPurify.sanitize(req.body.phone);
+      if (req.body.profession) req.body.profession = DOMPurify.sanitize(req.body.profession);
+      if (req.body.description) req.body.description = DOMPurify.sanitize(req.body.description);
+
+      // Social Media Sanitization
+      const socialFields = ['facebook', 'instagram', 'youtube', 'tiktok', 'twitch', 'website', 'discord', 'linkedin', 'twitter', 'github'];
+      socialFields.forEach(field => {
+        if (req.body[field]) req.body[field] = DOMPurify.sanitize(req.body[field]);
+      });
+
       // El ID del usuario a actualizar puede venir del body (gestión de usuarios) o del token (auto-gestión)
       const userIdToUpdate = req.body._id || req.user._id;
       if (!userIdToUpdate) {
@@ -625,6 +660,9 @@ export default {
   },
   login_general: async (req, res) => {
     try {
+      // 🛡️ SANITIZE INPUTS
+      if (req.body.email) req.body.email = DOMPurify.sanitize(req.body.email);
+
       console.log('🔑 [Login] Intento de login para:', req.body.email);
 
       const user = await models.User.findOne({
