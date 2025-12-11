@@ -24,7 +24,7 @@ const SaleSchema = new Schema({
         type: String,
         maxlength: 200,
         required: true,
-        enum: ['wallet', 'transfer', 'paypal', 'card', 'mercadopago', 'mixed_mercadopago', 'mixed_transfer', 'other']
+        enum: ['wallet', 'paypal', 'card', 'other']
     },
 
     // Moneda
@@ -64,8 +64,7 @@ const SaleSchema = new Schema({
         campaign_discount: { type: Number, default: null } // 1: campaña normal, 2: flash sale, etc.
     }],
 
-    // ✅ NUEVO: Comprobante de pago (nombre del archivo)
-    voucher_image: { type: String, default: null },
+
 
     // Tipo de cambio al momento de la compra
     // price_dolar removed
@@ -86,23 +85,7 @@ const SaleSchema = new Schema({
     // === CONVERSIÓN DE MONEDA MULTI-PAÍS ===
     // Multi-country conversion fields removed
 
-    // === VERIFICACIÓN DE TRANSFERENCIAS ===
-    transfer_receipt: {
-        // Comprobante subido por el estudiante
-        student_receipt: {
-            url: { type: String, default: null },
-            uploaded_at: { type: Date, default: null },
-            file_name: { type: String, default: null }
-        },
-        // Verificación del admin
-        admin_verification: {
-            receipt_url: { type: String, default: null },
-            receipt_file_name: { type: String, default: null },
-            verified_by: { type: Schema.ObjectId, ref: 'user', default: null },
-            verified_at: { type: Date, default: null },
-            verification_notes: { type: String, default: null }
-        }
-    },
+
 
     // === NOTAS ADMINISTRATIVAS ===
     admin_notes: {

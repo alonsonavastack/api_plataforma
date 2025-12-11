@@ -2,12 +2,11 @@ import express from 'express';
 import {
     getPaymentConfig,
     updatePaypalConfig,
-    updateBankConfig,
-    updateMercadoPagoConfig,
-    deletePaypalConfig,
-    deleteBankConfig,
-    deleteMercadoPagoConfig,
+    connectPaypal,
+
     updatePreferredPaymentMethod,
+    deletePaypalConfig,
+
     getEarnings,
     getEarningsStats,
     getPaymentHistory
@@ -40,11 +39,13 @@ router.get('/payment-config', auth.verifyInstructor, getPaymentConfig);
 router.post('/payment-config/paypal', auth.verifyInstructor, updatePaypalConfig);
 
 /**
- * @route   POST /api/instructor/payment-config/bank
- * @desc    Agregar/actualizar cuenta bancaria
+ * @route   POST /api/instructor/payment-config/paypal/connect
+ * @desc    Conectar cuenta de PayPal (OAuth)
  * @access  Private (Instructor)
  */
-router.post('/payment-config/bank', auth.verifyInstructor, updateBankConfig);
+router.post('/payment-config/paypal/connect', auth.verifyInstructor, connectPaypal);
+
+
 
 /**
  * @route   DELETE /api/instructor/payment-config/paypal
@@ -53,26 +54,11 @@ router.post('/payment-config/bank', auth.verifyInstructor, updateBankConfig);
  */
 router.delete('/payment-config/paypal', auth.verifyInstructor, deletePaypalConfig);
 
-/**
- * @route   DELETE /api/instructor/payment-config/bank
- * @desc    Eliminar configuración de cuenta bancaria
- * @access  Private (Instructor)
- */
-router.delete('/payment-config/bank', auth.verifyInstructor, deleteBankConfig);
 
-/**
- * @route   POST /api/instructor/payment-config/mercadopago
- * @desc    Conectar/actualizar cuenta de Mercado Pago
- * @access  Private (Instructor)
- */
-router.post('/payment-config/mercadopago', auth.verifyInstructor, updateMercadoPagoConfig);
 
-/**
- * @route   DELETE /api/instructor/payment-config/mercadopago
- * @desc    Eliminar configuración de Mercado Pago
- * @access  Private (Instructor)
- */
-router.delete('/payment-config/mercadopago', auth.verifyInstructor, deleteMercadoPagoConfig);
+
+
+
 
 /**
  * @route   PUT /api/instructor/payment-config

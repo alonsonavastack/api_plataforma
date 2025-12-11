@@ -8,12 +8,7 @@ const PaymentSettingsSchema = Schema({
         active: { type: Boolean, default: false },
         instructorPayoutsActive: { type: Boolean, default: false } // 🆕 Switch para pagos a instructores
     },
-    mercadopago: {
-        publicKey: { type: String, default: '' },
-        accessToken: { type: String, default: '' },
-        active: { type: Boolean, default: false },
-        instructorPayoutsActive: { type: Boolean, default: false } // 🆕 Switch para pagos a instructores
-    },
+
     updatedBy: {
         type: Schema.ObjectId,
         ref: 'user'

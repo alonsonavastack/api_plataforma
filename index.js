@@ -118,18 +118,25 @@ console.log('✅ Helmet configurado');
 
 const allowedOrigins = [
     'http://localhost:4200', // Angular dev
+    'http://127.0.0.1:4200', // Angular dev (IP)
     'http://localhost:3000', // Backend dev
     'http://localhost:3001', // Frontend alternativo
+    process.env.URL_FRONTEND_NGROK, // 🔥 ngrok para PayPal OAuth (frontend)
     // Añadir dominios de producción aquí
     // 'https://tudominio.com',
     // 'https://www.tudominio.com',
     // 'https://app.tudominio.com',
-];
+].filter(Boolean); // Filtrar valores undefined
 
 const corsOptions = {
     origin: (origin, callback) => {
         // Permitir requests sin origen (apps móviles, Postman, etc.)
         if (!origin) {
+            return callback(null, true);
+        }
+
+        // 🔥 Permitir TODOS los subdominios de ngrok-free.dev
+        if (origin.endsWith('.ngrok-free.dev')) {
             return callback(null, true);
         }
 

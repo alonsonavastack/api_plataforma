@@ -28,77 +28,10 @@ const InstructorPaymentConfigSchema = new Schema({
         default: false
     },
 
-    // CONFIGURACIÓN DE CUENTA BANCARIA
-    bank_account: {
-        account_holder_name: {
-            type: String,
-            maxlength: 250,
-            required: false
-        },
-        bank_name: {
-            type: String,
-            maxlength: 250,
-            required: false
-        },
-        account_number: {
-            type: String, // Este campo estará ENCRIPTADO (puede ser hasta 500 caracteres)
-            maxlength: 500,
-            required: false
-        },
-        clabe: {
-            type: String, // CLABE interbancaria (México) - ENCRIPTADO (puede ser hasta 500 caracteres)
-            maxlength: 500,
-            required: false
-        },
-        swift_code: {
-            type: String, // Para transferencias internacionales
-            maxlength: 50,
-            required: false
-        },
-        account_type: {
-            type: String,
-            enum: ['ahorros', 'corriente', 'debito', 'credito', ''],
-            default: ''
-        },
-        card_brand: {
-            type: String, // Visa, Mastercard, etc.
-            maxlength: 50,
-            required: false
-        },
-        verified: {
-            type: Boolean,
-            default: false
-        }
-    },
-
-    // CONFIGURACIÓN DE MERCADO PAGO
-    mercadopago: {
-        account_type: {
-            type: String,
-            enum: ['email', 'phone', 'cvu'],
-            default: 'email'
-        },
-        account_value: {
-            type: String,
-            maxlength: 100,
-            required: false
-        },
-        country: {
-            type: String,
-            maxlength: 2,
-            uppercase: true,
-            default: 'MX'
-        },
-        verified: {
-            type: Boolean,
-            default: false
-        }
-    },
-
     // CONFIGURACIÓN GENERAL
     preferred_payment_method: {
         type: String,
-        enum: ['paypal', 'bank_transfer', 'mercadopago', ''],
+        enum: ['paypal', ''],
         default: ''
     },
 

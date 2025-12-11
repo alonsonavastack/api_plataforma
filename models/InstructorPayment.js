@@ -6,7 +6,7 @@ const InstructorPaymentSchema = new Schema({
         ref: 'user',
         required: true
     },
-    
+
     // MONTOS
     total_earnings: {
         type: Number, // Total de ganancias que se van a pagar
@@ -29,11 +29,11 @@ const InstructorPaymentSchema = new Schema({
         default: 'USD',
         enum: ['USD', 'MXN']
     },
-    
+
     // MÉTODO DE PAGO
     payment_method: {
         type: String,
-        enum: ['paypal', 'bank_transfer', 'other'],
+        enum: ['paypal', 'other'],
         required: true
     },
     payment_details: {
@@ -46,38 +46,22 @@ const InstructorPaymentSchema = new Schema({
             type: String,
             required: false
         },
-        
-        // Para Transferencia Bancaria
-        bank_account_number: {
-            type: String, // Solo últimos 4 dígitos por seguridad
-            required: false
-        },
-        bank_name: {
-            type: String,
-            required: false
-        },
-        transfer_reference: {
-            type: String, // Número de referencia de la transferencia
-            required: false
-        },
-        transfer_receipt: {
-            type: String, // URL del comprobante de transferencia
-            required: false
-        },
-        
+
+
+
         // Para otros métodos
         other_details: {
             type: String,
             required: false
         }
     },
-    
+
     // GANANCIAS INCLUIDAS EN ESTE PAGO
     earnings_included: [{
         type: Schema.ObjectId,
         ref: 'instructor_earnings'
     }],
-    
+
     // ESTADO
     status: {
         type: String,
@@ -89,7 +73,7 @@ const InstructorPaymentSchema = new Schema({
         // failed: Falló el pago
         // cancelled: Cancelado por admin
     },
-    
+
     // FECHAS
     requested_at: {
         type: Date, // Si el instructor lo solicitó (opcional)
@@ -107,7 +91,7 @@ const InstructorPaymentSchema = new Schema({
         type: Date, // Cuando se completó el pago
         required: false
     },
-    
+
     // CONTROL DEL ADMIN
     created_by: {
         type: Schema.ObjectId,
@@ -119,7 +103,7 @@ const InstructorPaymentSchema = new Schema({
         ref: 'user', // Admin que procesó el pago
         required: false
     },
-    
+
     // NOTAS
     admin_notes: {
         type: String,
@@ -131,7 +115,7 @@ const InstructorPaymentSchema = new Schema({
         maxlength: 1000,
         required: false
     },
-    
+
     // HISTORIAL DE CAMBIOS DE ESTADO
     status_history: [{
         status: {
@@ -160,7 +144,7 @@ InstructorPaymentSchema.index({ created_by_admin_at: -1 });
 InstructorPaymentSchema.index({ status: 1 });
 
 // Hook PRE-SAVE para agregar al historial de estado
-InstructorPaymentSchema.pre('save', function(next) {
+InstructorPaymentSchema.pre('save', function (next) {
     if (this.isModified('status')) {
         this.status_history.push({
             status: this.status,

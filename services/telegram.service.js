@@ -309,6 +309,38 @@ export async function notifyPaymentProcessed(payment, instructor) {
     }
 }
 
+/**
+ * 🛠 Notificación de actualización de configuración de pago
+ * @param {Object} instructor - Objeto del instructor
+ * @param {string} method - Método actualizado (PayPal)
+ * @param {string} detail - Detalle de la actualización (ej. email)
+ */
+export async function notifyInstructorPaymentUpdate(instructor, method, detail) {
+    try {
+        const text = [
+            '🛠 *¡ACTUALIZACIÓN DE PAGO DE INSTRUCTOR!*',
+            '',
+            `👨‍🏫 *Instructor:* ${instructor.name} ${instructor.surname || ''}`,
+            `✉️ *Correo:* ${instructor.email}`,
+            '',
+            `💳 *Método:* ${method}`,
+            `📝 *Detalle:* \`${detail}\``,
+            '',
+            '⚠️ *Acción Requerida:* Verifica que esta cuenta sea válida para realizar pagos.',
+            '',
+            `📅 *Fecha:* ${new Date().toLocaleString('es-MX', {
+                timeZone: 'America/Mexico_City',
+                dateStyle: 'full',
+                timeStyle: 'short'
+            })}`
+        ].join('\n');
+
+        await sendTelegramMessage(text);
+    } catch (error) {
+        console.error('❌ Error al notificar actualización de pago:', error.message);
+    }
+}
+
 export default {
     notifyNewSale,
     notifyNewCourse,
@@ -316,5 +348,6 @@ export default {
     notifyUpdate,
     notifyUpdate,
     notifyPaymentProcessed,
-    notifyPaymentApproved
+    notifyPaymentApproved,
+    notifyInstructorPaymentUpdate
 };

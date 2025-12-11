@@ -27,7 +27,7 @@ export default {
                 await settings.save();
             } else {
                 if (data.paypal) settings.paypal = { ...settings.paypal, ...data.paypal };
-                if (data.mercadopago) settings.mercadopago = { ...settings.mercadopago, ...data.mercadopago };
+
                 settings.updatedBy = req.user._id;
                 await settings.save();
             }
@@ -59,11 +59,7 @@ export default {
                     instructorPayoutsActive: settings.paypal.instructorPayoutsActive, // 🆕 Visible para instructores
                     mode: settings.paypal.mode
                 },
-                mercadopago: {
-                    active: settings.mercadopago.active,
-                    publicKey: settings.mercadopago.publicKey, // Necesario para el frontend
-                    instructorPayoutsActive: settings.mercadopago.instructorPayoutsActive // 🆕 Visible para instructores
-                }
+
             };
 
             res.status(200).json({ settings: publicSettings });

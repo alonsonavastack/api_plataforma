@@ -12,12 +12,7 @@ import {
     removeCustomCommission,
     getEarningsReport,
     getInstructorPaymentMethodFull,
-    verifyInstructorBank,
-    getPendingBankVerifications,
-    getAllBankAccounts,
-    processPayoutMercadoPago, // 🔥 NUEVO: Procesar payout con Mercado Pago
-    getMercadoPagoStatus, // 🔥 NUEVO: Consultar estado de payout MP
-    verifyInstructorMercadoPago // 🔥 NUEVO: Verificar cuenta MP
+
 } from '../controllers/AdminInstructorPaymentController.js';
 import auth from '../service/auth.js';
 
@@ -56,33 +51,7 @@ router.get('/instructors/:id/earnings', auth.verifyAdmin, getInstructorEarnings)
  */
 router.get('/instructors/:id/payment-method-full', auth.verifyAdmin, getInstructorPaymentMethodFull);
 
-/**
- * @route   PUT /api/admin/instructors/:id/verify-bank
- * @desc    🔥 NUEVO: Verificar cuenta bancaria de un instructor
- * @access  Private (Admin ONLY)
- */
-router.put('/instructors/:id/verify-bank', auth.verifyAdmin, verifyInstructorBank);
 
-/**
- * @route   PUT /api/admin/instructors/:id/verify-mercadopago
- * @desc    🔥 NUEVO: Verificar cuenta de Mercado Pago de un instructor
- * @access  Private (Admin ONLY)
- */
-router.put('/instructors/:id/verify-mercadopago', auth.verifyAdmin, verifyInstructorMercadoPago);
-
-/**
- * @route   GET /api/admin/bank-accounts/all
- * @desc    Obtener TODOS los instructores con cuenta bancaria (Verificada o No)
- * @access  Private (Admin ONLY)
- */
-router.get('/bank-accounts/all', auth.verifyAdmin, getAllBankAccounts);
-
-/**
- * @route   GET /api/admin/bank-verifications/pending
- * @desc    🔔 NUEVO: Obtener lista de cuentas bancarias pendientes de verificación (notificaciones)
- * @access  Private (Admin ONLY)
- */
-router.get('/bank-verifications/pending', auth.verifyAdmin, getPendingBankVerifications);
 
 // ========================================
 // GESTIÓN DE PAGOS
@@ -119,24 +88,7 @@ router.put('/payments/:id/complete', auth.verifyAdmin, completePayment);
  */
 router.get('/payments', auth.verifyAdmin, getPaymentHistory);
 
-// ========================================
-// 💰 FASE 2: MERCADO PAGO PAYOUTS
-// ========================================
 
-/**
- * @route   POST /api/admin/instructors/:id/payout/mercadopago
- * @desc    Procesar pago a instructor vía Mercado Pago
- * @body    { earnings_ids: [], notes: '' }
- * @access  Private (Admin)
- */
-router.post('/instructors/:id/payout/mercadopago', auth.verifyAdmin, processPayoutMercadoPago);
-
-/**
- * @route   GET /api/admin/payments/:id/mercadopago-status
- * @desc    Consultar estado de payout de Mercado Pago
- * @access  Private (Admin)
- */
-router.get('/payments/:id/mercadopago-status', auth.verifyAdmin, getMercadoPagoStatus);
 
 // ========================================
 // CONFIGURACIÓN DE COMISIONES

@@ -21,14 +21,13 @@ import ReviewRouter from './Review.js'; // Importamos el router de reviews/calif
 import RefundRouter from './Refund.js'; // 💸 Router de reembolsos
 import SystemConfigRouter from './SystemConfig.js'; // 🆕 Router de configuración del sistema
 import WalletRouter from './Wallet.js'; // 💰 Router de billetera digital
-import TransferRouter from './Transfer.js'; // 🏦 Router de verificación de transferencias
+
 import PaymentDashboardRouter from './PaymentDashboard.js'; // 📊 Dashboard de pagos
 import TestingRouter from './Testing.js'; // 🧪 Router de testing (solo desarrollo)
 
 // SISTEMA DE PAGOS A INSTRUCTORES
 import InstructorPaymentRouter from './InstructorPayment.js';
 import AdminInstructorPaymentRouter from './AdminInstructorPayment.js';
-import MercadoPagoRouter from './mercadopago.js'; // 🔥 Router de Mercado Pago
 import PaymentSettingsRouter from './PaymentSettings.js'; // 💳 Configuración de pagos
 
 // SISTEMA FISCAL MULTI-PAÍS
@@ -61,13 +60,12 @@ router.use('/reviews', ReviewRouter); // Rutas de reviews/calificaciones
 router.use('/refunds', RefundRouter); // 💸 Rutas de reembolsos
 router.use('/system-config', SystemConfigRouter); // 🆕 Rutas de configuración del sistema
 router.use('/wallet', WalletRouter); // 💰 Rutas de billetera digital
-router.use('/transfers', TransferRouter); // 🏦 Rutas de verificación de transferencias
+// router.use('/transfers', TransferRouter); // 🗑️ ELIMINADO
 router.use('/payment-dashboard', PaymentDashboardRouter); // 📊 Dashboard de pagos
 
 // SISTEMA DE PAGOS A INSTRUCTORES
 router.use('/instructor', InstructorPaymentRouter); // Rutas para instructores
 router.use('/admin', AdminInstructorPaymentRouter); // Rutas para administradores
-router.use('/mercadopago', MercadoPagoRouter); // 🔥 Rutas de Mercado Pago
 router.use('/payment-settings', PaymentSettingsRouter); // 💳 Rutas de configuración de pagos
 
 // 🧪 TESTING - SOLO DESARROLLO
