@@ -121,13 +121,26 @@ export async function notifyVoucherUpload(sale) {
  */
 export async function notifyPaymentApproved(sale) {
     try {
+        // 🔥 CORRECCIÓN: Asegurar que user esté populado
+        let userName = 'Cliente';
+        
+        if (sale.user) {
+            if (typeof sale.user === 'object') {
+                // Usuario ya populado
+                userName = sale.user.name || 'Cliente';
+            } else {
+                // Usuario es solo ID, necesita populate
+                console.warn('⚠️ [notifyPaymentApproved] User no está populado, usando "Cliente"');
+            }
+        }
+        
         const text = [
             '✅ *¡PAGO APROBADO!*',
             '',
-            `Hola *${sale.user.name}*, tu compra ha sido verificada exitosamente.`,
+            `Hola *${userName}*, tu compra ha sido verificada exitosamente.`,
             '',
             `💳 *N° Transacción:* \`${sale.n_transaccion}\``,
-            `💰 *Monto:* ${sale.total.toFixed(2)} ${sale.currency_total}`,
+            `💰 *Monto:* ${sale.total.toFixed(2)} ${sale.currency_total || 'MXN'}`,
             '',
             '🚀 *¡Ya puedes acceder a tu contenido!*',
             'Ingresa a la plataforma para ver tus cursos o proyectos.',

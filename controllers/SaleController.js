@@ -72,6 +72,9 @@ export default {
                 return res.status(409).send({
                     message: 'Ya tienes un pago en proceso. Por favor espera.',
                     pending_sale: recentPending._id,
+                    n_transaccion: recentPending.n_transaccion,
+                    method_payment: recentPending.method_payment,
+                    remaining_amount: recentPending.remaining_amount || recentPending.total,
                     created_at: recentPending.createdAt
                 });
             }
@@ -182,7 +185,10 @@ export default {
 
                 // 4. Procesar accesos y notificaciones
                 await processPaidSale(sale, user_id);
-                notifyPaymentApproved(sale).catch(console.error);
+                
+                // 🔥 CORRECCIÓN: Populatar usuario para Telegram
+                const saleWithUser = await models.Sale.findById(sale._id).populate('user', 'name surname email').lean();
+                notifyPaymentApproved(saleWithUser || sale).catch(console.error);
 
                 return res.status(200).send({
                     message: 'Compra realizada con éxito',
@@ -239,6 +245,172 @@ export default {
                 message: 'Error al procesar el pago',
                 error: error.message
             });
+        }
+    },
+
+    /**
+     * Crear una orden PayPal on-server para un sale existente
+     * POST /api/checkout/paypal/create
+     * Body: { n_transaccion }
+     */
+    createPaypalOrder: async (req, res) => {
+        try {
+            const { n_transaccion } = req.body;
+            if (!n_transaccion) return res.status(400).send({ message: 'n_transaccion es requerido' });
+
+            const sale = await models.Sale.findOne({ n_transaccion }).lean();
+            if (!sale) return res.status(404).send({ message: 'Venta no encontrada' });
+            if (sale.status !== 'Pendiente') return res.status(400).send({ message: 'Venta no en estado Pendiente' });
+
+            // Calcular monto a cobrar por PayPal: remaining_amount o total
+            const amount = sale.remaining_amount && sale.remaining_amount > 0 ? sale.remaining_amount : sale.total;
+
+            const PAYPAL_API = process.env.PAYPAL_MODE === 'sandbox' ? 'https://api.sandbox.paypal.com' : 'https://api.paypal.com';
+
+            // Obtener token de acceso PayPal
+            const tokenR = await axios({
+                method: 'post',
+                url: `${PAYPAL_API}/v1/oauth2/token`,
+                auth: {
+                    username: process.env.PAYPAL_CLIENT_ID.trim(),
+                    password: process.env.PAYPAL_CLIENT_SECRET.trim()
+                },
+                params: { grant_type: 'client_credentials' }
+            });
+
+            const accessToken = tokenR.data.access_token;
+
+            // Crear orden
+            const createR = await axios({
+                method: 'post',
+                url: `${PAYPAL_API}/v2/checkout/orders`,
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                    'Content-Type': 'application/json'
+                },
+                data: {
+                    intent: 'CAPTURE',
+                    purchase_units: [
+                        {
+                            amount: {
+                                currency_code: 'MXN',
+                                value: Number(amount).toFixed(2)
+                            },
+                            description: `Compra ${sale.n_transaccion}`
+                        }
+                    ],
+                    application_context: {
+                        brand_name: process.env.SITE_NAME || 'Dev-Sharks',
+                        landing_page: 'NO_PREFERENCE',
+                        user_action: 'PAY_NOW',
+                        return_url: process.env.URL_FRONTEND_NGROK || process.env.URL_FRONTEND || 'https://localhost:4200',
+                        cancel_url: process.env.URL_FRONTEND_NGROK || process.env.URL_FRONTEND || 'https://localhost:4200'
+                    }
+                }
+            });
+
+            const order = createR.data;
+            return res.status(200).send({ success: true, orderId: order.id, links: order.links });
+        } catch (error) {
+            console.error('❌ [createPaypalOrder] Error:', error.response?.data || error.message || error);
+            return res.status(500).send({ message: 'Error creating PayPal order', details: error.response?.data || error.message });
+        }
+    },
+
+    /**
+     * Capturar una orden PayPal y completar la venta
+     * POST /api/checkout/paypal/capture
+     * Body: { n_transaccion, orderId }
+     */
+    capturePaypalOrder: async (req, res) => {
+        try {
+            const { n_transaccion, orderId } = req.body;
+            if (!n_transaccion || !orderId) return res.status(400).send({ message: 'n_transaccion y orderId son requeridos' });
+
+            const sale = await models.Sale.findOne({ n_transaccion });
+            if (!sale) return res.status(404).send({ message: 'Venta no encontrada' });
+            if (sale.status === 'Pagado') return res.status(400).send({ message: 'Venta ya pagada' });
+
+            const PAYPAL_API = process.env.PAYPAL_MODE === 'sandbox' ? 'https://api.sandbox.paypal.com' : 'https://api.paypal.com';
+
+            // Obtener token de acceso PayPal
+            const tokenR = await axios({
+                method: 'post',
+                url: `${PAYPAL_API}/v1/oauth2/token`,
+                auth: {
+                    username: process.env.PAYPAL_CLIENT_ID.trim(),
+                    password: process.env.PAYPAL_CLIENT_SECRET.trim()
+                },
+                params: { grant_type: 'client_credentials' }
+            });
+            const accessToken = tokenR.data.access_token;
+
+            // Capturar orden
+            const captureR = await axios({
+                method: 'post',
+                url: `${PAYPAL_API}/v2/checkout/orders/${orderId}/capture`,
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                    'Content-Type': 'application/json'
+                },
+                data: {} // 🔥 PayPal requiere un body vacío como mínimo
+            });
+
+            const captureData = captureR.data;
+            // Comprobar estado
+            const status = captureData.status;
+
+            if (status !== 'COMPLETED') {
+                console.warn('⚠️ [capturePaypalOrder] Estado no completado:', status);
+                return res.status(400).send({ message: 'Order not completed', status: status, details: captureData });
+            }
+
+            // Guardar detalles en la venta
+            sale.status = 'Pagado';
+            sale.payment_details = sale.payment_details || {};
+            sale.payment_details.paypal_order_id = orderId;
+            // Extraer capture id
+            const captureId = captureData.purchase_units?.[0]?.payments?.captures?.[0]?.id;
+            sale.payment_details.paypal_capture_id = captureId;
+            sale.payment_details.paypal_capture_details = captureData;
+            sale.paid_at = new Date();
+            await sale.save();
+
+            // Si se usó billetera, descontarla ahora
+            if (sale.wallet_amount && sale.wallet_amount > 0) {
+                try {
+                    const wallet = await models.Wallet.findOne({ user: sale.user });
+                    if (wallet) {
+                        const newBalance = wallet.balance - sale.wallet_amount;
+                        wallet.balance = newBalance;
+                        wallet.transactions.push({
+                            user: sale.user,
+                            type: 'debit',
+                            amount: sale.wallet_amount,
+                            balanceAfter: newBalance,
+                            description: `Pago con wallet (mixto) - ${sale.n_transaccion}`,
+                            date: new Date(),
+                            metadata: { orderId: sale._id, payment_method: 'wallet' }
+                        });
+                        await wallet.save();
+                        console.log('✅ [capturePaypalOrder] Wallet debited for mixed payment.');
+                    }
+                } catch (walletErr) {
+                    console.error('❌ [capturePaypalOrder] Error deducting wallet:', walletErr.message);
+                }
+            }
+
+            // Procesar venta pagada (acceso a cursos, ganancias instructor, notificaciones)
+            await processPaidSale(sale, sale.user);
+            
+            // 🔥 CORRECCIÓN: Populatar usuario para Telegram
+            const saleWithUser = await models.Sale.findById(sale._id).populate('user', 'name surname email').lean();
+            notifyPaymentApproved(saleWithUser || sale).catch(console.error);
+
+            return res.status(200).send({ success: true, sale: sale });
+        } catch (error) {
+            console.error('❌ [capturePaypalOrder] Error:', error.response?.data || error.message || error);
+            return res.status(500).send({ message: 'Error capturing PayPal order', details: error.response?.data || error.message });
         }
     },
 
