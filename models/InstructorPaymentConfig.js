@@ -31,7 +31,7 @@ const InstructorPaymentConfigSchema = new Schema({
     // CONFIGURACIÓN GENERAL
     preferred_payment_method: {
         type: String,
-        enum: ['paypal', ''],
+        enum: ['paypal', 'wallet', ''],
         default: ''
     },
 

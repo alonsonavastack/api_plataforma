@@ -24,7 +24,7 @@ const SaleSchema = new Schema({
         type: String,
         maxlength: 200,
         required: true,
-        enum: ['wallet', 'paypal', 'card', 'other']
+        enum: ['wallet', 'paypal', 'mixed_paypal', 'card', 'other']
     },
 
     // Moneda

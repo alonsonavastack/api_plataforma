@@ -4,16 +4,22 @@ import { emitNewSaleToAdmins, emitSaleStatusUpdate } from '../services/socket.se
 import { notifyNewSale, notifyPaymentApproved } from '../services/telegram.service.js';
 import { processPaidSale, createEarningForProduct } from '../services/SaleService.js'; // 🔥 IMPORTAR SERVICIO
 import { useWalletBalance } from './WalletController.js';
-import { formatCurrency } from '../services/exchangeRate.service.js'; // 🔥 CONVERSIÓN MULTI-PAÍS
+import { convertUSDByCountry, formatCurrency } from '../services/exchangeRate.service.js'; // 🔥 CONVERSIÓN MULTI-PAÍS
 
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import ejs from 'ejs';
+import { MercadoPagoConfig, Preference, Payment } from 'mercadopago'; // 🔥 IMPORTAR MERCADO PAGO
+
+// 🔥 CONFIGURAR CLIENTE DE MERCADO PAGO
+const client = new MercadoPagoConfig({
+    accessToken: process.env.MERCADOPAGO_ACCESS_TOKEN,
+    options: { timeout: 5000 }
+});
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
 
 // 🛡️ SECURITY: Input Sanitization
 import { JSDOM } from 'jsdom';
@@ -63,7 +69,7 @@ export default {
             const recentPending = await models.Sale.findOne({
                 user: user_id,
                 status: 'Pendiente',
-
+                method_payment: { $in: ['mercadopago', 'mixed_mercadopago', 'transfer'] },
                 createdAt: { $gte: new Date(Date.now() - 5 * 60 * 1000) }
             });
 
@@ -72,9 +78,6 @@ export default {
                 return res.status(409).send({
                     message: 'Ya tienes un pago en proceso. Por favor espera.',
                     pending_sale: recentPending._id,
-                    n_transaccion: recentPending.n_transaccion,
-                    method_payment: recentPending.method_payment,
-                    remaining_amount: recentPending.remaining_amount || recentPending.total,
                     created_at: recentPending.createdAt
                 });
             }
@@ -118,7 +121,7 @@ export default {
             for (const item of items) {
                 const detailObj = {
                     product: item.product, // 🔥 CORREGIDO: usar 'product' directamente
-                    product_type: item.product_type || item.type_detail, // 🔥 FIX: Fallback to type_detail
+                    product_type: item.product_type, // 🔥 CORREGIDO: 'product_type' no 'type_detail'
                     title: item.title,
                     price_unit: item.price_unit,
                     discount: item.discount || 0,
@@ -176,7 +179,7 @@ export default {
                     currency_payment: currency_payment,
                     n_transaccion: n_transaccion,
                     detail: sale_details,
-                    // price_dolar: total, // REMOVED
+                    price_dolar: total,
                     total: total,
                     status: 'Pagado', // 🔥 IMPORTANTE: Estado Pagado
                     wallet_amount: total,
@@ -185,10 +188,7 @@ export default {
 
                 // 4. Procesar accesos y notificaciones
                 await processPaidSale(sale, user_id);
-                
-                // 🔥 CORRECCIÓN: Populatar usuario para Telegram
-                const saleWithUser = await models.Sale.findById(sale._id).populate('user', 'name surname email').lean();
-                notifyPaymentApproved(saleWithUser || sale).catch(console.error);
+                notifyPaymentApproved(sale).catch(console.error);
 
                 return res.status(200).send({
                     message: 'Compra realizada con éxito',
@@ -198,45 +198,109 @@ export default {
                 });
             }
 
+            // ✅ MERCADO PAGO REMOVED: Not supported anymore
+            if (method_payment === 'mercadopago') {
+                return res.status(400).send({ message: 'MercadoPago no soportado. Por favor utiliza PayPal.' });
+            }
 
-            // 🔥 LÓGICA PAYPAL
+            // ═══════════════════════════════════════════════
+            // 🔥 MÉTODO 2: PAYPAL (Creación de orden y captura)
+            // ═══════════════════════════════════════════════
             if (method_payment === 'paypal') {
                 console.log('🅿️ [register] Método seleccionado: paypal');
 
                 const { use_wallet, wallet_amount, remaining_amount } = req.body;
-                const finalRemainingAmount = remaining_amount || total;
+                const finalWalletAmount = (use_wallet && wallet_amount > 0) ? Number(wallet_amount) : 0;
+                const finalRemainingAmount = remaining_amount ? Number(remaining_amount) : (total - finalWalletAmount);
 
-                // Crear venta en estado Pendiente
-                const sale = await models.Sale.create({
-                    user: user_id,
-                    method_payment: 'paypal', // O 'mixed_paypal' si implementamos mixto futuro
-                    currency_payment: 'MXN',
-                    n_transaccion: n_transaccion || `TXN-${Date.now()}`,
-                    detail: sale_details,
-                    total: total,
-                    status: 'Pendiente', // Se espera captura de PayPal
-                    wallet_amount: use_wallet ? wallet_amount : 0,
-                    remaining_amount: finalRemainingAmount
-                });
-
-                // Si hay pago mixto con wallet, aquí se debería descontar la wallet (similar a lo que se hacía con MP)
-                // Por simplicidad en este refactor, asumimos que el frontend maneja la redirección a PayPal
-                // y luego se notifica.
-
-                // NOTA: Para un soporte completo de PayPal Mixto, se debería implementar la lógica de descuento de Wallet aquí.
-                // Como el usuario pidió "Full PayPal", habilitamos el registro básico.
+                // Solo validar saldo de wallet si se indica
+                if (finalWalletAmount > 0) {
+                    const wallet = await models.Wallet.findOne({ user: user_id });
+                    if (!wallet) return res.status(400).send({ message: 'Billetera no encontrada' });
+                    if (wallet.balance < finalWalletAmount) return res.status(400).send({ message: 'Saldo insuficiente en billetera', available: wallet.balance, required: finalWalletAmount });
+                }
 
                 return res.status(200).send({
-                    message: 'Venta iniciada (PayPal).',
-                    sale: sale,
-                    n_transaccion: n_transaccion
+                    message: 'Validación exitosa. Procede con PayPal.',
+                    validated: true,
+                    n_transaccion: n_transaccion,
+                    total: total,
+                    wallet_amount: finalWalletAmount,
+                    paypal_amount: finalRemainingAmount,
+                    detail: sale_details
                 });
             }
 
-            // 🔥 SI LLEGA AQUÍ, ES UN MÉTODO NO SOPORTADO
-            return res.status(400).send({
-                message: 'Método de pago no válido o no soportado.',
-                valid_methods: ['wallet', 'paypal']
+            // 🔥 PARA OTROS MÉTODOS (Wallet/Transferencia): SÍ CREAR VENTA
+            console.log(`🏦 [register] Método seleccionado: ${method_payment}`);
+
+            // 🔥 CONVERTIR USD → MONEDA LOCAL SEGÚN PAÍS
+            const conversion = await convertUSDByCountry(total, userCountry);
+
+            console.log('💱 [register] Conversión para el usuario:', {
+                total_usd: formatCurrency(conversion.usd, 'USD'),
+                total_local: formatCurrency(conversion.amount, conversion.currency),
+                currency: conversion.currency,
+                country: conversion.country,
+                exchange_rate: conversion.rate
+            });
+
+            // Crear la venta
+            const sale = await models.Sale.create({
+                user: user_id,
+                method_payment,
+                currency_payment: 'USD', // 🔥 SIEMPRE guardamos en USD
+                n_transaccion: n_transaccion || `TXN-${Date.now()}`,
+                detail: sale_details,
+                price_dolar: total, // 🔥 Precio en USD
+                total: total, // 🔥 Total en USD
+                status: 'Pendiente', // Pendiente de aprobación admin
+                // 🔥 NUEVO: Guardar info de conversión multi-país
+                conversion_rate: conversion.rate,
+                conversion_currency: conversion.currency,
+                conversion_amount: conversion.amount,
+                conversion_country: userCountry
+            });
+
+            console.log('✅ [register] Venta creada:', sale._id);
+            console.log(`   💵 Total USD: ${formatCurrency(total, 'USD')}`);
+            console.log(`   💵 Total ${conversion.currency} (referencia): ${formatCurrency(conversion.amount, conversion.currency)}`);
+
+            // 🔥 PARA TRANSFERENCIA: Retornar datos bancarios con monto en MONEDA LOCAL
+            if (method_payment === 'transfer') { // 🔥 CORREGIDO: 'transfer' en lugar de 'transferencia' para coincidir con el frontend
+                return res.status(200).send({
+                    message: 'Venta registrada. Por favor realiza la transferencia.',
+                    sale: sale,
+                    n_transaccion: n_transaccion,
+                    // 🔥 INFORMACIÓN PARA EL USUARIO CON MONEDA LOCAL
+                    payment_info: {
+                        amount_usd: total,
+                        amount_local: conversion.amount,
+                        currency: conversion.currency,
+                        country: conversion.country,
+                        symbol: conversion.symbol,
+                        exchange_rate: conversion.rate,
+                        formatted_usd: formatCurrency(total, 'USD'),
+                        formatted_local: formatCurrency(conversion.amount, conversion.currency)
+                    },
+                    // 🔥 DATOS BANCARIOS (desde tu .env o hardcoded)
+                    bank_details: {
+                        bank_name: 'BBVA México',
+                        account_holder: 'Tu Nombre o Empresa',
+                        account_number: '1234567890',
+                        clabe: '012345678901234567',
+                        reference: n_transaccion
+                    }
+                });
+            }
+
+            // Para otros métodos
+            return res.status(200).send({
+                message: 'Pago procesado exitosamente',
+                sale: sale,
+                wallet_used: 0,
+                remaining_amount: 0,
+                fully_paid: false
             });
 
         } catch (error) {
@@ -248,22 +312,13 @@ export default {
         }
     },
 
-    /**
-     * Crear una orden PayPal on-server para un sale existente
-     * POST /api/checkout/paypal/create
-     * Body: { n_transaccion }
-     */
     createPaypalOrder: async (req, res) => {
         try {
-            const { n_transaccion } = req.body;
-            if (!n_transaccion) return res.status(400).send({ message: 'n_transaccion es requerido' });
+            const { n_transaccion, total, detail } = req.body;
 
-            const sale = await models.Sale.findOne({ n_transaccion }).lean();
-            if (!sale) return res.status(404).send({ message: 'Venta no encontrada' });
-            if (sale.status !== 'Pendiente') return res.status(400).send({ message: 'Venta no en estado Pendiente' });
-
-            // Calcular monto a cobrar por PayPal: remaining_amount o total
-            const amount = sale.remaining_amount && sale.remaining_amount > 0 ? sale.remaining_amount : sale.total;
+            if (!n_transaccion || !total || !detail) {
+                return res.status(400).send({ message: 'n_transaccion, total y detail son requeridos' });
+            }
 
             const PAYPAL_API = process.env.PAYPAL_MODE === 'sandbox' ? 'https://api.sandbox.paypal.com' : 'https://api.paypal.com';
 
@@ -294,9 +349,9 @@ export default {
                         {
                             amount: {
                                 currency_code: 'MXN',
-                                value: Number(amount).toFixed(2)
+                                value: Number(total).toFixed(2)
                             },
-                            description: `Compra ${sale.n_transaccion}`
+                            description: `Compra ${n_transaccion}`
                         }
                     ],
                     application_context: {
@@ -311,25 +366,27 @@ export default {
 
             const order = createR.data;
             return res.status(200).send({ success: true, orderId: order.id, links: order.links });
+
         } catch (error) {
             console.error('❌ [createPaypalOrder] Error:', error.response?.data || error.message || error);
             return res.status(500).send({ message: 'Error creating PayPal order', details: error.response?.data || error.message });
         }
     },
 
-    /**
-     * Capturar una orden PayPal y completar la venta
-     * POST /api/checkout/paypal/capture
-     * Body: { n_transaccion, orderId }
-     */
     capturePaypalOrder: async (req, res) => {
         try {
-            const { n_transaccion, orderId } = req.body;
-            if (!n_transaccion || !orderId) return res.status(400).send({ message: 'n_transaccion y orderId son requeridos' });
+            const { n_transaccion, orderId, detail, total, wallet_amount, remaining_amount } = req.body;
+            const user_id = req.user._id;
 
-            const sale = await models.Sale.findOne({ n_transaccion });
-            if (!sale) return res.status(404).send({ message: 'Venta no encontrada' });
-            if (sale.status === 'Pagado') return res.status(400).send({ message: 'Venta ya pagada' });
+            if (!n_transaccion || !orderId || !detail || !total) {
+                return res.status(400).send({ message: 'Faltan datos requeridos' });
+            }
+
+            // Evitar duplicados
+            const existingSale = await models.Sale.findOne({ n_transaccion });
+            if (existingSale && existingSale.status === 'Pagado') {
+                return res.status(400).send({ message: 'Esta transacción ya fue procesada', sale: existingSale });
+            }
 
             const PAYPAL_API = process.env.PAYPAL_MODE === 'sandbox' ? 'https://api.sandbox.paypal.com' : 'https://api.paypal.com';
 
@@ -353,75 +410,98 @@ export default {
                     Authorization: `Bearer ${accessToken}`,
                     'Content-Type': 'application/json'
                 },
-                data: {} // 🔥 PayPal requiere un body vacío como mínimo
+                data: {}
             });
 
             const captureData = captureR.data;
-            // Comprobar estado
             const status = captureData.status;
 
             if (status !== 'COMPLETED') {
-                console.warn('⚠️ [capturePaypalOrder] Estado no completado:', status);
-                return res.status(400).send({ message: 'Order not completed', status: status, details: captureData });
+                return res.status(400).send({ message: 'Order not completed', status, details: captureData });
             }
 
-            // Guardar detalles en la venta
-            sale.status = 'Pagado';
-            sale.payment_details = sale.payment_details || {};
-            sale.payment_details.paypal_order_id = orderId;
-            // Extraer capture id
-            const captureId = captureData.purchase_units?.[0]?.payments?.captures?.[0]?.id;
-            sale.payment_details.paypal_capture_id = captureId;
-            sale.payment_details.paypal_capture_details = captureData;
-            sale.paid_at = new Date();
-            await sale.save();
+            // Descontar wallet si aplica
+            const finalWalletAmount = wallet_amount ? Number(wallet_amount) : 0;
+            if (finalWalletAmount > 0) {
+                const wallet = await models.Wallet.findOne({ user: user_id });
+                if (!wallet) return res.status(400).send({ message: 'Billetera no encontrada' });
+                if (wallet.balance < finalWalletAmount) return res.status(400).send({ message: 'Saldo insuficiente en billetera', available: wallet.balance, required: finalWalletAmount });
 
-            // Si se usó billetera, descontarla ahora
-            if (sale.wallet_amount && sale.wallet_amount > 0) {
-                try {
-                    const wallet = await models.Wallet.findOne({ user: sale.user });
-                    if (wallet) {
-                        const newBalance = wallet.balance - sale.wallet_amount;
-                        wallet.balance = newBalance;
-                        wallet.transactions.push({
-                            user: sale.user,
-                            type: 'debit',
-                            amount: sale.wallet_amount,
-                            balanceAfter: newBalance,
-                            description: `Pago con wallet (mixto) - ${sale.n_transaccion}`,
-                            date: new Date(),
-                            metadata: { orderId: sale._id, payment_method: 'wallet' }
-                        });
-                        await wallet.save();
-                        console.log('✅ [capturePaypalOrder] Wallet debited for mixed payment.');
-                    }
-                } catch (walletErr) {
-                    console.error('❌ [capturePaypalOrder] Error deducting wallet:', walletErr.message);
-                }
+                wallet.balance -= finalWalletAmount;
+                wallet.transactions.push({ user: user_id, type: 'debit', amount: finalWalletAmount, balanceAfter: wallet.balance, description: `Pago mixto (wallet) - ${n_transaccion}`, date: new Date(), metadata: { orderId: n_transaccion, payment_method: 'mixed_paypal', paypal_order_id: orderId, status: 'completed' } });
+                await wallet.save();
             }
 
-            // Procesar venta pagada (acceso a cursos, ganancias instructor, notificaciones)
-            await processPaidSale(sale, sale.user);
-            
-            // 🔥 CORRECCIÓN: Populatar usuario para Telegram
+            // Crear venta
+            const sale = await models.Sale.create({
+                user: user_id,
+                method_payment: finalWalletAmount > 0 ? 'mixed_paypal' : 'paypal',
+                currency_payment: 'MXN',
+                n_transaccion: n_transaccion,
+                detail: detail,
+                total: total,
+                status: 'Pagado',
+                wallet_amount: finalWalletAmount,
+                remaining_amount: remaining_amount || (total - finalWalletAmount),
+                payment_details: { paypal_order_id: orderId, paypal_capture_details: captureData },
+                paid_at: new Date()
+            });
+
+            await processPaidSale(sale, user_id);
             const saleWithUser = await models.Sale.findById(sale._id).populate('user', 'name surname email').lean();
             notifyPaymentApproved(saleWithUser || sale).catch(console.error);
 
-            return res.status(200).send({ success: true, sale: sale });
+            return res.status(200).send({ success: true, sale, message: 'Pago capturado exitosamente' });
+
         } catch (error) {
             console.error('❌ [capturePaypalOrder] Error:', error.response?.data || error.message || error);
             return res.status(500).send({ message: 'Error capturing PayPal order', details: error.response?.data || error.message });
         }
     },
-
-
     /**
      * 🔔 WEBHOOK MERCADO PAGO
      * Recibe notificaciones de pagos actualizados
      */
     async webhook(req, res) {
-        // Webhook removed
-        res.sendStatus(404);
+        const paymentId = req.query.id || req.query['data.id'];
+        const topic = req.query.topic || req.query.type;
+
+        console.log(`\n🔔 [WEBHOOK] Notificación recibida: ${topic} - ID: ${paymentId}`);
+
+        try {
+            if (topic === 'payment' && paymentId) {
+                const payment = new Payment(client);
+                const paymentData = await payment.get({ id: paymentId });
+
+                console.log(`   💰 Estado del pago: ${paymentData.status}`);
+                console.log(`   🆔 Referencia externa (Sale ID): ${paymentData.external_reference}`);
+
+                if (paymentData.status === 'approved') {
+                    const saleId = paymentData.external_reference;
+                    const sale = await models.Sale.findById(saleId);
+
+                    if (sale && sale.status !== 'Pagado') {
+                        console.log(`   ✅ Aprobando venta ${sale._id}...`);
+
+                        sale.status = 'Pagado';
+                        sale.method_payment = 'mercadopago';
+                        await sale.save();
+
+                        // Activar accesos y notificar
+                        await processPaidSale(sale, sale.user);
+                        // sendConfirmationEmail(sale._id).catch(console.error); // 🚫 Email deshabilitado
+                        notifyPaymentApproved(sale).catch(console.error);
+                        emitSaleStatusUpdate(sale);
+                    } else {
+                        console.log(`   ℹ️ Venta ya pagada o no encontrada`);
+                    }
+                }
+            }
+            res.sendStatus(200);
+        } catch (error) {
+            console.error('❌ Error en webhook:', error);
+            res.sendStatus(500);
+        }
     },
 
     /**
@@ -576,10 +656,8 @@ export default {
                         } else {
                             // Crear transacción de reembolso
                             const refundTransaction = {
-                                user: sale.user._id, // 🔥 Agregado: Campo requerido
-                                type: 'credit', // 🔥 Corregido: 'refund' no existe en enum, usar 'credit'
+                                type: 'refund',
                                 amount: sale.wallet_amount,
-                                balanceAfter: wallet.balance + sale.wallet_amount, // Calcular balance
                                 description: `Devolución por venta rechazada: ${sale.n_transaccion || sale._id}`,
                                 date: new Date(),
                                 metadata: {
@@ -787,10 +865,7 @@ export default {
                 .limit(parseInt(limit))
                 .lean();
 
-            // 🔥 Contar TODAS las ventas pendientes o en revisión (no solo las últimas 10)
-            const unreadCount = await models.Sale.countDocuments({
-                status: { $in: ['Pendiente', 'En Revisión'] }
-            });
+            const unreadCount = sales.filter(s => s.status === 'Pendiente').length;
 
             res.status(200).json({
                 recent_sales: sales.map(s => ({
@@ -846,15 +921,12 @@ export default {
 
                     try {
                         // 1. Validar Instructor
-                        // 🔥 FIX: Check both product_type and type_detail
-                        const type = item.product_type || item.type_detail;
-
                         let instructorId = null;
-                        if (type === 'course') {
+                        if (item.product_type === 'course') {
                             const course = await models.Course.findById(item.product).select('user title');
                             instructorId = course?.user;
                             if (course) item.title = course.title; // Asegurar título
-                        } else if (type === 'project') {
+                        } else if (item.product_type === 'project') {
                             const project = await models.Project.findById(item.product).select('user title');
                             instructorId = project?.user;
                             if (project) item.title = project.title;
@@ -934,4 +1006,23 @@ export default {
         }
     },
 
+    /**
+     * 🖼️ OBTENER IMAGEN DEL VOUCHER
+     */
+    get_voucher_image: async (req, res) => {
+        try {
+            const img = req.params.image;
+            const path_img = path.join(__dirname, '../uploads/transfers/', img);
+
+            if (fs.existsSync(path_img)) {
+                res.sendFile(path.resolve(path_img));
+            } else {
+                const path_default = path.join(__dirname, '../uploads/default.jpg');
+                res.sendFile(path.resolve(path_default));
+            }
+        } catch (error) {
+            console.log(error);
+            res.status(500).send({ message: 'HUBO UN ERROR' });
+        }
+    }
 };

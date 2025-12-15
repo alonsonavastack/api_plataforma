@@ -100,6 +100,10 @@ async function createEarningForProduct(sale, item) {
         const availableAt = new Date();
         availableAt.setDate(availableAt.getDate() + daysUntilAvailable);
 
+        // 🔥 CORRECCIÓN CRÍTICA: Si el pago ya está completado, la ganancia debe estar DISPONIBLE
+        // No tiene sentido tener "pending" si el dinero ya está en la plataforma
+        const earningStatus = 'available'; // ✅ SIEMPRE disponible cuando se crea
+
         // 4. 🔥 Crear ganancia CON información de descuento completa
         await models.InstructorEarnings.create({
             instructor: instructorId,
@@ -120,15 +124,16 @@ async function createEarningForProduct(sale, item) {
                 discount_percentage: discountPercentage,    // % equivalente
                 campaign_discount: item.campaign_discount || null
             },
-            status: daysUntilAvailable === 0 ? 'available' : 'pending',
+            status: earningStatus, // 🔥 SIEMPRE 'available'
             earned_at: new Date(),
-            available_at: availableAt
+            available_at: availableAt // 🔥 Fecha de referencia (historial), pero ya disponible
         });
 
         console.log(`   ✅ Ganancia creada para instructor ${instructorId}:`);
         console.log(`      💵 Precio venta: ${salePrice.toFixed(2)}`);
         console.log(`      🏛 Comisión plataforma (${(commissionRate * 100).toFixed(0)}%): ${platformCommission.toFixed(2)}`);
         console.log(`      💰 Ganancia instructor: ${instructorEarning.toFixed(2)}`);
+        console.log(`      ✅ Estado: ${earningStatus} (disponible inmediatamente)`);
         if (discountPercentage > 0) {
             console.log(`      🎁 Descuento original: ${discountPercentage.toFixed(1)}% (-${actualDiscountAmount.toFixed(2)})`);
         }

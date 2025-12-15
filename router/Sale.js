@@ -4,6 +4,10 @@ import auth from '../service/auth.js'
 
 const router = routerx();
 
+// Diagnostic: validate handlers exist to avoid express-promise-router errors
+console.log('[router/Sale] auth.verifyTienda type:', typeof auth.verifyTienda);
+console.log('[router/Sale] saleController.createPaypalOrder type:', typeof saleController.createPaypalOrder);
+
 // Lista de ventas - Administradores e Instructores pueden ver sus ventas
 router.get("/list", [auth.verifyTienda], saleController.list);
 

@@ -3,7 +3,7 @@ import InstructorEarnings from '../models/InstructorEarnings.js';
 import InstructorPayment from '../models/InstructorPayment.js';
 import PlatformCommissionSettings from '../models/PlatformCommissionSettings.js';
 import User from '../models/User.js';
-import { decrypt, maskAccountNumber } from '../utils/encryption.js';
+// ✅ Ya no necesitamos funciones de encriptación bancaria
 import {
     calculateTotalEarnings,
     calculatePaymentAmount,
@@ -15,13 +15,48 @@ import { notifyPaymentProcessed } from '../services/telegram.service.js';
 
 
 /**
- * CONTROLADOR PARA ADMINISTRADORES
- * Gestiona pagos a instructores y configuración de comisiones
+ * CONTROLADOR PARA ADMINISTRADORES - PAGOS A INSTRUCTORES
+ * Gestiona pagos a instructores usando Wallet y PayPal
+ * ✅ Métodos soportados: wallet, paypal, mixed_paypal
+ * ❌ Ya NO soporta: banco, mercadopago
  */
 
 // ============================================================================
 // 🎯 FUNCIONES AUXILIARES PARA FILTRAR EARNINGS CON REFUNDS
 // ============================================================================
+
+/**
+ * 🆕 NUEVA FUNCIÓN: Calcular estadísticas por método de pago
+ * @param {Array} earnings - Array de earnings
+ * @returns {Object} Estadísticas por método (wallet, paypal, mixed_paypal)
+ */
+function calculatePaymentMethodStats(earnings) {
+    const stats = {
+        wallet: { count: 0, total: 0 },
+        paypal: { count: 0, total: 0 },
+        mixed_paypal: { count: 0, total: 0, wallet_part: 0, paypal_part: 0 }
+    };
+
+    earnings.forEach(earning => {
+        const method = earning.payment_method || 'wallet'; // Default a wallet si no está definido
+        const amount = earning.instructor_earning || 0;
+
+        if (method === 'wallet') {
+            stats.wallet.count++;
+            stats.wallet.total += amount;
+        } else if (method === 'paypal') {
+            stats.paypal.count++;
+            stats.paypal.total += amount;
+        } else if (method === 'mixed_paypal') {
+            stats.mixed_paypal.count++;
+            stats.mixed_paypal.total += amount;
+            if (earning.wallet_amount) stats.mixed_paypal.wallet_part += earning.wallet_amount;
+            if (earning.paypal_amount) stats.mixed_paypal.paypal_part += earning.paypal_amount;
+        }
+    });
+
+    return stats;
+}
 
 /**
  * Filtra earnings que tienen refunds completados
@@ -109,9 +144,15 @@ async function filterEarningsWithRefunds(earnings) {
  */
 export const getInstructorsWithEarnings = async (req, res) => {
     try {
-        const { status = 'all', minAmount = 0 } = req.query;
+        const { 
+            status = 'all', 
+            minAmount = 0,
+            paymentMethod = 'all', // 🆕 NUEVO FILTRO
+            startDate, // ✅ NUEVO: Filtro de fecha inicio
+            endDate    // ✅ NUEVO: Filtro de fecha fin
+        } = req.query;
 
-        console.log(`🔍 [AdminPayments] Buscando instructores con status='${status}', minAmount=${minAmount}`);
+        console.log(`🔍 [AdminPayments] Buscando instructores con status='${status}', minAmount=${minAmount}, paymentMethod='${paymentMethod}', startDate='${startDate || 'N/A'}', endDate='${endDate || 'N/A'}'`);
 
         // Construir filtro de status
         // 🔥 CLAVE: Si status='all', obtener ganancias 'available' Y 'pending' (listos para pagar)
@@ -124,10 +165,39 @@ export const getInstructorsWithEarnings = async (req, res) => {
             statusFilter = { status: { $nin: ['paid', 'completed', 'refunded'] } };
         }
 
-        console.log('📊 [AdminPayments] Filtro de status:', statusFilter);
+        // 🆕 Construir filtro de método de pago
+        // ⚠️ NOTA: payment_method NO existe en earnings, se determina al crear el pago
+        // Por ahora, no filtramos por payment_method en la query de earnings
+        // En su lugar, filtraremos después basándonos en la configuración del instructor
+        let paymentMethodFilter = {};
+        // 🔥 DESHABILITADO: Las earnings no tienen payment_method hasta que se crea el pago
+        // if (paymentMethod && paymentMethod !== 'all') {
+        //     paymentMethodFilter = { payment_method: paymentMethod };
+        // }
+        
+        // ✅ NUEVO: Construir filtro de fechas (filtra por earned_at de la ganancia)
+        let dateFilter = {};
+        if (startDate || endDate) {
+            dateFilter.earned_at = {};
+            if (startDate) {
+                dateFilter.earned_at.$gte = new Date(startDate);
+                console.log(`📅 [AdminPayments] Fecha inicio: ${new Date(startDate).toISOString()}`);
+            }
+            if (endDate) {
+                // Agregar 23:59:59 para incluir todo el día
+                const endDateObj = new Date(endDate);
+                endDateObj.setHours(23, 59, 59, 999);
+                dateFilter.earned_at.$lte = endDateObj;
+                console.log(`📅 [AdminPayments] Fecha fin: ${endDateObj.toISOString()}`);
+            }
+        }
+
+        const filters = { ...statusFilter, ...paymentMethodFilter, ...dateFilter };
+
+        console.log('📊 [AdminPayments] Filtros aplicados:', filters);
 
         // 🔥 PASO 1: Obtener earnings con populate de sale
-        const allEarnings = await InstructorEarnings.find(statusFilter)
+        const allEarnings = await InstructorEarnings.find(filters)
             .populate('course')
             .populate('product_id')
             .populate('sale'); // 🔥 CRÍTICO: Popular sale para verificar refunds
@@ -139,7 +209,11 @@ export const getInstructorsWithEarnings = async (req, res) => {
 
         console.log(`✅ [AdminPayments] Ganancias válidas después de filtrar refunds: ${validEarnings.length}`);
 
-        // 🔥 PASO 3: Agrupar por instructor
+        // 🆕 PASO 3: Calcular estadísticas por método de pago
+        const paymentMethodStats = calculatePaymentMethodStats(validEarnings);
+        console.log('💳 [AdminPayments] Estadísticas por método:', paymentMethodStats);
+
+        // 🔥 PASO 4: Agrupar por instructor
         const earningsAggregation = validEarnings.reduce((acc, earning) => {
             const instructorId = earning.instructor.toString();
 
@@ -149,12 +223,27 @@ export const getInstructorsWithEarnings = async (req, res) => {
                     totalEarnings: 0,
                     count: 0,
                     oldestEarning: earning.earned_at,
-                    newestEarning: earning.earned_at
+                    newestEarning: earning.earned_at,
+                    // 🆕 Desglose por método de pago
+                    paymentMethods: {
+                        wallet: { count: 0, total: 0 },
+                        paypal: { count: 0, total: 0 },
+                        mixed_paypal: { count: 0, total: 0 }
+                    }
                 };
             }
 
-            acc[instructorId].totalEarnings += earning.instructor_earning;
+            const amount = earning.instructor_earning;
+            const method = earning.payment_method || 'wallet';
+
+            acc[instructorId].totalEarnings += amount;
             acc[instructorId].count++;
+
+            // 🆕 Acumular por método
+            if (acc[instructorId].paymentMethods[method]) {
+                acc[instructorId].paymentMethods[method].count++;
+                acc[instructorId].paymentMethods[method].total += amount;
+            }
 
             if (earning.earned_at < acc[instructorId].oldestEarning) {
                 acc[instructorId].oldestEarning = earning.earned_at;
@@ -176,7 +265,7 @@ export const getInstructorsWithEarnings = async (req, res) => {
 
         console.log(`✅ [AdminPayments] Encontrados ${earningsArray.length} instructores con ganancias >= ${minAmount}`);
 
-        // 🔥 PASO 5: Logs detallados por instructor
+        // 🆕 PASO 5: Logs detallados por instructor
         console.log(`📊 [AdminPayments] Desglose por instructor:`);
         for (const item of earningsArray) {
             const instructorEarnings = validEarnings.filter(
@@ -193,6 +282,12 @@ export const getInstructorsWithEarnings = async (req, res) => {
             console.log(`   • Instructor ${item._id}:`);
             console.log(`     - Total: ${item.totalEarnings.toFixed(2)} USD`);
             console.log(`     - Items: ${item.count}`);
+            console.log(`     - Métodos de pago:`);
+            Object.keys(item.paymentMethods).forEach(method => {
+                if (item.paymentMethods[method].count > 0) {
+                    console.log(`       * ${method}: ${item.paymentMethods[method].count} items, ${item.paymentMethods[method].total.toFixed(2)} USD`);
+                }
+            });
             console.log(`     - Estados:`);
             Object.keys(statusCounts).forEach(status => {
                 console.log(`       * ${status}: ${statusCounts[status]} items, ${statusTotals[status].toFixed(2)} USD`);
@@ -202,20 +297,17 @@ export const getInstructorsWithEarnings = async (req, res) => {
 
 
         // Poblar información de instructores
-        const instructorsWithEarnings = await Promise.all(
+        let instructorsWithEarnings = await Promise.all(
             earningsArray.map(async (item) => {
                 const instructor = await User.findById(item._id).select('name email surname avatar country'); // 🔥 Agregar country
 
                 // Obtener configuración de pago
                 const paymentConfig = await InstructorPaymentConfig.findOne({
-                    instructor: item._id
-                }).select('preferred_payment_method paypal_connected bank_account.verified bank_account.country mercadopago.country');
+                instructor: item._id
+                }).select('preferred_payment_method paypal_connected');
 
-                // 🔥 NUEVO: Obtener país (priorizar User.country > PaymentConfig.country)
-                const country = instructor.country ||
-                    paymentConfig?.bank_account?.country ||
-                    paymentConfig?.mercadopago?.country ||
-                    'INTL';
+                // 🔥 Obtener país del instructor
+                const country = instructor.country || 'INTL';
 
                 return {
                     instructor: {
@@ -226,25 +318,39 @@ export const getInstructorsWithEarnings = async (req, res) => {
                         total: parseFloat(item.totalEarnings.toFixed(2)),
                         count: item.count,
                         oldestDate: item.oldestEarning,
-                        newestDate: item.newestEarning
+                        newestDate: item.newestEarning,
+                        paymentMethods: item.paymentMethods // 🆕 Desglose por método
                     },
                     paymentConfig: {
-                        hasConfig: !!paymentConfig,
-                        preferredMethod: paymentConfig?.preferred_payment_method || 'none',
-                        paypalConnected: paymentConfig?.paypal_connected || false,
-                        bankVerified: paymentConfig?.bank_account?.verified || false,
-                        country // 🔥 NUEVO: Incluir país
+                    hasConfig: !!paymentConfig,
+                    preferredMethod: paymentConfig?.preferred_payment_method || 'none',
+                    paypalConnected: paymentConfig?.paypal_connected || false,
+                    country // 🔥 Incluir país
                     }
                 };
             })
         );
+        
+        // 🔥 NUEVO: Filtrar por método de pago preferido (basado en configuración del instructor)
+        if (paymentMethod && paymentMethod !== 'all') {
+            console.log(`🔎 [AdminPayments] Filtrando por método de pago: ${paymentMethod}`);
+            const beforeFilter = instructorsWithEarnings.length;
+            
+            instructorsWithEarnings = instructorsWithEarnings.filter(item => {
+                // Filtrar por método preferido del instructor
+                return item.paymentConfig.preferredMethod === paymentMethod;
+            });
+            
+            console.log(`✅ [AdminPayments] Instructores filtrados: ${beforeFilter} → ${instructorsWithEarnings.length}`);
+        }
 
         res.json({
             success: true,
             instructors: instructorsWithEarnings,
             summary: {
                 totalInstructors: instructorsWithEarnings.length,
-                totalEarnings: instructorsWithEarnings.reduce((sum, i) => sum + i.earnings.total, 0).toFixed(2)
+                totalEarnings: instructorsWithEarnings.reduce((sum, i) => sum + i.earnings.total, 0).toFixed(2),
+                paymentMethodStats // 🆕 Estadísticas globales por método
             }
         });
     } catch (error) {
@@ -266,7 +372,7 @@ export const getInstructorsWithEarnings = async (req, res) => {
 export const getInstructorEarnings = async (req, res) => {
     try {
         const { id: instructorId } = req.params;
-        const { status, startDate, endDate } = req.query;
+        const { status, startDate, endDate, paymentMethod } = req.query;
 
         console.log(`\ud83d\udd0d [getInstructorEarnings] Instructor: ${instructorId}, status: ${status || 'all'}`);
 
@@ -278,8 +384,12 @@ export const getInstructorEarnings = async (req, res) => {
         if (status && status !== 'all') {
             filters.status = status;
         } else {
-            // Si es 'all' o no se especifica, usar el mismo filtro robusto que la lista general
-            filters.status = { $nin: ['paid', 'completed', 'refunded'] };
+            filters.status = { $nin: ['paid', 'completed', 'refunded', 'cancelled'] };
+        }
+
+        // Filtro de método de pago
+        if (paymentMethod && paymentMethod !== 'all') {
+            filters.payment_method = paymentMethod;
         }
 
         if (startDate || endDate) {
@@ -294,7 +404,10 @@ export const getInstructorEarnings = async (req, res) => {
         const allEarnings = await InstructorEarnings.find(filters)
             .populate('course', 'title imagen')
             .populate('product_id', 'title imagen')
-            .populate('sale', 'n_transaccion created_at user')
+            .populate({
+                path: 'sale',
+                select: 'n_transaccion created_at user method_payment wallet_amount remaining_amount total'
+            })
             .sort({ earned_at: -1 });
 
         console.log(`\ud83d\udce6 [getInstructorEarnings] Earnings obtenidos: ${allEarnings.length}`);
@@ -326,11 +439,23 @@ export const getInstructorEarnings = async (req, res) => {
                 earningObj.product_type = 'course';
             }
 
+            // Agregar desglose de pago mixto si aplica
+            if (earningObj.payment_method === 'mixed_paypal' && earningObj.sale) {
+                earningObj.mixed_payment_breakdown = {
+                    wallet_amount: earningObj.sale.wallet_amount || 0,
+                    paypal_amount: earningObj.sale.remaining_amount || 0,
+                    total: earningObj.sale.total || 0
+                };
+            }
+
             return earningObj;
         });
 
         // Calcular totales
         const totals = calculateTotalEarnings(validEarnings);
+        
+        // Agregar desglose por método de pago
+        totals.byPaymentMethod = calculatePaymentMethodStats(validEarnings);
 
         // Obtener configuración del instructor
         const instructor = await User.findById(instructorId).select('name email surname');
@@ -452,6 +577,8 @@ export const createPayment = async (req, res) => {
 
         if (paymentConfig.preferred_payment_method === 'paypal') {
             paymentDetails.paypal_email = paymentConfig.paypal_email;
+        } else if (paymentConfig.preferred_payment_method === 'wallet') {
+            paymentDetails.wallet_enabled = true;
         }
 
         // Crear el pago
@@ -916,9 +1043,9 @@ export const getEarningsReport = async (req, res) => {
 
 
 /**
- * 🔥 NUEVO: Obtener datos bancarios completos de un instructor (solo para admin)
+ * 🔥 Obtener método de pago de un instructor (solo para admin)
  * GET /api/admin/instructors/:id/payment-method-full
- * Este endpoint devuelve los datos bancarios SIN encriptar para que el admin pueda procesarlos
+ * Este endpoint devuelve los métodos de pago configurados (Wallet, PayPal)
  */
 export const getInstructorPaymentMethodFull = async (req, res) => {
     try {
@@ -954,7 +1081,7 @@ export const getInstructorPaymentMethodFull = async (req, res) => {
         // 🔥 Obtener país del instructor (prioridad: User > PaymentConfig)
         const country = instructor.country || 'INTL';
 
-        // Preparar respuesta con datos COMPLETOS (desencriptados)
+        // Preparar respuesta con métodos de pago
         const response = {
             instructor: {
                 ...instructor.toObject(),
@@ -962,20 +1089,24 @@ export const getInstructorPaymentMethodFull = async (req, res) => {
             },
             paymentMethod: paymentConfig.preferred_payment_method,
             preferredMethod: paymentConfig.preferred_payment_method,
-            country, // 🔥 NUEVO: País del instructor
-            paymentDetails: null,
-            bankDetails: null // 🔥 Nuevo campo: Siempre devolver detalles bancarios si existen
+            country, // 🔥 País del instructor
+            paymentDetails: null
         };
 
-        // Poblar paymentDetails según el método PREFERIDO (comportamiento original)
+        // Poblar paymentDetails según el método preferido
         if (paymentConfig.preferred_payment_method === 'paypal') {
             response.paymentDetails = {
                 type: 'paypal',
-                paypal_email: paymentConfig.paypal_email, // Email completo
+                paypal_email: paymentConfig.paypal_email,
                 paypal_merchant_id: paymentConfig.paypal_merchant_id || '',
                 paypal_connected: paymentConfig.paypal_connected,
                 paypal_verified: paymentConfig.paypal_verified,
                 country: 'INTL' // 🔥 PayPal es internacional
+            };
+        } else if (paymentConfig.preferred_payment_method === 'wallet') {
+            response.paymentDetails = {
+                type: 'wallet',
+                country: instructor.country || 'INTL'
             };
         }
 
