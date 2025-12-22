@@ -212,3 +212,6 @@ export default {
     notifyNewRegistration,
     notifySuccessfulVerification
 };
+
+// Exponer sendTelegramMessage para uso en otros controladores (ej. webhook del bot)
+export { sendTelegramMessage };

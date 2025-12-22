@@ -26,6 +26,10 @@ import Refund from './Refund.js' // 💸 Sistema de reembolsos
 import SystemConfig from './SystemConfig.js' // 🆕 Configuración del sistema
 import Wallet from './Wallet.js' // 💰 Sistema de billetera digital
 
+// Módulos Fiscales
+import InstructorRetention from './InstructorRetention.js';
+import PlatformCommissionBreakdown from './PlatformCommissionBreakdown.js';
+
 export default {
     User,
     Categorie,
@@ -42,7 +46,7 @@ export default {
     SaleDetail,
     CourseStudent,
     Review,
-    
+
     // Sistema de pagos a instructores
     InstructorPaymentConfig,
     InstructorEarnings,
@@ -54,4 +58,8 @@ export default {
     Refund, // 💸 Sistema de reembolsos
     SystemConfig, // 🆕 Configuración del sistema
     Wallet, // 💰 Sistema de billetera digital
+
+    // Modelos fiscales
+    InstructorRetention,
+    PlatformCommissionBreakdown
 }

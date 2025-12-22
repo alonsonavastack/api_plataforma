@@ -7,6 +7,15 @@ import { createServer } from 'http';
 import { initializeSocketIO } from './services/socket.service.js';
 
 // ═══════════════════════════════════════════════════════════════════════
+// 🔐 VALIDACIÓN DE ENTORNO (DEBE SER LO PRIMERO)
+// ═══════════════════════════════════════════════════════════════════════
+import { validateEnvironment, showEnvInfo } from './config/validateEnv.js';
+
+// Validar variables de entorno ANTES de iniciar
+validateEnvironment();
+showEnvInfo();
+
+// ═══════════════════════════════════════════════════════════════════════
 // 🔒 IMPORTS DE SEGURIDAD
 // ═══════════════════════════════════════════════════════════════════════
 
@@ -241,13 +250,19 @@ app.use(express.static(path.join(__dirname, 'public')));
 console.log('✅ Parsers configurados');
 
 // ═══════════════════════════════════════════════════════════════════════
-// 📊 LOGGING DE REQUESTS (Development)
+// 📊 LOGGING DE REQUESTS (Development) - SIN INFORMACIÓN SENSIBLE
 // ═══════════════════════════════════════════════════════════════════════
 
 if (process.env.NODE_ENV === 'development') {
-    app.use((req, res, next) => {
-        const timestamp = new Date().toISOString();
-        console.log(`[${timestamp}] ${req.method} ${req.path}`);
+app.use((req, res, next) => {
+const timestamp = new Date().toISOString();
+// 🔒 NO loguear body, headers con tokens, ni passwords
+const safeLog = {
+    method: req.method,
+        path: req.path,
+            ip: req.ip
+        };
+        console.log(`[${timestamp}] ${safeLog.method} ${safeLog.path}`);
         next();
     });
 }
@@ -327,14 +342,15 @@ try {
     app.use((err, req, res, next) => {
         const isDevelopment = process.env.NODE_ENV === 'development';
 
-        // Loguear error completo en servidor
+        // 🔒 Loguear error SIN información sensible
         console.error('❌ Error capturado:', {
             message: err.message,
             stack: isDevelopment ? err.stack : undefined,
             path: req.path,
             method: req.method,
             ip: req.ip,
-            user: req.user ? req.user.email : 'no autenticado',
+            // 🔒 NO loguear user completo, solo email si existe
+            userEmail: req.user ? req.user.email : 'no autenticado',
             timestamp: new Date().toISOString()
         });
 

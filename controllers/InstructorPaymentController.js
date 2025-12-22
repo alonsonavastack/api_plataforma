@@ -125,24 +125,24 @@ export const connectPaypal = async (req, res) => {
             }
         );
 
-        console.log('✅ Token Recibido con éxito.');
-        console.log('🔑 Scopes garantizados:', tokenResponse.data.scope);
+        // 🔒 LOG REMOVIDO POR SEGURIDAD
+        // 🔒 LOG REMOVIDO POR SEGURIDAD
 
         const { access_token, id_token } = tokenResponse.data;
         let email, payerId;
 
         // ESTRATEGIA A: Usar ID Token si está disponible (Más robusto/rápido)
         if (id_token) {
-            console.log('🎫 ID Token detectado. Decodificando localmente...');
+            // 🔒 LOG REMOVIDO POR SEGURIDAD
             try {
                 // Decodificar payload del JWT (segunda parte)
                 const payload = JSON.parse(Buffer.from(id_token.split('.')[1], 'base64').toString());
-                console.log('🎫 ID Token Payload:', payload);
+                // 🔒 LOG REMOVIDO POR SEGURIDAD
 
                 email = payload.email;
                 payerId = payload.payer_id || payload.user_id || payload.sub; // sub suele ser el payer_id en PayPal
 
-                console.log('✅ Datos extraídos del ID Token:', { email, payerId });
+                // 🔒 LOG REMOVIDO POR SEGURIDAD
             } catch (e) {
                 console.error('⚠️ Error al decodificar ID Token:', e.message);
             }

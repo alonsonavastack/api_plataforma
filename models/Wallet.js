@@ -47,27 +47,49 @@ const WalletSchema = new Schema({
 
 // Método para agregar crédito (reembolso, bono, etc.)
 WalletSchema.methods.addCredit = async function (amount, description, metadata = {}) {
-    this.balance += amount;
+    // 🔒 SAFEGUARD: Evitar doble acreditación por el mismo reembolso
+    try {
+        if (metadata && metadata.refundId) {
+            const existing = this.transactions.find(t =>
+                t.type === 'credit' &&
+                t.metadata &&
+                t.metadata.refundId &&
+                t.metadata.refundId.toString() === metadata.refundId.toString() &&
+                t.amount === amount &&
+                t.metadata.reason === (metadata.reason || 'refund')
+            );
 
-    const transaction = {
-        user: this.user,
-        type: 'credit',
-        amount: amount,
-        balanceAfter: this.balance,
-        description: description,
-        metadata: metadata
-    };
+            if (existing) {
+                console.warn(`⚠️ [Wallet] Intento de doble crédito detectado para refundId=${metadata.refundId}, amount=${amount}. Operación ignorada.`);
+                return existing; // Devolver transacción existente en lugar de duplicar
+            }
+        }
 
-    this.transactions.push(transaction);
-    await this.save();
+        this.balance += amount;
 
-    // 🔥 OBTENER LA TRANSACCIÓN CON SU _id GENERADO POR MONGODB
-    const savedTransaction = this.transactions[this.transactions.length - 1];
+        const transaction = {
+            user: this.user,
+            type: 'credit',
+            amount: amount,
+            balanceAfter: this.balance,
+            description: description,
+            metadata: metadata
+        };
 
-    console.log(`💰 [Wallet] Crédito agregado: +${amount} USD. Nuevo balance: ${this.balance}`);
-    console.log(`🆔 [Wallet] Transaction ID generado: ${savedTransaction._id}`);
+        this.transactions.push(transaction);
+        await this.save();
 
-    return savedTransaction;
+        // 🔥 OBTENER LA TRANSACCIÓN CON SU _id GENERADO POR MONGODB
+        const savedTransaction = this.transactions[this.transactions.length - 1];
+
+        console.log(`💰 [Wallet] Crédito agregado: +${amount} USD. Nuevo balance: ${this.balance}`);
+        console.log(`🆔 [Wallet] Transaction ID generado: ${savedTransaction._id}`);
+
+        return savedTransaction;
+    } catch (err) {
+        console.error('❌ [Wallet.addCredit] Error en safeguard o guardado:', err);
+        throw err;
+    }
 };
 
 // Método para debitar (compra con saldo de billetera)

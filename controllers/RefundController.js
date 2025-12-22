@@ -2,8 +2,8 @@ import models from '../models/index.js';
 import { emitNewRefundRequestToAdmins, emitRefundStatusToClient } from '../services/socket.service.js';
 
 // Configuración de días para reembolso
-// Configuración de días para reembolso
-const REFUND_DAYS_LIMIT = 3; // 🔥 CAMBIO: 3 días para solicitar reembolso
+// Usamos 7 días para que la política sea consistente con el frontend y la configuración por defecto
+const REFUND_DAYS_LIMIT = 7; // ✅ Política: 7 días para solicitar reembolso
 const MAX_REFUNDS_PER_PRODUCT = 1; // 🔥 CAMBIO: Máximo 1 reembolso por producto
 
 // Listar reembolsos (Admin ve todos, Instructor/Cliente solo los suyos)
@@ -150,13 +150,29 @@ export async function create(req, res) {
 
         // 🔥 NUEVO: VALIDAR MÁXIMO 2 REEMBOLSOS POR PRODUCTO
         console.log('🔍 [RefundController.create] Verificando límite de reembolsos...');
-        const completedRefundsCount = await models.Refund.countDocuments({
-            user: userObj._id,
-            'sale_detail_item.product': data.product_id,
+        // Asegurarnos de comparar ObjectId con ObjectId para evitar falsos positivos
+        const mongoose = (await import('mongoose')).default;
+        let productObjectId = data.product_id;
+        try {
+            productObjectId = mongoose.Types.ObjectId(data.product_id);
+        } catch (e) {
+            // Si no es convertible, dejaremos el valor original y lo logueamos
+            console.warn('⚠️ [RefundController.create] product_id no convertible a ObjectId:', data.product_id);
+        }
+
+        // Alineado a política: limitar POR VENTA+PRODUCTO (no por usuario globalmente)
+        const completedRefundsFilter = {
+            sale: data.sale_id,
+            'sale_detail_item.product': productObjectId,
             'sale_detail_item.product_type': data.product_type,
             status: 'completed',
             state: 1
-        });
+        };
+
+        console.log('🔍 [RefundController.create] Buscando reembolsos completados para esta venta+producto con filtro:', completedRefundsFilter);
+        const completedRefundsDocs = await models.Refund.find(completedRefundsFilter).select('_id user sale sale_detail_item status completedAt').lean();
+        const completedRefundsCount = completedRefundsDocs.length;
+        console.log(`   📊 Reembolsos completados para esta venta+producto: ${completedRefundsCount} / ${MAX_REFUNDS_PER_PRODUCT}`, completedRefundsDocs);
 
         console.log(`   📊 Reembolsos completados para este producto: ${completedRefundsCount} / ${MAX_REFUNDS_PER_PRODUCT}`);
 
@@ -663,21 +679,21 @@ export async function requestRefund(req, res) {
 
 
 
-        // 2. Verificar si la venta es reembolsable (3 días)
+        // 2. Verificar si la venta es reembolsable (límite configurado)
         const now = new Date();
         const purchaseDate = new Date(sale.createdAt);
         const timeSincePurchase = now.getTime() - purchaseDate.getTime();
-        const daysInMilliseconds = 3 * 24 * 60 * 60 * 1000; // CAMBIO: 3 días
+        const daysInMilliseconds = REFUND_DAYS_LIMIT * 24 * 60 * 60 * 1000;
 
         if (timeSincePurchase >= daysInMilliseconds) {
             console.log('⚠️ [RefundController.requestRefund] Período de reembolso expirado:', {
                 timeSincePurchase: Math.floor(timeSincePurchase / (24 * 60 * 60 * 1000)) + ' días',
-                limit: '3 días'
+                limit: `${REFUND_DAYS_LIMIT} días`
             });
             return res.status(400).send({
                 success: false,
-                message: 'El plazo para solicitar reembolso ha expirado (3 días)',
-                daysLimit: 3,
+                message: `El plazo para solicitar reembolso ha expirado (${REFUND_DAYS_LIMIT} días)`,
+                daysLimit: REFUND_DAYS_LIMIT,
                 daysSincePurchase: Math.floor(timeSincePurchase / (24 * 60 * 60 * 1000))
             });
         }
@@ -709,15 +725,29 @@ export async function requestRefund(req, res) {
             });
         }
 
-        const completedRefundsCount = await models.Refund.countDocuments({
-            user: userId,
-            'sale_detail_item.product': product_id,
+        // Asegurar que usamos ObjectId para la comparación
+        const mongoose = (await import('mongoose')).default;
+        let productObjectIdReq = product_id;
+        try {
+            productObjectIdReq = mongoose.Types.ObjectId(product_id);
+        } catch (err) {
+            console.warn('⚠️ [RefundController.requestRefund] product_id no convertible a ObjectId:', product_id);
+        }
+
+        // Alineado a política: limitar POR VENTA+PRODUCTO (no por usuario globalmente)
+        const completedRefundsFilterReq = {
+            sale: sale_id,
+            'sale_detail_item.product': productObjectIdReq,
             'sale_detail_item.product_type': product_type,
             status: 'completed',
             state: 1
-        });
+        };
 
-        console.log(`   📊 Reembolsos completados para este producto: ${completedRefundsCount} / ${MAX_REFUNDS_PER_PRODUCT}`);
+        console.log('🔍 [RefundController.requestRefund] Buscando reembolsos completados para esta venta+producto con filtro:', completedRefundsFilterReq);
+        const completedRefundsDocsReq = await models.Refund.find(completedRefundsFilterReq).select('_id user sale sale_detail_item status completedAt').lean();
+        const completedRefundsCount = completedRefundsDocsReq.length;
+
+        console.log(`   📊 Reembolsos completados para esta venta+producto: ${completedRefundsCount} / ${MAX_REFUNDS_PER_PRODUCT}`, completedRefundsDocsReq);
 
         if (completedRefundsCount >= MAX_REFUNDS_PER_PRODUCT) {
             console.error(`❌ [RefundController.requestRefund] Límite de reembolsos alcanzado: ${completedRefundsCount}`);
@@ -996,5 +1026,58 @@ export async function checkRefundEligibility(req, res) {
     } catch (error) {
         console.error('❌ Error al verificar elegibilidad:', error);
         res.status(500).send({ message: 'Error al verificar elegibilidad de reembolso' });
+    }
+}
+
+// 🔧 DEBUG: List refunds filtered by sale_id or product_id for the requesting user (or admin)
+export async function debugListByProduct(req, res) {
+    try {
+        const user = req.user;
+        const userObj = user.toObject ? user.toObject() : user;
+
+        const { sale_id, product_id } = req.query;
+
+        if (!sale_id && !product_id) {
+            return res.status(400).send({ message: 'Provee sale_id o product_id como query param.' });
+        }
+
+        // Si el usuario NO es admin, verificar que la venta pertenezca al usuario (si se pasó sale_id)
+        if (userObj.rol !== 'admin' && sale_id) {
+            const sale = await models.Sale.findById(sale_id).select('user');
+            if (!sale) return res.status(404).send({ message: 'Venta no encontrada para verificación.' });
+            if (sale.user.toString() !== userObj._id.toString()) {
+                return res.status(403).send({ message: 'No tienes permiso para ver estos reembolsos.' });
+            }
+        }
+
+        const mongoose = (await import('mongoose')).default;
+        let productObjectId = product_id;
+        if (product_id) {
+            try {
+                productObjectId = mongoose.Types.ObjectId(product_id);
+            } catch (e) {
+                console.warn('⚠️ [RefundController.debugListByProduct] product_id no convertible a ObjectId:', product_id);
+            }
+        }
+
+        const filter = { state: 1 };
+        if (sale_id) filter.sale = sale_id;
+        if (product_id) filter['sale_detail_item.product'] = productObjectId;
+
+        // Si no es admin y no se pasó sale_id, filtrar por user para seguridad
+        if (userObj.rol !== 'admin') filter.user = userObj._id;
+
+        console.log('🔍 [RefundController.debugListByProduct] Filtro:', filter);
+
+        const refunds = await models.Refund.find(filter)
+            .select('_id sale user sale_detail_item status completedAt requestedAt')
+            .lean();
+
+        console.log('✅ [RefundController.debugListByProduct] Reembolsos encontrados:', refunds.length, refunds);
+
+        return res.status(200).send({ count: refunds.length, refunds });
+    } catch (error) {
+        console.error('❌ [RefundController.debugListByProduct] Error:', error);
+        return res.status(500).send({ message: 'Error al listar reembolsos para debugging', error: error.message });
     }
 }

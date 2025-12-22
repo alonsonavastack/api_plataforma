@@ -6,7 +6,12 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon --env-file .env index.js",
-    "fix:index": "node --env-file .env fix-index.js"
+    "fix:index": "node --env-file .env fix-index.js",
+    "security:clean-logs": "node scripts/remove-sensitive-logs.js",
+    "security:validate-env": "node --env-file .env -e \"import('./config/validateEnv.js').then(m => m.validateEnvironment())\"",
+    "security:audit": "npm run security:validate-env && npm run security:clean-logs",
+    "pre-production": "node scripts/pre-production-check.js",
+    "prod": "NODE_ENV=production node index.js"
   },
   "author": "ECHODEVELOPERS",
   "license": "ISC",
@@ -38,6 +43,7 @@
     "nodemailer": "^7.0.9",
     "nodemailer-smtp-transport": "^2.4.2",
     "nodemon": "^3.0.1",
+    "pdfkit": "^0.13.0",
     "sharp": "^0.33.5",
     "socket.io": "^4.8.1"
   }

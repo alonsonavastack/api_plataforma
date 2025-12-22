@@ -1,4 +1,5 @@
 import models from "../models/index.js";
+import TaxBreakdownService from "./TaxBreakdownService.js";
 
 /**
  * 📚 Inscribir estudiante en un curso
@@ -105,7 +106,7 @@ async function createEarningForProduct(sale, item) {
         const earningStatus = 'available'; // ✅ SIEMPRE disponible cuando se crea
 
         // 4. 🔥 Crear ganancia CON información de descuento completa
-        await models.InstructorEarnings.create({
+        const newEarning = await models.InstructorEarnings.create({
             instructor: instructorId,
             sale: sale._id,
             product_id: item.product,
@@ -137,6 +138,10 @@ async function createEarningForProduct(sale, item) {
         if (discountPercentage > 0) {
             console.log(`      🎁 Descuento original: ${discountPercentage.toFixed(1)}% (-${actualDiscountAmount.toFixed(2)})`);
         }
+
+        // 5. 🧮 NUEVO: Calcular Desglose Fiscal y Retenciones
+        // 🔥 Esto genera los registros de auditoría y control fiscal
+        await TaxBreakdownService.calculateBreakdown(sale, newEarning);
 
         return true;
     } catch (error) {

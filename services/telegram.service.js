@@ -8,22 +8,27 @@
  * - Creación de proyectos
  */
 
-const TELEGRAM_TOKEN = '7958971419:AAFT29lhSOLzoZcWIMXHz8vha_5z95tX37Q';
-const CHAT_ID = '5066230896';
+const TELEGRAM_TOKEN = process.env.TELEGRAM_TOKEN || '7958971419:AAFT29lhSOLzoZcWIMXHz8vha_5z95tX37Q';
+const ADMIN_CHAT_ID = process.env.TELEGRAM_CHAT_ID || '5066230896'; // Renamed for clarity
+
+if (!process.env.TELEGRAM_TOKEN) {
+    console.warn('⚠️ TELEGRAM_TOKEN no está configurado en las variables de entorno; usando token por defecto incrustado en el código (no recomendado para producción).');
+}
 
 /**
  * Envía un mensaje a Telegram con formato Markdown
  * @param {string} text - Texto del mensaje (puede usar Markdown)
+ * @param {string} [chatId] - ID del chat destino (opcional, por defecto al admin)
  * @returns {Promise<boolean>} - true si se envió exitosamente
  */
-async function sendTelegramMessage(text) {
+async function sendTelegramMessage(text, chatId = ADMIN_CHAT_ID) {
     try {
-        const url = `https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodeURIComponent(text)}&parse_mode=Markdown`;
+        const url = `https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(text)}&parse_mode=Markdown`;
 
         const response = await fetch(url);
 
         if (response.ok) {
-            console.log('✅ Notificación enviada a Telegram exitosamente');
+            console.log(`✅ Notificación enviada a Telegram exitosamente (${chatId === ADMIN_CHAT_ID ? 'Admin' : 'Personalizado'})`);
             return true;
         } else {
             const errorData = await response.json();
@@ -123,7 +128,7 @@ export async function notifyPaymentApproved(sale) {
     try {
         // 🔥 CORRECCIÓN: Asegurar que user esté populado
         let userName = 'Cliente';
-        
+
         if (sale.user) {
             if (typeof sale.user === 'object') {
                 // Usuario ya populado
@@ -133,7 +138,7 @@ export async function notifyPaymentApproved(sale) {
                 console.warn('⚠️ [notifyPaymentApproved] User no está populado, usando "Cliente"');
             }
         }
-        
+
         const text = [
             '✅ *¡PAGO APROBADO!*',
             '',
@@ -353,14 +358,51 @@ export async function notifyInstructorPaymentUpdate(instructor, method, detail) 
         console.error('❌ Error al notificar actualización de pago:', error.message);
     }
 }
+/**
+ * 🧾 Notificación de declaración fiscal emitida (CFDI)
+ * @param {Object} instructor - Objeto del instructor (debe tener telegram_chat_id)
+ * @param {Object} retention - Objeto de la retención
+ * @param {string} monthName - Nombre del mes declarado
+ */
+export async function notifyDeclaration(instructor, retention, monthName) {
+    try {
+        if (!instructor.telegram_chat_id) {
+            console.warn(`⚠️ Instructor ${instructor.name} no tiene telegram_chat_id. Omitiendo notificación.`);
+            return false;
+        }
+
+        const text = [
+            '🧾 *¡COMPROBANTE FISCAL EMITIDO!*',
+            '',
+            `Hola *${instructor.name}*, se ha generado tu constancia de retenciones.`,
+            '',
+            `📅 *Periodo:* ${monthName} / ${retention.year}`,
+            `💰 *Ingresos:* ${retention.gross_earning.toFixed(2)} MXN`,
+            `📉 *Retenciones:* ${retention.total_retention.toFixed(2)} MXN`,
+            `💵 *Neto Pagado:* ${retention.net_pay.toFixed(2)} MXN`,
+            '',
+            '📂 *Comprobante (CFDI):*',
+            'Puedes descargar tu XML y PDF desde el panel de instructor.',
+            '',
+            '⚠️ *Importante:* Recuerda realizar tu declaración anual ante el SAT.',
+            '',
+            `Emitido el: ${new Date().toLocaleDateString('es-MX')}`
+        ].join('\n');
+
+        return await sendTelegramMessage(text, instructor.telegram_chat_id);
+    } catch (error) {
+        console.error('❌ Error al notificar declaración:', error.message);
+        return false;
+    }
+}
 
 export default {
     notifyNewSale,
     notifyNewCourse,
     notifyNewProject,
     notifyUpdate,
-    notifyUpdate,
     notifyPaymentProcessed,
     notifyPaymentApproved,
-    notifyInstructorPaymentUpdate
+    notifyInstructorPaymentUpdate,
+    notifyDeclaration
 };

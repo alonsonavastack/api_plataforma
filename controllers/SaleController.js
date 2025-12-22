@@ -10,13 +10,6 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import ejs from 'ejs';
-import { MercadoPagoConfig, Preference, Payment } from 'mercadopago'; // 🔥 IMPORTAR MERCADO PAGO
-
-// 🔥 CONFIGURAR CLIENTE DE MERCADO PAGO
-const client = new MercadoPagoConfig({
-    accessToken: process.env.MERCADOPAGO_ACCESS_TOKEN,
-    options: { timeout: 5000 }
-});
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -199,7 +192,7 @@ export default {
             }
 
             // ✅ MERCADO PAGO REMOVED: Not supported anymore
-            if (method_payment === 'mercadopago') {
+            if (method_payment === 'mercadopago' || method_payment === 'mixed_mercadopago') {
                 return res.status(400).send({ message: 'MercadoPago no soportado. Por favor utiliza PayPal.' });
             }
 
@@ -459,49 +452,14 @@ export default {
         }
     },
     /**
-     * 🔔 WEBHOOK MERCADO PAGO
-     * Recibe notificaciones de pagos actualizados
+     * 🔔 WEBHOOK (Placeholder)
+     * Ya no se utiliza para Mercado Pago. Podría adaptarse para otros servicios.
      */
     async webhook(req, res) {
-        const paymentId = req.query.id || req.query['data.id'];
-        const topic = req.query.topic || req.query.type;
-
-        console.log(`\n🔔 [WEBHOOK] Notificación recibida: ${topic} - ID: ${paymentId}`);
-
-        try {
-            if (topic === 'payment' && paymentId) {
-                const payment = new Payment(client);
-                const paymentData = await payment.get({ id: paymentId });
-
-                console.log(`   💰 Estado del pago: ${paymentData.status}`);
-                console.log(`   🆔 Referencia externa (Sale ID): ${paymentData.external_reference}`);
-
-                if (paymentData.status === 'approved') {
-                    const saleId = paymentData.external_reference;
-                    const sale = await models.Sale.findById(saleId);
-
-                    if (sale && sale.status !== 'Pagado') {
-                        console.log(`   ✅ Aprobando venta ${sale._id}...`);
-
-                        sale.status = 'Pagado';
-                        sale.method_payment = 'mercadopago';
-                        await sale.save();
-
-                        // Activar accesos y notificar
-                        await processPaidSale(sale, sale.user);
-                        // sendConfirmationEmail(sale._id).catch(console.error); // 🚫 Email deshabilitado
-                        notifyPaymentApproved(sale).catch(console.error);
-                        emitSaleStatusUpdate(sale);
-                    } else {
-                        console.log(`   ℹ️ Venta ya pagada o no encontrada`);
-                    }
-                }
-            }
-            res.sendStatus(200);
-        } catch (error) {
-            console.error('❌ Error en webhook:', error);
-            res.sendStatus(500);
-        }
+        console.log('🔔 [WEBHOOK] Notificación recibida, pero no hay acción configurada.');
+        // La lógica de Mercado Pago ha sido eliminada.
+        // Si se necesita un webhook para PayPal u otro servicio, se debe implementar aquí.
+        res.sendStatus(200);
     },
 
     /**
@@ -794,37 +752,67 @@ export default {
      */
     my_transactions: async (req, res) => {
         try {
-            const sales = await models.Sale.find({ user: req.user._id })
+            let sales = await models.Sale.find({ user: req.user._id })
                 .populate({ path: 'detail.product', select: 'title imagen' })
                 .sort({ createdAt: -1 })
                 .lean();
 
-            const transactions = sales.map(sale => ({
-                _id: sale._id,
-                n_transaccion: sale.n_transaccion,
-                method_payment: sale.method_payment,
-                status: sale.status,
-                total: sale.total,
-                currency_total: sale.currency_total,
-                createdAt: sale.createdAt,
-                wallet_amount: sale.wallet_amount || 0,
-                remaining_amount: sale.remaining_amount || 0,
-                items: sale.detail.map(item => ({
-                    product_id: item.product?._id,
-                    product_type: item.product_type,
-                    title: item.title || item.product?.title,
-                    imagen: item.product?.imagen,
-                    price_unit: item.price_unit
-                }))
-            }));
+            // 🔥 VERIFICAR PAGOS A INSTRUCTORES (Para bloquear reembolsos)
+            const saleIds = sales.map(s => s._id);
 
-            res.status(200).json({ transactions });
+            // 1. Verificar Ganancias directas marcadas como pagadas
+            const paidEarnings = await models.InstructorEarnings.find({
+                sale: { $in: saleIds },
+                status: 'paid'
+            }).select('sale').lean();
+
+            // 2. Verificar Retenciones/Desgloses marcados como pagados o declarados
+            // Esto cubre el flujo de impuestos donde se paga al instructor vía retención
+            const paidRetentions = await models.InstructorRetention.find({
+                sale: { $in: saleIds },
+                status: { $in: ['paid', 'declared'] }
+            }).select('sale').lean();
+
+            const paidSaleIds = new Set([
+                ...paidEarnings.map(e => e.sale.toString()),
+                ...paidRetentions.map(r => r.sale.toString())
+            ]);
+
+            // Obtener reembolsos
+            const refunds = await models.Refund.find({ sale: { $in: saleIds } }).lean();
+            const refundMap = new Map();
+            refunds.forEach(r => {
+                if (!refundMap.has(r.sale.toString())) {
+                    refundMap.set(r.sale.toString(), []);
+                }
+                refundMap.get(r.sale.toString()).push(r);
+            });
+
+            sales = sales.map(sale => {
+                const saleRefunds = refundMap.get(sale._id.toString()) || [];
+                // Determinar estado general de reembolso
+                let refundStatus = null;
+                if (saleRefunds.length > 0) {
+                    refundStatus = saleRefunds[0];
+                }
+
+                return {
+                    ...sale,
+                    refund: refundStatus,
+                    refunds: saleRefunds,
+                    instructor_paid: paidSaleIds.has(sale._id.toString())
+                };
+            });
+
+            res.status(200).json({ sales });
 
         } catch (error) {
-            console.error('❌ Error en my_transactions:', error);
-            res.status(500).json({ message: 'Error al obtener transacciones' });
+            console.error("❌ Error en my_transactions:", error);
+            res.status(500).json({ message: "Error al obtener historial" });
         }
     },
+
+
 
     /**
      * 🔍 BUSCAR POR NÚMERO DE TRANSACCIÓN

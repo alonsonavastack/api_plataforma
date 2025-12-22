@@ -35,6 +35,9 @@ router.get("/list-instructors", userController.list_instructors) // 🆕 NUEVO: 
 router.get("/instructor-profile/:slug", userController.instructor_profile) // 🆕 NUEVO: Perfil público del instructor POR SLUG
 router.delete("/delete/:id", [auth.verifyAdmin], userController.remove)
 
+// Admin: asignar telegram_chat_id manualmente
+router.post('/set-telegram-chat/:id', [auth.verifyAdmin], userController.set_telegram_chat);
+
 // Ruta para verificar la sesión del usuario a partir de su token
 router.get("/profile", [auth.verifyTienda], userController.profile);
 

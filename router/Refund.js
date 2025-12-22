@@ -13,6 +13,9 @@ api.get('/calculate-preview', auth.verifyDashboard, RefundController.calculatePr
 // ✅ NUEVO: Verificar elegibilidad de reembolso
 api.get('/check-eligibility', auth.verifyTienda, RefundController.checkRefundEligibility);
 
+// 🔧 DEBUG: Obtener reembolsos por usuario/producto (solo autenticados)
+api.get('/debug/list-by-product', auth.verifyDashboard, RefundController.debugListByProduct);
+
 // Crear solicitud de reembolso (Customer)
 api.post('/create', auth.verifyDashboard, RefundController.create);
 

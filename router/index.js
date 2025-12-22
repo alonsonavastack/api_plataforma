@@ -29,10 +29,9 @@ import TestingRouter from './Testing.js'; // 🧪 Router de testing (solo desarr
 import InstructorPaymentRouter from './InstructorPayment.js';
 import AdminInstructorPaymentRouter from './AdminInstructorPayment.js';
 import PaymentSettingsRouter from './PaymentSettings.js'; // 💳 Configuración de pagos
-
-// SISTEMA FISCAL MULTI-PAÍS
-// import FiscalRouter from './Fiscal.js'; // 🗑️ DESHABILITADO - No usado en frontend (decidir si eliminar)
-
+import TaxBreakdownRouter from './taxBreakdown.js'; // 🧮 Sistema de desglose fiscal
+import TelegramRouter from './telegram.js'; // 📱 Webhook Telegram
+import HealthRouter from './health.js'; // 🏥 Health check endpoints
 
 // http://localhost:3000/api/users/register
 const router = routerx();
@@ -67,14 +66,16 @@ router.use('/payment-dashboard', PaymentDashboardRouter); // 📊 Dashboard de p
 router.use('/instructor', InstructorPaymentRouter); // Rutas para instructores
 router.use('/admin', AdminInstructorPaymentRouter); // Rutas para administradores
 router.use('/payment-settings', PaymentSettingsRouter); // 💳 Rutas de configuración de pagos
+router.use('/admin/tax-breakdown', TaxBreakdownRouter); // 🧮 Rutas de desglose fiscal
+router.use('/telegram', TelegramRouter); // 📱 Webhook y utilidades Telegram
+
+// 🏥 HEALTH CHECK - Siempre disponible
+router.use('/', HealthRouter); // Endpoints: /health, /ready, /live
 
 // 🧪 TESTING - SOLO DESARROLLO
 if (process.env.NODE_ENV !== 'production') {
     router.use('/testing', TestingRouter); // 🧪 Rutas de testing multi-país
     console.log('🧪 [ROUTER] Rutas de testing habilitadas (solo desarrollo)');
 }
-
-// SISTEMA FISCAL MULTI-PAÍS
-// router.use('/fiscal', FiscalRouter); // 🗑️ DESHABILITADO - No usado en frontend
 
 export default router;

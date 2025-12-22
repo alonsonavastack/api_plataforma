@@ -295,11 +295,11 @@ export default {
 
       // 🔥 MANEJAR CONTRASEÑA: Solo encriptar si se envío una nueva
       if (req.body.password && req.body.password.trim() !== '') {
-        console.log('🔑 [Update] Encriptando nueva contraseña para usuario:', userIdToUpdate);
+        // 🔒 LOG REMOVIDO POR SEGURIDAD
         req.body.password = await bcrypt.hash(req.body.password, 10);
       } else {
         // Si no se envío contraseña o está vacía, eliminarla del body
-        console.log('✅ [Update] Actualización sin cambio de contraseña');
+        // 🔒 LOG REMOVIDO POR SEGURIDAD
         delete req.body.password;
       }
 
@@ -407,6 +407,29 @@ export default {
     } catch (error) {
       console.log(error);
       res.status(500).send({ message: 'HUBO UN ERROR' });
+    }
+  },
+  /**
+   * Asignar manualmente telegram_chat_id a un usuario (admin)
+   */
+  set_telegram_chat: async (req, res) => {
+    try {
+      const userId = req.params.id;
+      const { chat_id } = req.body;
+
+      if (!chat_id) return res.status(400).send({ message: 'chat_id requerido' });
+
+      const user = await models.User.findById(userId);
+      if (!user) return res.status(404).send({ message: 'Usuario no encontrado' });
+
+      user.telegram_chat_id = String(chat_id);
+      await user.save();
+
+      console.log(`🔧 Admin asignó telegram_chat_id ${chat_id} a usuario ${user.email}`);
+      return res.status(200).send({ message: 'telegram_chat_id actualizado', user: resource.User.api_resource_user(user) });
+    } catch (error) {
+      console.error('❌ Error en set_telegram_chat:', error);
+      return res.status(500).send({ message: 'error' });
     }
   },
   update_state: async (req, res) => {
@@ -688,13 +711,13 @@ export default {
 
       const match = await bcrypt.compare(req.body.password, user.password);
       if (!match) {
-        console.log('❌ [Login] Contraseña incorrecta para:', req.body.email);
+        // 🔒 LOG REMOVIDO POR SEGURIDAD
         return res.status(401).json({
           message: "El correo o la contraseña son incorrectos.",
         });
       }
 
-      console.log('✅ [Login] Contraseña correcta para:', req.body.email);
+      // 🔒 LOG REMOVIDO POR SEGURIDAD
 
       // Verificar si el usuario necesita verificación OTP
       if (!user.isVerified) {
@@ -1139,7 +1162,7 @@ export default {
       user.password = hashedPassword;
       await user.save();
 
-      console.log(`✅ Contraseña restablecida exitosamente para: ${user.email}`);
+      // 🔒 LOG REMOVIDO POR SEGURIDAD
 
       res.status(200).json({
         message: "Contraseña restablecida exitosamente. Ya puedes iniciar sesión.",
