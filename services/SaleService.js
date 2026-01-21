@@ -95,19 +95,9 @@ async function createEarningForProduct(sale, item) {
             // Validar que el cupón realmente pertenezca a este instructor (seguridad adicional)
             const coupon = await models.Coupon.findOne({ code: sale.coupon_code });
 
-            if (coupon) {
-                console.log(`   🔍 [DEBUG] Validando Referido:`);
-                console.log(`      Instructor del Producto: ${instructorId}`);
-                console.log(`      Instructor del Cupón:    ${coupon.instructor}`);
-                console.log(`      Cupón Code:              ${sale.coupon_code}`);
-            }
-
             if (coupon && coupon.instructor.toString() === instructorId.toString()) {
                 commissionRatePercent = settings?.referral_commission_rate || 20; // Default 20% (80% instructor)
                 isReferral = true;
-                console.log(`   🎟️ Venta por REFERIDO confirmada. Comisión reducida al ${commissionRatePercent}%`);
-            } else {
-                console.log(`   ⚠️ [DEBUG] Fallo validación de referido: IDs no coinciden o cupón no encontrado`);
             }
         }
 

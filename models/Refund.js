@@ -155,5 +155,7 @@ RefundSchema.index({ sale: 1 });
 RefundSchema.index({ user: 1 });
 RefundSchema.index({ status: 1 });
 RefundSchema.index({ requestedAt: -1 });
+// 🔥 INDEX OPTIMIZATION: Compound index for refund checks
+RefundSchema.index({ user: 1, status: 1, 'sale_detail_item.product': 1 });
 
 export default mongoose.model('Refund', RefundSchema);

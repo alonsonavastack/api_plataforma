@@ -17,6 +17,8 @@
   "license": "ISC",
   "dependencies": {
     "@vimeo/vimeo": "^3.0.0",
+    "adm-zip": "^0.5.16",
+    "archiver": "^7.0.1",
     "axios": "^1.13.2",
     "bcryptjs": "^2.4.3",
     "body-parse": "^0.1.0",

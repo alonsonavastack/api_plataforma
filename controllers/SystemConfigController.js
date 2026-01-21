@@ -145,6 +145,16 @@ const update = async (req, res) => {
       };
     }
 
+    // Actualizar configuración de copias de seguridad
+    if (req.body.backup_enabled !== undefined) {
+      if (!config.backup) config.backup = {};
+      config.backup.enabled = req.body.backup_enabled;
+    } else if (req.body.backup && req.body.backup.enabled !== undefined) {
+      // Soporte para objeto anidado o si viene parseado
+      if (!config.backup) config.backup = {};
+      config.backup.enabled = req.body.backup.enabled;
+    }
+
     // Actualizar SEO
     if (req.body.metaKeywords !== undefined) config.metaKeywords = req.body.metaKeywords;
     if (req.body.metaDescription !== undefined) config.metaDescription = req.body.metaDescription;

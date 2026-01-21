@@ -415,10 +415,7 @@ export default {
                 });
 
                 if (validatedCoupon) {
-                    console.log(`🎟️ [capturePaypalOrder] Cupón aplicado: ${coupon_code}`);
                     isReferralSale = true;
-                } else {
-                    console.warn(`⚠️ [capturePaypalOrder] Cupón inválido/expirado ignorado: ${coupon_code}`);
                 }
             }
 

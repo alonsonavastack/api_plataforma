@@ -1,5 +1,6 @@
 import { scheduleUpdateEarningsStatus } from './updateEarningsStatus.js';
 
+
 /**
  * ÍNDICE DE CRON JOBS
  * 
@@ -33,6 +34,8 @@ export function initializeCronJobs() {
             schedule: 'Daily at 00:00'
         });
 
+
+
         // Aquí puedes agregar más CRON jobs en el futuro
         // Ejemplo:
         // const anotherJob = scheduleAnotherJob();
@@ -58,17 +61,17 @@ export function initializeCronJobs() {
  */
 export function stopAllCronJobs() {
     console.log('\n⏹️  Deteniendo todos los CRON jobs...');
-    
+
     activeCronJobs.forEach(({ name, job }) => {
         if (job && typeof job.stop === 'function') {
             job.stop();
             console.log(`   ✓ Detenido: ${name}`);
         }
     });
-    
+
     // Limpiar el array
     activeCronJobs.length = 0;
-    
+
     console.log('✅ Todos los CRON jobs detenidos.\n');
 }
 

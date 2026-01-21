@@ -66,6 +66,12 @@ const SystemConfigSchema = Schema({
     default: true
   },
 
+  // Copias de Seguridad
+  backup: {
+    enabled: { type: Boolean, default: false },
+    lastBackup: { type: Date, default: null }
+  },
+
   // Módulos del Sistema
   modules: {
     courses: { type: Boolean, default: true }, // Activar/Desactivar módulo de cursos
