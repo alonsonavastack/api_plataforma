@@ -1461,4 +1461,65 @@ export default {
       });
     }
   },
+  delete_my_account: async (req, res) => {
+    try {
+      if (!req.user || !req.user._id) {
+        return res.status(401).send({ message: "No autenticado." });
+      }
+
+      const userId = req.user._id;
+      // 🔥 Get password from body (Angular http.delete sends it properly if configured)
+      const { password } = req.body;
+
+      if (!password) {
+        return res.status(400).json({
+          message: "Se requiere la contraseña para confirmar la eliminación."
+        });
+      }
+
+      const user = await models.User.findById(userId);
+
+      if (!user) {
+        return res.status(404).json({ message: "Usuario no encontrado." });
+      }
+
+      // 🔐 Verify password
+      const isMatch = bcrypt.compareSync(password, user.password);
+      if (!isMatch) {
+        return res.status(403).json({
+          message: 403,
+          message_text: "La contraseña es incorrecta. No se pudo eliminar la cuenta."
+        });
+      }
+
+      console.log(`🗑️ [Delete My Account] Usuario solicitando eliminación: ${user.email}`);
+
+      // Eliminar avatar si existe
+      if (user.avatar) {
+        const imagePath = path.join(__dirname, "../uploads/user/", user.avatar);
+        if (fs.existsSync(imagePath)) {
+          try {
+            fs.unlinkSync(imagePath);
+            console.log(`   🖼️ Avatar eliminado: ${user.avatar}`);
+          } catch (err) {
+            console.error('   ⚠️ Error eliminando avatar:', err.message);
+          }
+        }
+      }
+
+      // Eliminar usuario
+      await models.User.findByIdAndDelete(userId);
+      console.log(`✅ [Delete My Account] Cuenta eliminada permanentemente: ${user.email}`);
+
+      res.status(200).json({
+        message: "Tu cuenta ha sido eliminada correctamente. Lamentamos verte partir.",
+      });
+
+    } catch (error) {
+      console.error('❌ [Delete My Account] Error:', error);
+      res.status(500).send({
+        message: "Ocurrió un problema al eliminar tu cuenta.",
+      });
+    }
+  },
 };

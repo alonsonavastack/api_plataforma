@@ -40,6 +40,8 @@ router.post('/set-telegram-chat/:id', [auth.verifyAdmin], userController.set_tel
 
 // Ruta para verificar la sesión del usuario a partir de su token
 router.get("/profile", [auth.verifyTienda], userController.profile);
+// Ruta para que el usuario elimine su propia cuenta
+router.delete("/delete-my-account", [auth.verifyTienda], userController.delete_my_account);
 
 router.get("/imagen-usuario/:img", userController.get_imagen);
 export default router;
