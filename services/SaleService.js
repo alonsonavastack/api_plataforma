@@ -85,8 +85,32 @@ async function createEarningForProduct(sale, item) {
 
         // 2. 🔥 Obtener configuración de comisiones desde la base de datos
         const settings = await models.PlatformCommissionSettings.findOne();
-        // ✅ CORRECCIÓN: Convertir porcentaje a decimal (30 -> 0.30)
-        const commissionRatePercent = settings?.default_commission_rate || 30; // Default 30%
+
+        // 🔥 COMISIÓN: Determinar si es Referido u Orgánico
+        let commissionRatePercent = settings?.default_commission_rate || 30; // Default 30%
+        let isReferral = false;
+
+        // Si la venta tiene marca de referido Y el cupón es válido para este instructor/producto
+        if (sale.is_referral && sale.coupon_code) {
+            // Validar que el cupón realmente pertenezca a este instructor (seguridad adicional)
+            const coupon = await models.Coupon.findOne({ code: sale.coupon_code });
+
+            if (coupon) {
+                console.log(`   🔍 [DEBUG] Validando Referido:`);
+                console.log(`      Instructor del Producto: ${instructorId}`);
+                console.log(`      Instructor del Cupón:    ${coupon.instructor}`);
+                console.log(`      Cupón Code:              ${sale.coupon_code}`);
+            }
+
+            if (coupon && coupon.instructor.toString() === instructorId.toString()) {
+                commissionRatePercent = settings?.referral_commission_rate || 20; // Default 20% (80% instructor)
+                isReferral = true;
+                console.log(`   🎟️ Venta por REFERIDO confirmada. Comisión reducida al ${commissionRatePercent}%`);
+            } else {
+                console.log(`   ⚠️ [DEBUG] Fallo validación de referido: IDs no coinciden o cupón no encontrado`);
+            }
+        }
+
         const commissionRate = commissionRatePercent / 100; // Convertir a decimal
         const daysUntilAvailable = settings?.days_until_available || 7;
 
@@ -117,6 +141,7 @@ async function createEarningForProduct(sale, item) {
             platform_commission_amount: platformCommission,
             instructor_earning: instructorEarning,
             instructor_earning_usd: instructorEarning,
+            is_referral: isReferral, // 🔥 Guardar si fue referido
             // 🔥 CORRECCIÓN: Guardar información correcta de descuento
             discount_info: {
                 original_price: originalPrice,              // Precio antes del descuento

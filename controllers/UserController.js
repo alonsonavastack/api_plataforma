@@ -695,8 +695,9 @@ export default {
 
       if (!user) {
         console.log('❌ [Login] Usuario no encontrado o inactivo:', req.body.email);
-        return res.status(401).json({
-          message: "El correo o la contraseña son incorrectos.",
+        return res.status(404).json({
+          message: 404,
+          message_text: "No encontramos una cuenta asociada a este correo electrónico.",
         });
       }
 
@@ -713,7 +714,8 @@ export default {
       if (!match) {
         // 🔒 LOG REMOVIDO POR SEGURIDAD
         return res.status(401).json({
-          message: "El correo o la contraseña son incorrectos.",
+          message: 401,
+          message_text: "La contraseña es incorrecta.",
         });
       }
 
@@ -723,7 +725,7 @@ export default {
       if (!user.isVerified) {
         return res.status(403).json({
           message: 403,
-          message_text: "Debes verificar tu cuenta antes de iniciar sesión. Revisa tu Telegram.",
+          message_text: "Tu cuenta aún no ha sido verificada. Hemos enviado un código a tu Telegram.",
           requiresVerification: true,
           userId: user._id
         });

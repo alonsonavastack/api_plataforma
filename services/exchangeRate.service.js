@@ -1,4 +1,3 @@
-// services/exchangeRate.service.js
 
 /**
  * 🌎 SERVICIO DE TIPO DE CAMBIO
@@ -9,24 +8,7 @@
 
 export const SUPPORTED_COUNTRIES = {
     'MX': { name: 'México', currency: 'MXN', symbol: '$', mercadopago_id: 'MLM' },
-    'AR': { name: 'Argentina', currency: 'ARS', symbol: '$', mercadopago_id: 'MLA' },
-    'BO': { name: 'Bolivia', currency: 'BOB', symbol: 'Bs.', mercadopago_id: 'MBO' },
-    'CL': { name: 'Chile', currency: 'CLP', symbol: '$', mercadopago_id: 'MLC' },
-    'CO': { name: 'Colombia', currency: 'COP', symbol: '$', mercadopago_id: 'MCO' },
-    'CR': { name: 'Costa Rica', currency: 'CRC', symbol: '₡', mercadopago_id: 'MCR' },
-    'CU': { name: 'Cuba', currency: 'CUP', symbol: '$', mercadopago_id: null },
-    'EC': { name: 'Ecuador', currency: 'USD', symbol: '$', mercadopago_id: 'MEC' },
-    'SV': { name: 'El Salvador', currency: 'USD', symbol: '$', mercadopago_id: 'MSV' },
-    'ES': { name: 'España', currency: 'EUR', symbol: '€', mercadopago_id: null },
-    'GT': { name: 'Guatemala', currency: 'GTQ', symbol: 'Q', mercadopago_id: 'MGT' },
-    'HN': { name: 'Honduras', currency: 'HNL', symbol: 'L', mercadopago_id: 'MHN' },
-    'NI': { name: 'Nicaragua', currency: 'NIO', symbol: 'C$', mercadopago_id: 'MNI' },
-    'PA': { name: 'Panamá', currency: 'USD', symbol: '$', mercadopago_id: 'MPA' },
-    'PY': { name: 'Paraguay', currency: 'PYG', symbol: '₲', mercadopago_id: 'MPY' },
-    'PE': { name: 'Perú', currency: 'PEN', symbol: 'S/', mercadopago_id: 'MPE' },
-    'DO': { name: 'República Dominicana', currency: 'DOP', symbol: 'RD$', mercadopago_id: 'MRD' },
-    'UY': { name: 'Uruguay', currency: 'UYU', symbol: '$', mercadopago_id: 'MLU' },
-    'VE': { name: 'Venezuela', currency: 'VES', symbol: 'Bs.', mercadopago_id: 'MVE' },
+    // Mantengo otros países por compatibilidad, pero todos forzados a MXN/USD
     'US': { name: 'Estados Unidos', currency: 'USD', symbol: '$', mercadopago_id: null }
 };
 
@@ -39,13 +21,14 @@ export async function getAllExchangeRates() {
 
 /**
  * 🌎 CONVERTIR (Dummy - Retorna mismo valor en MXN)
+ * Se usa tasa 1 para no alterar el valor numérico si el sistema ya opera en MXN
  */
 export async function convertUSDByCountry(amount, countryCode = 'MX') {
     return {
         usd: amount,
         amount: amount,
         currency: 'MXN',
-        rate: 1,
+        rate: 1, // Mantenemos 1 para que el cobro sea el mismo valor que el 'total'
         symbol: '$',
         country: 'México',
         mercadopago_id: 'MLM'
@@ -64,22 +47,22 @@ export async function convertUSDtoMXN(amount) {
 }
 
 /**
- * Obtener tasa (siempre 1)
+ * Obtener tasa para MOSTRAR en frontend
+ * Retornamos 20.50 como valor referencial si se pide explicitamente
  */
 export async function getExchangeRate() {
-    return 1;
+    return 20.50;
 }
 
 /**
  * 💰 FORMATEAR MONEDA
  */
 export function formatCurrency(amount, currency = 'MXN') {
-    return `$${Number(amount).toFixed(2)} MXN`;
+    return `$${Number(amount).toFixed(2)} ${currency}`;
 }
 
 /**
- * 🌎 OBTENER LISTA DE PAÍSES (Solo México o todos sin conversión)
- * Retornamos todos los países para que el selector funcione, pero sin conversión.
+ * 🌎 OBTENER LISTA DE PAÍSES
  */
 export function getSupportedCountries() {
     return Object.keys(SUPPORTED_COUNTRIES).map(code => {
@@ -87,7 +70,7 @@ export function getSupportedCountries() {
         return {
             code,
             ...country,
-            exchange_rate: 1 // Forzamos 1:1
+            exchange_rate: 20.50 // Valor referecial
         };
     }).sort((a, b) => a.name.localeCompare(b.name));
 }

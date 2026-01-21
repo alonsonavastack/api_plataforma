@@ -27,6 +27,18 @@ const SaleSchema = new Schema({
         enum: ['wallet', 'paypal', 'mixed_paypal', 'card', 'other']
     },
 
+    // === CUPONES Y REFERIDOS ===
+    coupon_code: {
+        type: String,
+        maxlength: 50,
+        trim: true,
+        default: null
+    },
+    is_referral: {
+        type: Boolean,
+        default: false
+    },
+
     // Moneda
     currency_total: { type: String, default: 'MXN' },
     currency_payment: { type: String, default: 'MXN' },

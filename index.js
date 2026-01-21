@@ -68,15 +68,15 @@ app.use(helmet({
             ],
             connectSrc: [
                 "'self'",
-                "https://api.mercadopago.com",
+                "https://api.paypal.com",
                 "wss://localhost:3000",
                 "wss://localhost:4200", // WebSockets dev
                 process.env.NODE_ENV === 'production' ? "wss://api.tudominio.com" : ""
             ].filter(Boolean),
             frameSrc: [
                 "'self'",
-                "https://www.mercadopago.com.mx",
-                "https://www.mercadopago.com.ar"
+                "https://www.paypal.com",
+                "https://www.sandbox.paypal.com"
             ],
             objectSrc: ["'none'"],
             upgradeInsecureRequests: process.env.NODE_ENV === 'production' ? [] : null

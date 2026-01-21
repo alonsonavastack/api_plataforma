@@ -9,15 +9,42 @@ import { N_CLASES_OF_COURSES, sumarTiempos } from "../utils/helpers.js"; // Aseg
 async function getUserFromAuthHeader(req) {
   const authHeader = req.headers['authorization'];
   if (!authHeader) return null;
-  
+
   const tokenValue = authHeader.split(' ')[1];
   if (!tokenValue) return null;
-  
+
   try {
     return await token.decode(tokenValue);
   } catch (error) {
     return null;
   }
+}
+
+// 🔥 HELPER: Obtener compras válidas del usuario (excluyendo reembolsos)
+async function getValidUserPurchases(user_id) {
+  let purchases = [];
+  try {
+    // 1. Obtener todas las ventas PAGADAS
+    const sales = await models.Sale.find({ user: user_id, status: 'Pagado' }).select('detail.product');
+
+    // 2. Obtener todos los reembolsos COMPLETADOS
+    const refunds = await models.Refund.find({ user: user_id, status: 'completed' }).select('sale_detail_item.product');
+    const refundedProductIds = refunds.map(r => r.sale_detail_item?.product?.toString());
+
+    // 3. Filtrar
+    sales.forEach(sale => {
+      sale.detail.forEach(item => {
+        const productId = item.product.toString();
+        // Solo agregar si NO ha sido reembolsado
+        if (!refundedProductIds.includes(productId)) {
+          purchases.push(productId);
+        }
+      });
+    });
+  } catch (error) {
+    console.error("Error obteniendo compras válidas:", error);
+  }
+  return purchases;
 }
 
 function DISCOUNT_G_F(Campaing_Normal, PRODUCT, product_type = "course") {
@@ -63,9 +90,9 @@ async function COURSE_META_INFO(courseT) {
   let AVG_RATING =
     REVIEWS.length > 0
       ? Number(
-          REVIEWS.reduce((sum, review) => sum + review.rating, 0) /
-            REVIEWS.length
-        ).toFixed(2)
+        REVIEWS.reduce((sum, review) => sum + review.rating, 0) /
+        REVIEWS.length
+      ).toFixed(2)
       : "0.00";
 
   META_INFO.N_STUDENTS = N_STUDENTS;
@@ -83,17 +110,7 @@ export default {
       let user_purchases = [];
       const user = await getUserFromAuthHeader(req);
       if (user) {
-          try {
-              const user_id = user._id;
-              
-              // Buscamos todas las ventas pagadas de ese usuario
-              const sales = await models.Sale.find({ user: user_id, status: 'Pagado' }).select('detail.product');
-              sales.forEach(sale => {
-                  sale.detail.forEach(item => user_purchases.push(item.product.toString()));
-              });
-          } catch (error) {
-              // Si el token es inválido o expira, simplemente no habrá compras de usuario.
-          }
+        user_purchases = await getValidUserPurchases(user._id);
       }
       // FIN DE LA CORRECION
 
@@ -192,7 +209,7 @@ export default {
       ]);
 
       const COURSES_TOPS = courses_tops.map((ct) => {
-        const applicableCampaign = ActiveCampaigns.find(campaign => 
+        const applicableCampaign = ActiveCampaigns.find(campaign =>
           DISCOUNT_G_F(campaign, ct, "course")
         );
         const DISCOUNT_G = applicableCampaign ? DISCOUNT_G_F(applicableCampaign, ct, "course") : null;
@@ -298,7 +315,7 @@ export default {
       const CATEGORIES_SECTIONS = categories_sections_sample.map((category) => {
         const courses = coursesByCategory[category._id.toString()] || [];
         const COURSES_C = courses.map((c) => {
-          const applicableCampaign = ActiveCampaigns.find(campaign => 
+          const applicableCampaign = ActiveCampaigns.find(campaign =>
             DISCOUNT_G_F(campaign, c, "course")
           );
           const DISCOUNT_G = applicableCampaign ? DISCOUNT_G_F(applicableCampaign, c, "course") : null;
@@ -441,11 +458,11 @@ export default {
         // Aplicar descuentos a los proyectos destacados usando el resource
         projects_featured_processed = projects_featured_raw.map(project => {
           // Encontrar la campaña aplicable para este proyecto
-          const applicableCampaign = ActiveCampaigns.find(campaign => 
+          const applicableCampaign = ActiveCampaigns.find(campaign =>
             DISCOUNT_G_F(campaign, project, "project")
           );
           const DISCOUNT_G = applicableCampaign ? DISCOUNT_G_F(applicableCampaign, project, "project") : null;
-          
+
           const project_resource = resource.Project.api_resource_project(project, DISCOUNT_G);
           // CORRECCIÓN: Añadimos la marca si el estudiante ya tiene el proyecto
           project_resource.student_has_project = user_purchases.includes(project._id.toString());
@@ -528,7 +545,7 @@ export default {
         ]);
 
         COURSES_FEATURED = featuredCourses.map((c) => {
-          const applicableCampaign = ActiveCampaigns.find(campaign => 
+          const applicableCampaign = ActiveCampaigns.find(campaign =>
             DISCOUNT_G_F(campaign, c, "course")
           );
           const DISCOUNT_G = applicableCampaign ? DISCOUNT_G_F(applicableCampaign, c, "course") : null;
@@ -546,7 +563,7 @@ export default {
           return course_resource;
         });
       }
-      
+
       // 8. Construir y enviar respuesta
       const responsePayload = {
         categories: CATEGORIES_LIST,
@@ -815,13 +832,12 @@ export default {
           review = review.toObject();
           review.user_info = {
             _id: review.user?._id,
-            full_name: `${review.user?.name || ""} ${
-              review.user?.surname || ""
-            }`.trim(),
+            full_name: `${review.user?.name || ""} ${review.user?.surname || ""
+              }`.trim(),
             avatar: review.user?.avatar
               ? (process.env.URL_BACKEND || "") +
-                "/api/users/imagen-usuario/" +
-                review.user.avatar
+              "/api/users/imagen-usuario/" +
+              review.user.avatar
               : null,
           };
           review.user = null;
@@ -833,6 +849,127 @@ export default {
       });
     } catch (error) {
       console.error("Error en HomeController.show_course:", error);
+      return res.status(500).send({ message: "OCURRIO UN ERROR" });
+    }
+  },
+
+  show_project: async (req, res) => {
+    try {
+      const user = await getUserFromAuthHeader(req);
+      const PROJECT_ID = req.params.id;
+      const TIME_NOW = Number(req.query.TIME_NOW) || Date.now();
+
+      if (!ObjectId.isValid(PROJECT_ID)) {
+        return res.status(200).json({
+          message: 404,
+          message_text: "EL PROYECTO NO EXISTE",
+        });
+      }
+
+      // Obtener campaña activa
+      let Campaing_Normal = await models.Discount.findOne({
+        type_campaign: 1,
+        start_date_num: { $lte: TIME_NOW },
+        end_date_num: { $gte: TIME_NOW },
+      });
+
+      const PROJECT = await models.Project.findOne({ _id: PROJECT_ID, state: 2 }).populate([
+        "categorie",
+        "user",
+      ]);
+
+      if (!PROJECT) {
+        return res.status(200).json({
+          message: 404,
+          message_text: "EL PROYECTO NO EXISTE",
+        });
+      }
+
+      // Verificar si el usuario ya posee el proyecto
+      // Verificar si el usuario ya posee el proyecto
+      let STUDENT_HAVE_PROJECT = false;
+      if (user) {
+        // 1. Buscar venta pagada
+        const sale = await models.Sale.findOne({
+          user: user._id,
+          status: 'Pagado',
+          "detail.product": PROJECT._id
+        });
+
+        if (sale) {
+          // 2. 🔥 VERIFICAR QUE NO HAYA SIDO REEMBOLSADO
+          const refund = await models.Refund.findOne({
+            user: user._id,
+            'sale_detail_item.product': PROJECT._id,
+            status: 'completed'
+          });
+
+          if (!refund) {
+            STUDENT_HAVE_PROJECT = true;
+          }
+        }
+      }
+
+      // Obtener reseñas del proyecto
+      const REVIEWS = await models.Review.find({
+        product: PROJECT._id,
+        product_type: "project",
+      }).populate("user");
+
+      const AVG_RATING =
+        REVIEWS.length > 0
+          ? Number(
+            REVIEWS.reduce((sum, review) => sum + review.rating, 0) /
+            REVIEWS.length
+          ).toFixed(2)
+          : "0.00";
+
+      // Proyectos relacionados (misma categoría)
+      let RELATED_PROJECTS = await models.Project.find({
+        categorie: PROJECT.categorie._id,
+        state: 2,
+        _id: { $ne: PROJECT._id }
+      }).limit(4).populate("user");
+
+      // Aplicar descuentos a relacionados
+      RELATED_PROJECTS = RELATED_PROJECTS.map(p => {
+        const discount = DISCOUNT_G_F(Campaing_Normal, p, "project");
+        return resource.Project.api_resource_project(p, discount);
+      });
+
+      // Aplicar descuento al proyecto principal
+      const DISCOUNT_G = DISCOUNT_G_F(Campaing_Normal, PROJECT, "project");
+
+      return res.status(200).json({
+        project: {
+          ...resource.Project.api_resource_project(PROJECT, DISCOUNT_G),
+          files: STUDENT_HAVE_PROJECT ? PROJECT.files : [], // Solo enviar archivos si lo compró
+        },
+        reviews: REVIEWS.map((review) => {
+          review = review.toObject();
+          review.user_info = {
+            _id: review.user?._id,
+            full_name: `${review.user?.name || ""} ${review.user?.surname || ""
+              }`.trim(),
+            avatar: review.user?.avatar
+              ? (process.env.URL_BACKEND || "") +
+              "/api/users/imagen-usuario/" +
+              review.user.avatar
+              : null,
+          };
+          review.user = null;
+          return review;
+        }),
+        project_relateds: RELATED_PROJECTS,
+        student_have_project: STUDENT_HAVE_PROJECT,
+        metrics: {
+          avg_rating: AVG_RATING,
+          total_reviews: REVIEWS.length
+        }
+      });
+
+    } catch (error) {
+      console.error("Error en HomeController.show_project:", error);
       return res.status(500).send({ message: "OCURRIO UN ERROR" });
     }
   },
@@ -1034,7 +1171,7 @@ export default {
         message: "OCURRIO UN ERROR",
       });
     }
-  },  
+  },
 
   get_all_courses: async (req, res) => {
     try {
@@ -1044,17 +1181,7 @@ export default {
       let user_purchases = [];
       const user = await getUserFromAuthHeader(req);
       if (user) {
-          try {
-              const user_id = user._id;
-              
-              // Buscamos todas las ventas pagadas de ese usuario
-              const sales = await models.Sale.find({ user: user_id, status: 'Pagado' }).select('detail.product');
-              sales.forEach(sale => {
-                  sale.detail.forEach(item => user_purchases.push(item.product.toString()));
-              });
-          } catch (error) {
-              // Si el token es inválido o expira, simplemente no habrá compras de usuario.
-          }
+        user_purchases = await getValidUserPurchases(user._id);
       }
 
       // Obtener TODAS las campañas de descuento activas (Normal, Flash, Banner)
@@ -1072,7 +1199,7 @@ export default {
       // Aplicar descuentos a cada curso
       const courses_with_discounts = courses.map(course => {
         // Encontrar la campaña aplicable para este curso
-        const applicableCampaign = ActiveCampaigns.find(campaign => 
+        const applicableCampaign = ActiveCampaigns.find(campaign =>
           DISCOUNT_G_F(campaign, course, "course")
         );
         const DISCOUNT_G = applicableCampaign ? DISCOUNT_G_F(applicableCampaign, course, "course") : null;
@@ -1099,17 +1226,7 @@ export default {
       let user_purchases = [];
       const user = await getUserFromAuthHeader(req);
       if (user) {
-          try {
-              const user_id = user._id;
-              
-              // Buscamos todas las ventas pagadas de ese usuario
-              const sales = await models.Sale.find({ user: user_id, status: 'Pagado' }).select('detail.product');
-              sales.forEach(sale => {
-                  sale.detail.forEach(item => user_purchases.push(item.product.toString()));
-              });
-          } catch (error) {
-              // Si el token es inválido o expira, simplemente no habrá compras de usuario.
-          }
+        user_purchases = await getValidUserPurchases(user._id);
       }
 
       // Obtener TODAS las campañas de descuento activas (Normal, Flash, Banner)
@@ -1129,7 +1246,7 @@ export default {
       // Aplicar descuentos a cada proyecto usando el resource
       const projects_with_discounts = projects.map(project => {
         // Encontrar la campaña aplicable para este proyecto
-        const applicableCampaign = ActiveCampaigns.find(campaign => 
+        const applicableCampaign = ActiveCampaigns.find(campaign =>
           DISCOUNT_G_F(campaign, project, "project")
         );
         const DISCOUNT_G = applicableCampaign ? DISCOUNT_G_F(applicableCampaign, project, "project") : null;
@@ -1167,9 +1284,9 @@ export default {
         const searchRegex = new RegExp(searchTerm, "i");
         queryConditions.push({
           $or: [
-          { title: searchRegex },
-          { subtitle: searchRegex },
-          { description: searchRegex },
+            { title: searchRegex },
+            { subtitle: searchRegex },
+            { description: searchRegex },
           ]
         });
       }

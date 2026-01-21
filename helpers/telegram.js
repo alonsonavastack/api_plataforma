@@ -1,6 +1,6 @@
 // helpers/telegram.js
-const TELEGRAM_TOKEN = process.env.TELEGRAM_TOKEN || '7958971419:AAFT29lhSOLzoZcWIMXHz8vha_5z95tX37Q';
-const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID || '5066230896';
+const TELEGRAM_TOKEN = process.env.TELEGRAM_TOKEN;
+const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID;
 
 /**
  * Envía un mensaje a Telegram con formato Markdown
@@ -10,14 +10,19 @@ const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID || '5066230896';
  */
 async function sendTelegramMessage(text, chatId = TELEGRAM_CHAT_ID) {
     try {
+        if (!TELEGRAM_TOKEN) {
+            console.error('❌ Error: TELEGRAM_TOKEN no está configurado en las variables de entorno');
+            return false;
+        }
+
         const url = `https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`;
-        
+
         const payload = {
             chat_id: chatId,
             text: text,
             parse_mode: 'Markdown'
         };
-        
+
         const response = await fetch(url, {
             method: 'POST',
             headers: {
@@ -25,7 +30,7 @@ async function sendTelegramMessage(text, chatId = TELEGRAM_CHAT_ID) {
             },
             body: JSON.stringify(payload)
         });
-        
+
         if (response.ok) {
             console.log('✅ Mensaje enviado a Telegram exitosamente');
             return true;
@@ -52,14 +57,14 @@ export async function sendOtpCode({ code, phone, userName }) {
     console.log('🔑 Configuración Telegram:', {
         tokenExists: !!TELEGRAM_TOKEN,
         tokenLength: TELEGRAM_TOKEN?.length,
-        tokenStart: TELEGRAM_TOKEN?.substring(0, 20) + '...',
+        tokenStart: TELEGRAM_TOKEN ? TELEGRAM_TOKEN.substring(0, 5) + '...' : 'N/A',
         chatId: TELEGRAM_CHAT_ID
     });
-    
+
     try {
         // Enmascarar el teléfono para privacidad
         const maskedPhone = phone ? phone.replace(/(\d{2})(\d{3})(\d{3})(\d{4})/, '$1 $2 XXX $4') : 'N/A';
-        
+
         const text = [
             '🔐 *CÓDIGO DE VERIFICACIÓN*',
             '',
@@ -103,11 +108,17 @@ export async function sendOtpCode({ code, phone, userName }) {
  */
 export async function sendRecoveryOtp({ code, phone, userName }) {
     console.log('🚀 sendRecoveryOtp (Telegram) llamado con:', { code, phone, userName });
-    
+    console.log('🔑 Configuración Telegram:', {
+        tokenExists: !!TELEGRAM_TOKEN,
+        tokenLength: TELEGRAM_TOKEN?.length,
+        tokenStart: TELEGRAM_TOKEN ? TELEGRAM_TOKEN.substring(0, 5) + '...' : 'N/A',
+        chatId: TELEGRAM_CHAT_ID
+    });
+
     try {
         // Enmascarar el teléfono para privacidad
         const maskedPhone = phone ? phone.replace(/(\d{2})(\d{3})(\d{3})(\d{4})/, '$1 $2 XXX $4') : 'N/A';
-        
+
         const text = [
             '🔑 *RECUPERACIÓN DE CONTRASEÑA*',
             '',
@@ -144,7 +155,7 @@ export async function sendRecoveryOtp({ code, phone, userName }) {
 export async function notifyNewRegistration(user) {
     try {
         const maskedPhone = user.phone ? user.phone.replace(/(\d{2})(\d{3})(\d{3})(\d{4})/, '$1 $2 XXX $4') : 'No proporcionado';
-        
+
         const text = [
             '👤 *NUEVO REGISTRO DE USUARIO*',
             '',
@@ -153,7 +164,7 @@ export async function notifyNewRegistration(user) {
             `📱 *Teléfono:* ${maskedPhone}`,
             `🎭 *Rol:* ${user.rol}`,
             '',
-            `📅 *Fecha de registro:* ${new Date(user.createdAt).toLocaleString('es-MX', { 
+            `📅 *Fecha de registro:* ${new Date(user.createdAt).toLocaleString('es-MX', {
                 timeZone: 'America/Mexico_City',
                 dateStyle: 'full',
                 timeStyle: 'short'
@@ -179,7 +190,7 @@ export async function notifyNewRegistration(user) {
 export async function notifySuccessfulVerification(user) {
     try {
         const maskedPhone = user.phone ? user.phone.replace(/(\d{2})(\d{3})(\d{3})(\d{4})/, '$1 $2 XXX $4') : 'No proporcionado';
-        
+
         const text = [
             '✅ *USUARIO VERIFICADO EXITOSAMENTE*',
             '',
@@ -188,7 +199,7 @@ export async function notifySuccessfulVerification(user) {
             `📱 *Teléfono:* ${maskedPhone}`,
             `🎭 *Rol:* ${user.rol}`,
             '',
-            `📅 *Fecha de verificación:* ${new Date().toLocaleString('es-MX', { 
+            `📅 *Fecha de verificación:* ${new Date().toLocaleString('es-MX', {
                 timeZone: 'America/Mexico_City',
                 dateStyle: 'full',
                 timeStyle: 'short'

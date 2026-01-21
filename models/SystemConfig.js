@@ -1,17 +1,17 @@
-import mongoose, {Schema} from "mongoose";
+import mongoose, { Schema } from "mongoose";
 
 const SystemConfigSchema = Schema({
   // Información Básica
-  siteName: { 
-    type: String, 
+  siteName: {
+    type: String,
     required: true,
     default: 'NeoCourse'
   },
-  siteDescription: { 
+  siteDescription: {
     type: String,
     default: 'Plataforma de Cursos Online'
   },
-  logo: { 
+  logo: {
     type: String,
     default: null
   },
@@ -21,11 +21,11 @@ const SystemConfigSchema = Schema({
   },
 
   // Contacto
-  email: { 
+  email: {
     type: String,
     required: true
   },
-  phone: { 
+  phone: {
     type: String,
     default: ''
   },
@@ -66,23 +66,28 @@ const SystemConfigSchema = Schema({
     default: true
   },
 
+  // Módulos del Sistema
+  modules: {
+    courses: { type: Boolean, default: true }, // Activar/Desactivar módulo de cursos
+  },
+
   // Auditoría
   updatedBy: {
     type: Schema.ObjectId,
     ref: 'user'
   },
-  createdAt: { 
-    type: Date, 
-    default: Date.now 
+  createdAt: {
+    type: Date,
+    default: Date.now
   },
-  updatedAt: { 
-    type: Date, 
-    default: Date.now 
+  updatedAt: {
+    type: Date,
+    default: Date.now
   }
 });
 
 // Middleware para actualizar updatedAt
-SystemConfigSchema.pre('save', function(next) {
+SystemConfigSchema.pre('save', function (next) {
   this.updatedAt = Date.now();
   next();
 });

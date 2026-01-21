@@ -43,7 +43,7 @@ export default {
             if (req.body.n_transaccion) req.body.n_transaccion = DOMPurify.sanitize(req.body.n_transaccion);
             if (req.body.country) req.body.country = DOMPurify.sanitize(req.body.country);
 
-            let { method_payment, currency_payment, n_transaccion, detail, country } = req.body; // 🔥 detail en lugar de items + country
+            let { method_payment, currency_payment, n_transaccion, detail, country, coupon_code } = req.body; // 🔥 detail en lugar de items + country, se recibe coupon_code
             const user_id = req.user._id;
             const userCountry = country || 'MX'; // Default México
 
@@ -78,6 +78,25 @@ export default {
             // Calcular total
             let total = 0;
             const sale_details = [];
+
+            // 🔥 VALIDAR CUPÓN (Si existe)
+            let isReferralSale = false;
+            let validatedCoupon = null;
+
+            if (coupon_code) {
+                validatedCoupon = await models.Coupon.findOne({
+                    code: coupon_code,
+                    active: true,
+                    expires_at: { $gt: new Date() }
+                });
+
+                if (validatedCoupon) {
+                    console.log(`🎟️ [register] Cupón aplicado: ${coupon_code}`);
+                    isReferralSale = true;
+                } else {
+                    console.warn(`⚠️ [register] Cupón inválido/expirado ignorado: ${coupon_code}`);
+                }
+            }
 
             // 🔥 Adaptar 'detail' (frontend) a 'items' (lógica del usuario)
             const items = detail || [];
@@ -252,7 +271,10 @@ export default {
                 conversion_rate: conversion.rate,
                 conversion_currency: conversion.currency,
                 conversion_amount: conversion.amount,
-                conversion_country: userCountry
+                conversion_country: userCountry,
+                // 🔥 REFERIDOS
+                coupon_code: isReferralSale ? coupon_code : null,
+                is_referral: isReferralSale
             });
 
             console.log('✅ [register] Venta creada:', sale._id);
@@ -368,7 +390,7 @@ export default {
 
     capturePaypalOrder: async (req, res) => {
         try {
-            const { n_transaccion, orderId, detail, total, wallet_amount, remaining_amount } = req.body;
+            const { n_transaccion, orderId, detail, total, wallet_amount, remaining_amount, coupon_code } = req.body;
             const user_id = req.user._id;
 
             if (!n_transaccion || !orderId || !detail || !total) {
@@ -379,6 +401,25 @@ export default {
             const existingSale = await models.Sale.findOne({ n_transaccion });
             if (existingSale && existingSale.status === 'Pagado') {
                 return res.status(400).send({ message: 'Esta transacción ya fue procesada', sale: existingSale });
+            }
+
+            // 🔥 VALIDAR CUPÓN (Si existe) - Misma lógica que en register
+            let isReferralSale = false;
+            let validatedCoupon = null;
+
+            if (coupon_code) {
+                validatedCoupon = await models.Coupon.findOne({
+                    code: coupon_code,
+                    active: true,
+                    expires_at: { $gt: new Date() }
+                });
+
+                if (validatedCoupon) {
+                    console.log(`🎟️ [capturePaypalOrder] Cupón aplicado: ${coupon_code}`);
+                    isReferralSale = true;
+                } else {
+                    console.warn(`⚠️ [capturePaypalOrder] Cupón inválido/expirado ignorado: ${coupon_code}`);
+                }
             }
 
             const PAYPAL_API = process.env.PAYPAL_MODE === 'sandbox' ? 'https://api.sandbox.paypal.com' : 'https://api.paypal.com';
@@ -437,7 +478,10 @@ export default {
                 wallet_amount: finalWalletAmount,
                 remaining_amount: remaining_amount || (total - finalWalletAmount),
                 payment_details: { paypal_order_id: orderId, paypal_capture_details: captureData },
-                paid_at: new Date()
+                paid_at: new Date(),
+                // 🔥 REFERIDOS
+                coupon_code: isReferralSale ? coupon_code : null,
+                is_referral: isReferralSale
             });
 
             await processPaidSale(sale, user_id);

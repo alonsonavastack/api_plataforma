@@ -144,8 +144,8 @@ async function filterEarningsWithRefunds(earnings) {
  */
 export const getInstructorsWithEarnings = async (req, res) => {
     try {
-        const { 
-            status = 'all', 
+        const {
+            status = 'all',
             minAmount = 0,
             paymentMethod = 'all', // 🆕 NUEVO FILTRO
             startDate, // ✅ NUEVO: Filtro de fecha inicio
@@ -174,7 +174,7 @@ export const getInstructorsWithEarnings = async (req, res) => {
         // if (paymentMethod && paymentMethod !== 'all') {
         //     paymentMethodFilter = { payment_method: paymentMethod };
         // }
-        
+
         // ✅ NUEVO: Construir filtro de fechas (filtra por earned_at de la ganancia)
         let dateFilter = {};
         if (startDate || endDate) {
@@ -229,6 +229,11 @@ export const getInstructorsWithEarnings = async (req, res) => {
                         wallet: { count: 0, total: 0 },
                         paypal: { count: 0, total: 0 },
                         mixed_paypal: { count: 0, total: 0 }
+                    },
+                    // 🆕 Desglose Orgánico vs Referido
+                    breakdown: {
+                        organic: { count: 0, total: 0 },
+                        referral: { count: 0, total: 0 }
                     }
                 };
             }
@@ -243,6 +248,15 @@ export const getInstructorsWithEarnings = async (req, res) => {
             if (acc[instructorId].paymentMethods[method]) {
                 acc[instructorId].paymentMethods[method].count++;
                 acc[instructorId].paymentMethods[method].total += amount;
+            }
+
+            // 🆕 Acumular Orgánico vs Referido
+            if (earning.is_referral) {
+                acc[instructorId].breakdown.referral.count++;
+                acc[instructorId].breakdown.referral.total += amount;
+            } else {
+                acc[instructorId].breakdown.organic.count++;
+                acc[instructorId].breakdown.organic.total += amount;
             }
 
             if (earning.earned_at < acc[instructorId].oldestEarning) {
@@ -303,7 +317,7 @@ export const getInstructorsWithEarnings = async (req, res) => {
 
                 // Obtener configuración de pago
                 const paymentConfig = await InstructorPaymentConfig.findOne({
-                instructor: item._id
+                    instructor: item._id
                 }).select('preferred_payment_method paypal_connected');
 
                 // 🔥 Obtener país del instructor
@@ -319,28 +333,29 @@ export const getInstructorsWithEarnings = async (req, res) => {
                         count: item.count,
                         oldestDate: item.oldestEarning,
                         newestDate: item.newestEarning,
-                        paymentMethods: item.paymentMethods // 🆕 Desglose por método
+                        paymentMethods: item.paymentMethods, // 🆕 Desglose por método
+                        breakdown: item.breakdown // 🆕 Desglose Orgánico vs Referido
                     },
                     paymentConfig: {
-                    hasConfig: !!paymentConfig,
-                    preferredMethod: paymentConfig?.preferred_payment_method || 'none',
-                    paypalConnected: paymentConfig?.paypal_connected || false,
-                    country // 🔥 Incluir país
+                        hasConfig: !!paymentConfig,
+                        preferredMethod: paymentConfig?.preferred_payment_method || 'none',
+                        paypalConnected: paymentConfig?.paypal_connected || false,
+                        country // 🔥 Incluir país
                     }
                 };
             })
         );
-        
+
         // 🔥 NUEVO: Filtrar por método de pago preferido (basado en configuración del instructor)
         if (paymentMethod && paymentMethod !== 'all') {
             console.log(`🔎 [AdminPayments] Filtrando por método de pago: ${paymentMethod}`);
             const beforeFilter = instructorsWithEarnings.length;
-            
+
             instructorsWithEarnings = instructorsWithEarnings.filter(item => {
                 // Filtrar por método preferido del instructor
                 return item.paymentConfig.preferredMethod === paymentMethod;
             });
-            
+
             console.log(`✅ [AdminPayments] Instructores filtrados: ${beforeFilter} → ${instructorsWithEarnings.length}`);
         }
 
@@ -453,7 +468,7 @@ export const getInstructorEarnings = async (req, res) => {
 
         // Calcular totales
         const totals = calculateTotalEarnings(validEarnings);
-        
+
         // Agregar desglose por método de pago
         totals.byPaymentMethod = calculatePaymentMethodStats(validEarnings);
 

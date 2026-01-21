@@ -41,7 +41,10 @@ const getPublic = async (req, res) => {
           metaKeywords: '',
           metaDescription: '',
           maintenanceMode: false,
-          allowRegistrations: true
+          allowRegistrations: true,
+          modules: {
+            courses: true
+          }
         }
       });
     }
@@ -149,6 +152,17 @@ const update = async (req, res) => {
     // Actualizar configuración de sistema
     if (req.body.maintenanceMode !== undefined) config.maintenanceMode = req.body.maintenanceMode;
     if (req.body.allowRegistrations !== undefined) config.allowRegistrations = req.body.allowRegistrations;
+
+    // Actualizar módulos
+    // Inicializar si no existe
+    if (!config.modules) config.modules = { courses: true };
+
+    if (req.body.modules_courses !== undefined) {
+      config.modules.courses = req.body.modules_courses;
+    } else if (req.body.modules && req.body.modules.courses !== undefined) {
+      // Soporte para objeto anidado
+      config.modules.courses = req.body.modules.courses;
+    }
 
     // Manejar logo
     if (req.files && req.files.logo) {
@@ -321,7 +335,9 @@ const debug = async (req, res) => {
         maintenanceMode: config.maintenanceMode,
         allowRegistrations: config.allowRegistrations,
         createdAt: config.createdAt,
-        updatedAt: config.updatedAt
+        createdAt: config.createdAt,
+        updatedAt: config.updatedAt,
+        modules: config.modules || { courses: true }
       },
       raw: config.toObject() // Objeto completo sin filtros
     });

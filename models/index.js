@@ -4,7 +4,7 @@ import Course from './Course.js'
 import CourseSection from './CourseSection.js'
 import CourseClase from './CourseClase.js'
 import CourseClaseFile from './CourseClaseFile.js';
-// import Coupon from './Cupone.js'; // ELIMINADO - Módulo no usado
+import Coupon from './Coupon.js';
 import Discount from './Discount.js'
 import Project from './Project.js';
 import Setting from './Setting.js';
@@ -37,7 +37,7 @@ export default {
     CourseSection,
     CourseClase,
     CourseClaseFile,
-    // Coupon, // ELIMINADO - Módulo no usado
+    Coupon,
     Discount,
     Project,
     Setting,

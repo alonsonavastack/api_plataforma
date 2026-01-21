@@ -41,7 +41,9 @@ router.use('/categories', Categorie);
 router.use('/courses', Course);
 router.use('/course-sections', CourseSection); // Renombrado para consistencia
 router.use('/course_clase', CourseClase);
-// router.use('/coupon',Coupon); // MÓDULO ELIMINADO - No se usaba (0% implementación frontend)
+import Coupon from './Coupon.js'; // 🔥 IMPORT NUEVO
+// ...
+router.use('/coupons', Coupon); // Habilitado y corregido a plural para consistencia
 router.use('/discount', Discount);
 router.use('/home', Home);
 router.use('/checkout', Sale);
