@@ -16,6 +16,10 @@ router.get("/check-sales/:id", [auth.verifyDashboard], projectController.checkSa
 router.put("/toggle-featured/:id", [auth.verifyAdmin], projectController.toggle_featured);
 router.delete("/remove/:id", [auth.verifyDashboard], projectController.remove);
 
+// 🔥 Rutas para manejar notas del proyecto
+router.get("/:id/note", [auth.verifyDashboard], projectController.getProjectNote);
+router.put("/:id/note", [auth.verifyDashboard], projectController.updateProjectNote);
+
 // Rutas para manejar archivos ZIP
 router.post("/upload-files/:id", [auth.verifyDashboard, filePath], projectController.uploadFiles);
 router.delete("/remove-file/:projectId/:fileId", [auth.verifyDashboard], projectController.removeFile);
@@ -28,3 +32,4 @@ router.get("/show/:id", projectController.show_project); // Ruta pública
 router.get("/imagen-project/:img", projectController.get_imagen);
 
 export default router;
+

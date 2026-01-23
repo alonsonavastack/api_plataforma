@@ -706,3 +706,77 @@ export const toggle_featured = async (req, res) => {
         res.status(500).send({ message: "HUBO UN ERROR" });
     }
 };
+
+/**
+ * Obtiene las notas administrativas de un proyecto
+ * Admins y instructores pueden leerlas
+ */
+export const getProjectNote = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const userRole = req.user.rol;
+
+        // Validar que el proyecto existe
+        const project = await models.Project.findById(id);
+        if (!project) {
+            return res.status(404).send({ message: "Proyecto no encontrado" });
+        }
+
+        // Validar permisos: Solo admin e instructor pueden leer
+        if (userRole !== 'admin' && userRole !== 'instructor') {
+            return res.status(403).send({ message: "No tienes permisos para leer las notas de este proyecto" });
+        }
+
+        res.status(200).send({
+            message: "Notas obtenidas correctamente",
+            project: {
+                _id: project._id,
+                admin_notes: project.admin_notes || ''
+            }
+        });
+    } catch (error) {
+        console.error('Error getting project note:', error);
+        res.status(500).send({ message: "Error al obtener las notas del proyecto: " + error.message });
+    }
+};
+
+/**
+ * Actualiza las notas administrativas de un proyecto
+ * Solo el admin puede actualizar las notas
+ */
+export const updateProjectNote = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { admin_notes } = req.body;
+        const user_id = req.user._id;
+        const userRole = req.user.rol;
+
+        // Validar que el proyecto existe
+        const project = await models.Project.findById(id);
+        if (!project) {
+            return res.status(404).send({ message: "Proyecto no encontrado" });
+        }
+
+        // Validar permisos: Solo admin
+        const isAdmin = userRole === 'admin';
+
+        if (!isAdmin) {
+            return res.status(403).send({ message: "No tienes permisos para actualizar notas a este proyecto" });
+        }
+
+        // Actualizar las notas
+        project.admin_notes = admin_notes || '';
+        await project.save();
+
+        res.status(200).send({
+            message: "Notas actualizadas correctamente",
+            project: {
+                _id: project._id,
+                admin_notes: project.admin_notes
+            }
+        });
+    } catch (error) {
+        console.error('Error updating project note:', error);
+        res.status(500).send({ message: "Error al actualizar las notas del proyecto: " + error.message });
+    }
+};
