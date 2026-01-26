@@ -72,6 +72,12 @@ const SystemConfigSchema = Schema({
     lastBackup: { type: Date, default: null }
   },
 
+  // 📝 Notas de Respaldo
+  backup_notes: {
+    type: String,
+    default: ''
+  },
+
   // Módulos del Sistema
   modules: {
     courses: { type: Boolean, default: true }, // Activar/Desactivar módulo de cursos

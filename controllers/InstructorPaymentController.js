@@ -493,13 +493,31 @@ export const getEarnings = async (req, res) => {
  */
 export const getEarningsStats = async (req, res) => {
     try {
-        const instructorId = req.user._id;
+        // Si el usuario es admin, puede ver sus propias ganancias o de otro instructor si proporciona instructorId
+        const userRole = req.user.rol;
+        let instructorId = req.user._id;
 
-        console.log('📊 [getEarningsStats] Obteniendo stats para instructor:', instructorId);
+        // Si es admin y proporciona un instructorId, usar ese
+        if (userRole === 'admin' && req.query.instructorId) {
+            instructorId = req.query.instructorId;
+        }
+
+        console.log('📊 [getEarningsStats] Obteniendo stats para instructor:', instructorId, 'Usuario:', req.user._id, 'Rol:', userRole);
 
         // 1️⃣ Obtener todas las ganancias del instructor
         const allEarnings = await InstructorEarnings.find({ instructor: instructorId });
         console.log('📊 [getEarningsStats] Total earnings encontrados:', allEarnings.length);
+        
+        // Si no hay ganancias, verificar si el instructor existe
+        if (allEarnings.length === 0) {
+            console.log('⚠️ [getEarningsStats] Sin earnings para instructor:', instructorId);
+            // Verificar si hay CUALQUIER earnings en la BD para debugging
+            const totalEarningsInDB = await InstructorEarnings.countDocuments();
+            console.log('📊 [getEarningsStats] Total de earnings en toda la BD:', totalEarningsInDB);
+            // Listar instructores con earnings
+            const instructorsWithEarnings = await InstructorEarnings.distinct('instructor');
+            console.log('📊 [getEarningsStats] Instructores con earnings:', instructorsWithEarnings);
+        }
 
         // 2️⃣ Calcular estadísticas por estado (SIN ajustar por reembolsos aún)
         const statsByStatus = calculateEarningsStatsByStatus(allEarnings);

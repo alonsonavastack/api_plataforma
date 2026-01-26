@@ -133,7 +133,7 @@ export const createResourceLimiter = rateLimit({
  */
 export const generalApiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutos
-  max: 300, // 300 requests (Aumentado para SPA)
+  max: process.env.NODE_ENV === 'production' ? 300 : 1000, // 1000 en dev, 300 en prod
   message: {
     message: 429,
     message_text: 'Demasiadas peticiones a la API. Por favor, intenta de nuevo más tarde.',
@@ -141,6 +141,9 @@ export const generalApiLimiter = rateLimit({
   standardHeaders: true,
   legacyHeaders: false,
   skip: (req) => {
+    // 🔥 NUEVO: Deshabilitar completamente en desarrollo
+    if (process.env.NODE_ENV === 'development') return true;
+    
     // No aplicar rate limiting a:
     // 1. Webhooks de Mercado Pago (tienen su propia validación)
     if (req.path.includes('/webhook')) return true;
@@ -236,12 +239,13 @@ export const passwordResetLimiter = rateLimit({
  */
 export const apiSlowDown = slowDown({
   windowMs: 15 * 60 * 1000, // 15 minutos
-  delayAfter: 150, // Después de 150 requests (Aumentado para SPA)
+  delayAfter: process.env.NODE_ENV === 'production' ? 150 : 999999, // Casi infinito en dev
   delayMs: (hits) => hits * 100, // 100ms por request adicional
   maxDelayMs: 5000, // Máximo 5 segundos de delay
   skipSuccessfulRequests: false,
   skipFailedRequests: false,
-
+  // 🔥 NUEVO: Deshabilitar completamente en desarrollo
+  skip: (req) => process.env.NODE_ENV === 'development'
 });
 
 /**

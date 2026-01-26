@@ -31,4 +31,8 @@ router.get('/backup/download', auth.verifyAdmin, BackupController.download);
 router.get('/backup/test', BackupController.test); // Test route (no auth for easier check)
 router.post('/backup/restore', [auth.verifyAdmin, multiparty({ maxFilesSize: 50 * 1024 * 1024 })], BackupController.restore); // 50MB limit
 
+// 📝 NOTAS DE RESPALDO (Solo Admin)
+router.get('/backup-notes', auth.verifyAdmin, SystemConfigController.getBackupNotes);
+router.put('/backup-notes', auth.verifyAdmin, SystemConfigController.updateBackupNotes);
+
 export default router;

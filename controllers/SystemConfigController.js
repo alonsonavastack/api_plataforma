@@ -381,6 +381,68 @@ const getSupportedCountriesEndpoint = async (req, res) => {
   }
 };
 
+// 🔥 OBTENER NOTAS DE RESPALDO
+const getBackupNotes = async (req, res) => {
+  try {
+    console.log('📝 [SystemConfigController] Obteniendo notas de respaldo');
+
+    let config = await SystemConfig.findOne();
+
+    if (!config) {
+      config = new SystemConfig({
+        siteName: 'NeoCourse',
+        siteDescription: 'Plataforma de Cursos Online'
+      });
+      await config.save();
+    }
+
+    res.status(200).send({
+      success: true,
+      notes: config.backup_notes || ''
+    });
+  } catch (error) {
+    console.error('❌ [SystemConfigController] Error al obtener notas de respaldo:', error);
+    res.status(500).send({
+      success: false,
+      message: 'Error al obtener las notas de respaldo'
+    });
+  }
+};
+
+// 🔥 GUARDAR NOTAS DE RESPALDO
+const updateBackupNotes = async (req, res) => {
+  try {
+    const { backup_notes } = req.body;
+
+    console.log('💾 [SystemConfigController] Guardando notas de respaldo');
+
+    let config = await SystemConfig.findOne();
+
+    if (!config) {
+      config = new SystemConfig({
+        siteName: 'NeoCourse',
+        siteDescription: 'Plataforma de Cursos Online'
+      });
+    }
+
+    config.backup_notes = backup_notes || '';
+    await config.save();
+
+    console.log('✅ [SystemConfigController] Notas de respaldo guardadas correctamente');
+
+    res.status(200).send({
+      success: true,
+      message: 'Notas de respaldo guardadas correctamente'
+    });
+  } catch (error) {
+    console.error('❌ [SystemConfigController] Error al guardar notas de respaldo:', error);
+    res.status(500).send({
+      success: false,
+      message: 'Error al guardar las notas de respaldo'
+    });
+  }
+};
+
 export {
   get,
   getPublic,
@@ -388,5 +450,7 @@ export {
   update,
   getLogo,
   getFavicon,
-  getSupportedCountriesEndpoint
+  getSupportedCountriesEndpoint,
+  getBackupNotes,
+  updateBackupNotes
 };
