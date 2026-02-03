@@ -1,0 +1,44 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: 🚀 Deploy to DigitalOcean
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v3
+      
+      - name: 🔑 Setup SSH
+        uses: webfactory/ssh-agent@v0.8.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+      
+      - name: 🚀 Deploy to server
+        env:
+          SERVER_IP: ${{ secrets.SERVER_IP }}
+        run: |
+          ssh -o StrictHostKeyChecking=no devsharks@$SERVER_IP '
+            cd /home/devsharks/devsharks-platform &&
+            git fetch origin main &&
+            git reset --hard origin/main &&
+            /home/devsharks/deploy.sh
+          '
+      
+      - name: ✅ Deployment successful
+        if: success()
+        run: |
+          echo "🎉 Deploy completado exitosamente!"
+          echo "🌐 Frontend: https://devsharks.com"
+          echo "🔧 Backend: https://api.devsharks.com"
+      
+      - name: ❌ Deployment failed
+        if: failure()
+        run: |
+          echo "⚠️ Deploy falló. Revisa los logs en GitHub Actions."

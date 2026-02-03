@@ -126,16 +126,16 @@ console.log('✅ Helmet configurado');
 // ═══════════════════════════════════════════════════════════════════════
 
 const allowedOrigins = [
-    'http://localhost:4200', // Angular dev
-    'http://127.0.0.1:4200', // Angular dev (IP)
-    'http://localhost:3000', // Backend dev
-    'http://localhost:3001', // Frontend alternativo
-    process.env.URL_FRONTEND_NGROK, // 🔥 ngrok para PayPal OAuth (frontend)
-    // Añadir dominios de producción aquí
-    // 'https://tudominio.com',
-    // 'https://www.tudominio.com',
-    // 'https://app.tudominio.com',
-].filter(Boolean); // Filtrar valores undefined
+    'http://localhost:4200',
+    'http://127.0.0.1:4200',
+    'http://localhost:3000',
+    'http://localhost:3001',
+    process.env.URL_FRONTEND_NGROK,
+    'https://devhubsharks.com',           // 🔥 TU DOMINIO
+    'https://www.devhubsharks.com',       // 🔥 CON WWW
+    'http://devhubsharks.com',            // HTTP
+    'http://www.devhubsharks.com',        // HTTP con WWW
+].filter(Boolean);
 
 const corsOptions = {
     origin: (origin, callback) => {
@@ -254,12 +254,12 @@ console.log('✅ Parsers configurados');
 // ═══════════════════════════════════════════════════════════════════════
 
 if (process.env.NODE_ENV === 'development') {
-app.use((req, res, next) => {
-const timestamp = new Date().toISOString();
-// 🔒 NO loguear body, headers con tokens, ni passwords
-const safeLog = {
-    method: req.method,
-        path: req.path,
+    app.use((req, res, next) => {
+        const timestamp = new Date().toISOString();
+        // 🔒 NO loguear body, headers con tokens, ni passwords
+        const safeLog = {
+            method: req.method,
+            path: req.path,
             ip: req.ip
         };
         console.log(`[${timestamp}] ${safeLog.method} ${safeLog.path}`);
