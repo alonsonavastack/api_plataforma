@@ -5,7 +5,8 @@ import { fileURLToPath } from 'url';
 import mongoose from 'mongoose';
 import { createServer } from 'http';
 import { initializeSocketIO } from './services/socket.service.js';
-
+import dotenv from 'dotenv';
+dotenv.config();
 // ═══════════════════════════════════════════════════════════════════════
 // 🔐 VALIDACIÓN DE ENTORNO (DEBE SER LO PRIMERO)
 // ═══════════════════════════════════════════════════════════════════════
