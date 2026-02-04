@@ -1,0 +1,60 @@
+2026-02-03T19:06:33: [dotenv@17.2.3] injecting env (10) from .env -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+2026-02-03T19:06:33: 🔍 Validando variables de entorno...
+
+2026-02-03T19:06:33: ======================================================================
+2026-02-03T19:06:33: RESULTADO DE VALIDACIÓN
+2026-02-03T19:06:33: ======================================================================
+2026-02-03T19:06:33: 
+🟡 ADVERTENCIAS:
+
+2026-02-03T19:06:33: ⚠️  VIMEO_TOKEN no configurado - Token de Vimeo para videos
+2026-02-03T19:06:33: ⚠️  YOUTUBE_API_KEY no configurado - API Key de YouTube
+2026-02-03T19:06:33: 
+La aplicación puede iniciar, pero revisa estas configuraciones
+
+2026-02-03T19:06:33: ======================================================================
+
+2026-02-03T19:06:33: 
+📋 INFORMACIÓN DE ENTORNO:
+
+2026-02-03T19:06:33:    Entorno: production
+2026-02-03T19:06:33:    Puerto: 3000
+2026-02-03T19:06:33:    Backend: https://devhubsharks.com
+2026-02-03T19:06:33:    Frontend: https://devhubsharks.com
+2026-02-03T19:06:33:    PayPal Mode: live
+2026-02-03T19:06:33: 
+2026-02-03T19:06:33: ✅ Helmet configurado
+2026-02-03T19:06:33: ✅ CORS configurado
+2026-02-03T19:06:33: ✅ Protecciones anti-ataque configuradas
+2026-02-03T19:06:33: ✅ Rate limiting configurado
+2026-02-03T19:06:33: ✅ Parsers configurados
+2026-02-03T19:06:35: ✅ Conectado a la base de datos MongoDB.
+2026-02-03T19:06:35: 
+🚀 ============================================
+2026-02-03T19:06:35:    INICIALIZANDO CRON JOBS
+2026-02-03T19:06:35: ============================================
+
+2026-02-03T19:06:35: ✅ CRON Job programado: Actualización de estado de ganancias
+2026-02-03T19:06:35:    Frecuencia: Diario a las 00:00 (0 0 * * *)
+2026-02-03T19:06:35:    Zona horaria: America/Mexico_City
+2026-02-03T19:06:35: 
+✅ Total de CRON jobs activos: 1
+2026-02-03T19:06:35: ============================================
+
+2026-02-03T19:06:35: ✅ CRON jobs inicializados
+2026-02-03T19:06:35: [router/Sale] auth.verifyTienda type: function
+2026-02-03T19:06:35: [router/Sale] saleController.createPaypalOrder type: function
+2026-02-03T19:06:36: ✅ Rutas configuradas
+2026-02-03T19:06:36: 🔌 Socket.IO inicializado correctamente
+2026-02-03T19:06:36: 
+═══════════════════════════════════════════════════
+2026-02-03T19:06:36: 🚀 SERVIDOR INICIADO
+2026-02-03T19:06:36: ═══════════════════════════════════════════════════
+2026-02-03T19:06:36: 📡 Puerto: 3000
+2026-02-03T19:06:36: 🔌 WebSocket: ws://localhost:3000
+2026-02-03T19:06:36: 🌍 Entorno: production
+2026-02-03T19:06:36: 🔐 Seguridad: ACTIVADA
+2026-02-03T19:06:36: ═══════════════════════════════════════════════════
+
+2026-02-03T19:06:37: ✅ Course indexes created successfully
+2026-02-03T19:06:37: ✅ Notification indexes created
