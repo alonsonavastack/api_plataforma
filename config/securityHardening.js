@@ -22,7 +22,6 @@ export function protectEnvFile() {
   const envPath = path.join(process.cwd(), '.env');
   
   if (!fs.existsSync(envPath)) {
-// SILENCIADO: // SILENCIADO('⚠️  Archivo .env no encontrado');
     return;
   }
 
@@ -30,14 +29,13 @@ export function protectEnvFile() {
     // Cambiar permisos a 600 (solo propietario lectura/escritura)
     if (process.platform !== 'win32') {
       fs.chmodSync(envPath, 0o600);
-// SILENCIADO: // SILENCIADO('✅ Permisos de .env actualizados a 600');
     }
 
     // Verificar que esté en .gitignore
     ensureGitignore();
     
   } catch (error) {
-// SILENCIADO: // SILENCIADO('⚠️  No se pudieron cambiar permisos:', error.message);
+    // Error silenciado en producción
   }
 }
 
@@ -46,14 +44,12 @@ function ensureGitignore() {
   
   if (!fs.existsSync(gitignorePath)) {
     fs.writeFileSync(gitignorePath, '.env\nnode_modules/\n.DS_Store\nlogs/\n*.log\n');
-// SILENCIADO: // SILENCIADO('✅ .gitignore creado con .env');
     return;
   }
 
   const content = fs.readFileSync(gitignorePath, 'utf8');
   if (!content.includes('.env')) {
     fs.appendFileSync(gitignorePath, '\n.env\n');
-// SILENCIADO: // SILENCIADO('✅ .env agregado a .gitignore');
   }
 }
 
@@ -154,14 +150,14 @@ export class ThreatMonitor {
   }
 
   logThreat(ip, threat, req) {
-// SILENCIADO: // SILENCIADO(`🚨 AMENAZA DETECTADA:`, {
+    const log = {
       ip,
       type: threat.type,
       location: threat.location,
       path: req.path,
       method: req.method,
       timestamp: new Date().toISOString()
-    });
+    };
   }
 
   async notifyTelegram(ip, threat) {
@@ -190,7 +186,7 @@ Timestamp: ${new Date().toLocaleString()}
         }
       );
     } catch (error) {
-// SILENCIADO: // SILENCIADO('Error en notificación Telegram:', error.message);
+      // Error silenciado
     }
   }
 
@@ -226,7 +222,6 @@ export function adminIPRestriction(allowedIPs = []) {
     // Si no hay IPs configuradas, solo permitir en desarrollo
     if (allowedIPs.length === 0) {
       if (process.env.NODE_ENV === 'production') {
-// SILENCIADO: // SILENCIADO(`🚫 Acceso admin bloqueado - No hay IPs permitidas configuradas`);
         return res.status(403).json({
           message: 403,
           message_text: 'Acceso restringido'
@@ -239,7 +234,6 @@ export function adminIPRestriction(allowedIPs = []) {
     const allowed = allowedIPs.includes(ip);
     
     if (!allowed) {
-// SILENCIADO: // SILENCIADO(`🚫 Acceso admin bloqueado desde IP: ${ip}`);
       return res.status(403).json({
         message: 403,
         message_text: 'Acceso restringido a esta IP'
@@ -262,11 +256,6 @@ export function requireSecurityHeader(headerName = 'X-Operation-Confirm') {
     const header = req.get(headerName);
     
     if (!header || header !== 'confirmed') {
-// SILENCIADO: // SILENCIADO(`⚠️  Operación crítica sin header de confirmación`, {
-        ip: req.ip,
-        path: req.path
-      });
-      
       return res.status(400).json({
         message: 400,
         message_text: 'Operación requiere confirmación adicional'
@@ -282,8 +271,6 @@ export function requireSecurityHeader(headerName = 'X-Operation-Confirm') {
 // ═══════════════════════════════════════════════════════════════════════
 
 export async function runSecurityCheck() {
-// SILENCIADO: // SILENCIADO('\n🔍 VERIFICACIÓN DE SEGURIDAD\n');
-  
   const checks = [];
 
   // 1. Verificar .env en .gitignore
@@ -344,17 +331,8 @@ export async function runSecurityCheck() {
     message: '✅ Validación de inputs disponible'
   });
 
-  // Mostrar resultados
-// SILENCIADO: // SILENCIADO('═══════════════════════════════════════════════════════════════════════');
-  checks.forEach(check => {
-// SILENCIADO: // SILENCIADO(`${check.pass ? '✅' : '❌'} ${check.name}: ${check.message}`);
-  });
-// SILENCIADO: // SILENCIADO('═══════════════════════════════════════════════════════════════════════\n');
-
   const passed = checks.filter(c => c.pass).length;
   const total = checks.length;
-  
-// SILENCIADO: // SILENCIADO(`📊 Score: ${passed}/${total} checks pasados\n`);
 
   return {
     passed,
@@ -392,7 +370,7 @@ export class AccessLogger {
     try {
       fs.appendFileSync(this.logPath, line);
     } catch (error) {
-// SILENCIADO: // SILENCIADO('Error escribiendo log:', error.message);
+      // Error silenciado
     }
   }
 
