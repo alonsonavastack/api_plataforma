@@ -37,15 +37,29 @@ const download = async (req, res) => {
         // Fallback al URI conocido si no hay variable de entorno
         const mongoUri = process.env.MONGO_URI || 'mongodb+srv://agendador:123Alonso123@cluster0.uyzbe.mongodb.net/cursos';
 
-        // 🔥 FIX: Buscar mongodump en varias ubicaciones o usar PATH
-        let mongodumpPath = 'mongodump'; // Por defecto intentar usar PATH
+        // 🔥 FIX MEJORADO: Buscar mongodump en múltiples ubicaciones comunes
+        let mongodumpPath = null;
 
-        if (process.env.MONGODUMP_PATH) {
-            mongodumpPath = process.env.MONGODUMP_PATH;
-        } else if (fs.existsSync('/usr/local/bin/mongodump')) {
-            mongodumpPath = '/usr/local/bin/mongodump';
-        } else if (fs.existsSync('/usr/bin/mongodump')) {
-            mongodumpPath = '/usr/bin/mongodump';
+        // Lista de rutas posibles donde puede estar mongodump
+        const possiblePaths = [
+            process.env.MONGODUMP_PATH,                 // 1. Variable de entorno (prioridad máxima)
+            '/usr/bin/mongodump',                       // 2. Estándar Linux
+            '/usr/local/bin/mongodump',                 // 3. Estándar MacOS / Linux manual
+            '/snap/bin/mongodump',                      // 4. Ubuntu Snap
+            '/opt/mongodb-database-tools/bin/mongodump' // 5. Instalación manual Tools
+        ];
+
+        // Verificar cuál existe
+        for (const p of possiblePaths) {
+            if (p && fs.existsSync(p)) {
+                mongodumpPath = p;
+                break;
+            }
+        }
+
+        // Si no se encontró en rutas absolutas, intentar 'mongodump' del PATH como último recurso
+        if (!mongodumpPath) {
+            mongodumpPath = 'mongodump';
         }
 
         console.log(`⏳ [BackupController] Ejecutando mongodump usando: ${mongodumpPath}`);
@@ -57,7 +71,12 @@ const download = async (req, res) => {
             ]);
 
             mongodump.on('error', (err) => {
-                const msg = `Error invocando mongodump: ${err.message}. Asegúrate de que MongoDB Tools está instalado.`;
+                let msg = `Error al ejecutar mongodump: ${err.message}`;
+                if (err.code === 'ENOENT') {
+                    msg = `❌ Error Crítico: No se encontró la herramienta 'mongodump' en el servidor. 
+                    Por favor instala 'mongodb-database-tools' o configura la variable MONGODUMP_PATH.
+                    Ruta intentada: ${mongodumpPath}`;
+                }
                 console.error(msg);
                 reject(new Error(msg));
             });
@@ -66,7 +85,7 @@ const download = async (req, res) => {
 
             mongodump.on('close', (code) => {
                 if (code === 0) resolve();
-                else reject(new Error(`mongodump exited with code ${code}`));
+                else reject(new Error(`mongodump falló con código de salida ${code}. Revisa los logs del servidor.`));
             });
         });
 
@@ -210,15 +229,29 @@ const restore = async (req, res) => {
 
             console.log(`🎯 [BackupController] Restaurando en base de datos: ${targetDbName}`);
 
-            // 🔥 FIX: Buscar mongorestore en varias ubicaciones o usar PATH
-            let mongorestorePath = 'mongorestore'; // Por defecto intentar usar PATH
+            // 🔥 FIX MEJORADO: Buscar mongorestore en múltiples ubicaciones comunes
+            let mongorestorePath = null;
 
-            if (process.env.MONGORESTORE_PATH) {
-                mongorestorePath = process.env.MONGORESTORE_PATH;
-            } else if (fs.existsSync('/usr/local/bin/mongorestore')) {
-                mongorestorePath = '/usr/local/bin/mongorestore';
-            } else if (fs.existsSync('/usr/bin/mongorestore')) {
-                mongorestorePath = '/usr/bin/mongorestore';
+            // Lista de rutas posibles
+            const possiblePaths = [
+                process.env.MONGORESTORE_PATH,              // 1. Variable de entorno
+                '/usr/bin/mongorestore',                    // 2. Estándar Linux
+                '/usr/local/bin/mongorestore',              // 3. Estándar MacOS / Linux manual
+                '/snap/bin/mongorestore',                   // 4. Ubuntu Snap
+                '/opt/mongodb-database-tools/bin/mongorestore' // 5. Instalación manual Tools
+            ];
+
+            // Verificar cuál existe
+            for (const p of possiblePaths) {
+                if (p && fs.existsSync(p)) {
+                    mongorestorePath = p;
+                    break;
+                }
+            }
+
+            // Fallback a PATH
+            if (!mongorestorePath) {
+                mongorestorePath = 'mongorestore';
             }
 
             console.log(`⏳ [BackupController] Ejecutando mongorestore usando: ${mongorestorePath}`);
@@ -232,7 +265,12 @@ const restore = async (req, res) => {
                 ]);
 
                 mongorestore.on('error', (err) => {
-                    const msg = `Error invocando mongorestore: ${err.message}. Asegúrate de que MongoDB Tools está instalado.`;
+                    let msg = `Error al ejecutar mongorestore: ${err.message}`;
+                    if (err.code === 'ENOENT') {
+                        msg = `❌ Error Crítico: No se encontró la herramienta 'mongorestore'. 
+                         Instala 'mongodb-database-tools' o configura MONGORESTORE_PATH.
+                         Ruta intentada: ${mongorestorePath}`;
+                    }
                     console.error(msg);
                     reject(new Error(msg));
                 });
@@ -241,7 +279,7 @@ const restore = async (req, res) => {
 
                 mongorestore.on('close', (code) => {
                     if (code === 0) resolve();
-                    else reject(new Error(`mongorestore exited with code ${code}`));
+                    else reject(new Error(`mongorestore falló con código ${code}`));
                 });
             });
             console.log('✅ [BackupController] Base de datos restaurada.');
