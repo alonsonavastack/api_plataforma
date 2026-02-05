@@ -15763,3 +15763,35 @@ La aplicación puede iniciar, pero revisa estas configuraciones
 2026-02-05T00:00:01: [2026-02-05T06:00:00.081Z] ℹ️  No hay ganancias para actualizar.
 2026-02-05T00:00:01: ============================================
 
+2026-02-05T14:10:13: 📚 [ProfileStudentController] Cursos inscritos encontrados: 0
+2026-02-05T14:10:13: ✅ [ProfileStudentController] Cursos con porcentaje calculado: 0
+2026-02-05T14:10:13: 📦 [ProfileStudentController] Ventas cargadas y populadas: 0
+2026-02-05T14:10:13: 
+============================================================
+2026-02-05T14:10:13: 🔍 [ProfileStudentController] DIAGNÓSTICO DE PROYECTOS
+2026-02-05T14:10:13: ============================================================
+2026-02-05T14:10:13: 📋 Total ventas del usuario: 0
+2026-02-05T14:10:13: 👤 Usuario ID: 6943157e5c102f674cc5c265
+2026-02-05T14:10:13: 
+============================================================
+2026-02-05T14:10:13: 📊 RESULTADO FINAL: 0 proyectos encontrados
+2026-02-05T14:10:13: 📚 RESULTADO FINAL: 0 cursos activos
+2026-02-05T14:10:13: ============================================================
+
+2026-02-05T14:10:13: ✅ [ProfileStudentController] Proyectos únicos (sin duplicados): 0
+2026-02-05T14:10:14: 📚 [ProfileStudentController] Cursos inscritos encontrados: 0
+2026-02-05T14:10:14: ✅ [ProfileStudentController] Cursos con porcentaje calculado: 0
+2026-02-05T14:10:15: 📦 [ProfileStudentController] Ventas cargadas y populadas: 0
+2026-02-05T14:10:15: 
+============================================================
+2026-02-05T14:10:15: 🔍 [ProfileStudentController] DIAGNÓSTICO DE PROYECTOS
+2026-02-05T14:10:15: ============================================================
+2026-02-05T14:10:15: 📋 Total ventas del usuario: 0
+2026-02-05T14:10:15: 👤 Usuario ID: 6943157e5c102f674cc5c265
+2026-02-05T14:10:15: 
+============================================================
+2026-02-05T14:10:15: 📊 RESULTADO FINAL: 0 proyectos encontrados
+2026-02-05T14:10:15: 📚 RESULTADO FINAL: 0 cursos activos
+2026-02-05T14:10:15: ============================================================
+
+2026-02-05T14:10:15: ✅ [ProfileStudentController] Proyectos únicos (sin duplicados): 0

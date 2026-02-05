@@ -252,6 +252,7 @@ app.use(express.urlencoded({
 
 // Archivos estáticos
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 console.log('✅ Parsers configurados');
 

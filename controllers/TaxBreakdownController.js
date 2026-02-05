@@ -45,8 +45,8 @@ export default {
             retention.declaration_date = new Date();
             retention.status = 'declared';
 
-            // Asegurar carpeta de uploads pública
-            const uploadsDir = path.join(__dirname, '..', 'public', 'uploads', 'cfdi');
+            // Asegurar carpeta de uploads (root/uploads/cfdi)
+            const uploadsDir = path.join(__dirname, '..', 'uploads', 'cfdi');
             if (!fs.existsSync(uploadsDir)) {
                 fs.mkdirSync(uploadsDir, { recursive: true });
             }
@@ -158,12 +158,12 @@ export default {
             console.log('📊 getSalesBreakdown - Parámetros recibidos:', { month, year, instructor_id, instructor_search, status });
 
             let query = {};
-            
+
             // Validar que month y year sean números válidos
             if (month && year) {
                 const parsedMonth = parseInt(month);
                 const parsedYear = parseInt(year);
-                
+
                 if (!isNaN(parsedMonth) && !isNaN(parsedYear)) {
                     query.month = parsedMonth;
                     query.year = parsedYear;
@@ -190,10 +190,10 @@ export default {
                         { email: searchRegex }
                     ]
                 }).select('_id');
-                
+
                 instructorIds = matchingInstructors.map(u => u._id);
                 console.log(`🔍 Búsqueda "${instructor_search}" encontró ${instructorIds.length} instructores`);
-                
+
                 if (instructorIds.length > 0) {
                     query.instructor = { $in: instructorIds };
                 } else {
@@ -224,7 +224,7 @@ export default {
                     console.warn('⚠️ instructor_id inválido, se ignorará el filtro:', instructor_id);
                 }
             }
-            
+
             console.log('🔍 Query final:', query);
 
             const page = parseInt(req.query.page) || 1;
@@ -285,8 +285,8 @@ export default {
                 const pageSaleIds = retentions
                     .filter(r => r.sale && r.sale._id)
                     .map(r => r.sale._id);
-                
-                const pagePlatformData = pageSaleIds.length > 0 
+
+                const pagePlatformData = pageSaleIds.length > 0
                     ? await models.PlatformCommissionBreakdown.find({ sale: { $in: pageSaleIds } }).lean()
                     : [];
 
@@ -298,7 +298,7 @@ export default {
                     if (retention.sale && retention.sale._id) {
                         retention.platform_breakdown = pagePlatformData.find(p => p.sale.toString() === retention.sale._id.toString());
                     }
-                    
+
                     if (retention.cfdi_xml) {
                         retention.cfdi_xml_url = `${baseUrl}/uploads/cfdi/${retention.cfdi_xml}`;
                     }
@@ -329,8 +329,8 @@ export default {
         } catch (error) {
             console.error('❌ Error en getSalesBreakdown:', error);
             console.error('Stack:', error.stack);
-            res.status(500).json({ 
-                success: false, 
+            res.status(500).json({
+                success: false,
                 message: 'Error al obtener desglose fiscal',
                 error: process.env.NODE_ENV !== 'production' ? error.message : undefined
             });
@@ -344,23 +344,23 @@ export default {
         try {
             const { month, year, instructor_id, instructor_search, status } = req.query;
             let query = {};
-            
+
             // Validar parámetros antes de crear query
             if (month && year) {
                 const parsedMonth = parseInt(month);
                 const parsedYear = parseInt(year);
-                
+
                 if (!isNaN(parsedMonth) && !isNaN(parsedYear)) {
                     query.month = parsedMonth;
                     query.year = parsedYear;
                 }
             }
-            
+
             // ✅ Filtro de estado
             if (status && status !== 'all') {
                 query.status = status;
             }
-            
+
             // ✅ BÚSQUEDA POR TEXTO
             if (instructor_search && instructor_search.trim()) {
                 const searchRegex = new RegExp(instructor_search.trim(), 'i');
@@ -371,7 +371,7 @@ export default {
                         { email: searchRegex }
                     ]
                 }).select('_id');
-                
+
                 const instructorIds = matchingInstructors.map(u => u._id);
                 if (instructorIds.length > 0) {
                     query.instructor = { $in: instructorIds };
