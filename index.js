@@ -25,10 +25,14 @@ import mongoSanitize from 'express-mongo-sanitize';
 import hpp from 'hpp';
 import { generalApiLimiter, apiSlowDown } from './middlewares/rateLimiters.js';
 import { sanitizeQuery, detectSuspiciousActivity } from './middlewares/security.js';
+import { initDirectories } from './init-dirs.js';
 
 // ═══════════════════════════════════════════════════════════════════════
 // 🚀 INICIALIZACIÓN DE EXPRESS
 // ═══════════════════════════════════════════════════════════════════════
+
+// 🔥 Inicializar directorios de subida
+initDirectories();
 
 const app = express();
 
@@ -72,7 +76,8 @@ app.use(helmet({
                 "https://api.paypal.com",
                 "wss://localhost:3000",
                 "wss://localhost:4200", // WebSockets dev
-                process.env.NODE_ENV === 'production' ? "wss://api.tudominio.com" : ""
+                process.env.NODE_ENV === 'production' ? "wss://api.devhubsharks.com" : "",
+                process.env.NODE_ENV === 'production' ? "https://api.devhubsharks.com" : ""
             ].filter(Boolean),
             frameSrc: [
                 "'self'",
@@ -231,9 +236,9 @@ console.log('✅ Rate limiting configurado');
 
 // Limitar tamaño del body
 app.use(express.json({
-    limit: '10mb',
+    limit: '100mb', // 🔥 AUMENTADO PARA BACKUPS
     verify: (req, res, buf, encoding) => {
-        if (buf.length > 10 * 1024 * 1024) { // 10MB
+        if (buf.length > 100 * 1024 * 1024) { // 100MB
             throw new Error('Body demasiado grande');
         }
     }
@@ -241,8 +246,8 @@ app.use(express.json({
 
 app.use(express.urlencoded({
     extended: true,
-    limit: '10mb',
-    parameterLimit: 100 // Máximo 100 parámetros
+    limit: '100mb', // 🔥 AUMENTADO PARA BACKUPS
+    parameterLimit: 1000 // Máximo 1000 parámetros
 }));
 
 // Archivos estáticos
