@@ -3,7 +3,12 @@ import * as ProfileStudentController from '../controllers/ProfileStudentControll
 import auth from '../service/auth.js'; // Asegúrate de importar el middleware de autenticación
 import multiparty from 'connect-multiparty';
 
-const path = multiparty({ uploadDir: './uploads/user' });
+const path = multiparty({
+    uploadDir: './uploads/user',
+    maxFilesSize: 10 * 1024 * 1024, // 10MB
+    maxFields: 50,
+    autoFiles: true
+});
 
 const router = routerx();
 

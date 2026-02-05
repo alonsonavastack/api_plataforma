@@ -3,7 +3,12 @@ import profileInstructorController from "../controllers/ProfileInstructorControl
 import auth from "../service/auth.js";
 import multiparty from 'connect-multiparty';
 
-const path = multiparty({uploadDir : './uploads/user'});
+const path = multiparty({
+    uploadDir: './uploads/user',
+    maxFilesSize: 10 * 1024 * 1024, // 10MB
+    maxFields: 50,
+    autoFiles: true
+});
 
 const router = routerx();
 

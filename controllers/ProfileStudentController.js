@@ -391,6 +391,7 @@ export const update_avatar = async (req, res) => {
         }
 
         if (req.files && req.files.avatar) {
+            console.log("📸 [ProfileStudent] Procesando avatar:", req.files.avatar);
             const oldUser = await models.User.findById(req.user._id);
             if (oldUser.avatar && fs.existsSync(path.join(__dirname, '../uploads/user/', oldUser.avatar))) {
                 fs.unlinkSync(path.join(__dirname, '../uploads/user/', oldUser.avatar));
@@ -404,9 +405,12 @@ export const update_avatar = async (req, res) => {
                 message: 'El avatar se actualizó correctamente.',
                 user: resource.User.api_resource_user(updatedUser),
             });
+        } else {
+            console.log("⚠️ [ProfileStudent] No se recibió archivo de avatar. req.files:", req.files);
+            return res.status(400).send({ message: 'No se proporcionó ningún archivo de avatar.' });
         }
     } catch (error) {
-        console.log(error);
+        console.log("❌ [ProfileStudent] Error al actualizar avatar:", error);
         res.status(500).send({ message: 'HUBO UN ERROR' });
     }
 };
