@@ -384,13 +384,20 @@ export default {
         return res.status(401).send({ message: 'No autenticado.' });
       }
 
+      console.log('📸 [Update Avatar] Request received for user:', req.user._id);
+      console.log('📁 [Debug Files]:', req.files);
+
       // Usar siempre el ID del usuario autenticado para la actualización de su propio avatar.
       const userIdToUpdate = req.user._id;
 
       if (req.files && req.files.avatar) {
         const oldUser = await models.User.findById(userIdToUpdate);
         if (oldUser.avatar && fs.existsSync(path.join(__dirname, '../uploads/user/', oldUser.avatar))) {
-          fs.unlinkSync(path.join(__dirname, '../uploads/user/', oldUser.avatar));
+          try {
+            fs.unlinkSync(path.join(__dirname, '../uploads/user/', oldUser.avatar));
+          } catch (err) {
+            console.warn('⚠️ No se pudo eliminar avatar anterior:', err.message);
+          }
         }
         const img_path = req.files.avatar.path;
         const avatar_name = path.basename(img_path);
@@ -402,10 +409,11 @@ export default {
           user: resource.User.api_resource_user(updatedUser),
         });
       } else {
+        console.error('❌ [Update Avatar] No se recibió archivo "avatar"');
         return res.status(400).send({ message: 'No se proporcionó ningún archivo de avatar.' });
       }
     } catch (error) {
-      console.log(error);
+      console.log('❌ [Update Avatar] Error:', error);
       res.status(500).send({ message: 'HUBO UN ERROR' });
     }
   },
