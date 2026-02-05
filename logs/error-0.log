@@ -1,0 +1,3997 @@
+2026-02-03T20:06:32: ❌ Error capturado: {
+  message: "ENOENT: no such file or directory, stat '/Users/codfull-stack/Desktop/plataforma/api/uploads/default.jpg'",
+  stack: undefined,
+  path: '/api/projects/imagen-project/slxR5V4SNeUC-f0xYIidQ3Nt.png',
+  method: 'GET',
+  ip: '::1',
+  userEmail: 'no autenticado',
+  timestamp: '2026-02-04T02:06:32.322Z'
+}
+2026-02-03T20:06:32: ❌ Error capturado: {
+  message: "ENOENT: no such file or directory, stat '/Users/codfull-stack/Desktop/plataforma/api/uploads/default.jpg'",
+  stack: undefined,
+  path: '/api/projects/imagen-project/SJahtiCoZ0gk4MnqpHchycRl.webp',
+  method: 'GET',
+  ip: '::1',
+  userEmail: 'no autenticado',
+  timestamp: '2026-02-04T02:06:32.325Z'
+}
+2026-02-03T20:06:32: ❌ Error capturado: {
+  message: "ENOENT: no such file or directory, stat '/Users/codfull-stack/Desktop/plataforma/api/uploads/default.jpg'",
+  stack: undefined,
+  path: '/api/projects/imagen-project/YvZFpTBXGZt80gMPIadBsgQc.png',
+  method: 'GET',
+  ip: '::1',
+  userEmail: 'no autenticado',
+  timestamp: '2026-02-04T02:06:32.327Z'
+}
+2026-02-03T20:06:32: ❌ Error capturado: {
+  message: "ENOENT: no such file or directory, stat '/Users/codfull-stack/Desktop/plataforma/api/uploads/default.jpg'",
+  stack: undefined,
+  path: '/api/users/imagen-usuario/q3oGm63XAUaPi21UWvpw2FXa.png',
+  method: 'GET',
+  ip: '::1',
+  userEmail: 'no autenticado',
+  timestamp: '2026-02-04T02:06:32.962Z'
+}
+2026-02-03T20:06:32: ❌ Error capturado: {
+  message: "ENOENT: no such file or directory, stat '/Users/codfull-stack/Desktop/plataforma/api/uploads/default.jpg'",
+  stack: undefined,
+  path: '/api/projects/imagen-project/slxR5V4SNeUC-f0xYIidQ3Nt.png',
+  method: 'GET',
+  ip: '::1',
+  userEmail: 'no autenticado',
+  timestamp: '2026-02-04T02:06:32.982Z'
+}
+2026-02-03T20:06:32: ❌ Error capturado: {
+  message: "ENOENT: no such file or directory, stat '/Users/codfull-stack/Desktop/plataforma/api/uploads/default.jpg'",
+  stack: undefined,
+  path: '/api/projects/imagen-project/YvZFpTBXGZt80gMPIadBsgQc.png',
+  method: 'GET',
+  ip: '::1',
+  userEmail: 'no autenticado',
+  timestamp: '2026-02-04T02:06:32.983Z'
+}
+2026-02-03T20:06:32: ❌ Error capturado: {
+  message: "ENOENT: no such file or directory, stat '/Users/codfull-stack/Desktop/plataforma/api/uploads/default.jpg'",
+  stack: undefined,
+  path: '/api/projects/imagen-project/SJahtiCoZ0gk4MnqpHchycRl.webp',
+  method: 'GET',
+  ip: '::1',
+  userEmail: 'no autenticado',
+  timestamp: '2026-02-04T02:06:32.984Z'
+}
+2026-02-03T20:07:51: ❌ Error capturado: {
+  message: "ENOENT: no such file or directory, stat '/Users/codfull-stack/Desktop/plataforma/api/uploads/default.jpg'",
+  stack: undefined,
+  path: '/api/projects/imagen-project/slxR5V4SNeUC-f0xYIidQ3Nt.png',
+  method: 'GET',
+  ip: '::1',
+  userEmail: 'no autenticado',
+  timestamp: '2026-02-04T02:07:51.530Z'
+}
+2026-02-03T20:07:51: ❌ Error capturado: {
+  message: "ENOENT: no such file or directory, stat '/Users/codfull-stack/Desktop/plataforma/api/uploads/default.jpg'",
+  stack: undefined,
+  path: '/api/projects/imagen-project/YvZFpTBXGZt80gMPIadBsgQc.png',
+  method: 'GET',
+  ip: '::1',
+  userEmail: 'no autenticado',
+  timestamp: '2026-02-04T02:07:51.532Z'
+}
+2026-02-03T20:07:51: ❌ Error capturado: {
+  message: "ENOENT: no such file or directory, stat '/Users/codfull-stack/Desktop/plataforma/api/uploads/default.jpg'",
+  stack: undefined,
+  path: '/api/projects/imagen-project/SJahtiCoZ0gk4MnqpHchycRl.webp',
+  method: 'GET',
+  ip: '::1',
+  userEmail: 'no autenticado',
+  timestamp: '2026-02-04T02:07:51.532Z'
+}
+2026-02-03T20:07:52: ❌ Error capturado: {
+  message: "ENOENT: no such file or directory, stat '/Users/codfull-stack/Desktop/plataforma/api/uploads/default.jpg'",
+  stack: undefined,
+  path: '/api/users/imagen-usuario/q3oGm63XAUaPi21UWvpw2FXa.png',
+  method: 'GET',
+  ip: '::1',
+  userEmail: 'no autenticado',
+  timestamp: '2026-02-04T02:07:52.122Z'
+}
+2026-02-03T20:07:52: ❌ Error capturado: {
+  message: "ENOENT: no such file or directory, stat '/Users/codfull-stack/Desktop/plataforma/api/uploads/default.jpg'",
+  stack: undefined,
+  path: '/api/projects/imagen-project/slxR5V4SNeUC-f0xYIidQ3Nt.png',
+  method: 'GET',
+  ip: '::1',
+  userEmail: 'no autenticado',
+  timestamp: '2026-02-04T02:07:52.133Z'
+}
+2026-02-03T20:07:52: ❌ Error capturado: {
+  message: "ENOENT: no such file or directory, stat '/Users/codfull-stack/Desktop/plataforma/api/uploads/default.jpg'",
+  stack: undefined,
+  path: '/api/projects/imagen-project/YvZFpTBXGZt80gMPIadBsgQc.png',
+  method: 'GET',
+  ip: '::1',
+  userEmail: 'no autenticado',
+  timestamp: '2026-02-04T02:07:52.134Z'
+}
+2026-02-03T20:07:52: ❌ Error capturado: {
+  message: "ENOENT: no such file or directory, stat '/Users/codfull-stack/Desktop/plataforma/api/uploads/default.jpg'",
+  stack: undefined,
+  path: '/api/projects/imagen-project/SJahtiCoZ0gk4MnqpHchycRl.webp',
+  method: 'GET',
+  ip: '::1',
+  userEmail: 'no autenticado',
+  timestamp: '2026-02-04T02:07:52.135Z'
+}
+2026-02-03T20:08:06: ❌ Error capturado: {
+  message: "ENOENT: no such file or directory, stat '/Users/codfull-stack/Desktop/plataforma/api/uploads/default.jpg'",
+  stack: undefined,
+  path: '/api/projects/imagen-project/slxR5V4SNeUC-f0xYIidQ3Nt.png',
+  method: 'GET',
+  ip: '::1',
+  userEmail: 'no autenticado',
+  timestamp: '2026-02-04T02:08:06.198Z'
+}
+2026-02-03T20:08:06: ❌ Error capturado: {
+  message: "ENOENT: no such file or directory, stat '/Users/codfull-stack/Desktop/plataforma/api/uploads/default.jpg'",
+  stack: undefined,
+  path: '/api/projects/imagen-project/YvZFpTBXGZt80gMPIadBsgQc.png',
+  method: 'GET',
+  ip: '::1',
+  userEmail: 'no autenticado',
+  timestamp: '2026-02-04T02:08:06.199Z'
+}
+2026-02-03T20:08:06: ❌ Error capturado: {
+  message: "ENOENT: no such file or directory, stat '/Users/codfull-stack/Desktop/plataforma/api/uploads/default.jpg'",
+  stack: undefined,
+  path: '/api/projects/imagen-project/SJahtiCoZ0gk4MnqpHchycRl.webp',
+  method: 'GET',
+  ip: '::1',
+  userEmail: 'no autenticado',
+  timestamp: '2026-02-04T02:08:06.200Z'
+}
+2026-02-03T20:08:06: ❌ Error capturado: {
+  message: "ENOENT: no such file or directory, stat '/Users/codfull-stack/Desktop/plataforma/api/uploads/default.jpg'",
+  stack: undefined,
+  path: '/api/users/imagen-usuario/q3oGm63XAUaPi21UWvpw2FXa.png',
+  method: 'GET',
+  ip: '::1',
+  userEmail: 'no autenticado',
+  timestamp: '2026-02-04T02:08:06.734Z'
+}
+2026-02-03T20:08:06: ❌ Error capturado: {
+  message: "ENOENT: no such file or directory, stat '/Users/codfull-stack/Desktop/plataforma/api/uploads/default.jpg'",
+  stack: undefined,
+  path: '/api/projects/imagen-project/slxR5V4SNeUC-f0xYIidQ3Nt.png',
+  method: 'GET',
+  ip: '::1',
+  userEmail: 'no autenticado',
+  timestamp: '2026-02-04T02:08:06.754Z'
+}
+2026-02-03T20:08:06: ❌ Error capturado: {
+  message: "ENOENT: no such file or directory, stat '/Users/codfull-stack/Desktop/plataforma/api/uploads/default.jpg'",
+  stack: undefined,
+  path: '/api/projects/imagen-project/YvZFpTBXGZt80gMPIadBsgQc.png',
+  method: 'GET',
+  ip: '::1',
+  userEmail: 'no autenticado',
+  timestamp: '2026-02-04T02:08:06.756Z'
+}
+2026-02-03T20:08:06: ❌ Error capturado: {
+  message: "ENOENT: no such file or directory, stat '/Users/codfull-stack/Desktop/plataforma/api/uploads/default.jpg'",
+  stack: undefined,
+  path: '/api/projects/imagen-project/SJahtiCoZ0gk4MnqpHchycRl.webp',
+  method: 'GET',
+  ip: '::1',
+  userEmail: 'no autenticado',
+  timestamp: '2026-02-04T02:08:06.758Z'
+}
+2026-02-03T20:09:10: ❌ Error capturado: {
+  message: "ENOENT: no such file or directory, stat '/Users/codfull-stack/Desktop/plataforma/api/uploads/default.jpg'",
+  stack: undefined,
+  path: '/api/projects/imagen-project/slxR5V4SNeUC-f0xYIidQ3Nt.png',
+  method: 'GET',
+  ip: '::1',
+  userEmail: 'no autenticado',
+  timestamp: '2026-02-04T02:09:10.114Z'
+}
+2026-02-03T20:09:10: ❌ Error capturado: {
+  message: "ENOENT: no such file or directory, stat '/Users/codfull-stack/Desktop/plataforma/api/uploads/default.jpg'",
+  stack: undefined,
+  path: '/api/projects/imagen-project/YvZFpTBXGZt80gMPIadBsgQc.png',
+  method: 'GET',
+  ip: '::1',
+  userEmail: 'no autenticado',
+  timestamp: '2026-02-04T02:09:10.115Z'
+}
+2026-02-03T20:09:10: ❌ Error capturado: {
+  message: "ENOENT: no such file or directory, stat '/Users/codfull-stack/Desktop/plataforma/api/uploads/default.jpg'",
+  stack: undefined,
+  path: '/api/projects/imagen-project/SJahtiCoZ0gk4MnqpHchycRl.webp',
+  method: 'GET',
+  ip: '::1',
+  userEmail: 'no autenticado',
+  timestamp: '2026-02-04T02:09:10.116Z'
+}
+2026-02-03T20:09:10: ❌ Error capturado: {
+  message: "ENOENT: no such file or directory, stat '/Users/codfull-stack/Desktop/plataforma/api/uploads/default.jpg'",
+  stack: undefined,
+  path: '/api/users/imagen-usuario/q3oGm63XAUaPi21UWvpw2FXa.png',
+  method: 'GET',
+  ip: '::1',
+  userEmail: 'no autenticado',
+  timestamp: '2026-02-04T02:09:10.695Z'
+}
+2026-02-03T20:09:10: ❌ Error capturado: {
+  message: "ENOENT: no such file or directory, stat '/Users/codfull-stack/Desktop/plataforma/api/uploads/default.jpg'",
+  stack: undefined,
+  path: '/api/projects/imagen-project/slxR5V4SNeUC-f0xYIidQ3Nt.png',
+  method: 'GET',
+  ip: '::1',
+  userEmail: 'no autenticado',
+  timestamp: '2026-02-04T02:09:10.722Z'
+}
+2026-02-03T20:09:10: ❌ Error capturado: {
+  message: "ENOENT: no such file or directory, stat '/Users/codfull-stack/Desktop/plataforma/api/uploads/default.jpg'",
+  stack: undefined,
+  path: '/api/projects/imagen-project/YvZFpTBXGZt80gMPIadBsgQc.png',
+  method: 'GET',
+  ip: '::1',
+  userEmail: 'no autenticado',
+  timestamp: '2026-02-04T02:09:10.723Z'
+}
+2026-02-03T20:09:10: ❌ Error capturado: {
+  message: "ENOENT: no such file or directory, stat '/Users/codfull-stack/Desktop/plataforma/api/uploads/default.jpg'",
+  stack: undefined,
+  path: '/api/projects/imagen-project/SJahtiCoZ0gk4MnqpHchycRl.webp',
+  method: 'GET',
+  ip: '::1',
+  userEmail: 'no autenticado',
+  timestamp: '2026-02-04T02:09:10.724Z'
+}
+2026-02-03T20:09:42: ❌ Error capturado: {
+  message: "ENOENT: no such file or directory, stat '/Users/codfull-stack/Desktop/plataforma/api/uploads/default.jpg'",
+  stack: undefined,
+  path: '/api/projects/imagen-project/slxR5V4SNeUC-f0xYIidQ3Nt.png',
+  method: 'GET',
+  ip: '::1',
+  userEmail: 'no autenticado',
+  timestamp: '2026-02-04T02:09:42.530Z'
+}
+2026-02-03T20:09:42: ❌ Error capturado: {
+  message: "ENOENT: no such file or directory, stat '/Users/codfull-stack/Desktop/plataforma/api/uploads/default.jpg'",
+  stack: undefined,
+  path: '/api/projects/imagen-project/YvZFpTBXGZt80gMPIadBsgQc.png',
+  method: 'GET',
+  ip: '::1',
+  userEmail: 'no autenticado',
+  timestamp: '2026-02-04T02:09:42.531Z'
+}
+2026-02-03T20:09:42: ❌ Error capturado: {
+  message: "ENOENT: no such file or directory, stat '/Users/codfull-stack/Desktop/plataforma/api/uploads/default.jpg'",
+  stack: undefined,
+  path: '/api/projects/imagen-project/SJahtiCoZ0gk4MnqpHchycRl.webp',
+  method: 'GET',
+  ip: '::1',
+  userEmail: 'no autenticado',
+  timestamp: '2026-02-04T02:09:42.531Z'
+}
+2026-02-03T20:09:43: ❌ Error capturado: {
+  message: "ENOENT: no such file or directory, stat '/Users/codfull-stack/Desktop/plataforma/api/uploads/default.jpg'",
+  stack: undefined,
+  path: '/api/users/imagen-usuario/q3oGm63XAUaPi21UWvpw2FXa.png',
+  method: 'GET',
+  ip: '::1',
+  userEmail: 'no autenticado',
+  timestamp: '2026-02-04T02:09:43.125Z'
+}
+2026-02-03T20:09:43: ❌ Error capturado: {
+  message: "ENOENT: no such file or directory, stat '/Users/codfull-stack/Desktop/plataforma/api/uploads/default.jpg'",
+  stack: undefined,
+  path: '/api/projects/imagen-project/slxR5V4SNeUC-f0xYIidQ3Nt.png',
+  method: 'GET',
+  ip: '::1',
+  userEmail: 'no autenticado',
+  timestamp: '2026-02-04T02:09:43.139Z'
+}
+2026-02-03T20:09:43: ❌ Error capturado: {
+  message: "ENOENT: no such file or directory, stat '/Users/codfull-stack/Desktop/plataforma/api/uploads/default.jpg'",
+  stack: undefined,
+  path: '/api/projects/imagen-project/YvZFpTBXGZt80gMPIadBsgQc.png',
+  method: 'GET',
+  ip: '::1',
+  userEmail: 'no autenticado',
+  timestamp: '2026-02-04T02:09:43.140Z'
+}
+2026-02-03T20:09:43: ❌ Error capturado: {
+  message: "ENOENT: no such file or directory, stat '/Users/codfull-stack/Desktop/plataforma/api/uploads/default.jpg'",
+  stack: undefined,
+  path: '/api/projects/imagen-project/SJahtiCoZ0gk4MnqpHchycRl.webp',
+  method: 'GET',
+  ip: '::1',
+  userEmail: 'no autenticado',
+  timestamp: '2026-02-04T02:09:43.143Z'
+}
+2026-02-03T20:10:02: ❌ Error capturado: {
+  message: "ENOENT: no such file or directory, stat '/Users/codfull-stack/Desktop/plataforma/api/uploads/default.jpg'",
+  stack: undefined,
+  path: '/api/projects/imagen-project/slxR5V4SNeUC-f0xYIidQ3Nt.png',
+  method: 'GET',
+  ip: '::1',
+  userEmail: 'no autenticado',
+  timestamp: '2026-02-04T02:10:02.805Z'
+}
+2026-02-03T20:10:02: ❌ Error capturado: {
+  message: "ENOENT: no such file or directory, stat '/Users/codfull-stack/Desktop/plataforma/api/uploads/default.jpg'",
+  stack: undefined,
+  path: '/api/projects/imagen-project/YvZFpTBXGZt80gMPIadBsgQc.png',
+  method: 'GET',
+  ip: '::1',
+  userEmail: 'no autenticado',
+  timestamp: '2026-02-04T02:10:02.806Z'
+}
+2026-02-03T20:10:02: ❌ Error capturado: {
+  message: "ENOENT: no such file or directory, stat '/Users/codfull-stack/Desktop/plataforma/api/uploads/default.jpg'",
+  stack: undefined,
+  path: '/api/projects/imagen-project/SJahtiCoZ0gk4MnqpHchycRl.webp',
+  method: 'GET',
+  ip: '::1',
+  userEmail: 'no autenticado',
+  timestamp: '2026-02-04T02:10:02.806Z'
+}
+2026-02-03T20:10:03: ❌ Error capturado: {
+  message: "ENOENT: no such file or directory, stat '/Users/codfull-stack/Desktop/plataforma/api/uploads/default.jpg'",
+  stack: undefined,
+  path: '/api/users/imagen-usuario/q3oGm63XAUaPi21UWvpw2FXa.png',
+  method: 'GET',
+  ip: '::1',
+  userEmail: 'no autenticado',
+  timestamp: '2026-02-04T02:10:03.421Z'
+}
+2026-02-03T20:10:03: ❌ Error capturado: {
+  message: "ENOENT: no such file or directory, stat '/Users/codfull-stack/Desktop/plataforma/api/uploads/default.jpg'",
+  stack: undefined,
+  path: '/api/projects/imagen-project/slxR5V4SNeUC-f0xYIidQ3Nt.png',
+  method: 'GET',
+  ip: '::1',
+  userEmail: 'no autenticado',
+  timestamp: '2026-02-04T02:10:03.437Z'
+}
+2026-02-03T20:10:03: ❌ Error capturado: {
+  message: "ENOENT: no such file or directory, stat '/Users/codfull-stack/Desktop/plataforma/api/uploads/default.jpg'",
+  stack: undefined,
+  path: '/api/projects/imagen-project/YvZFpTBXGZt80gMPIadBsgQc.png',
+  method: 'GET',
+  ip: '::1',
+  userEmail: 'no autenticado',
+  timestamp: '2026-02-04T02:10:03.438Z'
+}
+2026-02-03T20:10:03: ❌ Error capturado: {
+  message: "ENOENT: no such file or directory, stat '/Users/codfull-stack/Desktop/plataforma/api/uploads/default.jpg'",
+  stack: undefined,
+  path: '/api/projects/imagen-project/SJahtiCoZ0gk4MnqpHchycRl.webp',
+  method: 'GET',
+  ip: '::1',
+  userEmail: 'no autenticado',
+  timestamp: '2026-02-04T02:10:03.439Z'
+}
+2026-02-03T22:40:23: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:40:26: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:40:28: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:40:31: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:40:34: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:40:36: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:40:39: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:40:41: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:40:44: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:40:47: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:40:49: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:40:52: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:40:55: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:40:58: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:41:01: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:41:03: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:41:06: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:41:08: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:41:10: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:41:12: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:41:14: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:41:16: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:41:18: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:41:20: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:41:22: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:41:24: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:41:26: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:41:28: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:41:30: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:41:32: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:41:34: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:41:36: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:41:39: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:41:41: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:41:43: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:41:45: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:41:48: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:41:50: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:41:52: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:41:54: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:41:57: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:41:59: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:42:01: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:42:03: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:42:05: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:42:07: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:42:10: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:42:12: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:42:13: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:42:15: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:42:17: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:42:19: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:42:21: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:42:23: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:42:25: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:42:27: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:42:29: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:42:31: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:42:33: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:42:35: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:42:37: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:42:38: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:42:40: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:42:42: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:42:44: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:42:46: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:42:48: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:42:50: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:42:51: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:42:52: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:42:53: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:42:54: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:42:55: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:42:56: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:42:57: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:42:58: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:42:59: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:43:00: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:43:01: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:43:02: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:43:03: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:43:05: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:43:06: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:43:07: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:43:08: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:43:09: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:43:10: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:43:11: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:43:12: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:43:13: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:43:14: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:43:15: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:43:16: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:43:17: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:43:18: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:43:19: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:43:21: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:43:22: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:43:23: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:43:24: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:43:25: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:43:26: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:43:27: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:43:28: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:43:29: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:43:30: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:43:31: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:43:32: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:43:33: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:43:34: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:43:35: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:43:36: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:43:37: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:43:38: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:43:39: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:43:41: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:43:42: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:43:43: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:43:44: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:43:45: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:43:46: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:43:47: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:43:48: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:43:49: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:43:50: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:43:51: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:43:52: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:43:53: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:43:54: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:43:55: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:43:56: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:43:57: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:43:58: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:43:59: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:44:00: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:44:01: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:44:02: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:44:03: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:44:04: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:44:05: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:44:06: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:44:07: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:44:08: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:44:09: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:44:11: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:44:12: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:44:13: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:44:14: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:44:15: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:44:16: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:44:17: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:44:18: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:44:19: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:44:20: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:44:21: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:44:22: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:44:23: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:44:24: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:44:25: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:44:26: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:44:27: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:44:28: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:44:29: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:44:30: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:44:31: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:44:32: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:44:33: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:44:34: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:44:35: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:44:37: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:44:38: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:44:39: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:44:40: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:44:41: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:44:42: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:44:43: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:44:44: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:44:45: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:44:46: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:44:47: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:44:48: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:44:49: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:44:50: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:44:51: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:44:52: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:44:53: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:44:54: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:44:55: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:44:56: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:44:57: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:44:58: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:44:59: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:45:00: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:45:01: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:45:02: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:45:03: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:45:05: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:45:06: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:45:07: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:45:08: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:45:09: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:45:10: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:45:11: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:45:12: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:45:13: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:45:14: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:45:15: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:45:16: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:45:17: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:45:18: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:45:19: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:45:20: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:45:21: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:45:22: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:45:23: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:45:24: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:45:26: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:45:28: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:45:30: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:45:32: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:45:34: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:45:36: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:45:38: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:45:40: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:45:42: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:45:44: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:45:46: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:45:48: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:45:50: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:45:51: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:45:53: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:45:55: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:45:57: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:45:59: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:46:01: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:46:03: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:46:05: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:46:07: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:46:09: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:46:11: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:46:13: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:46:15: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:46:16: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:46:18: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:46:20: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:46:22: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:46:23: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:46:24: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:46:25: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:46:26: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:46:27: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:46:28: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:46:29: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:46:30: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:46:31: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:46:32: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:46:34: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:46:35: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:46:36: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:46:37: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:46:38: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:46:39: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:46:40: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:46:41: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:46:42: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:46:43: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:46:44: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:46:45: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:46:46: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:46:47: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:46:48: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:46:49: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:46:50: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:46:51: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:46:52: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:46:53: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:46:54: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:46:55: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:46:56: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:46:57: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:46:58: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:47:00: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:47:01: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:47:02: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:47:03: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:47:04: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:47:05: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:47:06: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:47:07: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:47:08: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:47:09: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:47:10: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:47:11: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:47:12: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:47:13: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:47:14: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:47:15: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:47:16: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:47:17: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:47:18: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:47:19: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:47:20: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:47:21: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:47:22: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:47:23: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:47:24: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:47:25: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:47:26: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:47:27: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:47:29: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:47:30: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:47:31: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:47:32: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:47:33: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:47:34: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:47:35: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:47:36: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:47:37: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:47:38: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:47:39: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:47:40: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:47:41: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:47:42: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:47:43: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:47:44: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:47:45: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:47:46: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:47:47: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:47:49: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:47:50: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:47:52: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:47:54: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:47:56: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:47:58: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:48:00: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:48:02: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:48:04: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:48:06: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:48:08: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:48:10: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:48:12: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:48:14: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:48:16: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:48:18: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:48:19: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:48:21: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:48:23: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:48:25: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:48:27: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:48:29: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:48:30: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:48:32: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:48:34: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:48:36: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:48:38: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:48:40: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:48:47: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:48:48: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:48:49: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:48:51: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:48:54: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:48:59: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:49:21: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:49:24: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:49:27: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:49:32: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:49:59: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T22:50:02: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:06:20: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:06:22: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:06:23: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:06:25: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:06:27: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:06:28: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:06:30: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:06:32: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:06:34: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:06:36: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:06:37: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:06:39: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:06:41: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:06:43: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:06:45: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:06:47: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:06:49: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:06:51: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:06:53: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:06:55: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:06:57: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:06:58: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:07:00: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:07:02: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:07:04: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:07:06: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:07:08: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:07:09: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:07:11: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:07:13: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:07:15: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:07:17: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:07:19: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:07:21: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:07:23: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:07:24: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:07:26: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:07:28: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:07:30: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:07:32: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:07:34: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:07:36: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:07:38: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:07:40: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:07:42: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:07:44: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:07:46: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:07:48: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:07:50: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:07:52: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:07:54: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:07:56: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:07:57: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:07:59: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:08:01: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:08:03: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:08:05: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:08:07: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:08:09: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:08:11: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:08:13: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:08:15: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:08:17: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:08:19: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:08:21: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:08:23: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:08:25: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:08:27: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:08:28: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:08:30: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:08:32: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:08:34: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:08:36: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:08:38: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:08:40: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:08:42: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:08:44: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:08:46: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:08:48: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:08:50: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:08:52: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:08:54: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:08:56: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:08:58: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:09:00: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:09:01: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:09:03: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:09:05: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:09:07: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:09:09: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:09:11: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:09:13: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:09:15: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:09:17: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:09:19: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:09:21: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:09:23: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:09:25: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:09:27: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:09:28: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:09:30: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:09:32: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:09:34: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:09:36: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:09:38: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:09:40: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:09:42: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:09:44: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:09:46: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:09:48: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:09:50: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:09:52: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:09:54: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:09:56: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:09:57: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:09:59: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:10:01: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:10:02: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:10:04: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:10:06: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:10:08: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:10:10: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:10:12: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:10:14: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:10:15: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:10:17: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:10:19: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:10:21: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:10:23: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:10:25: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:10:26: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:10:28: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:10:30: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:10:32: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:10:33: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:10:35: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:10:37: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:10:39: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:10:41: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:10:43: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:10:45: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:10:47: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:10:49: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:10:51: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:10:53: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:10:55: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:10:56: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:10:58: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
+2026-02-03T23:10:59: ❌ Error conectando a MongoDB o iniciando servidor: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.uyzbe.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
+}
