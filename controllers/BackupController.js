@@ -36,13 +36,19 @@ const download = async (req, res) => {
         // 2. MONGODUMP
         // Fallback al URI conocido si no hay variable de entorno
         const mongoUri = process.env.MONGO_URI || 'mongodb+srv://agendador:123Alonso123@cluster0.uyzbe.mongodb.net/cursos';
-        const mongodumpPath = '/usr/local/bin/mongodump';
 
-        if (!fs.existsSync(mongodumpPath)) {
-            throw new Error(`mongodump no encontrado en ${mongodumpPath}`);
+        // 🔥 FIX: Buscar mongodump en varias ubicaciones o usar PATH
+        let mongodumpPath = 'mongodump'; // Por defecto intentar usar PATH
+
+        if (process.env.MONGODUMP_PATH) {
+            mongodumpPath = process.env.MONGODUMP_PATH;
+        } else if (fs.existsSync('/usr/local/bin/mongodump')) {
+            mongodumpPath = '/usr/local/bin/mongodump';
+        } else if (fs.existsSync('/usr/bin/mongodump')) {
+            mongodumpPath = '/usr/bin/mongodump';
         }
 
-        console.log(`⏳ [BackupController] Ejecutando mongodump...`);
+        console.log(`⏳ [BackupController] Ejecutando mongodump usando: ${mongodumpPath}`);
 
         await new Promise((resolve, reject) => {
             const mongodump = spawn(mongodumpPath, [
@@ -50,7 +56,13 @@ const download = async (req, res) => {
                 `--out=${dumpPath}`
             ]);
 
-            mongodump.on('error', (err) => reject(new Error(`Error invocando mongodump: ${err.message}`)));
+            mongodump.on('error', (err) => {
+                const msg = `Error invocando mongodump: ${err.message}. Asegúrate de que MongoDB Tools está instalado.`;
+                console.error(msg);
+                reject(new Error(msg));
+            });
+
+            mongodump.stderr.on('data', (data) => console.log(`[mongodump] ${data}`));
 
             mongodump.on('close', (code) => {
                 if (code === 0) resolve();
@@ -198,10 +210,18 @@ const restore = async (req, res) => {
 
             console.log(`🎯 [BackupController] Restaurando en base de datos: ${targetDbName}`);
 
-            const mongorestorePath = '/usr/local/bin/mongorestore';
-            if (!fs.existsSync(mongorestorePath)) {
-                throw new Error(`mongorestore no encontrado en ${mongorestorePath}`);
+            // 🔥 FIX: Buscar mongorestore en varias ubicaciones o usar PATH
+            let mongorestorePath = 'mongorestore'; // Por defecto intentar usar PATH
+
+            if (process.env.MONGORESTORE_PATH) {
+                mongorestorePath = process.env.MONGORESTORE_PATH;
+            } else if (fs.existsSync('/usr/local/bin/mongorestore')) {
+                mongorestorePath = '/usr/local/bin/mongorestore';
+            } else if (fs.existsSync('/usr/bin/mongorestore')) {
+                mongorestorePath = '/usr/bin/mongorestore';
             }
+
+            console.log(`⏳ [BackupController] Ejecutando mongorestore usando: ${mongorestorePath}`);
 
             await new Promise((resolve, reject) => {
                 const mongorestore = spawn(mongorestorePath, [
@@ -211,7 +231,11 @@ const restore = async (req, res) => {
                     `--drop`                // Borrar colecciones existentes antes de restaurar
                 ]);
 
-                mongorestore.on('error', (err) => reject(new Error(`Error invocando mongorestore: ${err.message}`)));
+                mongorestore.on('error', (err) => {
+                    const msg = `Error invocando mongorestore: ${err.message}. Asegúrate de que MongoDB Tools está instalado.`;
+                    console.error(msg);
+                    reject(new Error(msg));
+                });
 
                 mongorestore.stderr.on('data', (data) => console.log(`[mongorestore] ${data}`));
 
