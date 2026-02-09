@@ -2,11 +2,17 @@ import mongoose, { Schema } from "mongoose";
 
 const PaymentSettingsSchema = Schema({
     paypal: {
-        clientId: { type: String, default: '' },
-        clientSecret: { type: String, default: '' },
         mode: { type: String, default: 'sandbox' },
         active: { type: Boolean, default: false },
-        instructorPayoutsActive: { type: Boolean, default: false } // 🆕 Switch para pagos a instructores
+        instructorPayoutsActive: { type: Boolean, default: false }, // Switch para pagos a instructores
+        sandbox: {
+            clientId: { type: String, default: '' },
+            clientSecret: { type: String, default: '' }
+        },
+        live: {
+            clientId: { type: String, default: '' },
+            clientSecret: { type: String, default: '' }
+        }
     },
 
     updatedBy: {

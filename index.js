@@ -279,7 +279,15 @@ if (process.env.NODE_ENV === 'development') {
 // ═══════════════════════════════════════════════════════════════════════
 
 mongoose.Promise = global.Promise;
-const dbUrl = process.env.MONGO_URI;
+// 🔥 Lógica de selección de base de datos
+let dbUrl = process.env.MONGO_URI;
+let dbSource = 'PRODUCCIÓN (MONGO_URI)';
+
+// Si estamos en desarrollo y existe MONGO_URILOCAL, usarla
+if (process.env.NODE_ENV === 'development' && process.env.MONGO_URILOCAL) {
+    dbUrl = process.env.MONGO_URILOCAL;
+    dbSource = 'LOCAL (MONGO_URILOCAL)';
+}
 
 // Variables para router y controller que se importarán dinámicamente
 let router;
@@ -291,7 +299,7 @@ try {
         useNewUrlParser: true,
         useUnifiedTopology: true,
     });
-    console.log('✅ Conectado a la base de datos MongoDB.');
+    console.log(`✅ Conectado a la base de datos MongoDB [${dbSource}]`);
 
     // Intentar inicializar CRON jobs
     try {

@@ -3,8 +3,11 @@ import axios from 'axios'; // 🔥 IMPORTAR AXIOS
 import { emitNewSaleToAdmins, emitSaleStatusUpdate } from '../services/socket.service.js';
 import { notifyNewSale, notifyPaymentApproved } from '../services/telegram.service.js';
 import { processPaidSale, createEarningForProduct } from '../services/SaleService.js'; // 🔥 IMPORTAR SERVICIO
+
 import { useWalletBalance } from './WalletController.js';
 import { convertUSDByCountry, formatCurrency } from '../services/exchangeRate.service.js'; // 🔥 CONVERSIÓN MULTI-PAÍS
+
+import PaymentSettings from '../models/PaymentSettings.js'; // 🔥 IMPORTAR CONFIGURACIÓN DE PAGO
 
 import fs from 'fs';
 import path from 'path';
@@ -335,15 +338,38 @@ export default {
                 return res.status(400).send({ message: 'n_transaccion, total y detail son requeridos' });
             }
 
-            const PAYPAL_API = process.env.PAYPAL_MODE === 'sandbox' ? 'https://api.sandbox.paypal.com' : 'https://api.paypal.com';
+            // 🔥 OBTENER CONFIGURACIÓN DE PAGO DESDE BD
+            let paymentSettings = await PaymentSettings.findOne();
+
+            // Determinar MODO
+            const PAYPAL_MODE = paymentSettings?.paypal?.mode || process.env.PAYPAL_MODE || 'sandbox';
+
+            let PAYPAL_CLIENT_ID = '';
+            let PAYPAL_CLIENT_SECRET = '';
+
+            // Obtener credenciales según el modo
+            if (PAYPAL_MODE === 'sandbox') {
+                PAYPAL_CLIENT_ID = paymentSettings?.paypal?.sandbox?.clientId || process.env.PAYPAL_CLIENT_ID;
+                PAYPAL_CLIENT_SECRET = paymentSettings?.paypal?.sandbox?.clientSecret || process.env.PAYPAL_CLIENT_SECRET;
+            } else {
+                PAYPAL_CLIENT_ID = paymentSettings?.paypal?.live?.clientId || process.env.PAYPAL_CLIENT_ID;
+                PAYPAL_CLIENT_SECRET = paymentSettings?.paypal?.live?.clientSecret || process.env.PAYPAL_CLIENT_SECRET;
+            }
+
+            if (!PAYPAL_CLIENT_ID || !PAYPAL_CLIENT_SECRET) {
+                console.error(`❌ [createPaypalOrder] Credenciales de PayPal (${PAYPAL_MODE}) no configuradas`);
+                return res.status(500).send({ message: 'Error de configuración en pasarela de pago' });
+            }
+
+            const PAYPAL_API = PAYPAL_MODE === 'sandbox' ? 'https://api.sandbox.paypal.com' : 'https://api.paypal.com';
 
             // Obtener token de acceso PayPal
             const tokenR = await axios({
                 method: 'post',
                 url: `${PAYPAL_API}/v1/oauth2/token`,
                 auth: {
-                    username: process.env.PAYPAL_CLIENT_ID.trim(),
-                    password: process.env.PAYPAL_CLIENT_SECRET.trim()
+                    username: PAYPAL_CLIENT_ID.trim(),
+                    password: PAYPAL_CLIENT_SECRET.trim()
                 },
                 params: { grant_type: 'client_credentials' }
             });
@@ -419,15 +445,38 @@ export default {
                 }
             }
 
-            const PAYPAL_API = process.env.PAYPAL_MODE === 'sandbox' ? 'https://api.sandbox.paypal.com' : 'https://api.paypal.com';
+            // 🔥 OBTENER CONFIGURACIÓN DE PAGO DESDE BD
+            let paymentSettings = await PaymentSettings.findOne();
+
+            // Determinar MODO
+            const PAYPAL_MODE = paymentSettings?.paypal?.mode || process.env.PAYPAL_MODE || 'sandbox';
+
+            let PAYPAL_CLIENT_ID = '';
+            let PAYPAL_CLIENT_SECRET = '';
+
+            // Obtener credenciales según el modo
+            if (PAYPAL_MODE === 'sandbox') {
+                PAYPAL_CLIENT_ID = paymentSettings?.paypal?.sandbox?.clientId || process.env.PAYPAL_CLIENT_ID;
+                PAYPAL_CLIENT_SECRET = paymentSettings?.paypal?.sandbox?.clientSecret || process.env.PAYPAL_CLIENT_SECRET;
+            } else {
+                PAYPAL_CLIENT_ID = paymentSettings?.paypal?.live?.clientId || process.env.PAYPAL_CLIENT_ID;
+                PAYPAL_CLIENT_SECRET = paymentSettings?.paypal?.live?.clientSecret || process.env.PAYPAL_CLIENT_SECRET;
+            }
+
+            if (!PAYPAL_CLIENT_ID || !PAYPAL_CLIENT_SECRET) {
+                console.error(`❌ [capturePaypalOrder] Credenciales de PayPal (${PAYPAL_MODE}) no configuradas`);
+                return res.status(500).send({ message: 'Error de configuración en pasarela de pago' });
+            }
+
+            const PAYPAL_API = PAYPAL_MODE === 'sandbox' ? 'https://api.sandbox.paypal.com' : 'https://api.paypal.com';
 
             // Obtener token de acceso PayPal
             const tokenR = await axios({
                 method: 'post',
                 url: `${PAYPAL_API}/v1/oauth2/token`,
                 auth: {
-                    username: process.env.PAYPAL_CLIENT_ID.trim(),
-                    password: process.env.PAYPAL_CLIENT_SECRET.trim()
+                    username: PAYPAL_CLIENT_ID.trim(),
+                    password: PAYPAL_CLIENT_SECRET.trim()
                 },
                 params: { grant_type: 'client_credentials' }
             });

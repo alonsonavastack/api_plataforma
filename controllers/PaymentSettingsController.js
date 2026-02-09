@@ -55,8 +55,10 @@ export default {
             const publicSettings = {
                 paypal: {
                     active: settings.paypal.active,
-                    clientId: settings.paypal.clientId, // Necesario para el frontend
-                    instructorPayoutsActive: settings.paypal.instructorPayoutsActive, // 🆕 Visible para instructores
+                    clientId: settings.paypal.mode === 'live'
+                        ? settings.paypal.live?.clientId
+                        : settings.paypal.sandbox?.clientId, // Devolver el ClientID correspondiente al modo
+                    instructorPayoutsActive: settings.paypal.instructorPayoutsActive,
                     mode: settings.paypal.mode
                 },
 

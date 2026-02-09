@@ -3996,3 +3996,333 @@
   hostname: '_mongodb._tcp.cluster0.uyzbe.mongodb.net'
 }
 2026-02-06T00:11:15: [2026-02-06T06:11:15.628Z] [PID: 1048] [32m[NODE-CRON][32m [33m[WARN][0m missed execution at Fri Feb 06 2026 00:00:00 GMT-0600 (Central Standard Time)! Possible blocking IO or high CPU user at the same process used by node-cron.
+2026-02-08T17:41:12: ❌ Error capturado: {
+  message: "ENOENT: no such file or directory, stat '/Users/codfull-stack/Desktop/plataforma/api/uploads/default.jpg'",
+  stack: undefined,
+  path: '/api/projects/imagen-project/fv6x0Kkog32Tmxlgr8wwETLG.png',
+  method: 'GET',
+  ip: '::1',
+  userEmail: 'no autenticado',
+  timestamp: '2026-02-08T23:41:12.431Z'
+}
+2026-02-08T17:41:12: ❌ Error capturado: {
+  message: "ENOENT: no such file or directory, stat '/Users/codfull-stack/Desktop/plataforma/api/uploads/default.jpg'",
+  stack: undefined,
+  path: '/api/projects/imagen-project/YvZFpTBXGZt80gMPIadBsgQc.png',
+  method: 'GET',
+  ip: '::1',
+  userEmail: 'no autenticado',
+  timestamp: '2026-02-08T23:41:12.432Z'
+}
+2026-02-08T17:41:12: ❌ Error capturado: {
+  message: "ENOENT: no such file or directory, stat '/Users/codfull-stack/Desktop/plataforma/api/uploads/default.jpg'",
+  stack: undefined,
+  path: '/api/projects/imagen-project/SJahtiCoZ0gk4MnqpHchycRl.webp',
+  method: 'GET',
+  ip: '::1',
+  userEmail: 'no autenticado',
+  timestamp: '2026-02-08T23:41:12.434Z'
+}
+2026-02-08T17:41:13: ❌ Error capturado: {
+  message: "ENOENT: no such file or directory, stat '/Users/codfull-stack/Desktop/plataforma/api/uploads/default.jpg'",
+  stack: undefined,
+  path: '/api/users/imagen-usuario/ATuS52DmicDXMYRjdiJVRFDb.png',
+  method: 'GET',
+  ip: '::1',
+  userEmail: 'no autenticado',
+  timestamp: '2026-02-08T23:41:13.625Z'
+}
+2026-02-08T17:41:13: ❌ Error capturado: {
+  message: "ENOENT: no such file or directory, stat '/Users/codfull-stack/Desktop/plataforma/api/uploads/default.jpg'",
+  stack: undefined,
+  path: '/api/projects/imagen-project/fv6x0Kkog32Tmxlgr8wwETLG.png',
+  method: 'GET',
+  ip: '::1',
+  userEmail: 'no autenticado',
+  timestamp: '2026-02-08T23:41:13.641Z'
+}
+2026-02-08T17:41:13: ❌ Error capturado: {
+  message: "ENOENT: no such file or directory, stat '/Users/codfull-stack/Desktop/plataforma/api/uploads/default.jpg'",
+  stack: undefined,
+  path: '/api/projects/imagen-project/YvZFpTBXGZt80gMPIadBsgQc.png',
+  method: 'GET',
+  ip: '::1',
+  userEmail: 'no autenticado',
+  timestamp: '2026-02-08T23:41:13.641Z'
+}
+2026-02-08T17:41:13: ❌ Error capturado: {
+  message: "ENOENT: no such file or directory, stat '/Users/codfull-stack/Desktop/plataforma/api/uploads/default.jpg'",
+  stack: undefined,
+  path: '/api/projects/imagen-project/SJahtiCoZ0gk4MnqpHchycRl.webp',
+  method: 'GET',
+  ip: '::1',
+  userEmail: 'no autenticado',
+  timestamp: '2026-02-08T23:41:13.643Z'
+}
+2026-02-08T17:42:03: ❌ Error capturado: {
+  message: "ENOENT: no such file or directory, stat '/Users/codfull-stack/Desktop/plataforma/api/uploads/default.jpg'",
+  stack: undefined,
+  path: '/api/users/imagen-usuario/la2veNRmYXb3faJrnO9tF9Le.jpg',
+  method: 'GET',
+  ip: '::1',
+  userEmail: 'no autenticado',
+  timestamp: '2026-02-08T23:42:03.481Z'
+}
+2026-02-08T17:42:03: ❌ Error capturado: {
+  message: "ENOENT: no such file or directory, stat '/Users/codfull-stack/Desktop/plataforma/api/uploads/default.jpg'",
+  stack: undefined,
+  path: '/api/users/imagen-usuario/la2veNRmYXb3faJrnO9tF9Le.jpg',
+  method: 'GET',
+  ip: '::1',
+  userEmail: 'no autenticado',
+  timestamp: '2026-02-08T23:42:03.875Z'
+}
+2026-02-08T17:42:30: ❌ Error capturado: {
+  message: "ENOENT: no such file or directory, stat '/Users/codfull-stack/Desktop/plataforma/api/uploads/default.jpg'",
+  stack: undefined,
+  path: '/api/users/imagen-usuario/la2veNRmYXb3faJrnO9tF9Le.jpg',
+  method: 'GET',
+  ip: '::1',
+  userEmail: 'no autenticado',
+  timestamp: '2026-02-08T23:42:30.441Z'
+}
+2026-02-08T17:42:36: ❌ Error capturado: {
+  message: "ENOENT: no such file or directory, stat '/Users/codfull-stack/Desktop/plataforma/api/uploads/default.jpg'",
+  stack: undefined,
+  path: '/api/users/imagen-usuario/la2veNRmYXb3faJrnO9tF9Le.jpg',
+  method: 'GET',
+  ip: '::1',
+  userEmail: 'no autenticado',
+  timestamp: '2026-02-08T23:42:36.287Z'
+}
+2026-02-08T17:42:46: ❌ Error capturado: {
+  message: "ENOENT: no such file or directory, stat '/Users/codfull-stack/Desktop/plataforma/api/uploads/default.jpg'",
+  stack: undefined,
+  path: '/api/users/imagen-usuario/la2veNRmYXb3faJrnO9tF9Le.jpg',
+  method: 'GET',
+  ip: '::1',
+  userEmail: 'no autenticado',
+  timestamp: '2026-02-08T23:42:46.580Z'
+}
+2026-02-08T17:44:56: ❌ Error capturado: {
+  message: "ENOENT: no such file or directory, stat '/Users/codfull-stack/Desktop/plataforma/api/uploads/default.jpg'",
+  stack: undefined,
+  path: '/api/projects/imagen-project/fv6x0Kkog32Tmxlgr8wwETLG.png',
+  method: 'GET',
+  ip: '::1',
+  userEmail: 'no autenticado',
+  timestamp: '2026-02-08T23:44:56.794Z'
+}
+2026-02-08T17:44:56: ❌ Error capturado: {
+  message: "ENOENT: no such file or directory, stat '/Users/codfull-stack/Desktop/plataforma/api/uploads/default.jpg'",
+  stack: undefined,
+  path: '/api/projects/imagen-project/YvZFpTBXGZt80gMPIadBsgQc.png',
+  method: 'GET',
+  ip: '::1',
+  userEmail: 'no autenticado',
+  timestamp: '2026-02-08T23:44:56.796Z'
+}
+2026-02-08T17:44:56: ❌ Error capturado: {
+  message: "ENOENT: no such file or directory, stat '/Users/codfull-stack/Desktop/plataforma/api/uploads/default.jpg'",
+  stack: undefined,
+  path: '/api/projects/imagen-project/SJahtiCoZ0gk4MnqpHchycRl.webp',
+  method: 'GET',
+  ip: '::1',
+  userEmail: 'no autenticado',
+  timestamp: '2026-02-08T23:44:56.797Z'
+}
+2026-02-08T17:44:57: ❌ Error capturado: {
+  message: "ENOENT: no such file or directory, stat '/Users/codfull-stack/Desktop/plataforma/api/uploads/default.jpg'",
+  stack: undefined,
+  path: '/api/users/imagen-usuario/ATuS52DmicDXMYRjdiJVRFDb.png',
+  method: 'GET',
+  ip: '::1',
+  userEmail: 'no autenticado',
+  timestamp: '2026-02-08T23:44:57.442Z'
+}
+2026-02-08T17:44:57: ❌ Error capturado: {
+  message: "ENOENT: no such file or directory, stat '/Users/codfull-stack/Desktop/plataforma/api/uploads/default.jpg'",
+  stack: undefined,
+  path: '/api/projects/imagen-project/fv6x0Kkog32Tmxlgr8wwETLG.png',
+  method: 'GET',
+  ip: '::1',
+  userEmail: 'no autenticado',
+  timestamp: '2026-02-08T23:44:57.462Z'
+}
+2026-02-08T17:44:57: ❌ Error capturado: {
+  message: "ENOENT: no such file or directory, stat '/Users/codfull-stack/Desktop/plataforma/api/uploads/default.jpg'",
+  stack: undefined,
+  path: '/api/projects/imagen-project/YvZFpTBXGZt80gMPIadBsgQc.png',
+  method: 'GET',
+  ip: '::1',
+  userEmail: 'no autenticado',
+  timestamp: '2026-02-08T23:44:57.463Z'
+}
+2026-02-08T17:44:57: ❌ Error capturado: {
+  message: "ENOENT: no such file or directory, stat '/Users/codfull-stack/Desktop/plataforma/api/uploads/default.jpg'",
+  stack: undefined,
+  path: '/api/projects/imagen-project/SJahtiCoZ0gk4MnqpHchycRl.webp',
+  method: 'GET',
+  ip: '::1',
+  userEmail: 'no autenticado',
+  timestamp: '2026-02-08T23:44:57.464Z'
+}
+2026-02-08T17:45:16: ❌ Error capturado: {
+  message: "ENOENT: no such file or directory, stat '/Users/codfull-stack/Desktop/plataforma/api/uploads/default.jpg'",
+  stack: undefined,
+  path: '/api/users/imagen-usuario/la2veNRmYXb3faJrnO9tF9Le.jpg',
+  method: 'GET',
+  ip: '::1',
+  userEmail: 'no autenticado',
+  timestamp: '2026-02-08T23:45:16.897Z'
+}
+2026-02-08T17:45:17: ❌ Error capturado: {
+  message: "ENOENT: no such file or directory, stat '/Users/codfull-stack/Desktop/plataforma/api/uploads/default.jpg'",
+  stack: undefined,
+  path: '/api/users/imagen-usuario/la2veNRmYXb3faJrnO9tF9Le.jpg',
+  method: 'GET',
+  ip: '::1',
+  userEmail: 'no autenticado',
+  timestamp: '2026-02-08T23:45:17.184Z'
+}
+2026-02-08T17:46:28: ❌ Error capturado: {
+  message: "ENOENT: no such file or directory, stat '/Users/codfull-stack/Desktop/plataforma/api/uploads/default.jpg'",
+  stack: undefined,
+  path: '/api/users/imagen-usuario/ATuS52DmicDXMYRjdiJVRFDb.png',
+  method: 'GET',
+  ip: '::1',
+  userEmail: 'no autenticado',
+  timestamp: '2026-02-08T23:46:28.492Z'
+}
+2026-02-08T17:46:28: ❌ Error capturado: {
+  message: "ENOENT: no such file or directory, stat '/Users/codfull-stack/Desktop/plataforma/api/uploads/default.jpg'",
+  stack: undefined,
+  path: '/api/users/imagen-usuario/la2veNRmYXb3faJrnO9tF9Le.jpg',
+  method: 'GET',
+  ip: '::1',
+  userEmail: 'no autenticado',
+  timestamp: '2026-02-08T23:46:28.493Z'
+}
+2026-02-08T17:46:30: ⚠️ Imagen no encontrada: mJ3aZxKDUkw98cP9cs9txqZ2.jpeg
+2026-02-08T17:46:30: ❌ Error capturado: {
+  message: "ENOENT: no such file or directory, stat '/Users/codfull-stack/Desktop/plataforma/api/uploads/default.jpg'",
+  stack: undefined,
+  path: '/api/categories/imagen-categorie/mJ3aZxKDUkw98cP9cs9txqZ2.jpeg',
+  method: 'GET',
+  ip: '::1',
+  userEmail: 'no autenticado',
+  timestamp: '2026-02-08T23:46:30.607Z'
+}
+2026-02-08T17:46:30: ⚠️ Imagen no encontrada: mJ3aZxKDUkw98cP9cs9txqZ2.jpeg
+2026-02-08T17:46:30: ❌ Error capturado: {
+  message: "ENOENT: no such file or directory, stat '/Users/codfull-stack/Desktop/plataforma/api/uploads/default.jpg'",
+  stack: undefined,
+  path: '/api/categories/imagen-categorie/mJ3aZxKDUkw98cP9cs9txqZ2.jpeg',
+  method: 'GET',
+  ip: '::1',
+  userEmail: 'no autenticado',
+  timestamp: '2026-02-08T23:46:30.612Z'
+}
+2026-02-08T17:46:30: ⚠️ Imagen no encontrada: mJ3aZxKDUkw98cP9cs9txqZ2.jpeg
+2026-02-08T17:46:30: ❌ Error capturado: {
+  message: "ENOENT: no such file or directory, stat '/Users/codfull-stack/Desktop/plataforma/api/uploads/default.jpg'",
+  stack: undefined,
+  path: '/api/categories/imagen-categorie/mJ3aZxKDUkw98cP9cs9txqZ2.jpeg',
+  method: 'GET',
+  ip: '::1',
+  userEmail: 'no autenticado',
+  timestamp: '2026-02-08T23:46:30.616Z'
+}
+2026-02-08T17:46:30: ⚠️ Imagen no encontrada: mJ3aZxKDUkw98cP9cs9txqZ2.jpeg
+2026-02-08T17:46:30: ❌ Error capturado: {
+  message: "ENOENT: no such file or directory, stat '/Users/codfull-stack/Desktop/plataforma/api/uploads/default.jpg'",
+  stack: undefined,
+  path: '/api/categories/imagen-categorie/mJ3aZxKDUkw98cP9cs9txqZ2.jpeg',
+  method: 'GET',
+  ip: '::1',
+  userEmail: 'no autenticado',
+  timestamp: '2026-02-08T23:46:30.620Z'
+}
+2026-02-08T17:46:30: ⚠️ Imagen no encontrada: mJ3aZxKDUkw98cP9cs9txqZ2.jpeg
+2026-02-08T17:46:30: ❌ Error capturado: {
+  message: "ENOENT: no such file or directory, stat '/Users/codfull-stack/Desktop/plataforma/api/uploads/default.jpg'",
+  stack: undefined,
+  path: '/api/categories/imagen-categorie/mJ3aZxKDUkw98cP9cs9txqZ2.jpeg',
+  method: 'GET',
+  ip: '::1',
+  userEmail: 'no autenticado',
+  timestamp: '2026-02-08T23:46:30.625Z'
+}
+2026-02-08T17:46:35: ⚠️ Imagen no encontrada: mJ3aZxKDUkw98cP9cs9txqZ2.jpeg
+2026-02-08T17:46:35: ❌ Error capturado: {
+  message: "ENOENT: no such file or directory, stat '/Users/codfull-stack/Desktop/plataforma/api/uploads/default.jpg'",
+  stack: undefined,
+  path: '/api/categories/imagen-categorie/mJ3aZxKDUkw98cP9cs9txqZ2.jpeg',
+  method: 'GET',
+  ip: '::1',
+  userEmail: 'no autenticado',
+  timestamp: '2026-02-08T23:46:35.629Z'
+}
+2026-02-08T17:46:48: ❌ Error capturado: {
+  message: "ENOENT: no such file or directory, stat '/Users/codfull-stack/Desktop/plataforma/api/uploads/default.jpg'",
+  stack: undefined,
+  path: '/api/projects/imagen-project/fv6x0Kkog32Tmxlgr8wwETLG.png',
+  method: 'GET',
+  ip: '::1',
+  userEmail: 'no autenticado',
+  timestamp: '2026-02-08T23:46:48.271Z'
+}
+2026-02-08T17:46:48: ❌ Error capturado: {
+  message: "ENOENT: no such file or directory, stat '/Users/codfull-stack/Desktop/plataforma/api/uploads/default.jpg'",
+  stack: undefined,
+  path: '/api/projects/imagen-project/YvZFpTBXGZt80gMPIadBsgQc.png',
+  method: 'GET',
+  ip: '::1',
+  userEmail: 'no autenticado',
+  timestamp: '2026-02-08T23:46:48.272Z'
+}
+2026-02-08T17:46:48: ❌ Error capturado: {
+  message: "ENOENT: no such file or directory, stat '/Users/codfull-stack/Desktop/plataforma/api/uploads/default.jpg'",
+  stack: undefined,
+  path: '/api/projects/imagen-project/SJahtiCoZ0gk4MnqpHchycRl.webp',
+  method: 'GET',
+  ip: '::1',
+  userEmail: 'no autenticado',
+  timestamp: '2026-02-08T23:46:48.281Z'
+}
+2026-02-08T17:47:08: ❌ Error capturado: {
+  message: "ENOENT: no such file or directory, stat '/Users/codfull-stack/Desktop/plataforma/api/uploads/default.jpg'",
+  stack: undefined,
+  path: '/api/projects/imagen-project/fv6x0Kkog32Tmxlgr8wwETLG.png',
+  method: 'GET',
+  ip: '::1',
+  userEmail: 'no autenticado',
+  timestamp: '2026-02-08T23:47:08.214Z'
+}
+2026-02-08T17:47:08: ❌ Error capturado: {
+  message: "ENOENT: no such file or directory, stat '/Users/codfull-stack/Desktop/plataforma/api/uploads/default.jpg'",
+  stack: undefined,
+  path: '/api/projects/imagen-project/YvZFpTBXGZt80gMPIadBsgQc.png',
+  method: 'GET',
+  ip: '::1',
+  userEmail: 'no autenticado',
+  timestamp: '2026-02-08T23:47:08.215Z'
+}
+2026-02-08T17:47:08: ❌ Error capturado: {
+  message: "ENOENT: no such file or directory, stat '/Users/codfull-stack/Desktop/plataforma/api/uploads/default.jpg'",
+  stack: undefined,
+  path: '/api/projects/imagen-project/SJahtiCoZ0gk4MnqpHchycRl.webp',
+  method: 'GET',
+  ip: '::1',
+  userEmail: 'no autenticado',
+  timestamp: '2026-02-08T23:47:08.215Z'
+}
+2026-02-08T17:50:11: ❌ Error capturado: {
+  message: "ENOENT: no such file or directory, stat '/Users/codfull-stack/Desktop/plataforma/api/uploads/default.jpg'",
+  stack: undefined,
+  path: '/api/users/imagen-usuario/la2veNRmYXb3faJrnO9tF9Le.jpg',
+  method: 'GET',
+  ip: '::1',
+  userEmail: 'no autenticado',
+  timestamp: '2026-02-08T23:50:11.129Z'
+}

@@ -15811,3 +15811,1331 @@ La aplicación puede iniciar, pero revisa estas configuraciones
 2026-02-08T00:00:00: [2026-02-08T06:00:00.626Z] ℹ️  No hay ganancias para actualizar.
 2026-02-08T00:00:00: ============================================
 
+2026-02-08T17:41:11: 📋 [SystemConfigController] Obteniendo configuración pública
+2026-02-08T17:41:11: ✅ [SystemConfigController] Configuración pública obtenida: Dev Hub Sharks
+2026-02-08T17:41:11: 💱 [SystemConfigController] Tipo de cambio incluido: 20.5
+2026-02-08T17:41:12: ✅ [list_instructors] Encontrados 1 instructores
+2026-02-08T17:41:12: 🆔 [list_instructors] Slugs: [ { name: 'alo', slug: 'alo-bn' } ]
+2026-02-08T17:41:12: 
+Proyectos públicos encontrados: 3
+2026-02-08T17:41:13: ========== FIN DEBUG ==========
+
+2026-02-08T17:41:16: 📋 [SystemConfigController] Obteniendo configuración pública
+2026-02-08T17:41:16: ✅ [SystemConfigController] Configuración pública obtenida: Dev Hub Sharks
+2026-02-08T17:41:16: 💱 [SystemConfigController] Tipo de cambio incluido: 20.5
+2026-02-08T17:42:03: 🔑 [Login] Intento de login para: admin@example.com
+2026-02-08T17:42:03: 👤 [Login] Usuario encontrado: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  email: 'admin@example.com',
+  name: 'Luis Alonso',
+  hasPassword: true,
+  state: true,
+  isVerified: true
+}
+2026-02-08T17:42:03: 🔍 [WalletController.getMyWallet] User: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-08T17:42:03: 🔍 [WalletController.getMyWallet] Getting wallet for: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-08T17:42:03: 📚 [ProfileStudentController] Cursos inscritos encontrados: 0
+2026-02-08T17:42:03: ✅ [ProfileStudentController] Cursos con porcentaje calculado: 0
+2026-02-08T17:42:03: 📚 [ProfileStudentController] Cursos inscritos encontrados: 0
+2026-02-08T17:42:03: ✅ [ProfileStudentController] Cursos con porcentaje calculado: 0
+2026-02-08T17:42:03: 🔍 [WalletController.getMyWallet] User: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-08T17:42:03: 🔍 [WalletController.getMyWallet] Getting wallet for: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-08T17:42:03: ✅ Cliente conectado: I5s5PDN1fdndr1KGAAAB
+2026-02-08T17:42:03: 👑 Admin 6943157e5c102f674cc5c265 (I5s5PDN1fdndr1KGAAAB) unido a sala de admins
+2026-02-08T17:42:03: 📦 [ProfileStudentController] Ventas cargadas y populadas: 0
+2026-02-08T17:42:03: 
+============================================================
+2026-02-08T17:42:03: 🔍 [ProfileStudentController] DIAGNÓSTICO DE PROYECTOS
+2026-02-08T17:42:03: ============================================================
+2026-02-08T17:42:03: 📋 Total ventas del usuario: 0
+2026-02-08T17:42:03: 👤 Usuario ID: 6943157e5c102f674cc5c265
+2026-02-08T17:42:03: 
+============================================================
+2026-02-08T17:42:03: 📊 RESULTADO FINAL: 0 proyectos encontrados
+2026-02-08T17:42:03: 📚 RESULTADO FINAL: 0 cursos activos
+2026-02-08T17:42:03: ============================================================
+
+2026-02-08T17:42:03: ✅ [ProfileStudentController] Proyectos únicos (sin duplicados): 0
+2026-02-08T17:42:03: 📦 [ProfileStudentController] Ventas cargadas y populadas: 0
+2026-02-08T17:42:03: 
+============================================================
+2026-02-08T17:42:03: 🔍 [ProfileStudentController] DIAGNÓSTICO DE PROYECTOS
+2026-02-08T17:42:03: ============================================================
+2026-02-08T17:42:03: 📋 Total ventas del usuario: 0
+2026-02-08T17:42:03: 👤 Usuario ID: 6943157e5c102f674cc5c265
+2026-02-08T17:42:03: 
+============================================================
+2026-02-08T17:42:03: 📊 RESULTADO FINAL: 0 proyectos encontrados
+2026-02-08T17:42:03: 📚 RESULTADO FINAL: 0 cursos activos
+2026-02-08T17:42:03: ============================================================
+
+2026-02-08T17:42:03: ✅ [ProfileStudentController] Proyectos únicos (sin duplicados): 0
+2026-02-08T17:42:04: 📊 [executiveMetrics] Generando métricas financieras ejecutivas...
+2026-02-08T17:42:04: 🔍 [RefundController.list] Iniciando...
+2026-02-08T17:42:04: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-08T17:42:04: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-08T17:42:04: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-08T17:42:04: 📊 [kpis] Excluyendo 0 ventas reembolsadas
+2026-02-08T17:42:04: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-08T17:42:04: ✅ [kpis] Ingresos Netos: 300.00
+2026-02-08T17:42:05: ✅ [executiveMetrics] Métricas generadas exitosamente
+2026-02-08T17:42:05:    • Ingresos Brutos: 300.00
+2026-02-08T17:42:05:    • Reembolsos:      0.00
+2026-02-08T17:42:05:    • Ingresos Netos:  300.00
+2026-02-08T17:42:29: ❌ Cliente desconectado: I5s5PDN1fdndr1KGAAAB
+2026-02-08T17:42:29: 📋 [SystemConfigController] Obteniendo configuración pública
+2026-02-08T17:42:30: ✅ [SystemConfigController] Configuración pública obtenida: Dev Hub Sharks
+2026-02-08T17:42:30: 💱 [SystemConfigController] Tipo de cambio incluido: 20.5
+2026-02-08T17:42:30: 🔍 [WalletController.getMyWallet] User: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-08T17:42:30: 🔍 [WalletController.getMyWallet] Getting wallet for: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-08T17:42:30: ✅ Cliente conectado: FP_Yz7fqB93IiTRcAAAD
+2026-02-08T17:42:30: 👑 Admin 6943157e5c102f674cc5c265 (FP_Yz7fqB93IiTRcAAAD) unido a sala de admins
+2026-02-08T17:42:30: 📊 [executiveMetrics] Generando métricas financieras ejecutivas...
+2026-02-08T17:42:30: 🔍 [RefundController.list] Iniciando...
+2026-02-08T17:42:30: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-08T17:42:30: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-08T17:42:30: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-08T17:42:30: 📊 [kpis] Excluyendo 0 ventas reembolsadas
+2026-02-08T17:42:30: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-08T17:42:30: 🔍 [WalletController.getMyWallet] User: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-08T17:42:30: 🔍 [WalletController.getMyWallet] Getting wallet for: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-08T17:42:31: ✅ [kpis] Ingresos Netos: 300.00
+2026-02-08T17:42:32: ✅ [executiveMetrics] Métricas generadas exitosamente
+2026-02-08T17:42:32:    • Ingresos Brutos: 300.00
+2026-02-08T17:42:32:    • Reembolsos:      0.00
+2026-02-08T17:42:32:    • Ingresos Netos:  300.00
+2026-02-08T17:42:35: ❌ Cliente desconectado: FP_Yz7fqB93IiTRcAAAD
+2026-02-08T17:42:35: 📋 [SystemConfigController] Obteniendo configuración pública
+2026-02-08T17:42:35: ✅ [SystemConfigController] Configuración pública obtenida: Dev Hub Sharks
+2026-02-08T17:42:35: 💱 [SystemConfigController] Tipo de cambio incluido: 20.5
+2026-02-08T17:42:36: 🔍 [WalletController.getMyWallet] User: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-08T17:42:36: 🔍 [WalletController.getMyWallet] Getting wallet for: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-08T17:42:36: ✅ Cliente conectado: Gkbbl2tFEzcs4WxzAAAF
+2026-02-08T17:42:36: 👑 Admin 6943157e5c102f674cc5c265 (Gkbbl2tFEzcs4WxzAAAF) unido a sala de admins
+2026-02-08T17:42:36: 📊 [executiveMetrics] Generando métricas financieras ejecutivas...
+2026-02-08T17:42:36: 🔍 [RefundController.list] Iniciando...
+2026-02-08T17:42:36: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-08T17:42:36: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-08T17:42:36: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-08T17:42:36: 📊 [kpis] Excluyendo 0 ventas reembolsadas
+2026-02-08T17:42:36: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-08T17:42:36: 🔍 [WalletController.getMyWallet] User: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-08T17:42:36: 🔍 [WalletController.getMyWallet] Getting wallet for: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-08T17:42:37: ✅ [kpis] Ingresos Netos: 300.00
+2026-02-08T17:42:38: ✅ [executiveMetrics] Métricas generadas exitosamente
+2026-02-08T17:42:38:    • Ingresos Brutos: 300.00
+2026-02-08T17:42:38:    • Reembolsos:      0.00
+2026-02-08T17:42:38:    • Ingresos Netos:  300.00
+2026-02-08T17:42:46: ❌ Cliente desconectado: Gkbbl2tFEzcs4WxzAAAF
+2026-02-08T17:42:46: 📋 [SystemConfigController] Obteniendo configuración pública
+2026-02-08T17:42:46: ✅ [SystemConfigController] Configuración pública obtenida: Dev Hub Sharks
+2026-02-08T17:42:46: 💱 [SystemConfigController] Tipo de cambio incluido: 20.5
+2026-02-08T17:42:46: 🔍 [WalletController.getMyWallet] User: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-08T17:42:46: 🔍 [WalletController.getMyWallet] Getting wallet for: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-08T17:42:46: ✅ Cliente conectado: URbxBHmxaqGsQCc4AAAH
+2026-02-08T17:42:46: 👑 Admin 6943157e5c102f674cc5c265 (URbxBHmxaqGsQCc4AAAH) unido a sala de admins
+2026-02-08T17:42:46: 📊 [executiveMetrics] Generando métricas financieras ejecutivas...
+2026-02-08T17:42:46: 🔍 [RefundController.list] Iniciando...
+2026-02-08T17:42:46: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-08T17:42:46: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-08T17:42:46: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-08T17:42:46: 📊 [kpis] Excluyendo 0 ventas reembolsadas
+2026-02-08T17:42:46: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-08T17:42:46: 🔍 [WalletController.getMyWallet] User: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-08T17:42:46: 🔍 [WalletController.getMyWallet] Getting wallet for: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-08T17:42:47: ✅ [kpis] Ingresos Netos: 300.00
+2026-02-08T17:42:48: ✅ [executiveMetrics] Métricas generadas exitosamente
+2026-02-08T17:42:48:    • Ingresos Brutos: 300.00
+2026-02-08T17:42:48:    • Reembolsos:      0.00
+2026-02-08T17:42:48:    • Ingresos Netos:  300.00
+2026-02-08T17:43:16: 🔍 [RefundController.list] Iniciando...
+2026-02-08T17:43:16: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-08T17:43:16: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-08T17:43:16: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-08T17:43:16: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-08T17:43:23: ❌ Cliente desconectado: URbxBHmxaqGsQCc4AAAH
+2026-02-08T17:44:56: 📋 [SystemConfigController] Obteniendo configuración pública
+2026-02-08T17:44:56: ✅ [SystemConfigController] Configuración pública obtenida: Dev Hub Sharks
+2026-02-08T17:44:56: 💱 [SystemConfigController] Tipo de cambio incluido: 20.5
+2026-02-08T17:44:56: ✅ [list_instructors] Encontrados 1 instructores
+2026-02-08T17:44:56: 🆔 [list_instructors] Slugs: [ { name: 'alo', slug: 'alo-bn' } ]
+2026-02-08T17:44:56: 
+Proyectos públicos encontrados: 3
+2026-02-08T17:44:57: ========== FIN DEBUG ==========
+
+2026-02-08T17:44:59: 📋 [SystemConfigController] Obteniendo configuración pública
+2026-02-08T17:44:59: ✅ [SystemConfigController] Configuración pública obtenida: Dev Hub Sharks
+2026-02-08T17:44:59: 💱 [SystemConfigController] Tipo de cambio incluido: 20.5
+2026-02-08T17:45:16: 🔑 [Login] Intento de login para: admin@example.com
+2026-02-08T17:45:16: 👤 [Login] Usuario encontrado: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  email: 'admin@example.com',
+  name: 'Luis Alonso',
+  hasPassword: true,
+  state: true,
+  isVerified: true
+}
+2026-02-08T17:45:17: 🔍 [WalletController.getMyWallet] User: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-08T17:45:17: 🔍 [WalletController.getMyWallet] Getting wallet for: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-08T17:45:17: ✅ Cliente conectado: qaSikTR0d8eeVOR8AAAJ
+2026-02-08T17:45:17: 👑 Admin 6943157e5c102f674cc5c265 (qaSikTR0d8eeVOR8AAAJ) unido a sala de admins
+2026-02-08T17:45:17: 📊 [kpis] Excluyendo 0 ventas reembolsadas
+2026-02-08T17:45:17: 🔍 [WalletController.getMyWallet] User: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-08T17:45:17: 🔍 [WalletController.getMyWallet] Getting wallet for: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-08T17:45:17: 📚 [ProfileStudentController] Cursos inscritos encontrados: 0
+2026-02-08T17:45:17: ✅ [ProfileStudentController] Cursos con porcentaje calculado: 0
+2026-02-08T17:45:17: 📚 [ProfileStudentController] Cursos inscritos encontrados: 0
+2026-02-08T17:45:17: ✅ [ProfileStudentController] Cursos con porcentaje calculado: 0
+2026-02-08T17:45:17: 📦 [ProfileStudentController] Ventas cargadas y populadas: 0
+2026-02-08T17:45:17: 
+============================================================
+2026-02-08T17:45:17: 🔍 [ProfileStudentController] DIAGNÓSTICO DE PROYECTOS
+2026-02-08T17:45:17: ============================================================
+2026-02-08T17:45:17: 📋 Total ventas del usuario: 0
+2026-02-08T17:45:17: 👤 Usuario ID: 6943157e5c102f674cc5c265
+2026-02-08T17:45:17: 
+============================================================
+2026-02-08T17:45:17: 📊 RESULTADO FINAL: 0 proyectos encontrados
+2026-02-08T17:45:17: 📚 RESULTADO FINAL: 0 cursos activos
+2026-02-08T17:45:17: ============================================================
+
+2026-02-08T17:45:17: ✅ [ProfileStudentController] Proyectos únicos (sin duplicados): 0
+2026-02-08T17:45:17: 📊 [executiveMetrics] Generando métricas financieras ejecutivas...
+2026-02-08T17:45:17: 📦 [ProfileStudentController] Ventas cargadas y populadas: 0
+2026-02-08T17:45:17: 
+============================================================
+2026-02-08T17:45:17: 🔍 [ProfileStudentController] DIAGNÓSTICO DE PROYECTOS
+2026-02-08T17:45:17: ============================================================
+2026-02-08T17:45:17: 📋 Total ventas del usuario: 0
+2026-02-08T17:45:17: 👤 Usuario ID: 6943157e5c102f674cc5c265
+2026-02-08T17:45:17: 
+============================================================
+2026-02-08T17:45:17: 📊 RESULTADO FINAL: 0 proyectos encontrados
+2026-02-08T17:45:17: 📚 RESULTADO FINAL: 0 cursos activos
+2026-02-08T17:45:17: ============================================================
+
+2026-02-08T17:45:17: ✅ [ProfileStudentController] Proyectos únicos (sin duplicados): 0
+2026-02-08T17:45:17: 🔍 [RefundController.list] Iniciando...
+2026-02-08T17:45:17: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-08T17:45:17: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-08T17:45:17: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-08T17:45:17: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-08T17:45:18: ✅ [kpis] Ingresos Netos: 300.00
+2026-02-08T17:45:20: ✅ [executiveMetrics] Métricas generadas exitosamente
+2026-02-08T17:45:20:    • Ingresos Brutos: 300.00
+2026-02-08T17:45:20:    • Reembolsos:      0.00
+2026-02-08T17:45:20:    • Ingresos Netos:  300.00
+2026-02-08T17:45:47: 🔍 [RefundController.list] Iniciando...
+2026-02-08T17:45:47: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-08T17:45:47: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-08T17:45:47: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-08T17:45:47: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-08T17:46:17: 🔍 [RefundController.list] Iniciando...
+2026-02-08T17:46:17: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-08T17:46:17: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-08T17:46:17: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-08T17:46:17: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-08T17:46:48: 🔍 Verificando ventas para proyecto: 694319145c102f674cc5c35c
+2026-02-08T17:46:48: 🔍 Verificando ventas para proyecto: 696ed40108b156080f3d1d1a
+2026-02-08T17:46:48: 🔍 Verificando ventas para proyecto: 69715f9a8e9219709315dcb0
+2026-02-08T17:46:48: 📊 Proyecto tiene 0 venta(s)
+2026-02-08T17:46:48: 👥 Estudiantes únicos que compraron: 0
+2026-02-08T17:46:48: 📊 Proyecto tiene 0 venta(s)
+2026-02-08T17:46:48: 👥 Estudiantes únicos que compraron: 0
+2026-02-08T17:46:48: 📊 Proyecto tiene 1 venta(s)
+2026-02-08T17:46:48: 👥 Estudiantes únicos que compraron: 1
+2026-02-08T17:46:52: 🔍 [RefundController.list] Iniciando...
+2026-02-08T17:46:52: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-08T17:46:52: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-08T17:46:52: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-08T17:46:52: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-08T17:47:08: 🔍 Verificando ventas para proyecto: 696ed40108b156080f3d1d1a
+2026-02-08T17:47:08: 🔍 Verificando ventas para proyecto: 69715f9a8e9219709315dcb0
+2026-02-08T17:47:08: 🔍 Verificando ventas para proyecto: 694319145c102f674cc5c35c
+2026-02-08T17:47:08: 📊 Proyecto tiene 0 venta(s)
+2026-02-08T17:47:08: 👥 Estudiantes únicos que compraron: 0
+2026-02-08T17:47:08: 📊 Proyecto tiene 0 venta(s)
+2026-02-08T17:47:08: 👥 Estudiantes únicos que compraron: 0
+2026-02-08T17:47:08: 📊 Proyecto tiene 1 venta(s)
+2026-02-08T17:47:08: 👥 Estudiantes únicos que compraron: 1
+2026-02-08T17:47:22: 🔍 [RefundController.list] Iniciando...
+2026-02-08T17:47:22: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-08T17:47:22: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-08T17:47:22: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-08T17:47:22: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-08T17:47:52: 🔍 [RefundController.list] Iniciando...
+2026-02-08T17:47:52: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-08T17:47:52: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-08T17:47:52: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-08T17:47:52: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-08T17:49:20: 🔍 [RefundController.list] Iniciando...
+2026-02-08T17:49:20: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-08T17:49:20: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-08T17:49:20: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-08T17:49:20: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-08T17:49:53: 🔍 [RefundController.list] Iniciando...
+2026-02-08T17:49:53: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-08T17:49:53: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-08T17:49:53: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-08T17:49:53: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-08T17:50:00: ❌ Cliente desconectado: qaSikTR0d8eeVOR8AAAJ
+2026-02-08T17:50:05: 📋 [SystemConfigController] Obteniendo configuración pública
+2026-02-08T17:50:05: ✅ [SystemConfigController] Configuración pública obtenida: Dev Hub Sharks
+2026-02-08T17:50:05: 💱 [SystemConfigController] Tipo de cambio incluido: 20.5
+2026-02-08T17:50:06: ✅ Cliente conectado: Vit8bpqPOxV82EogAAAL
+2026-02-08T17:50:06: 👑 Admin 6943157e5c102f674cc5c265 (Vit8bpqPOxV82EogAAAL) unido a sala de admins
+2026-02-08T17:50:11: 🔍 [WalletController.getMyWallet] User: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-08T17:50:11: 🔍 [WalletController.getMyWallet] Getting wallet for: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-08T17:50:11: 📊 [executiveMetrics] Generando métricas financieras ejecutivas...
+2026-02-08T17:50:11: 📊 [kpis] Excluyendo 0 ventas reembolsadas
+2026-02-08T17:50:11: ✅ [kpis] Ingresos Netos: 300.00
+2026-02-08T17:50:13: ✅ [executiveMetrics] Métricas generadas exitosamente
+2026-02-08T17:50:13:    • Ingresos Brutos: 300.00
+2026-02-08T17:50:13:    • Reembolsos:      0.00
+2026-02-08T17:50:13:    • Ingresos Netos:  300.00
+2026-02-08T17:50:16: 🔍 [RefundController.list] Iniciando...
+2026-02-08T17:50:16: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-08T17:50:16: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-08T17:50:16: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-08T17:50:16: 🔍 [WalletController.getMyWallet] User: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-08T17:50:16: 🔍 [WalletController.getMyWallet] Getting wallet for: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-08T17:50:16: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-08T17:50:33: 📦 [BackupController] REQUEST RECEIVED: /backup/restore
+2026-02-08T17:50:33: 📦 [BackupController] Iniciando restauración de respaldo...
+2026-02-08T17:50:33: 📡 [Socket] Progreso restauracion: 0% - Iniciando proceso de restauración...
+2026-02-08T17:50:33: 📡 [Socket] Progreso restauracion: 10% - Descomprimiendo archivo de respaldo...
+2026-02-08T17:50:33: ⏳ [BackupController] Descomprimiendo archivo /var/folders/8q/6151z62s2pq2vfmsq4655wxm0000gn/T/CKtchz2g_uXIW_1Op9T72raC.zip en /var/folders/8q/6151z62s2pq2vfmsq4655wxm0000gn/T/courses-lms-restore-2026-02-08T23-50-33-711Z...
+2026-02-08T17:50:34: 📡 [Socket] Progreso restauracion: 25% - Analizando estructura del respaldo...
+2026-02-08T17:50:34: ⏳ [BackupController] Buscando dump de base de datos...
+2026-02-08T17:50:34: 🎯 [BackupController] Archivos BSON encontrados en: /var/folders/8q/6151z62s2pq2vfmsq4655wxm0000gn/T/courses-lms-restore-2026-02-08T23-50-33-711Z/dump/cursos
+2026-02-08T17:50:34: 📡 [Socket] Progreso restauracion: 35% - Restaurando base de datos (esto puede tardar)...
+2026-02-08T17:50:34: 🎯 [BackupController] Restaurando en base de datos: cursos
+2026-02-08T17:50:36: [mongorestore] 2026-02-08T17:50:36.092-0600	The --db and --collection flags are deprecated for this use-case; please use --nsInclude instead, i.e. with --nsInclude=${DATABASE}.${COLLECTION}
+
+2026-02-08T17:50:36: [mongorestore] 2026-02-08T17:50:36.092-0600	building a list of collections to restore from /var/folders/8q/6151z62s2pq2vfmsq4655wxm0000gn/T/courses-lms-restore-2026-02-08T23-50-33-711Z/dump/cursos dir
+
+2026-02-08T17:50:36: [mongorestore] 2026-02-08T17:50:36.094-0600	reading metadata for cursos.settings from /var/folders/8q/6151z62s2pq2vfmsq4655wxm0000gn/T/courses-lms-restore-2026-02-08T23-50-33-711Z/dump/cursos/settings.metadata.json
+
+2026-02-08T17:50:36: [mongorestore] 2026-02-08T17:50:36.094-0600	reading metadata for cursos.users from /var/folders/8q/6151z62s2pq2vfmsq4655wxm0000gn/T/courses-lms-restore-2026-02-08T23-50-33-711Z/dump/cursos/users.metadata.json
+
+2026-02-08T17:50:36: [mongorestore] 2026-02-08T17:50:36.094-0600	reading metadata for cursos.wallets from /var/folders/8q/6151z62s2pq2vfmsq4655wxm0000gn/T/courses-lms-restore-2026-02-08T23-50-33-711Z/dump/cursos/wallets.metadata.json
+2026-02-08T17:50:36.094-0600	reading metadata for cursos.course_clases from /var/folders/8q/6151z62s2pq2vfmsq4655wxm0000gn/T/courses-lms-restore-2026-02-08T23-50-33-711Z/dump/cursos/course_clases.metadata.json
+2026-02-08T17:50:36.095-0600	reading metadata for cursos.course_sections from /var/folders/8q/6151z62s2pq2vfmsq4655wxm0000gn/T/courses-lms-restore-2026-02-08T23-50-33-711Z/dump/cursos/course_sections.metadata.json
+
+2026-02-08T17:50:36: [mongorestore] 2026-02-08T17:50:36.095-0600	reading metadata for cursos.courses from /var/folders/8q/6151z62s2pq2vfmsq4655wxm0000gn/T/courses-lms-restore-2026-02-08T23-50-33-711Z/dump/cursos/courses.metadata.json
+
+2026-02-08T17:50:36: [mongorestore] 2026-02-08T17:50:36.095-0600	reading metadata for cursos.instructor_payment_configs from /var/folders/8q/6151z62s2pq2vfmsq4655wxm0000gn/T/courses-lms-restore-2026-02-08T23-50-33-711Z/dump/cursos/instructor_payment_configs.metadata.json
+
+2026-02-08T17:50:36: [mongorestore] 2026-02-08T17:50:36.095-0600	reading metadata for cursos.short_urls from /var/folders/8q/6151z62s2pq2vfmsq4655wxm0000gn/T/courses-lms-restore-2026-02-08T23-50-33-711Z/dump/cursos/short_urls.metadata.json
+
+2026-02-08T17:50:36: [mongorestore] 2026-02-08T17:50:36.095-0600	reading metadata for cursos.carouselimages from /var/folders/8q/6151z62s2pq2vfmsq4655wxm0000gn/T/courses-lms-restore-2026-02-08T23-50-33-711Z/dump/cursos/carouselimages.metadata.json
+
+2026-02-08T17:50:36: [mongorestore] 2026-02-08T17:50:36.095-0600	reading metadata for cursos.coupons from /var/folders/8q/6151z62s2pq2vfmsq4655wxm0000gn/T/courses-lms-restore-2026-02-08T23-50-33-711Z/dump/cursos/coupons.metadata.json
+
+2026-02-08T17:50:36: [mongorestore] 2026-02-08T17:50:36.095-0600	reading metadata for cursos.course_clase_files from /var/folders/8q/6151z62s2pq2vfmsq4655wxm0000gn/T/courses-lms-restore-2026-02-08T23-50-33-711Z/dump/cursos/course_clase_files.metadata.json
+
+2026-02-08T17:50:36: [mongorestore] 2026-02-08T17:50:36.095-0600	reading metadata for cursos.course_students from /var/folders/8q/6151z62s2pq2vfmsq4655wxm0000gn/T/courses-lms-restore-2026-02-08T23-50-33-711Z/dump/cursos/course_students.metadata.json
+
+2026-02-08T17:50:36: [mongorestore] 2026-02-08T17:50:36.095-0600	reading metadata for cursos.instructor_earnings from /var/folders/8q/6151z62s2pq2vfmsq4655wxm0000gn/T/courses-lms-restore-2026-02-08T23-50-33-711Z/dump/cursos/instructor_earnings.metadata.json
+
+2026-02-08T17:50:36: [mongorestore] 2026-02-08T17:50:36.095-0600	reading metadata for cursos.notifications from /var/folders/8q/6151z62s2pq2vfmsq4655wxm0000gn/T/courses-lms-restore-2026-02-08T23-50-33-711Z/dump/cursos/notifications.metadata.json
+
+2026-02-08T17:50:36: [mongorestore] 2026-02-08T17:50:36.096-0600	reading metadata for cursos.refunds from /var/folders/8q/6151z62s2pq2vfmsq4655wxm0000gn/T/courses-lms-restore-2026-02-08T23-50-33-711Z/dump/cursos/refunds.metadata.json
+
+2026-02-08T17:50:36: [mongorestore] 2026-02-08T17:50:36.096-0600	reading metadata for cursos.reviews from /var/folders/8q/6151z62s2pq2vfmsq4655wxm0000gn/T/courses-lms-restore-2026-02-08T23-50-33-711Z/dump/cursos/reviews.metadata.json
+
+2026-02-08T17:50:36: [mongorestore] 2026-02-08T17:50:36.096-0600	reading metadata for cursos.categories from /var/folders/8q/6151z62s2pq2vfmsq4655wxm0000gn/T/courses-lms-restore-2026-02-08T23-50-33-711Z/dump/cursos/categories.metadata.json
+
+2026-02-08T17:50:36: [mongorestore] 2026-02-08T17:50:36.096-0600	reading metadata for cursos.instructor_payments from /var/folders/8q/6151z62s2pq2vfmsq4655wxm0000gn/T/courses-lms-restore-2026-02-08T23-50-33-711Z/dump/cursos/instructor_payments.metadata.json
+
+2026-02-08T17:50:36: [mongorestore] 2026-02-08T17:50:36.096-0600	reading metadata for cursos.instructorretentions from /var/folders/8q/6151z62s2pq2vfmsq4655wxm0000gn/T/courses-lms-restore-2026-02-08T23-50-33-711Z/dump/cursos/instructorretentions.metadata.json
+
+2026-02-08T17:50:36: [mongorestore] 2026-02-08T17:50:36.096-0600	reading metadata for cursos.platformcommissionbreakdowns from /var/folders/8q/6151z62s2pq2vfmsq4655wxm0000gn/T/courses-lms-restore-2026-02-08T23-50-33-711Z/dump/cursos/platformcommissionbreakdowns.metadata.json
+
+2026-02-08T17:50:36: [mongorestore] 2026-02-08T17:50:36.096-0600	reading metadata for cursos.projects from /var/folders/8q/6151z62s2pq2vfmsq4655wxm0000gn/T/courses-lms-restore-2026-02-08T23-50-33-711Z/dump/cursos/projects.metadata.json
+
+2026-02-08T17:50:36: [mongorestore] 2026-02-08T17:50:36.096-0600	reading metadata for cursos.sale_details from /var/folders/8q/6151z62s2pq2vfmsq4655wxm0000gn/T/courses-lms-restore-2026-02-08T23-50-33-711Z/dump/cursos/sale_details.metadata.json
+
+2026-02-08T17:50:36: [mongorestore] 2026-02-08T17:50:36.096-0600	reading metadata for cursos.sales from /var/folders/8q/6151z62s2pq2vfmsq4655wxm0000gn/T/courses-lms-restore-2026-02-08T23-50-33-711Z/dump/cursos/sales.metadata.json
+
+2026-02-08T17:50:36: [mongorestore] 2026-02-08T17:50:36.096-0600	reading metadata for cursos.system_configs from /var/folders/8q/6151z62s2pq2vfmsq4655wxm0000gn/T/courses-lms-restore-2026-02-08T23-50-33-711Z/dump/cursos/system_configs.metadata.json
+
+2026-02-08T17:50:36: [mongorestore] 2026-02-08T17:50:36.096-0600	reading metadata for cursos.discounts from /var/folders/8q/6151z62s2pq2vfmsq4655wxm0000gn/T/courses-lms-restore-2026-02-08T23-50-33-711Z/dump/cursos/discounts.metadata.json
+
+2026-02-08T17:50:36: [mongorestore] 2026-02-08T17:50:36.097-0600	reading metadata for cursos.payment_settings from /var/folders/8q/6151z62s2pq2vfmsq4655wxm0000gn/T/courses-lms-restore-2026-02-08T23-50-33-711Z/dump/cursos/payment_settings.metadata.json
+
+2026-02-08T17:50:36: [mongorestore] 2026-02-08T17:50:36.097-0600	reading metadata for cursos.platform_commission_settings from /var/folders/8q/6151z62s2pq2vfmsq4655wxm0000gn/T/courses-lms-restore-2026-02-08T23-50-33-711Z/dump/cursos/platform_commission_settings.metadata.json
+
+2026-02-08T17:50:36: [mongorestore] 2026-02-08T17:50:36.176-0600	dropping collection cursos.users before restoring
+
+2026-02-08T17:50:36: [mongorestore] 2026-02-08T17:50:36.176-0600	dropping collection cursos.projects before restoring
+2026-02-08T17:50:36.176-0600	dropping collection cursos.instructor_earnings before restoring
+2026-02-08T17:50:36.176-0600	dropping collection cursos.system_configs before restoring
+
+2026-02-08T17:50:36: [mongorestore] 2026-02-08T17:50:36.695-0600	restoring cursos.users from /var/folders/8q/6151z62s2pq2vfmsq4655wxm0000gn/T/courses-lms-restore-2026-02-08T23-50-33-711Z/dump/cursos/users.bson
+
+2026-02-08T17:50:36: [mongorestore] 2026-02-08T17:50:36.827-0600	restoring cursos.instructor_earnings from /var/folders/8q/6151z62s2pq2vfmsq4655wxm0000gn/T/courses-lms-restore-2026-02-08T23-50-33-711Z/dump/cursos/instructor_earnings.bson
+2026-02-08T17:50:36.827-0600	restoring cursos.system_configs from /var/folders/8q/6151z62s2pq2vfmsq4655wxm0000gn/T/courses-lms-restore-2026-02-08T23-50-33-711Z/dump/cursos/system_configs.bson
+
+2026-02-08T17:50:36: [mongorestore] 2026-02-08T17:50:36.827-0600	restoring cursos.projects from /var/folders/8q/6151z62s2pq2vfmsq4655wxm0000gn/T/courses-lms-restore-2026-02-08T23-50-33-711Z/dump/cursos/projects.bson
+
+2026-02-08T17:50:36: [mongorestore] 2026-02-08T17:50:36.923-0600	finished restoring cursos.instructor_earnings (1 document, 0 failures)
+2026-02-08T17:50:36.923-0600	dropping collection cursos.sales before restoring
+2026-02-08T17:50:36.923-0600	finished restoring cursos.users (3 documents, 0 failures)
+2026-02-08T17:50:36.923-0600	dropping collection cursos.platform_commission_settings before restoring
+
+2026-02-08T17:50:36: [mongorestore] 2026-02-08T17:50:36.923-0600	finished restoring cursos.system_configs (1 document, 0 failures)
+2026-02-08T17:50:36.923-0600	dropping collection cursos.carouselimages before restoring
+
+2026-02-08T17:50:37: [mongorestore] 2026-02-08T17:50:37.001-0600	finished restoring cursos.projects (3 documents, 0 failures)
+2026-02-08T17:50:37.001-0600	dropping collection cursos.platformcommissionbreakdowns before restoring
+
+2026-02-08T17:50:37: [mongorestore] 2026-02-08T17:50:37.103-0600	restoring cursos.sales from /var/folders/8q/6151z62s2pq2vfmsq4655wxm0000gn/T/courses-lms-restore-2026-02-08T23-50-33-711Z/dump/cursos/sales.bson
+
+2026-02-08T17:50:37: [mongorestore] 2026-02-08T17:50:37.180-0600	restoring cursos.platform_commission_settings from /var/folders/8q/6151z62s2pq2vfmsq4655wxm0000gn/T/courses-lms-restore-2026-02-08T23-50-33-711Z/dump/cursos/platform_commission_settings.bson
+
+2026-02-08T17:50:37: [mongorestore] 2026-02-08T17:50:37.195-0600	restoring cursos.carouselimages from /var/folders/8q/6151z62s2pq2vfmsq4655wxm0000gn/T/courses-lms-restore-2026-02-08T23-50-33-711Z/dump/cursos/carouselimages.bson
+
+2026-02-08T17:50:37: [mongorestore] 2026-02-08T17:50:37.207-0600	restoring cursos.platformcommissionbreakdowns from /var/folders/8q/6151z62s2pq2vfmsq4655wxm0000gn/T/courses-lms-restore-2026-02-08T23-50-33-711Z/dump/cursos/platformcommissionbreakdowns.bson
+
+2026-02-08T17:50:37: [mongorestore] 2026-02-08T17:50:37.250-0600	finished restoring cursos.sales (1 document, 0 failures)
+2026-02-08T17:50:37.250-0600	dropping collection cursos.instructorretentions before restoring
+
+2026-02-08T17:50:37: [mongorestore] 2026-02-08T17:50:37.256-0600	finished restoring cursos.platform_commission_settings (1 document, 0 failures)
+
+2026-02-08T17:50:37: [mongorestore] 2026-02-08T17:50:37.257-0600	dropping collection cursos.wallets before restoring
+
+2026-02-08T17:50:37: [mongorestore] 2026-02-08T17:50:37.351-0600	finished restoring cursos.carouselimages (2 documents, 0 failures)
+2026-02-08T17:50:37.351-0600	dropping collection cursos.settings before restoring
+
+2026-02-08T17:50:37: [mongorestore] 2026-02-08T17:50:37.351-0600	finished restoring cursos.platformcommissionbreakdowns (1 document, 0 failures)
+2026-02-08T17:50:37.351-0600	dropping collection cursos.coupons before restoring
+
+2026-02-08T17:50:37: [mongorestore] 2026-02-08T17:50:37.463-0600	restoring cursos.instructorretentions from /var/folders/8q/6151z62s2pq2vfmsq4655wxm0000gn/T/courses-lms-restore-2026-02-08T23-50-33-711Z/dump/cursos/instructorretentions.bson
+
+2026-02-08T17:50:37: [mongorestore] 2026-02-08T17:50:37.478-0600	restoring cursos.wallets from /var/folders/8q/6151z62s2pq2vfmsq4655wxm0000gn/T/courses-lms-restore-2026-02-08T23-50-33-711Z/dump/cursos/wallets.bson
+
+2026-02-08T17:50:37: [mongorestore] 2026-02-08T17:50:37.551-0600	restoring cursos.settings from /var/folders/8q/6151z62s2pq2vfmsq4655wxm0000gn/T/courses-lms-restore-2026-02-08T23-50-33-711Z/dump/cursos/settings.bson
+
+2026-02-08T17:50:37: [mongorestore] 2026-02-08T17:50:37.556-0600	finished restoring cursos.instructorretentions (1 document, 0 failures)
+2026-02-08T17:50:37.556-0600	dropping collection cursos.payment_settings before restoring
+
+2026-02-08T17:50:37: [mongorestore] 2026-02-08T17:50:37.556-0600	restoring cursos.coupons from /var/folders/8q/6151z62s2pq2vfmsq4655wxm0000gn/T/courses-lms-restore-2026-02-08T23-50-33-711Z/dump/cursos/coupons.bson
+
+2026-02-08T17:50:37: [mongorestore] 2026-02-08T17:50:37.565-0600	finished restoring cursos.wallets (2 documents, 0 failures)
+2026-02-08T17:50:37.565-0600	dropping collection cursos.categories before restoring
+
+2026-02-08T17:50:37: [mongorestore] 2026-02-08T17:50:37.640-0600	finished restoring cursos.settings (1 document, 0 failures)
+2026-02-08T17:50:37.640-0600	dropping collection cursos.course_students before restoring
+
+2026-02-08T17:50:37: [mongorestore] 2026-02-08T17:50:37.648-0600	finished restoring cursos.coupons (1 document, 0 failures)
+2026-02-08T17:50:37.648-0600	dropping collection cursos.notifications before restoring
+
+2026-02-08T17:50:37: [mongorestore] 2026-02-08T17:50:37.743-0600	restoring cursos.payment_settings from /var/folders/8q/6151z62s2pq2vfmsq4655wxm0000gn/T/courses-lms-restore-2026-02-08T23-50-33-711Z/dump/cursos/payment_settings.bson
+
+2026-02-08T17:50:37: [mongorestore] 2026-02-08T17:50:37.754-0600	restoring cursos.categories from /var/folders/8q/6151z62s2pq2vfmsq4655wxm0000gn/T/courses-lms-restore-2026-02-08T23-50-33-711Z/dump/cursos/categories.bson
+
+2026-02-08T17:50:37: [mongorestore] 2026-02-08T17:50:37.874-0600	finished restoring cursos.payment_settings (1 document, 0 failures)
+2026-02-08T17:50:37.874-0600	dropping collection cursos.instructor_payments before restoring
+
+2026-02-08T17:50:37: [mongorestore] 2026-02-08T17:50:37.875-0600	finished restoring cursos.categories (1 document, 0 failures)
+2026-02-08T17:50:37.875-0600	dropping collection cursos.instructor_payment_configs before restoring
+
+2026-02-08T17:50:37: [mongorestore] 2026-02-08T17:50:37.875-0600	restoring cursos.notifications from /var/folders/8q/6151z62s2pq2vfmsq4655wxm0000gn/T/courses-lms-restore-2026-02-08T23-50-33-711Z/dump/cursos/notifications.bson
+
+2026-02-08T17:50:37: [mongorestore] 2026-02-08T17:50:37.875-0600	restoring cursos.course_students from /var/folders/8q/6151z62s2pq2vfmsq4655wxm0000gn/T/courses-lms-restore-2026-02-08T23-50-33-711Z/dump/cursos/course_students.bson
+
+2026-02-08T17:50:37: [mongorestore] 2026-02-08T17:50:37.888-0600	finished restoring cursos.course_students (0 documents, 0 failures)
+2026-02-08T17:50:37.888-0600	dropping collection cursos.refunds before restoring
+
+2026-02-08T17:50:37: [mongorestore] 2026-02-08T17:50:37.897-0600	finished restoring cursos.notifications (0 documents, 0 failures)
+2026-02-08T17:50:37.897-0600	dropping collection cursos.reviews before restoring
+
+2026-02-08T17:50:38: [mongorestore] 2026-02-08T17:50:38.056-0600	restoring cursos.instructor_payment_configs from /var/folders/8q/6151z62s2pq2vfmsq4655wxm0000gn/T/courses-lms-restore-2026-02-08T23-50-33-711Z/dump/cursos/instructor_payment_configs.bson
+
+2026-02-08T17:50:38: [mongorestore] 2026-02-08T17:50:38.068-0600	finished restoring cursos.instructor_payment_configs (0 documents, 0 failures)
+2026-02-08T17:50:38.068-0600	dropping collection cursos.sale_details before restoring
+
+2026-02-08T17:50:38: [mongorestore] 2026-02-08T17:50:38.071-0600	restoring cursos.instructor_payments from /var/folders/8q/6151z62s2pq2vfmsq4655wxm0000gn/T/courses-lms-restore-2026-02-08T23-50-33-711Z/dump/cursos/instructor_payments.bson
+
+2026-02-08T17:50:38: [mongorestore] 2026-02-08T17:50:38.080-0600	restoring cursos.refunds from /var/folders/8q/6151z62s2pq2vfmsq4655wxm0000gn/T/courses-lms-restore-2026-02-08T23-50-33-711Z/dump/cursos/refunds.bson
+
+2026-02-08T17:50:38: [mongorestore] 2026-02-08T17:50:38.084-0600	finished restoring cursos.instructor_payments (0 documents, 0 failures)
+2026-02-08T17:50:38.084-0600	dropping collection cursos.discounts before restoring
+
+2026-02-08T17:50:38: [mongorestore] 2026-02-08T17:50:38.095-0600	finished restoring cursos.refunds (0 documents, 0 failures)
+2026-02-08T17:50:38.096-0600	dropping collection cursos.courses before restoring
+
+2026-02-08T17:50:38: [mongorestore] 2026-02-08T17:50:38.098-0600	restoring cursos.reviews from /var/folders/8q/6151z62s2pq2vfmsq4655wxm0000gn/T/courses-lms-restore-2026-02-08T23-50-33-711Z/dump/cursos/reviews.bson
+
+2026-02-08T17:50:38: [mongorestore] 2026-02-08T17:50:38.110-0600	finished restoring cursos.reviews (0 documents, 0 failures)
+2026-02-08T17:50:38.110-0600	dropping collection cursos.short_urls before restoring
+
+2026-02-08T17:50:38: [mongorestore] 2026-02-08T17:50:38.255-0600	restoring cursos.sale_details from /var/folders/8q/6151z62s2pq2vfmsq4655wxm0000gn/T/courses-lms-restore-2026-02-08T23-50-33-711Z/dump/cursos/sale_details.bson
+
+2026-02-08T17:50:38: [mongorestore] 2026-02-08T17:50:38.268-0600	restoring cursos.discounts from /var/folders/8q/6151z62s2pq2vfmsq4655wxm0000gn/T/courses-lms-restore-2026-02-08T23-50-33-711Z/dump/cursos/discounts.bson
+
+2026-02-08T17:50:38: [mongorestore] 2026-02-08T17:50:38.269-0600	finished restoring cursos.sale_details (0 documents, 0 failures)
+2026-02-08T17:50:38.269-0600	dropping collection cursos.course_sections before restoring
+
+2026-02-08T17:50:38: [mongorestore] 2026-02-08T17:50:38.280-0600	finished restoring cursos.discounts (0 documents, 0 failures)
+2026-02-08T17:50:38.280-0600	dropping collection cursos.course_clases before restoring
+
+2026-02-08T17:50:38: [mongorestore] 2026-02-08T17:50:38.280-0600	restoring cursos.courses from /var/folders/8q/6151z62s2pq2vfmsq4655wxm0000gn/T/courses-lms-restore-2026-02-08T23-50-33-711Z/dump/cursos/courses.bson
+
+2026-02-08T17:50:38: [mongorestore] 2026-02-08T17:50:38.292-0600	finished restoring cursos.courses (0 documents, 0 failures)
+2026-02-08T17:50:38.292-0600	dropping collection cursos.course_clase_files before restoring
+
+2026-02-08T17:50:38: [mongorestore] 2026-02-08T17:50:38.400-0600	restoring cursos.short_urls from /var/folders/8q/6151z62s2pq2vfmsq4655wxm0000gn/T/courses-lms-restore-2026-02-08T23-50-33-711Z/dump/cursos/short_urls.bson
+
+2026-02-08T17:50:38: [mongorestore] 2026-02-08T17:50:38.412-0600	finished restoring cursos.short_urls (0 documents, 0 failures)
+
+2026-02-08T17:50:38: [mongorestore] 2026-02-08T17:50:38.534-0600	restoring cursos.course_clases from /var/folders/8q/6151z62s2pq2vfmsq4655wxm0000gn/T/courses-lms-restore-2026-02-08T23-50-33-711Z/dump/cursos/course_clases.bson
+
+2026-02-08T17:50:38: [mongorestore] 2026-02-08T17:50:38.535-0600	restoring cursos.course_clase_files from /var/folders/8q/6151z62s2pq2vfmsq4655wxm0000gn/T/courses-lms-restore-2026-02-08T23-50-33-711Z/dump/cursos/course_clase_files.bson
+
+2026-02-08T17:50:38: [mongorestore] 2026-02-08T17:50:38.539-0600	restoring cursos.course_sections from /var/folders/8q/6151z62s2pq2vfmsq4655wxm0000gn/T/courses-lms-restore-2026-02-08T23-50-33-711Z/dump/cursos/course_sections.bson
+
+2026-02-08T17:50:38: [mongorestore] 2026-02-08T17:50:38.546-0600	finished restoring cursos.course_clases (0 documents, 0 failures)
+
+2026-02-08T17:50:38: [mongorestore] 2026-02-08T17:50:38.549-0600	finished restoring cursos.course_clase_files (0 documents, 0 failures)
+
+2026-02-08T17:50:38: [mongorestore] 2026-02-08T17:50:38.550-0600	finished restoring cursos.course_sections (0 documents, 0 failures)
+
+2026-02-08T17:50:38: [mongorestore] 2026-02-08T17:50:38.550-0600	restoring indexes for collection cursos.coupons from metadata
+
+2026-02-08T17:50:38: [mongorestore] 2026-02-08T17:50:38.550-0600	index: &idx.IndexDocument{Options:primitive.M{"background":true, "name":"code_1", "unique":true, "v":2}, Key:primitive.D{primitive.E{Key:"code", Value:1}}, PartialFilterExpression:primitive.D(nil)}
+2026-02-08T17:50:38.550-0600	index: &idx.IndexDocument{Options:primitive.M{"background":true, "name":"instructor_1", "v":2}, Key:primitive.D{primitive.E{Key:"instructor", Value:1}}, PartialFilterExpression:primitive.D(nil)}
+2026-02-08T17:50:38.550-0600	restoring indexes for collection cursos.refunds from metadata
+
+2026-02-08T17:50:38: [mongorestore] 2026-02-08T17:50:38.550-0600	index: &idx.IndexDocument{Options:primitive.M{"background":true, "name":"user_1_status_1_sale_detail_item.product_1", "v":2}, Key:primitive.D{primitive.E{Key:"user", Value:1}, primitive.E{Key:"status", Value:1}, primitive.E{Key:"sale_detail_item.product", Value:1}}, PartialFilterExpression:primitive.D(nil)}
+2026-02-08T17:50:38.550-0600	index: &idx.IndexDocument{Options:primitive.M{"background":true, "name":"sale_1", "v":2}, Key:primitive.D{primitive.E{Key:"sale", Value:1}}, PartialFilterExpression:primitive.D(nil)}
+2026-02-08T17:50:38.550-0600	index: &idx.IndexDocument{Options:primitive.M{"background":true, "name":"user_1", "v":2}, Key:primitive.D{primitive.E{Key:"user", Value:1}}, PartialFilterExpression:primitive.D(nil)}
+2026-02-08T17:50:38.550-0600	index: &idx.IndexDocument{Options:primitive.M{"background":true, "name":"status_1", "v":2}, Key:primitive.D{primitive.E{Key:"status", Value:1}}, PartialFilterExpression:primitive.D(nil)}
+2026-02-08T17:50:38.550-0600	index: &idx.IndexDocument{Options:primitive.M{"background":true, "name":"requestedAt_-1", "v":2}, Key:primitive.D{primitive.E{Key:"requestedAt", Value:-1}}, PartialFilterExpression:primitive.D(nil)}
+2026-02-08T17:50:38.550-0600	restoring indexes for collection cursos.instructor_payments from metadata
+
+2026-02-08T17:50:38: [mongorestore] 2026-02-08T17:50:38.550-0600	index: &idx.IndexDocument{Options:primitive.M{"background":true, "name":"instructor_1_status_1", "v":2}, Key:primitive.D{primitive.E{Key:"instructor", Value:1}, primitive.E{Key:"status", Value:1}}, PartialFilterExpression:primitive.D(nil)}
+
+2026-02-08T17:50:38: [mongorestore] 2026-02-08T17:50:38.550-0600	index: &idx.IndexDocument{Options:primitive.M{"background":true, "name":"created_by_admin_at_-1", "v":2}, Key:primitive.D{primitive.E{Key:"created_by_admin_at", Value:-1}}, PartialFilterExpression:primitive.D(nil)}
+2026-02-08T17:50:38.550-0600	index: &idx.IndexDocument{Options:primitive.M{"background":true, "name":"status_1", "v":2}, Key:primitive.D{primitive.E{Key:"status", Value:1}}, PartialFilterExpression:primitive.D(nil)}
+2026-02-08T17:50:38.551-0600	restoring indexes for collection cursos.courses from metadata
+2026-02-08T17:50:38.551-0600	index: &idx.IndexDocument{Options:primitive.M{"background":true, "default_language":"spanish", "language_override":"language", "name":"search_text_index", "textIndexVersion":3, "v":2, "weights":primitive.M{"description":1, "subtitle":1, "title":1}}, Key:primitive.D{primitive.E{Key:"_fts", Value:"text"}, primitive.E{Key:"_ftsx", Value:1}}, PartialFilterExpression:primitive.D(nil)}
+
+2026-02-08T17:50:38: [mongorestore] 2026-02-08T17:50:38.792-0600	no indexes to restore for collection cursos.discounts
+2026-02-08T17:50:38.792-0600	no indexes to restore for collection cursos.platform_commission_settings
+2026-02-08T17:50:38.792-0600	restoring indexes for collection cursos.instructor_payment_configs from metadata
+
+2026-02-08T17:50:38: [mongorestore] 2026-02-08T17:50:38.792-0600	index: &idx.IndexDocument{Options:primitive.M{"background":true, "name":"instructor_1", "unique":true, "v":2}, Key:primitive.D{primitive.E{Key:"instructor", Value:1}}, PartialFilterExpression:primitive.D(nil)}
+2026-02-08T17:50:38.792-0600	no indexes to restore for collection cursos.course_clase_files
+2026-02-08T17:50:38.792-0600	no indexes to restore for collection cursos.instructorretentions
+2026-02-08T17:50:38.792-0600	no indexes to restore for collection cursos.projects
+2026-02-08T17:50:38.792-0600	no indexes to restore for collection cursos.sale_details
+2026-02-08T17:50:38.792-0600	no indexes to restore for collection cursos.payment_settings
+2026-02-08T17:50:38.792-0600	no indexes to restore for collection cursos.course_students
+2026-02-08T17:50:38.792-0600	restoring indexes for collection cursos.wallets from metadata
+2026-02-08T17:50:38.792-0600	index: &idx.IndexDocument{Options:primitive.M{"background":true, "name":"user_1", "unique":true, "v":2}, Key:primitive.D{primitive.E{Key:"user", Value:1}}, PartialFilterExpression:primitive.D(nil)}
+2026-02-08T17:50:38.792-0600	no indexes to restore for collection cursos.course_clases
+2026-02-08T17:50:38.792-0600	no indexes to restore for collection cursos.course_sections
+2026-02-08T17:50:38.792-0600	restoring indexes for collection cursos.short_urls from metadata
+2026-02-08T17:50:38.792-0600	index: &idx.IndexDocument{Options:primitive.M{"background":true, "name":"shortCode_1", "unique":true, "v":2}, Key:primitive.D{primitive.E{Key:"shortCode", Value:1}}, PartialFilterExpression:primitive.D(nil)}
+2026-02-08T17:50:38.792-0600	index: &idx.IndexDocument{Options:primitive.M{"background":true, "name":"resourceType_1_resourceId_1", "v":2}, Key:primitive.D{primitive.E{Key:"resourceType", Value:1}, primitive.E{Key:"resourceId", Value:1}}, PartialFilterExpression:primitive.D(nil)}
+2026-02-08T17:50:38.792-0600	index: &idx.IndexDocument{Options:primitive.M{"background":true, "name":"createdBy_1", "v":2}, Key:primitive.D{primitive.E{Key:"createdBy", Value:1}}, PartialFilterExpression:primitive.D(nil)}
+
+2026-02-08T17:50:38: [mongorestore] 2026-02-08T17:50:38.803-0600	no indexes to restore for collection cursos.reviews
+2026-02-08T17:50:38.803-0600	no indexes to restore for collection cursos.categories
+2026-02-08T17:50:38.803-0600	no indexes to restore for collection cursos.platformcommissionbreakdowns
+2026-02-08T17:50:38.803-0600	restoring indexes for collection cursos.carouselimages from metadata
+
+2026-02-08T17:50:38: [mongorestore] 2026-02-08T17:50:38.803-0600	index: &idx.IndexDocument{Options:primitive.M{"background":true, "name":"order_1", "v":2}, Key:primitive.D{primitive.E{Key:"order", Value:1}}, PartialFilterExpression:primitive.D(nil)}
+2026-02-08T17:50:38.803-0600	index: &idx.IndexDocument{Options:primitive.M{"background":true, "name":"isActive_1", "v":2}, Key:primitive.D{primitive.E{Key:"isActive", Value:1}}, PartialFilterExpression:primitive.D(nil)}
+
+2026-02-08T17:50:38: [mongorestore] 2026-02-08T17:50:38.925-0600	restoring indexes for collection cursos.instructor_earnings from metadata
+
+2026-02-08T17:50:38: [mongorestore] 2026-02-08T17:50:38.925-0600	index: &idx.IndexDocument{Options:primitive.M{"background":true, "name":"available_at_1_status_1", "v":2}, Key:primitive.D{primitive.E{Key:"available_at", Value:1}, primitive.E{Key:"status", Value:1}}, PartialFilterExpression:primitive.D(nil)}
+2026-02-08T17:50:38.925-0600	index: &idx.IndexDocument{Options:primitive.M{"background":true, "name":"earned_at_-1", "v":2}, Key:primitive.D{primitive.E{Key:"earned_at", Value:-1}}, PartialFilterExpression:primitive.D(nil)}
+2026-02-08T17:50:38.925-0600	index: &idx.IndexDocument{Options:primitive.M{"background":true, "name":"instructor_1_status_1", "v":2}, Key:primitive.D{primitive.E{Key:"instructor", Value:1}, primitive.E{Key:"status", Value:1}}, PartialFilterExpression:primitive.D(nil)}
+2026-02-08T17:50:38.925-0600	index: &idx.IndexDocument{Options:primitive.M{"background":true, "name":"sale_1_product_id_1", "unique":true, "v":2}, Key:primitive.D{primitive.E{Key:"sale", Value:1}, primitive.E{Key:"product_id", Value:1}}, PartialFilterExpression:primitive.D(nil)}
+
+2026-02-08T17:50:38: [mongorestore] 2026-02-08T17:50:38.976-0600	restoring indexes for collection cursos.notifications from metadata
+2026-02-08T17:50:38.976-0600	index: &idx.IndexDocument{Options:primitive.M{"background":true, "name":"createdAt_-1", "v":2}, Key:primitive.D{primitive.E{Key:"createdAt", Value:-1}}, PartialFilterExpression:primitive.D(nil)}
+2026-02-08T17:50:38.976-0600	index: &idx.IndexDocument{Options:primitive.M{"background":true, "name":"user_1_isRead_1_isDeleted_1", "v":2}, Key:primitive.D{primitive.E{Key:"user", Value:1}, primitive.E{Key:"isRead", Value:1}, primitive.E{Key:"isDeleted", Value:1}}, PartialFilterExpression:primitive.D(nil)}
+
+2026-02-08T17:50:38: [mongorestore] 2026-02-08T17:50:38.997-0600	restoring indexes for collection cursos.sales from metadata
+
+2026-02-08T17:50:38: [mongorestore] 2026-02-08T17:50:38.997-0600	index: &idx.IndexDocument{Options:primitive.M{"background":true, "name":"user_1_status_1", "v":2}, Key:primitive.D{primitive.E{Key:"user", Value:1}, primitive.E{Key:"status", Value:1}}, PartialFilterExpression:primitive.D(nil)}
+2026-02-08T17:50:38.997-0600	index: &idx.IndexDocument{Options:primitive.M{"background":true, "name":"createdAt_-1", "v":2}, Key:primitive.D{primitive.E{Key:"createdAt", Value:-1}}, PartialFilterExpression:primitive.D(nil)}
+2026-02-08T17:50:38.997-0600	index: &idx.IndexDocument{Options:primitive.M{"background":true, "name":"detail.product_1", "v":2}, Key:primitive.D{primitive.E{Key:"detail.product", Value:1}}, PartialFilterExpression:primitive.D(nil)}
+2026-02-08T17:50:38.997-0600	index: &idx.IndexDocument{Options:primitive.M{"background":true, "name":"isTest_1", "v":2}, Key:primitive.D{primitive.E{Key:"isTest", Value:1}}, PartialFilterExpression:primitive.D(nil)}
+2026-02-08T17:50:38.997-0600	index: &idx.IndexDocument{Options:primitive.M{"background":true, "name":"n_transaccion_1", "unique":true, "v":2}, Key:primitive.D{primitive.E{Key:"n_transaccion", Value:1}}, PartialFilterExpression:primitive.D(nil)}
+
+2026-02-08T17:50:39: [mongorestore] 2026-02-08T17:50:39.041-0600	no indexes to restore for collection cursos.system_configs
+2026-02-08T17:50:39.041-0600	restoring indexes for collection cursos.settings from metadata
+
+2026-02-08T17:50:39: [mongorestore] 2026-02-08T17:50:39.041-0600	index: &idx.IndexDocument{Options:primitive.M{"background":true, "name":"key_1", "unique":true, "v":2}, Key:primitive.D{primitive.E{Key:"key", Value:1}}, PartialFilterExpression:primitive.D(nil)}
+
+2026-02-08T17:50:39: [mongorestore] 2026-02-08T17:50:39.156-0600	restoring indexes for collection cursos.users from metadata
+2026-02-08T17:50:39.156-0600	index: &idx.IndexDocument{Options:primitive.M{"background":true, "name":"phone_1", "sparse":true, "unique":true, "v":2}, Key:primitive.D{primitive.E{Key:"phone", Value:1}}, PartialFilterExpression:primitive.D(nil)}
+
+2026-02-08T17:50:39: [mongorestore] 2026-02-08T17:50:39.156-0600	index: &idx.IndexDocument{Options:primitive.M{"background":true, "name":"slug_1", "sparse":true, "unique":true, "v":2}, Key:primitive.D{primitive.E{Key:"slug", Value:1}}, PartialFilterExpression:primitive.D(nil)}
+2026-02-08T17:50:39.156-0600	index: &idx.IndexDocument{Options:primitive.M{"background":true, "name":"telegram_chat_id_1", "sparse":true, "v":2}, Key:primitive.D{primitive.E{Key:"telegram_chat_id", Value:1}}, PartialFilterExpression:primitive.D(nil)}
+2026-02-08T17:50:39.156-0600	index: &idx.IndexDocument{Options:primitive.M{"background":true, "name":"email_1", "unique":true, "v":2}, Key:primitive.D{primitive.E{Key:"email", Value:1}}, PartialFilterExpression:primitive.D(nil)}
+
+2026-02-08T17:50:39: [mongorestore] 2026-02-08T17:50:39.447-0600	20 document(s) restored successfully. 0 document(s) failed to restore.
+
+2026-02-08T17:50:39: ✅ [BackupController] Base de datos restaurada.
+2026-02-08T17:50:39: 📡 [Socket] Progreso restauracion: 70% - Base de datos restaurada correctamente.
+2026-02-08T17:50:39: 📡 [Socket] Progreso restauracion: 75% - Restaurando archivos multimedia...
+2026-02-08T17:50:39: ⏳ [BackupController] Restaurando archivos estáticos desde /var/folders/8q/6151z62s2pq2vfmsq4655wxm0000gn/T/courses-lms-restore-2026-02-08T23-50-33-711Z/uploads...
+2026-02-08T17:50:39: ✅ [BackupController] Archivos restaurados.
+2026-02-08T17:50:39: 📡 [Socket] Progreso restauracion: 90% - Archivos restaurados.
+2026-02-08T17:50:39: 📡 [Socket] Progreso restauracion: 100% - Restauración completada exitosamente.
+2026-02-08T17:50:39: ✅ [BackupController] Restauración completada exitosamente.
+2026-02-08T17:50:41: 🔍 [RefundController.list] Iniciando...
+2026-02-08T17:50:41: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-08T17:50:41: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-08T17:50:41: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-08T17:50:41: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-08T17:50:42: ❌ Cliente desconectado: Vit8bpqPOxV82EogAAAL
+2026-02-08T17:50:47: 📋 [SystemConfigController] Obteniendo configuración pública
+2026-02-08T17:50:47: ✅ [SystemConfigController] Configuración pública obtenida: Dev Hub Sharks
+2026-02-08T17:50:47: 💱 [SystemConfigController] Tipo de cambio incluido: 20.5
+2026-02-08T17:50:47: ✅ Cliente conectado: XuzT0Dc_Va3PsonEAAAN
+2026-02-08T17:50:47: 👑 Admin 6943157e5c102f674cc5c265 (XuzT0Dc_Va3PsonEAAAN) unido a sala de admins
+2026-02-08T17:50:52: 🔍 [WalletController.getMyWallet] User: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-08T17:50:52: 🔍 [WalletController.getMyWallet] Getting wallet for: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-08T17:50:53: 📊 [executiveMetrics] Generando métricas financieras ejecutivas...
+2026-02-08T17:50:53: 📊 [kpis] Excluyendo 0 ventas reembolsadas
+2026-02-08T17:50:53: ✅ [kpis] Ingresos Netos: 300.00
+2026-02-08T17:50:54: ✅ [executiveMetrics] Métricas generadas exitosamente
+2026-02-08T17:50:54:    • Ingresos Brutos: 300.00
+2026-02-08T17:50:54:    • Reembolsos:      0.00
+2026-02-08T17:50:54:    • Ingresos Netos:  300.00
+2026-02-08T17:50:58: 🔍 [RefundController.list] Iniciando...
+2026-02-08T17:50:58: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-08T17:50:58: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-08T17:50:58: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-08T17:50:58: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-08T17:50:58: 🔍 [WalletController.getMyWallet] User: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-08T17:50:58: 🔍 [WalletController.getMyWallet] Getting wallet for: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-08T17:50:58: ❌ Cliente desconectado: XuzT0Dc_Va3PsonEAAAN
+2026-02-08T17:51:03: 🔍 [WalletController.getMyWallet] User: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-08T17:51:03: 🔍 [WalletController.getMyWallet] Getting wallet for: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-08T17:51:04: 📚 [ProfileStudentController] Cursos inscritos encontrados: 0
+2026-02-08T17:51:04: ✅ [ProfileStudentController] Cursos con porcentaje calculado: 0
+2026-02-08T17:51:04: 📦 [ProfileStudentController] Ventas cargadas y populadas: 0
+2026-02-08T17:51:04: 
+============================================================
+2026-02-08T17:51:04: 🔍 [ProfileStudentController] DIAGNÓSTICO DE PROYECTOS
+2026-02-08T17:51:04: ============================================================
+2026-02-08T17:51:04: 📋 Total ventas del usuario: 0
+2026-02-08T17:51:04: 👤 Usuario ID: 6943157e5c102f674cc5c265
+2026-02-08T17:51:04: 
+============================================================
+2026-02-08T17:51:04: 📊 RESULTADO FINAL: 0 proyectos encontrados
+2026-02-08T17:51:04: 📚 RESULTADO FINAL: 0 cursos activos
+2026-02-08T17:51:04: ============================================================
+
+2026-02-08T17:51:04: ✅ [ProfileStudentController] Proyectos únicos (sin duplicados): 0
+2026-02-08T17:51:05: ========== FIN DEBUG ==========
+
+2026-02-08T17:51:09: 📚 [ProfileStudentController] Cursos inscritos encontrados: 0
+2026-02-08T17:51:09: ✅ [ProfileStudentController] Cursos con porcentaje calculado: 0
+2026-02-08T17:51:09: 📦 [ProfileStudentController] Ventas cargadas y populadas: 0
+2026-02-08T17:51:09: 
+============================================================
+2026-02-08T17:51:09: 🔍 [ProfileStudentController] DIAGNÓSTICO DE PROYECTOS
+2026-02-08T17:51:09: ============================================================
+2026-02-08T17:51:09: 📋 Total ventas del usuario: 0
+2026-02-08T17:51:09: 👤 Usuario ID: 6943157e5c102f674cc5c265
+2026-02-08T17:51:09: 
+============================================================
+2026-02-08T17:51:09: 📊 RESULTADO FINAL: 0 proyectos encontrados
+2026-02-08T17:51:09: 📚 RESULTADO FINAL: 0 cursos activos
+2026-02-08T17:51:09: ============================================================
+
+2026-02-08T17:51:09: ✅ [ProfileStudentController] Proyectos únicos (sin duplicados): 0
+2026-02-08T17:51:09: 
+Proyectos públicos encontrados: 3
+2026-02-08T17:51:10: 🔍 [WalletController.getMyWallet] User: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-08T17:51:10: 🔍 [WalletController.getMyWallet] Getting wallet for: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-08T17:51:14: ✅ [list_instructors] Encontrados 1 instructores
+2026-02-08T17:51:14: 🆔 [list_instructors] Slugs: [ { name: 'alo', slug: 'alo-bn' } ]
+2026-02-08T17:51:14: 📚 [ProfileStudentController] Cursos inscritos encontrados: 0
+2026-02-08T17:51:14: ✅ [ProfileStudentController] Cursos con porcentaje calculado: 0
+2026-02-08T17:51:14: 📦 [ProfileStudentController] Ventas cargadas y populadas: 0
+2026-02-08T17:51:14: 
+============================================================
+2026-02-08T17:51:14: 🔍 [ProfileStudentController] DIAGNÓSTICO DE PROYECTOS
+2026-02-08T17:51:14: ============================================================
+2026-02-08T17:51:14: 📋 Total ventas del usuario: 0
+2026-02-08T17:51:14: 👤 Usuario ID: 6943157e5c102f674cc5c265
+2026-02-08T17:51:14: 
+============================================================
+2026-02-08T17:51:14: 📊 RESULTADO FINAL: 0 proyectos encontrados
+2026-02-08T17:51:14: 📚 RESULTADO FINAL: 0 cursos activos
+2026-02-08T17:51:14: ============================================================
+
+2026-02-08T17:51:14: ✅ [ProfileStudentController] Proyectos únicos (sin duplicados): 0
+2026-02-08T17:51:27: 📋 [SystemConfigController] Obteniendo configuración pública
+2026-02-08T17:51:28: ✅ [SystemConfigController] Configuración pública obtenida: Dev Hub Sharks
+2026-02-08T17:51:28: 💱 [SystemConfigController] Tipo de cambio incluido: 20.5
+2026-02-08T17:51:28: 🔍 [WalletController.getMyWallet] User: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-08T17:51:28: 🔍 [WalletController.getMyWallet] Getting wallet for: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-08T17:51:33: 📚 [ProfileStudentController] Cursos inscritos encontrados: 0
+2026-02-08T17:51:33: ✅ [ProfileStudentController] Cursos con porcentaje calculado: 0
+2026-02-08T17:51:33: 📚 [ProfileStudentController] Cursos inscritos encontrados: 0
+2026-02-08T17:51:33: ✅ [ProfileStudentController] Cursos con porcentaje calculado: 0
+2026-02-08T17:51:33: ✅ [list_instructors] Encontrados 1 instructores
+2026-02-08T17:51:33: 🆔 [list_instructors] Slugs: [ { name: 'alo', slug: 'alo-bn' } ]
+2026-02-08T17:51:33: 📦 [ProfileStudentController] Ventas cargadas y populadas: 0
+2026-02-08T17:51:33: 
+============================================================
+2026-02-08T17:51:33: 🔍 [ProfileStudentController] DIAGNÓSTICO DE PROYECTOS
+2026-02-08T17:51:33: ============================================================
+2026-02-08T17:51:33: 📋 Total ventas del usuario: 0
+2026-02-08T17:51:33: 👤 Usuario ID: 6943157e5c102f674cc5c265
+2026-02-08T17:51:33: 
+============================================================
+2026-02-08T17:51:33: 📊 RESULTADO FINAL: 0 proyectos encontrados
+2026-02-08T17:51:33: 📚 RESULTADO FINAL: 0 cursos activos
+2026-02-08T17:51:33: ============================================================
+
+2026-02-08T17:51:33: ✅ [ProfileStudentController] Proyectos únicos (sin duplicados): 0
+2026-02-08T17:51:33: 📦 [ProfileStudentController] Ventas cargadas y populadas: 0
+2026-02-08T17:51:33: 
+============================================================
+2026-02-08T17:51:33: 🔍 [ProfileStudentController] DIAGNÓSTICO DE PROYECTOS
+2026-02-08T17:51:33: ============================================================
+2026-02-08T17:51:33: 📋 Total ventas del usuario: 0
+2026-02-08T17:51:33: 👤 Usuario ID: 6943157e5c102f674cc5c265
+2026-02-08T17:51:33: 
+============================================================
+2026-02-08T17:51:33: 📊 RESULTADO FINAL: 0 proyectos encontrados
+2026-02-08T17:51:33: 📚 RESULTADO FINAL: 0 cursos activos
+2026-02-08T17:51:33: ============================================================
+
+2026-02-08T17:51:33: ✅ [ProfileStudentController] Proyectos únicos (sin duplicados): 0
+2026-02-08T17:51:33: 
+Proyectos públicos encontrados: 3
+2026-02-08T17:51:34: ========== FIN DEBUG ==========
+
+2026-02-08T17:51:38: 🔍 [WalletController.getMyWallet] User: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-08T17:51:38: 🔍 [WalletController.getMyWallet] Getting wallet for: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-08T17:51:38: 📚 [ProfileStudentController] Cursos inscritos encontrados: 0
+2026-02-08T17:51:38: ✅ [ProfileStudentController] Cursos con porcentaje calculado: 0
+2026-02-08T17:51:38: 📦 [ProfileStudentController] Ventas cargadas y populadas: 0
+2026-02-08T17:51:38: 
+============================================================
+2026-02-08T17:51:38: 🔍 [ProfileStudentController] DIAGNÓSTICO DE PROYECTOS
+2026-02-08T17:51:38: ============================================================
+2026-02-08T17:51:38: 📋 Total ventas del usuario: 0
+2026-02-08T17:51:38: 👤 Usuario ID: 6943157e5c102f674cc5c265
+2026-02-08T17:51:38: 
+============================================================
+2026-02-08T17:51:38: 📊 RESULTADO FINAL: 0 proyectos encontrados
+2026-02-08T17:51:38: 📚 RESULTADO FINAL: 0 cursos activos
+2026-02-08T17:51:38: ============================================================
+
+2026-02-08T17:51:38: ✅ [ProfileStudentController] Proyectos únicos (sin duplicados): 0
+2026-02-08T17:51:43: 🔍 [WalletController.getMyWallet] User: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-08T17:51:43: 🔍 [WalletController.getMyWallet] Getting wallet for: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-08T17:51:49: 🔍 [WalletController.getMyWallet] User: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-08T17:51:49: 🔍 [WalletController.getMyWallet] Getting wallet for: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-08T17:51:53: 🔍 [WalletController.getMyWallet] User: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-08T17:51:53: 🔍 [WalletController.getMyWallet] Getting wallet for: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-08T17:52:12: 🔍 [WalletController.getMyWallet] User: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-08T17:52:12: 🔍 [WalletController.getMyWallet] Getting wallet for: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-08T17:55:50: ✅ Cliente conectado: -1B9UNksKSQdibfNAAAP
+2026-02-08T17:55:50: 👑 Admin 6943157e5c102f674cc5c265 (-1B9UNksKSQdibfNAAAP) unido a sala de admins
+2026-02-08T17:55:55: 📊 [executiveMetrics] Generando métricas financieras ejecutivas...
+2026-02-08T17:55:55: 🔍 [RefundController.list] Iniciando...
+2026-02-08T17:55:55: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-08T17:55:55: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-08T17:55:55: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-08T17:55:55: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-08T17:55:55: 📊 [kpis] Excluyendo 0 ventas reembolsadas
+2026-02-08T17:55:56: ✅ [kpis] Ingresos Netos: 300.00
+2026-02-08T17:55:57: ✅ [executiveMetrics] Métricas generadas exitosamente
+2026-02-08T17:55:57:    • Ingresos Brutos: 300.00
+2026-02-08T17:55:57:    • Reembolsos:      0.00
+2026-02-08T17:55:57:    • Ingresos Netos:  300.00
+2026-02-08T17:56:01: 📊 [getEarningsStats] Obteniendo stats para instructor: new ObjectId("6943157e5c102f674cc5c265") Usuario: new ObjectId("6943157e5c102f674cc5c265") Rol: admin
+2026-02-08T17:56:01: 📊 [getEarningsStats] Total earnings encontrados: 0
+2026-02-08T17:56:01: ⚠️ [getEarningsStats] Sin earnings para instructor: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-08T17:56:01: 📊 [getEarningsStats] Total de earnings en toda la BD: 1
+2026-02-08T17:56:01: 📊 [getEarningsStats] Instructores con earnings: [ new ObjectId("694316f05c102f674cc5c2b3") ]
+2026-02-08T17:56:01: 💰 [getEarningsStats] Reembolsos completados encontrados: 0
+2026-02-08T17:56:01: ✅ [getEarningsStats] Stats finales: { disponible: 0, reembolsos: 0, total: 0 }
+2026-02-08T17:56:20: 🔍 [RefundController.list] Iniciando...
+2026-02-08T17:56:20: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-08T17:56:20: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-08T17:56:20: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-08T17:56:20: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-08T17:56:50: 🔍 [RefundController.list] Iniciando...
+2026-02-08T17:56:50: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-08T17:56:50: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-08T17:56:50: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-08T17:56:50: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-08T17:57:20: 🔍 [RefundController.list] Iniciando...
+2026-02-08T17:57:20: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-08T17:57:20: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-08T17:57:20: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-08T17:57:20: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-08T17:57:50: 🔍 [RefundController.list] Iniciando...
+2026-02-08T17:57:50: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-08T17:57:50: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-08T17:57:50: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-08T17:57:50: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-08T17:58:20: 🔍 [RefundController.list] Iniciando...
+2026-02-08T17:58:20: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-08T17:58:20: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-08T17:58:20: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-08T17:58:20: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-08T17:58:50: 🔍 [RefundController.list] Iniciando...
+2026-02-08T17:58:50: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-08T17:58:50: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-08T17:58:50: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-08T17:58:50: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-08T17:59:20: 🔍 [RefundController.list] Iniciando...
+2026-02-08T17:59:20: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-08T17:59:20: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-08T17:59:20: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-08T17:59:20: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-08T17:59:50: 🔍 [RefundController.list] Iniciando...
+2026-02-08T17:59:50: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-08T17:59:50: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-08T17:59:50: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-08T17:59:50: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-08T18:00:20: 🔍 [RefundController.list] Iniciando...
+2026-02-08T18:00:20: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-08T18:00:20: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-08T18:00:20: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-08T18:00:20: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-08T18:00:50: 🔍 [RefundController.list] Iniciando...
+2026-02-08T18:00:50: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-08T18:00:50: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-08T18:00:50: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-08T18:00:50: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-08T18:00:56: ❌ Cliente desconectado: -1B9UNksKSQdibfNAAAP
+2026-02-08T18:00:56: 📋 [SystemConfigController] Obteniendo configuración pública
+2026-02-08T18:00:56: ✅ [SystemConfigController] Configuración pública obtenida: Dev Hub Sharks
+2026-02-08T18:00:56: 💱 [SystemConfigController] Tipo de cambio incluido: 20.5
+2026-02-08T18:00:56: 🔍 [WalletController.getMyWallet] User: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-08T18:00:56: 🔍 [WalletController.getMyWallet] Getting wallet for: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-08T18:00:56: ✅ Cliente conectado: 9o7ooygfi9r9yFeLAAAR
+2026-02-08T18:00:56: 👑 Admin 6943157e5c102f674cc5c265 (9o7ooygfi9r9yFeLAAAR) unido a sala de admins
+2026-02-08T18:00:56: 📊 [executiveMetrics] Generando métricas financieras ejecutivas...
+2026-02-08T18:00:56: 🔍 [RefundController.list] Iniciando...
+2026-02-08T18:00:56: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-08T18:00:56: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-08T18:00:56: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-08T18:00:57: 📊 [kpis] Excluyendo 0 ventas reembolsadas
+2026-02-08T18:00:57: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-08T18:00:57: 🔍 [WalletController.getMyWallet] User: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-08T18:00:57: 🔍 [WalletController.getMyWallet] Getting wallet for: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-08T18:00:57: ✅ [kpis] Ingresos Netos: 300.00
+2026-02-08T18:00:58: ✅ [executiveMetrics] Métricas generadas exitosamente
+2026-02-08T18:00:58:    • Ingresos Brutos: 300.00
+2026-02-08T18:00:58:    • Reembolsos:      0.00
+2026-02-08T18:00:58:    • Ingresos Netos:  300.00
+2026-02-08T18:01:00: ❌ Cliente desconectado: 9o7ooygfi9r9yFeLAAAR
+2026-02-08T18:01:00: 📋 [SystemConfigController] Obteniendo configuración pública
+2026-02-08T18:01:01: ✅ [SystemConfigController] Configuración pública obtenida: Dev Hub Sharks
+2026-02-08T18:01:01: 💱 [SystemConfigController] Tipo de cambio incluido: 20.5
+2026-02-08T18:01:01: 🔍 [WalletController.getMyWallet] User: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-08T18:01:01: 🔍 [WalletController.getMyWallet] Getting wallet for: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-08T18:01:01: ✅ Cliente conectado: rSuyfpMJWh2d7GSfAAAT
+2026-02-08T18:01:01: 👑 Admin 6943157e5c102f674cc5c265 (rSuyfpMJWh2d7GSfAAAT) unido a sala de admins
+2026-02-08T18:01:01: 📊 [executiveMetrics] Generando métricas financieras ejecutivas...
+2026-02-08T18:01:01: 📊 [kpis] Excluyendo 0 ventas reembolsadas
+2026-02-08T18:01:01: 🔍 [RefundController.list] Iniciando...
+2026-02-08T18:01:01: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-08T18:01:01: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-08T18:01:01: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-08T18:01:01: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-08T18:01:01: 🔍 [WalletController.getMyWallet] User: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-08T18:01:01: 🔍 [WalletController.getMyWallet] Getting wallet for: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-08T18:01:02: ✅ [kpis] Ingresos Netos: 300.00
+2026-02-08T18:01:03: ✅ [executiveMetrics] Métricas generadas exitosamente
+2026-02-08T18:01:03:    • Ingresos Brutos: 300.00
+2026-02-08T18:01:03:    • Reembolsos:      0.00
+2026-02-08T18:01:03:    • Ingresos Netos:  300.00
+2026-02-08T18:01:10: ❌ Cliente desconectado: rSuyfpMJWh2d7GSfAAAT
+2026-02-08T18:01:10: 📋 [SystemConfigController] Obteniendo configuración pública
+2026-02-08T18:01:10: ✅ [SystemConfigController] Configuración pública obtenida: Dev Hub Sharks
+2026-02-08T18:01:10: 💱 [SystemConfigController] Tipo de cambio incluido: 20.5
+2026-02-08T18:01:10: 🔍 [WalletController.getMyWallet] User: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-08T18:01:10: 🔍 [WalletController.getMyWallet] Getting wallet for: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-08T18:01:10: ✅ Cliente conectado: -kL0awtByEnYnSr6AAAV
+2026-02-08T18:01:10: 👑 Admin 6943157e5c102f674cc5c265 (-kL0awtByEnYnSr6AAAV) unido a sala de admins
+2026-02-08T18:01:10: 📊 [executiveMetrics] Generando métricas financieras ejecutivas...
+2026-02-08T18:01:10: 🔍 [RefundController.list] Iniciando...
+2026-02-08T18:01:10: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-08T18:01:10: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-08T18:01:10: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-08T18:01:10: 📊 [kpis] Excluyendo 0 ventas reembolsadas
+2026-02-08T18:01:10: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-08T18:01:11: 🔍 [WalletController.getMyWallet] User: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-08T18:01:11: 🔍 [WalletController.getMyWallet] Getting wallet for: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-08T18:01:11: ✅ [kpis] Ingresos Netos: 300.00
+2026-02-08T18:01:12: ✅ [executiveMetrics] Métricas generadas exitosamente
+2026-02-08T18:01:12:    • Ingresos Brutos: 300.00
+2026-02-08T18:01:12:    • Reembolsos:      0.00
+2026-02-08T18:01:12:    • Ingresos Netos:  300.00
+2026-02-08T18:01:24: 🔄 [SystemConfigController] Actualizando configuración
+2026-02-08T18:01:24: 📦 Datos recibidos: {
+  siteName: 'Dev Hub Sharks2',
+  siteDescription: 'Plataforma de venta de proyectos digitales',
+  email: 'devhubsharks@gmail.com',
+  phone: '',
+  supportEmail: '',
+  facebook: 'https://www.facebook.com/alonsonava.fullstack',
+  instagram: '',
+  youtube: 'https://www.youtube.com/@alonsonavastack',
+  tiktok: '',
+  twitch: '',
+  twitter: '',
+  linkedin: '',
+  website: '',
+  backup_enabled: 'false'
+}
+2026-02-08T18:01:25: ✅ [SystemConfigController] Configuración actualizada exitosamente
+2026-02-08T18:01:40: 🔍 [RefundController.list] Iniciando...
+2026-02-08T18:01:40: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-08T18:01:40: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-08T18:01:40: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-08T18:01:40: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-08T18:02:10: 🔍 [RefundController.list] Iniciando...
+2026-02-08T18:02:10: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-08T18:02:10: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-08T18:02:10: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-08T18:02:10: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-08T18:02:24: 🔄 [SystemConfigController] Actualizando configuración
+2026-02-08T18:02:24: 📦 Datos recibidos: {
+  siteName: 'Dev Hub Sharks',
+  siteDescription: 'Plataforma de venta de proyectos digitales',
+  email: 'devhubsharks@gmail.com',
+  phone: '',
+  supportEmail: '',
+  facebook: 'https://www.facebook.com/alonsonava.fullstack',
+  instagram: '',
+  youtube: 'https://www.youtube.com/@alonsonavastack',
+  tiktok: '',
+  twitch: '',
+  twitter: '',
+  linkedin: '',
+  website: '',
+  backup_enabled: 'false'
+}
+2026-02-08T18:02:24: ✅ [SystemConfigController] Configuración actualizada exitosamente
+2026-02-08T18:02:40: 🔍 [RefundController.list] Iniciando...
+2026-02-08T18:02:40: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-08T18:02:40: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-08T18:02:40: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-08T18:02:40: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-08T18:03:10: 🔍 [RefundController.list] Iniciando...
+2026-02-08T18:03:10: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-08T18:03:10: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-08T18:03:10: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-08T18:03:10: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-08T18:03:40: 🔍 [RefundController.list] Iniciando...
+2026-02-08T18:03:40: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-08T18:03:40: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-08T18:03:40: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-08T18:03:40: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-08T18:04:10: 🔍 [RefundController.list] Iniciando...
+2026-02-08T18:04:10: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-08T18:04:10: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-08T18:04:10: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-08T18:04:10: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-08T18:04:40: 🔍 [RefundController.list] Iniciando...
+2026-02-08T18:04:40: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-08T18:04:40: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-08T18:04:40: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-08T18:04:40: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-08T18:04:58: ❌ Cliente desconectado: -kL0awtByEnYnSr6AAAV
+2026-02-08T18:04:58: 📋 [SystemConfigController] Obteniendo configuración pública
+2026-02-08T18:04:58: ✅ [SystemConfigController] Configuración pública obtenida: Dev Hub Sharks
+2026-02-08T18:04:58: 💱 [SystemConfigController] Tipo de cambio incluido: 20.5
+2026-02-08T18:04:58: 🔍 [WalletController.getMyWallet] User: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-08T18:04:58: 🔍 [WalletController.getMyWallet] Getting wallet for: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-08T18:04:58: ✅ Cliente conectado: TLa_fMb7Iu4BCF2XAAAX
+2026-02-08T18:04:58: 👑 Admin 6943157e5c102f674cc5c265 (TLa_fMb7Iu4BCF2XAAAX) unido a sala de admins
+2026-02-08T18:04:58: 📊 [executiveMetrics] Generando métricas financieras ejecutivas...
+2026-02-08T18:04:58: 🔍 [RefundController.list] Iniciando...
+2026-02-08T18:04:58: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-08T18:04:58: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-08T18:04:58: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-08T18:04:58: 📊 [kpis] Excluyendo 0 ventas reembolsadas
+2026-02-08T18:04:58: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-08T18:04:59: 🔍 [WalletController.getMyWallet] User: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-08T18:04:59: 🔍 [WalletController.getMyWallet] Getting wallet for: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-08T18:04:59: ✅ [kpis] Ingresos Netos: 300.00
+2026-02-08T18:05:00: ✅ [executiveMetrics] Métricas generadas exitosamente
+2026-02-08T18:05:00:    • Ingresos Brutos: 300.00
+2026-02-08T18:05:00:    • Reembolsos:      0.00
+2026-02-08T18:05:00:    • Ingresos Netos:  300.00
+2026-02-08T18:05:02: ❌ Cliente desconectado: TLa_fMb7Iu4BCF2XAAAX
+2026-02-08T18:05:02: 📋 [SystemConfigController] Obteniendo configuración pública
+2026-02-08T18:05:03: ✅ [SystemConfigController] Configuración pública obtenida: Dev Hub Sharks
+2026-02-08T18:05:03: 💱 [SystemConfigController] Tipo de cambio incluido: 20.5
+2026-02-08T18:05:03: 🔍 [WalletController.getMyWallet] User: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-08T18:05:03: 🔍 [WalletController.getMyWallet] Getting wallet for: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-08T18:05:03: ✅ Cliente conectado: 4t4JiUyb_IN6b2HsAAAZ
+2026-02-08T18:05:03: 👑 Admin 6943157e5c102f674cc5c265 (4t4JiUyb_IN6b2HsAAAZ) unido a sala de admins
+2026-02-08T18:05:04: 📊 [executiveMetrics] Generando métricas financieras ejecutivas...
+2026-02-08T18:05:04: 🔍 [RefundController.list] Iniciando...
+2026-02-08T18:05:04: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-08T18:05:04: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-08T18:05:04: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-08T18:05:04: 📊 [kpis] Excluyendo 0 ventas reembolsadas
+2026-02-08T18:05:04: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-08T18:05:04: 🔍 [WalletController.getMyWallet] User: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-08T18:05:04: 🔍 [WalletController.getMyWallet] Getting wallet for: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-08T18:05:05: ✅ [kpis] Ingresos Netos: 300.00
+2026-02-08T18:05:06: ❌ Cliente desconectado: 4t4JiUyb_IN6b2HsAAAZ
+2026-02-08T18:05:06: 📋 [SystemConfigController] Obteniendo configuración pública
+2026-02-08T18:05:06: ✅ [SystemConfigController] Configuración pública obtenida: Dev Hub Sharks
+2026-02-08T18:05:06: 💱 [SystemConfigController] Tipo de cambio incluido: 20.5
+2026-02-08T18:05:06: 🔍 [WalletController.getMyWallet] User: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-08T18:05:06: 🔍 [WalletController.getMyWallet] Getting wallet for: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-08T18:05:06: ✅ Cliente conectado: QfdQj1KCkJA3rzOMAAAb
+2026-02-08T18:05:06: 👑 Admin 6943157e5c102f674cc5c265 (QfdQj1KCkJA3rzOMAAAb) unido a sala de admins
+2026-02-08T18:05:06: ✅ [executiveMetrics] Métricas generadas exitosamente
+2026-02-08T18:05:06:    • Ingresos Brutos: 300.00
+2026-02-08T18:05:06:    • Reembolsos:      0.00
+2026-02-08T18:05:06:    • Ingresos Netos:  300.00
+2026-02-08T18:05:06: 📊 [executiveMetrics] Generando métricas financieras ejecutivas...
+2026-02-08T18:05:06: 🔍 [RefundController.list] Iniciando...
+2026-02-08T18:05:06: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-08T18:05:06: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-08T18:05:06: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-08T18:05:06: 📊 [kpis] Excluyendo 0 ventas reembolsadas
+2026-02-08T18:05:06: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-08T18:05:07: 🔍 [WalletController.getMyWallet] User: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-08T18:05:07: 🔍 [WalletController.getMyWallet] Getting wallet for: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-08T18:05:07: ✅ [kpis] Ingresos Netos: 300.00
+2026-02-08T18:05:10: ✅ [executiveMetrics] Métricas generadas exitosamente
+2026-02-08T18:05:10:    • Ingresos Brutos: 300.00
+2026-02-08T18:05:10:    • Reembolsos:      0.00
+2026-02-08T18:05:10:    • Ingresos Netos:  300.00
+2026-02-08T18:05:12: 🔄 [SystemConfigController] Actualizando configuración
+2026-02-08T18:05:12: 📦 Datos recibidos: {
+  siteName: 'Dev Hub Sharks2',
+  siteDescription: 'Plataforma de venta de proyectos digitales',
+  email: 'devhubsharks@gmail.com',
+  phone: '',
+  supportEmail: '',
+  facebook: 'https://www.facebook.com/alonsonava.fullstack',
+  instagram: '',
+  youtube: 'https://www.youtube.com/@alonsonavastack',
+  tiktok: '',
+  twitch: '',
+  twitter: '',
+  linkedin: '',
+  website: '',
+  backup_enabled: 'false'
+}
+2026-02-08T18:05:12: ✅ [SystemConfigController] Configuración actualizada exitosamente
+2026-02-08T18:05:22: ❌ Cliente desconectado: QfdQj1KCkJA3rzOMAAAb
+2026-02-08T18:05:22: 📋 [SystemConfigController] Obteniendo configuración pública
+2026-02-08T18:05:22: ✅ [SystemConfigController] Configuración pública obtenida: Dev Hub Sharks2
+2026-02-08T18:05:22: 💱 [SystemConfigController] Tipo de cambio incluido: 20.5
+2026-02-08T18:05:22: 🔍 [WalletController.getMyWallet] User: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-08T18:05:22: 🔍 [WalletController.getMyWallet] Getting wallet for: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-08T18:05:22: ✅ Cliente conectado: ofN1xel5e4F59RJ6AAAd
+2026-02-08T18:05:22: 👑 Admin 6943157e5c102f674cc5c265 (ofN1xel5e4F59RJ6AAAd) unido a sala de admins
+2026-02-08T18:05:22: 📊 [executiveMetrics] Generando métricas financieras ejecutivas...
+2026-02-08T18:05:23: 📊 [kpis] Excluyendo 0 ventas reembolsadas
+2026-02-08T18:05:23: 🔍 [RefundController.list] Iniciando...
+2026-02-08T18:05:23: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-08T18:05:23: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-08T18:05:23: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-08T18:05:23: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-08T18:05:23: 🔍 [WalletController.getMyWallet] User: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-08T18:05:23: 🔍 [WalletController.getMyWallet] Getting wallet for: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-08T18:05:23: ✅ [kpis] Ingresos Netos: 300.00
+2026-02-08T18:05:24: ✅ [executiveMetrics] Métricas generadas exitosamente
+2026-02-08T18:05:24:    • Ingresos Brutos: 300.00
+2026-02-08T18:05:24:    • Reembolsos:      0.00
+2026-02-08T18:05:24:    • Ingresos Netos:  300.00
+2026-02-08T18:05:26: ❌ Cliente desconectado: ofN1xel5e4F59RJ6AAAd
+2026-02-08T18:05:27: 📋 [SystemConfigController] Obteniendo configuración pública
+2026-02-08T18:05:27: ✅ [SystemConfigController] Configuración pública obtenida: Dev Hub Sharks2
+2026-02-08T18:05:27: 💱 [SystemConfigController] Tipo de cambio incluido: 20.5
+2026-02-08T18:05:27: 🔍 [WalletController.getMyWallet] User: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-08T18:05:27: 🔍 [WalletController.getMyWallet] Getting wallet for: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-08T18:05:27: ✅ Cliente conectado: BOMOD9R2pFMamSL2AAAf
+2026-02-08T18:05:27: 👑 Admin 6943157e5c102f674cc5c265 (BOMOD9R2pFMamSL2AAAf) unido a sala de admins
+2026-02-08T18:05:27: 📊 [executiveMetrics] Generando métricas financieras ejecutivas...
+2026-02-08T18:05:27: 🔍 [RefundController.list] Iniciando...
+2026-02-08T18:05:27: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-08T18:05:27: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-08T18:05:27: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-08T18:05:27: 📊 [kpis] Excluyendo 0 ventas reembolsadas
+2026-02-08T18:05:27: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-08T18:05:27: 🔍 [WalletController.getMyWallet] User: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-08T18:05:27: 🔍 [WalletController.getMyWallet] Getting wallet for: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-08T18:05:28: ✅ [kpis] Ingresos Netos: 300.00
+2026-02-08T18:05:29: ✅ [executiveMetrics] Métricas generadas exitosamente
+2026-02-08T18:05:29:    • Ingresos Brutos: 300.00
+2026-02-08T18:05:29:    • Reembolsos:      0.00
+2026-02-08T18:05:29:    • Ingresos Netos:  300.00
+2026-02-08T18:05:30: ❌ Cliente desconectado: BOMOD9R2pFMamSL2AAAf
+2026-02-08T18:05:30: 📋 [SystemConfigController] Obteniendo configuración pública
+2026-02-08T18:05:30: ✅ [SystemConfigController] Configuración pública obtenida: Dev Hub Sharks2
+2026-02-08T18:05:30: 💱 [SystemConfigController] Tipo de cambio incluido: 20.5
+2026-02-08T18:05:30: 🔍 [WalletController.getMyWallet] User: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-08T18:05:30: 🔍 [WalletController.getMyWallet] Getting wallet for: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-08T18:05:30: ✅ Cliente conectado: i2XeVyvC6ZF-javzAAAh
+2026-02-08T18:05:30: 👑 Admin 6943157e5c102f674cc5c265 (i2XeVyvC6ZF-javzAAAh) unido a sala de admins
+2026-02-08T18:05:30: 📊 [kpis] Excluyendo 0 ventas reembolsadas
+2026-02-08T18:05:31: ✅ [kpis] Ingresos Netos: 300.00
+2026-02-08T18:05:33: ❌ Cliente desconectado: i2XeVyvC6ZF-javzAAAh
+2026-02-08T18:05:38: 📋 [SystemConfigController] Obteniendo configuración pública
+2026-02-08T18:05:38: ✅ [SystemConfigController] Configuración pública obtenida: Dev Hub Sharks2
+2026-02-08T18:05:38: 💱 [SystemConfigController] Tipo de cambio incluido: 20.5
+2026-02-08T18:05:38: ✅ Cliente conectado: VTrDgcFINCov7wMkAAAj
+2026-02-08T18:05:38: 👑 Admin 6943157e5c102f674cc5c265 (VTrDgcFINCov7wMkAAAj) unido a sala de admins
+2026-02-08T18:05:43: 🔍 [WalletController.getMyWallet] User: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-08T18:05:43: 🔍 [WalletController.getMyWallet] Getting wallet for: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-08T18:05:44: 📊 [executiveMetrics] Generando métricas financieras ejecutivas...
+2026-02-08T18:05:44: 📊 [kpis] Excluyendo 0 ventas reembolsadas
+2026-02-08T18:05:44: ✅ [kpis] Ingresos Netos: 300.00
+2026-02-08T18:05:45: ✅ [executiveMetrics] Métricas generadas exitosamente
+2026-02-08T18:05:45:    • Ingresos Brutos: 300.00
+2026-02-08T18:05:45:    • Reembolsos:      0.00
+2026-02-08T18:05:45:    • Ingresos Netos:  300.00
+2026-02-08T18:05:49: 🔍 [RefundController.list] Iniciando...
+2026-02-08T18:05:49: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-08T18:05:49: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-08T18:05:49: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-08T18:05:49: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-08T18:05:49: 🔍 [WalletController.getMyWallet] User: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-08T18:05:49: 🔍 [WalletController.getMyWallet] Getting wallet for: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-08T18:05:50: ❌ Cliente desconectado: VTrDgcFINCov7wMkAAAj
+2026-02-08T18:05:55: 📋 [SystemConfigController] Obteniendo configuración pública
+2026-02-08T18:05:55: ✅ [SystemConfigController] Configuración pública obtenida: Dev Hub Sharks2
+2026-02-08T18:05:55: 💱 [SystemConfigController] Tipo de cambio incluido: 20.5
+2026-02-08T18:05:55: ✅ Cliente conectado: H-Sh1lcX1ixyzGk5AAAl
+2026-02-08T18:05:55: 👑 Admin 6943157e5c102f674cc5c265 (H-Sh1lcX1ixyzGk5AAAl) unido a sala de admins
+2026-02-08T18:06:00: 📊 [executiveMetrics] Generando métricas financieras ejecutivas...
+2026-02-08T18:06:00: 🔍 [WalletController.getMyWallet] User: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-08T18:06:00: 🔍 [WalletController.getMyWallet] Getting wallet for: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-08T18:06:00: 📊 [kpis] Excluyendo 0 ventas reembolsadas
+2026-02-08T18:06:01: ✅ [kpis] Ingresos Netos: 300.00
+2026-02-08T18:06:02: ✅ [executiveMetrics] Métricas generadas exitosamente
+2026-02-08T18:06:02:    • Ingresos Brutos: 300.00
+2026-02-08T18:06:02:    • Reembolsos:      0.00
+2026-02-08T18:06:02:    • Ingresos Netos:  300.00
+2026-02-08T18:06:05: 🔍 [RefundController.list] Iniciando...
+2026-02-08T18:06:05: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-08T18:06:05: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-08T18:06:05: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-08T18:06:05: 🔍 [WalletController.getMyWallet] User: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-08T18:06:05: 🔍 [WalletController.getMyWallet] Getting wallet for: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-08T18:06:05: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-08T18:06:30: 🔍 [RefundController.list] Iniciando...
+2026-02-08T18:06:30: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-08T18:06:30: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-08T18:06:30: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-08T18:06:30: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-08T18:07:00: 🔍 [RefundController.list] Iniciando...
+2026-02-08T18:07:00: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-08T18:07:00: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-08T18:07:00: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-08T18:07:00: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-08T18:07:30: 🔍 [RefundController.list] Iniciando...
+2026-02-08T18:07:30: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-08T18:07:30: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-08T18:07:30: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-08T18:07:30: ✅ [RefundController.list] Reembolsos encontrados: 0

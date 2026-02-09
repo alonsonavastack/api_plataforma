@@ -1,4 +1,5 @@
 import InstructorPaymentConfig from '../models/InstructorPaymentConfig.js';
+import PaymentSettings from '../models/PaymentSettings.js'; // 🔥 IMPORTAR CONFIG GLOBAL
 import axios from 'axios';
 import { sendPaymentProcessedEmail } from '../utils/emailService.js';
 import { notifyPaymentProcessed, notifyInstructorPaymentUpdate } from '../services/telegram.service.js';
@@ -85,12 +86,37 @@ export const connectPaypal = async (req, res) => {
             });
         }
 
-        const PAYPAL_API = process.env.PAYPAL_MODE === 'sandbox'
+        // 🔥 OBTENER CONFIGURACIÓN DE PAGO DESDE BD (GLOBAL)
+        let paymentSettings = await PaymentSettings.findOne();
+
+        // Determinar MODO
+        const PAYPAL_MODE = paymentSettings?.paypal?.mode || process.env.PAYPAL_MODE || 'sandbox';
+
+        let PAYPAL_CLIENT_ID = '';
+        let PAYPAL_CLIENT_SECRET = '';
+
+        // Obtener credenciales según el modo
+        if (PAYPAL_MODE === 'sandbox') {
+            PAYPAL_CLIENT_ID = paymentSettings?.paypal?.sandbox?.clientId || process.env.PAYPAL_CLIENT_ID;
+            PAYPAL_CLIENT_SECRET = paymentSettings?.paypal?.sandbox?.clientSecret || process.env.PAYPAL_CLIENT_SECRET;
+        } else {
+            PAYPAL_CLIENT_ID = paymentSettings?.paypal?.live?.clientId || process.env.PAYPAL_CLIENT_ID;
+            PAYPAL_CLIENT_SECRET = paymentSettings?.paypal?.live?.clientSecret || process.env.PAYPAL_CLIENT_SECRET;
+        }
+
+        if (!PAYPAL_CLIENT_ID || !PAYPAL_CLIENT_SECRET) {
+            return res.status(500).json({
+                success: false,
+                message: `Error de configuración del sistema: Credenciales de PayPal (${PAYPAL_MODE}) no encontradas`
+            });
+        }
+
+        const PAYPAL_API = PAYPAL_MODE === 'sandbox'
             ? 'https://api.sandbox.paypal.com'
             : 'https://api.paypal.com';
 
         const auth = Buffer.from(
-            `${process.env.PAYPAL_CLIENT_ID.trim()}:${process.env.PAYPAL_CLIENT_SECRET.trim()}`
+            `${PAYPAL_CLIENT_ID.trim()}:${PAYPAL_CLIENT_SECRET.trim()}`
         ).toString('base64');
 
         // NOTA: El redirect_uri debe coincidir exactamente con el usado en el frontend
@@ -507,7 +533,7 @@ export const getEarningsStats = async (req, res) => {
         // 1️⃣ Obtener todas las ganancias del instructor
         const allEarnings = await InstructorEarnings.find({ instructor: instructorId });
         console.log('📊 [getEarningsStats] Total earnings encontrados:', allEarnings.length);
-        
+
         // Si no hay ganancias, verificar si el instructor existe
         if (allEarnings.length === 0) {
             console.log('⚠️ [getEarningsStats] Sin earnings para instructor:', instructorId);

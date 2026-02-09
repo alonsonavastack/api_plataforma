@@ -31,15 +31,15 @@ export function validateEnvironment() {
   });
 
   // Validaciones de seguridad específicas
-  
+
   // 1. JWT_SECRETO debe ser fuerte
   if (process.env.JWT_SECRETO) {
     const jwtSecret = process.env.JWT_SECRETO;
-    
+
     if (jwtSecret.length < 32) {
       errors.push('❌ JWT_SECRETO debe tener al menos 32 caracteres para seguridad');
     }
-    
+
     // Verificar que no sea un secret conocido o débil
     const weakSecrets = [
       'secret',
@@ -50,19 +50,28 @@ export function validateEnvironment() {
       'jwt-secret',
       'super-secreto-largo'
     ];
-    
+
     if (weakSecrets.some(weak => jwtSecret.toLowerCase().includes(weak))) {
       errors.push('❌ JWT_SECRETO es demasiado predecible. Usa: node -e "console.log(require(\'crypto\').randomBytes(64).toString(\'hex\'))"');
     }
   }
 
   // 2. MONGO_URI no debe incluir contraseñas débiles
-  if (process.env.MONGO_URI) {
-    if (process.env.MONGO_URI.includes(':123@') || 
-        process.env.MONGO_URI.includes(':password@') ||
-        process.env.MONGO_URI.includes(':admin@')) {
-      warnings.push('⚠️  MONGO_URI parece contener una contraseña débil');
+  const checkWeakMongoPassword = (uri, varName) => {
+    if (uri && (
+      uri.includes(':123@') ||
+      uri.includes(':password@') ||
+      uri.includes(':admin@'))) {
+      warnings.push(`⚠️  ${varName} parece contener una contraseña débil`);
     }
+  };
+
+  if (process.env.MONGO_URI) {
+    checkWeakMongoPassword(process.env.MONGO_URI, 'MONGO_URI');
+  }
+
+  if (process.env.MONGO_URILOCAL) {
+    checkWeakMongoPassword(process.env.MONGO_URILOCAL, 'MONGO_URILOCAL');
   }
 
   // 3. NODE_ENV debe ser válido
@@ -90,7 +99,7 @@ export function validateEnvironment() {
     if (!['sandbox', 'live'].includes(process.env.PAYPAL_MODE)) {
       warnings.push('⚠️  PAYPAL_MODE debe ser "sandbox" o "live"');
     }
-    
+
     if (process.env.NODE_ENV === 'production' && process.env.PAYPAL_MODE === 'sandbox') {
       warnings.push('⚠️  Usando PayPal en modo SANDBOX en producción');
     }
