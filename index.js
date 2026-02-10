@@ -414,6 +414,13 @@ try {
         console.log(`🌍 Entorno: ${process.env.NODE_ENV || 'development'}`);
         console.log(`🔐 Seguridad: ACTIVADA`);
         console.log('═══════════════════════════════════════════════════\n');
+
+        // 🤖 Iniciar Telegram Polling solo en desarrollo
+        if (process.env.NODE_ENV === 'development') {
+            import('./services/telegramPoller.js')
+                .then(m => m.startTelegramPolling())
+                .catch(err => console.error('❌ Error iniciando Telegram Poller:', err));
+        }
     });
 
 } catch (err) {
