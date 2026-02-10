@@ -13,6 +13,7 @@ router.post("/register", [], userController.register)
 // Rutas de verificación OTP (públicas)
 router.post("/verify-otp", [], userController.verify_otp)
 router.post("/resend-otp", [], userController.resend_otp)
+router.post("/resend-otp-by-email", [], userController.resend_otp_by_email) // 🆕 Recuperación de código por email
 
 // Rutas de recuperación de contraseña (públicas)
 router.post("/request-password-recovery", [], userController.request_password_recovery)

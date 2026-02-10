@@ -35,6 +35,17 @@ export default {
       const VALID_USER = await models.User.findOne({ email: req.body.email });
 
       if (VALID_USER) {
+        // 🔥 SMART ERROR: Si el usuario existe pero no está verificado,
+        // devolvemos un código especial para que el frontend le ofrezca verificar.
+        if (!VALID_USER.isVerified) {
+          return res.status(409).json({
+            message: 409,
+            message_text: "Este correo ya está registrado pero no ha sido verificado.",
+            requiresVerification: true,
+            userId: VALID_USER._id
+          });
+        }
+
         return res.status(409).json({
           message: 409,
           message_text: "EL USUARIO INGRESADO YA EXISTE",
@@ -786,6 +797,97 @@ export default {
   // MÉTODOS DE VERIFICACIÓN OTP
   // =====================================================
 
+  // Permite reenviar OTP usando solo el email (para recuperación de flujo de registro)
+  resend_otp_by_email: async (req, res) => {
+    try {
+      const { email } = req.body;
+
+      if (!email) {
+        return res.status(400).json({
+          message: 400,
+          message_text: "El correo electrónico es requerido",
+        });
+      }
+
+      // Buscar usuario por email
+      const user = await models.User.findOne({ email: email });
+
+      if (!user) {
+        // Por seguridad, no decimos si el correo existe o no, pero simulamos éxito
+        // O si preferimos UX sobre seguridad estricta, devolvemos 404
+        return res.status(404).json({
+          message: 404,
+          message_text: "No encontramos una cuenta con este correo.",
+        });
+      }
+
+      if (user.isVerified) {
+        return res.status(400).json({
+          message: 400,
+          message_text: "Esta cuenta ya está verificada. Por favor inicia sesión.",
+          isVerified: true
+        });
+      }
+
+      // Validar límite de reenvíos (opcional, por ahora simple)
+      const now = new Date();
+      if (user.otp && user.otp.lastResendAt) {
+        const timeDiff = now - new Date(user.otp.lastResendAt);
+        const minutesDiff = Math.floor(timeDiff / 1000 / 60);
+
+        if (minutesDiff < 1) {
+          return res.status(429).json({
+            message: 429,
+            message_text: "Por favor espera 1 minuto antes de solicitar otro código.",
+            waitSeconds: 60 - Math.floor(timeDiff / 1000)
+          });
+        }
+      }
+
+      // Generar nuevo código
+      const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
+      const otpExpiration = new Date(Date.now() + 10 * 60 * 1000); // 10 minutos
+
+      // Actualizar usuario
+      user.otp = {
+        code: otpCode,
+        expiresAt: otpExpiration,
+        attempts: 0,
+        resends: (user.otp?.resends || 0) + 1,
+        lastResendAt: now
+      };
+
+      await user.save();
+
+      // Enviar por Telegram
+      try {
+        await sendOtpCode({
+          code: otpCode,
+          phone: user.phone,
+          userName: user.name
+        });
+      } catch (error) {
+        console.error('❌ Error enviando OTP:', error);
+        return res.status(500).json({
+          message: 500,
+          message_text: "Error al enviar el código. Intenta nuevamente."
+        });
+      }
+
+      res.status(200).json({
+        message: 200,
+        message_text: "Código reenviado exitosamente.",
+        userId: user._id
+      });
+
+    } catch (error) {
+      console.error('❌ Error en resend_otp_by_email:', error);
+      res.status(500).send({
+        message: "OCURRIO UN PROBLEMA",
+      });
+    }
+  },
+
   // Verificar código OTP
   verify_otp: async (req, res) => {
     try {
@@ -797,6 +899,7 @@ export default {
           message_text: "Usuario y código son requeridos",
         });
       }
+
 
       const user = await models.User.findById(userId);
       if (!user) {
