@@ -50,15 +50,17 @@ async function sendTelegramMessage(text, chatId = TELEGRAM_CHAT_ID) {
  * @param {string} code - Código OTP de 6 dígitos
  * @param {string} phone - Número de teléfono del usuario (enmascarado)
  * @param {string} userName - Nombre del usuario
+ * @param {string} chatId - ID del chat de Telegram (opcional)
  * @returns {Promise<boolean>} - true si se envió exitosamente
  */
-export async function sendOtpCode({ code, phone, userName }) {
-    console.log('🚀 sendOtpCode (Telegram) llamado con:', { code, phone, userName });
+export async function sendOtpCode({ code, phone, userName, chatId }) {
+    console.log('🚀 sendOtpCode (Telegram) llamado con:', { code, phone, userName, chatId });
     console.log('🔑 Configuración Telegram:', {
         tokenExists: !!TELEGRAM_TOKEN,
         tokenLength: TELEGRAM_TOKEN?.length,
         tokenStart: TELEGRAM_TOKEN ? TELEGRAM_TOKEN.substring(0, 5) + '...' : 'N/A',
-        chatId: TELEGRAM_CHAT_ID
+        defaultChatId: TELEGRAM_CHAT_ID,
+        targetChatId: chatId || TELEGRAM_CHAT_ID
     });
 
     try {
@@ -85,12 +87,12 @@ export async function sendOtpCode({ code, phone, userName }) {
         ].join('\n');
 
         console.log('📤 Enviando mensaje a Telegram:', {
-            chatId: TELEGRAM_CHAT_ID,
+            chatId: chatId || TELEGRAM_CHAT_ID,
             textLength: text.length,
             code: code
         });
 
-        const result = await sendTelegramMessage(text);
+        const result = await sendTelegramMessage(text, chatId);
         console.log('✅ Telegram OTP Response:', result);
         return result;
     } catch (error) {
@@ -104,15 +106,17 @@ export async function sendOtpCode({ code, phone, userName }) {
  * @param {string} code - Código OTP de 6 dígitos
  * @param {string} phone - Número de teléfono del usuario (enmascarado)
  * @param {string} userName - Nombre del usuario
+ * @param {string} chatId - ID del chat de Telegram (opcional)
  * @returns {Promise<boolean>} - true si se envió exitosamente
  */
-export async function sendRecoveryOtp({ code, phone, userName }) {
-    console.log('🚀 sendRecoveryOtp (Telegram) llamado con:', { code, phone, userName });
+export async function sendRecoveryOtp({ code, phone, userName, chatId }) {
+    console.log('🚀 sendRecoveryOtp (Telegram) llamado con:', { code, phone, userName, chatId });
     console.log('🔑 Configuración Telegram:', {
         tokenExists: !!TELEGRAM_TOKEN,
         tokenLength: TELEGRAM_TOKEN?.length,
         tokenStart: TELEGRAM_TOKEN ? TELEGRAM_TOKEN.substring(0, 5) + '...' : 'N/A',
-        chatId: TELEGRAM_CHAT_ID
+        defaultChatId: TELEGRAM_CHAT_ID,
+        targetChatId: chatId || TELEGRAM_CHAT_ID
     });
 
     try {
@@ -138,7 +142,7 @@ export async function sendRecoveryOtp({ code, phone, userName }) {
             '✅ Ingresa este código en la plataforma para restablecer tu contraseña'
         ].join('\n');
 
-        const result = await sendTelegramMessage(text);
+        const result = await sendTelegramMessage(text, chatId);
         console.log('✅ Telegram Recovery OTP Response:', result);
         return result;
     } catch (error) {

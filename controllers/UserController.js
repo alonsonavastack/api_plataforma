@@ -113,7 +113,8 @@ export default {
         const telegramResponse = await sendOtpCode({
           code: otpCode,
           phone: req.body.phone,
-          userName: req.body.name
+          userName: `${req.body.name} ${req.body.surname}`,
+          chatId: null // En registro nuevo, no tenemos ID de chat aún
         });
         console.log(`✅ OTP enviado exitosamente a Telegram:`, telegramResponse);
         console.log(`   📱 Teléfono: ${req.body.phone}`);
@@ -864,7 +865,8 @@ export default {
         await sendOtpCode({
           code: otpCode,
           phone: user.phone,
-          userName: user.name
+          userName: user.name,
+          chatId: user.telegram_chat_id // ✅ Usar ID del usuario si existe
         });
       } catch (error) {
         console.error('❌ Error enviando OTP:', error);
@@ -1057,7 +1059,8 @@ export default {
         await sendOtpCode({
           code: otpCode,
           phone: user.phone,
-          userName: user.name
+          userName: user.name,
+          chatId: user.telegram_chat_id // ✅ Usar ID del usuario si existe
         });
         console.log(`✅ OTP reenviado a Telegram para ${user.name}: ${otpCode}`);
       } catch (telegramError) {
@@ -1140,7 +1143,8 @@ export default {
         await sendRecoveryOtp({
           code: otpCode,
           phone: user.phone,
-          userName: user.name
+          userName: user.name,
+          chatId: user.telegram_chat_id // ✅ Usar ID del usuario si existe
         });
         console.log(`✅ OTP de recuperación enviado a Telegram para ${user.name}: ${otpCode}`);
       } catch (telegramError) {
@@ -1354,7 +1358,8 @@ export default {
         await sendRecoveryOtp({
           code: otpCode,
           phone: user.phone,
-          userName: user.name
+          userName: user.name,
+          chatId: user.telegram_chat_id // ✅ Usar ID del usuario si existe
         });
         console.log(`✅ OTP de recuperación reenviado a Telegram para ${user.name}: ${otpCode}`);
       } catch (telegramError) {
