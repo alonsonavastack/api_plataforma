@@ -55,7 +55,11 @@ export default {
                 user.telegram_chat_id = chatId;
                 await user.save();
 
-                await sendTelegramMessage(`✅ ¡Listo ${user.name}! Tu cuenta ha sido vinculada a Telegram correctamente.`, chatId);
+                await sendTelegramMessage(
+                    `✅ *¡Listo ${user.name}!* Tu cuenta ha sido vinculada correctamente.\n\n` +
+                    `👉 *Ahora regresa a la página web* y solicita "Reenviar Código" para recibir tu verificación.`,
+                    chatId
+                );
                 console.log(`🔗 Usuario ${user.email} vinculado a Telegram (${chatId})`);
                 return res.status(200).send('linked');
             }
