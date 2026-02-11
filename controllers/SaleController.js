@@ -20,6 +20,8 @@ const __dirname = path.dirname(__filename);
 // 🛡️ SECURITY: Input Sanitization
 import { JSDOM } from 'jsdom';
 import createDOMPurify from 'dompurify';
+import InstructorRetention from '../models/InstructorRetention.js'; // 🔥 IMPORTAR MODELO
+import PlatformCommissionBreakdown from '../models/PlatformCommissionBreakdown.js'; // 🔥 IMPORTAR MODELO
 
 const window = new JSDOM('').window;
 const DOMPurify = createDOMPurify(window);
@@ -797,6 +799,29 @@ export default {
 
                 } catch (earningsError) {
                     console.error('❌ [RECHAZO] Error al cancelar ganancias:', earningsError.message);
+                }
+
+                // ────────────────────────────────────────────────
+                // 🧮 4. CANCELAR REGISTROS FISCALES (NUEVO)
+                // ────────────────────────────────────────────────
+                console.log('\n🧮 [RECHAZO] Cancelando registros fiscales...');
+                try {
+                    // Cancelar Retenciones
+                    const retentionUpdate = await InstructorRetention.updateMany(
+                        { sale: sale._id },
+                        { $set: { status: 'cancelled' } }
+                    );
+                    console.log(`✅ [RECHAZO] ${retentionUpdate.modifiedCount} retención(es) cancelada(s)`);
+
+                    // Eliminar/Marcar Breakdown de Plataforma
+                    // Opcional: Podrías querer mantenerlos para auditoría, o borrarlos. 
+                    // Como no tienen estado 'status', los eliminamos o los dejamos huérfanos.
+                    // Vamos a eliminarlos para limpiar stats.
+                    const breakdownDelete = await PlatformCommissionBreakdown.deleteMany({ sale: sale._id });
+                    console.log(`✅ [RECHAZO] ${breakdownDelete.deletedCount} desglose(s) de plataforma eliminado(s)`);
+
+                } catch (fiscalError) {
+                    console.error('❌ [RECHAZO] Error al cancelar registros fiscales:', fiscalError.message);
                 }
 
                 console.log('\n✅ [RECHAZO] Proceso de anulación completado');

@@ -30,9 +30,9 @@ class TaxBreakdownService {
             const netAfterPaypalReceive = saleAmount - paypalReceiveCommission;
             // $110.00 - 8.40 = 101.60
 
-            // 2️⃣ División 50/50
-            const platformShare = netAfterPaypalReceive * 0.50;  // $50.80
-            const instructorShare = netAfterPaypalReceive * 0.50; // $50.80
+            // 2️⃣ División Real (Basada en la ganancia real calculada previamente)
+            const instructorShare = earning.instructor_earning; // Ganancia bruta del instructor (ya tiene el 70% u 80%)
+            const platformShare = netAfterPaypalReceive - instructorShare; // Lo que sobra es para la plataforma
 
             // 3️⃣ Retenciones al Instructor
             const isrRetention = instructorShare * 0.10;    // 10% ISR = $5.08

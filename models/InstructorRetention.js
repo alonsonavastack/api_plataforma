@@ -23,7 +23,7 @@ const InstructorRetentionSchema = new Schema({
     // Estado de la retención
     status: {
         type: String,
-        enum: ['pending', 'paid', 'declared'], // pending → paid → declared
+        enum: ['pending', 'paid', 'declared', 'cancelled'], // pending → paid → declared or cancelled
         default: 'pending'
     },
 
