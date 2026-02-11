@@ -96,13 +96,20 @@ export const connectPaypal = async (req, res) => {
         let PAYPAL_CLIENT_SECRET = '';
 
         // Obtener credenciales según el modo
+        // 🔥 FIX: Priorizar process.env para evitar conflictos con configuraciones antiguas en BD
         if (PAYPAL_MODE === 'sandbox') {
-            PAYPAL_CLIENT_ID = paymentSettings?.paypal?.sandbox?.clientId || process.env.PAYPAL_CLIENT_ID;
-            PAYPAL_CLIENT_SECRET = paymentSettings?.paypal?.sandbox?.clientSecret || process.env.PAYPAL_CLIENT_SECRET;
+            PAYPAL_CLIENT_ID = process.env.PAYPAL_CLIENT_ID || paymentSettings?.paypal?.sandbox?.clientId;
+            PAYPAL_CLIENT_SECRET = process.env.PAYPAL_CLIENT_SECRET || paymentSettings?.paypal?.sandbox?.clientSecret;
         } else {
-            PAYPAL_CLIENT_ID = paymentSettings?.paypal?.live?.clientId || process.env.PAYPAL_CLIENT_ID;
-            PAYPAL_CLIENT_SECRET = paymentSettings?.paypal?.live?.clientSecret || process.env.PAYPAL_CLIENT_SECRET;
+            PAYPAL_CLIENT_ID = process.env.PAYPAL_CLIENT_ID || paymentSettings?.paypal?.live?.clientId;
+            PAYPAL_CLIENT_SECRET = process.env.PAYPAL_CLIENT_SECRET || paymentSettings?.paypal?.live?.clientSecret;
         }
+
+        console.log('🔑 Authenticating with PayPal Credentials:', {
+            mode: PAYPAL_MODE,
+            clientId: PAYPAL_CLIENT_ID ? PAYPAL_CLIENT_ID.substring(0, 10) + '...' : 'MISSING',
+            secretLength: PAYPAL_CLIENT_SECRET ? PAYPAL_CLIENT_SECRET.length : 0
+        });
 
         if (!PAYPAL_CLIENT_ID || !PAYPAL_CLIENT_SECRET) {
             return res.status(500).json({
