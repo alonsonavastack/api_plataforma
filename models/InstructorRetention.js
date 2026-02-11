@@ -3,7 +3,17 @@ const { Schema } = mongoose;
 
 const InstructorRetentionSchema = new Schema({
     instructor: { type: Schema.Types.ObjectId, ref: 'user', required: true },
-    sale: { type: Schema.Types.ObjectId, ref: 'sale', required: true },
+    course: {
+        type: Schema.Types.ObjectId,
+        ref: 'course',
+        required: false
+    },
+
+    // Origen de la venta
+    is_referral: {
+        type: Boolean,
+        default: false
+    },
     earning: { type: Schema.Types.ObjectId, ref: 'instructor_earnings', required: true },
 
     // Montos brutos

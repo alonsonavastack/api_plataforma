@@ -65,6 +65,7 @@ class TaxBreakdownService {
                 instructor: earning.instructor,
                 sale: sale._id,
                 earning: earning._id,
+                is_referral: earning.is_referral, // 🔥 Guardar origen
                 gross_earning: instructorShare, // $50.80
                 isr_retention: isrRetention,
                 iva_retention: ivaRetention,
