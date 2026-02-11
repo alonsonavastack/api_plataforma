@@ -101,6 +101,9 @@ const InstructorEarningsSchema = new Schema({
     instructor_earning: { type: Number, required: true },
     instructor_earning_usd: { type: Number, default: 0 },
 
+    // Origen (Referido o no)
+    is_referral: { type: Boolean, default: false },
+
     // 🔥 NUEVO: INFORMACIÓN DE DESCUENTOS
     discount_info: {
         original_price: { type: Number, default: 0 },        // Precio sin descuento
