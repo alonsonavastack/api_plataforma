@@ -557,10 +557,15 @@ export default {
      */
     list: async (req, res) => {
         try {
-            const { search, status, month, year, exclude_refunded } = req.query;
+            const { search, status, month, year, exclude_refunded, user: userId } = req.query;
             const user = req.user;
 
             let filter = { status: { $ne: 'Anulado' } };
+
+            // 🔥 Filtro por usuario específico (para dashboard de estudiantes)
+            if (userId) {
+                filter.user = userId;
+            }
 
             // Filtro para excluir ventas reembolsadas
             if (exclude_refunded === 'true') {
