@@ -21,42 +21,36 @@ class TaxBreakdownService {
             const saleAmount = earning.sale_price; // $110.00
 
             // 1️⃣ Comisión PayPal (RECIBIR)
-            const paypalReceivePercentage = 0.04;  // 4%
-            const paypalReceiveFee = 4.00;         // $4.00 MXN fijo
+            // 🔥 TOMA EL VALOR REAL DE LA GANANCIA GUARDADA (SaleService)
+            const paypalReceiveCommission = earning.payment_fee_amount || ((saleAmount * 0.07) + 4);
 
-            const paypalReceiveCommission = (saleAmount * paypalReceivePercentage) + paypalReceiveFee;
-            // $110.00 * 0.04 = 4.40 + 4.00 = 8.40
+            const netAfterPaypalReceive = saleAmount - paypalReceiveCommission; // Base Repartible Real
 
-            const netAfterPaypalReceive = saleAmount - paypalReceiveCommission;
-            // $110.00 - 8.40 = 101.60
-
-            // 2️⃣ División Real (Basada en la ganancia real calculada previamente)
-            const instructorShare = earning.instructor_earning; // Ganancia bruta del instructor (ya tiene el 70% u 80%)
-            const platformShare = netAfterPaypalReceive - instructorShare; // Lo que sobra es para la plataforma
+            // 2️⃣ División Real (Basada en la ganancia real calculada previamente sobre el NETO)
+            const instructorShare = earning.instructor_earning; // Ganancia neta del instructor (70-80% del neto)
+            const platformShare = netAfterPaypalReceive - instructorShare; // 20-30% del neto
 
             // 3️⃣ Retenciones al Instructor
-            const isrRetention = instructorShare * 0.10;    // 10% ISR = $5.08
-            const ivaRetention = instructorShare * 0.106;   // 10.6% IVA = $5.38
-            const totalRetentions = isrRetention + ivaRetention; // $10.46
+            const isrRetention = instructorShare * 0.10;    // 10% ISR
+            const ivaRetention = instructorShare * 0.106;   // 10.6% IVA
+            const totalRetentions = isrRetention + ivaRetention;
 
-            const instructorNetPay = instructorShare - totalRetentions; // $40.34
+            const instructorNetPay = instructorShare - totalRetentions;
 
             // 4️⃣ Comisión PayPal (ENVIAR al instructor)
-            const paypalSendPercentage = 0.04; // Se asume estándar para envíos masivos o transferencias
-            const paypalSendFee = 4.00; // Podría variar según tipo de cuenta, se mantiene estándar del prompt
+            const paypalSendPercentage = 0.04;
+            const paypalSendFee = 4.00;
 
             const paypalSendCommission = (instructorNetPay * paypalSendPercentage) + paypalSendFee;
-            // $40.34 * 0.04 = 1.61 + 4.00 = 5.61 
 
             const totalPaypalCommissions = paypalReceiveCommission + paypalSendCommission;
 
             // 5️⃣ Ganancia Operativa de la Plataforma
             const platformOperatingProfit = platformShare - paypalSendCommission;
-            // platformShare ($50.80) - paypalSendCommission ($5.61) = 45.19
 
             // 6️⃣ Impuestos de la Plataforma
-            const platformISR = platformOperatingProfit * 0.10; // 10%
-            const platformIVA = platformOperatingProfit * 0.16; // 16% standard IVA MX
+            const platformISR = platformOperatingProfit * 0.10;
+            const platformIVA = platformOperatingProfit * 0.16;
             const totalPlatformTaxes = platformISR + platformIVA;
 
             const platformNetProfit = platformOperatingProfit - totalPlatformTaxes;

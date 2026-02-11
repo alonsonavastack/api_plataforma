@@ -107,9 +107,20 @@ async function createEarningForProduct(sale, item) {
         console.log(`   🏛 Comisión plataforma: ${commissionRatePercent}%`);
         console.log(`   ⏳ Días hasta disponible: ${daysUntilAvailable} días`);
 
-        // 3. Calcular ganancia (sobre el precio CON descuento)
-        const platformCommission = salePrice * commissionRate;
-        const instructorEarning = salePrice - platformCommission;
+        // 3. 🔥 CÁLCULO SOBRE NETO (NUEVO REQUERIMIENTO)
+        // Fórmula: (Precio Venta - Comisiones Pasarela) * % Reparto
+        const paypalFeeRate = 0.07; // 7%
+        const paypalFeeFixed = 4.00; // $4 MXN
+        const paypalFee = (salePrice * paypalFeeRate) + paypalFeeFixed; // Costo real aproximado
+
+        const netSale = Math.max(0, salePrice - paypalFee); // Base repartible
+
+        // Reparto sobre el NETO
+        const platformCommission = netSale * commissionRate; // 20% o 30% del NETO
+        const instructorEarning = netSale - platformCommission; // 80% o 70% del NETO
+
+        console.log(`   💸 PayPal Fee (Est.): -${paypalFee.toFixed(2)}`);
+        console.log(`   🥩 Base Repartible (Neto): ${netSale.toFixed(2)}`);
 
         // Calcular fecha disponible
         const availableAt = new Date();
@@ -125,12 +136,17 @@ async function createEarningForProduct(sale, item) {
             sale: sale._id,
             product_id: item.product,
             product_type: item.product_type,
-            sale_price: salePrice, // Precio CON descuento (precio final pagado)
+            sale_price: salePrice, // Precio CON descuento (precio final pagado por usuario)
             currency: sale.currency_total || sale.currency_payment || 'MXN',
+
+            // 🔥 Guardamos comisiones de pasarela
+            payment_fee_rate: paypalFeeRate,
+            payment_fee_amount: paypalFee,
+
             platform_commission_rate: commissionRate,
             platform_commission_amount: platformCommission,
             instructor_earning: instructorEarning,
-            instructor_earning_usd: instructorEarning,
+            instructor_earning_usd: instructorEarning, // Asumimos misma moneda por ahora o conversión simple
             is_referral: isReferral, // 🔥 Guardar si fue referido
             // 🔥 CORRECCIÓN: Guardar información correcta de descuento
             discount_info: {
