@@ -53,11 +53,25 @@ export default {
 
                 // Guardar chat id
                 user.telegram_chat_id = chatId;
+
+                // 🔥 GENERAR OTP AUTOMÁTICAMENTE
+                const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
+                user.otp = {
+                    code: otpCode,
+                    expiresAt: new Date(Date.now() + 10 * 60 * 1000), // 10 minutos
+                    attempts: 0,
+                    resends: 0,
+                    lastResendAt: new Date()
+                };
+
                 await user.save();
 
                 await sendTelegramMessage(
-                    `✅ *¡Listo ${user.name}!* Tu cuenta ha sido vinculada correctamente.\n\n` +
-                    `👉 *Ahora regresa a la página web* y solicita "Reenviar Código" para recibir tu verificación.`,
+                    `✅ *¡VINCULACIÓN EXITOSA!* \n\n` +
+                    `Hola ${user.name}, hemos vinculado tu cuenta correctamente.\n\n` +
+                    `🔑 *TU CÓDIGO DE VERIFICACIÓN ES:*\n` +
+                    `# *${otpCode}*\n\n` +
+                    `👉 Regresa a la web e introdúcelo para activar tu cuenta.`,
                     chatId
                 );
                 console.log(`🔗 Usuario ${user.email} vinculado a Telegram (${chatId})`);
