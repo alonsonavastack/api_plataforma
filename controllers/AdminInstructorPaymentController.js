@@ -454,16 +454,39 @@ export const getInstructorEarnings = async (req, res) => {
 
         console.log(`\u2705 [getInstructorEarnings] Ganancias válidas después de filtrar refunds: ${validEarnings.length}`);
 
-        console.log(`\ud83d\udcca [getInstructorEarnings] Desglose por estado:`);
+        // 🆕 Obtener configuración global para validación dinámica
+        const settings = await PlatformCommissionSettings.getSettings();
+        const daysUntilAvailable = settings.days_until_available !== undefined ? settings.days_until_available : 7;
+        const now = new Date();
+
+        console.log(`\ud83d\udd70 [getInstructorEarnings] Validando madurez con configuración actual: ${daysUntilAvailable} días`);
+
+        console.log(`\ud83d\udcca [getInstructorEarnings] Desglose por estado (DB):`);
         const countByStatus = {};
         validEarnings.forEach(e => {
             countByStatus[e.status] = (countByStatus[e.status] || 0) + 1;
         });
         console.log(`   Estados:`, countByStatus);
 
-        // Formatear earnings para mostrar curso o proyecto correctamente
+        // Formatear earnings y APLICAR VALIDACIÓN DINÁMICA
         const formattedEarnings = validEarnings.map(earning => {
             const earningObj = earning.toObject();
+
+            // \u26a0\ufe0f VALIDACIÓN DINÁMICA: Respetar configuración de días
+            // Si la ganancia dice 'available' pero no ha pasado el tiempo configurado, la mostramos como 'pending'
+            if (earningObj.status === 'available') {
+                const earnedAt = new Date(earningObj.earned_at);
+                const dynamicAvailableDate = new Date(earnedAt);
+                dynamicAvailableDate.setDate(earnedAt.getDate() + daysUntilAvailable);
+
+                // Si aún no es fecha de disponibilidad según la config ACTUAL
+                if (now < dynamicAvailableDate) {
+                    console.log(`   \u23f3 Earning ${earningObj._id} forzado a PENDING (Dinámico). Earned: ${earningObj.earned_at.toISOString()}, AvailableAt (Calc): ${dynamicAvailableDate.toISOString()}`);
+                    earningObj.status = 'pending';
+                    // Opcional: actualizar fecha disponible visual
+                    earningObj.available_at = dynamicAvailableDate;
+                }
+            }
 
             // Si tiene product_id (nuevo formato para proyectos)
             if (earningObj.product_id) {
