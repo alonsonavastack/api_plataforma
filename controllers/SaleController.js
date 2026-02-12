@@ -150,7 +150,7 @@ export default {
                 total += item.price_unit;
             }
 
-            console.log('💰 [register] Total calculado:', total);
+
 
             // 🔥 LÓGICA PARA PAGO 100% CON BILLETERA
             if (method_payment === 'wallet') {
@@ -187,7 +187,7 @@ export default {
                     }
                 });
                 await wallet.save();
-                console.log(`✅ [register] Billetera descontada: ${total}. Nuevo saldo: ${newBalance}`);
+
 
                 // 3. Crear Venta PAGADA
                 const sale = await models.Sale.create({
@@ -283,8 +283,6 @@ export default {
             });
 
             console.log('✅ [register] Venta creada:', sale._id);
-            console.log(`   💵 Total USD: ${formatCurrency(total, 'USD')}`);
-            console.log(`   💵 Total ${conversion.currency} (referencia): ${formatCurrency(conversion.amount, conversion.currency)}`);
 
             // 🔥 PARA TRANSFERENCIA: Retornar datos bancarios con monto en MONEDA LOCAL
             if (method_payment === 'transfer') { // 🔥 CORREGIDO: 'transfer' en lugar de 'transferencia' para coincidir con el frontend
@@ -561,7 +559,7 @@ export default {
      * Ya no se utiliza para Mercado Pago. Podría adaptarse para otros servicios.
      */
     async webhook(req, res) {
-        console.log('🔔 [WEBHOOK] Notificación recibida, pero no hay acción configurada.');
+
         // La lógica de Mercado Pago ha sido eliminada.
         // Si se necesita un webhook para PayPal u otro servicio, se debe implementar aquí.
         res.sendStatus(200);
