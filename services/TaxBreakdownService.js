@@ -30,14 +30,19 @@ class TaxBreakdownService {
             const instructorShare = earning.instructor_earning; // Ganancia neta del instructor (70-80% del neto)
             const platformShare = netAfterPaypalReceive - instructorShare; // 20-30% del neto
 
-            // 3️⃣ Retenciones al Instructor
-            const isrRetention = instructorShare * 0.10;    // 10% ISR
-            const ivaRetention = instructorShare * 0.106;   // 10.6% IVA
-            const totalRetentions = isrRetention + ivaRetention;
+            // 3️⃣ Retenciones al Instructor (ELIMINADO A PETICIÓN DEL USUARIO)
+            // Ya no se retiene ISR ni IVA al instructor porque no hay depósito bancario directo
+            const isrRetention = 0;
+            const ivaRetention = 0;
+            const totalRetentions = 0;
 
-            const instructorNetPay = instructorShare - totalRetentions;
+            const instructorNetPay = instructorShare; // Se transfiere el total de su ganancia
 
             // 4️⃣ Comisión PayPal (ENVIAR al instructor)
+            // Esto es lo que cuesta ENVIARLE el dinero (Mass Pay o similar)
+            // ¿Quién lo paga? Usualmente se descuenta del saldo o lo absorbe la plataforma.
+            // La lógica anterior lo descontaba del `instructorNetPay` para calcular comisiones de plataforma?
+            // Mantendremos el cálculo informativo.
             const paypalSendPercentage = 0.04;
             const paypalSendFee = 4.00;
 
@@ -48,7 +53,7 @@ class TaxBreakdownService {
             // 5️⃣ Ganancia Operativa de la Plataforma
             const platformOperatingProfit = platformShare - paypalSendCommission;
 
-            // 6️⃣ Impuestos de la Plataforma
+            // 6️⃣ Impuestos de la Plataforma (Sobre su ganancia operativa)
             const platformISR = platformOperatingProfit * 0.10;
             const platformIVA = platformOperatingProfit * 0.16;
             const totalPlatformTaxes = platformISR + platformIVA;
@@ -65,6 +70,7 @@ class TaxBreakdownService {
                 instructor: earning.instructor,
                 sale: sale._id,
                 earning: earning._id,
+                course: earning.product_type === 'course' ? earning.product_id : undefined, // 🔥 Guardar curso si aplica
                 is_referral: earning.is_referral, // 🔥 Guardar origen
                 gross_earning: instructorShare, // $50.80
                 isr_retention: isrRetention,
