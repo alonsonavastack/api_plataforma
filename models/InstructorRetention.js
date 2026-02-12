@@ -3,6 +3,7 @@ const { Schema } = mongoose;
 
 const InstructorRetentionSchema = new Schema({
     instructor: { type: Schema.Types.ObjectId, ref: 'user', required: true },
+    sale: { type: Schema.Types.ObjectId, ref: 'sale', required: true },
     course: {
         type: Schema.Types.ObjectId,
         ref: 'course',
