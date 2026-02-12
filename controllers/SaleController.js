@@ -401,8 +401,8 @@ export default {
                         brand_name: process.env.SITE_NAME || 'Dev-Sharks',
                         landing_page: 'NO_PREFERENCE',
                         user_action: 'PAY_NOW',
-                        return_url: process.env.URL_FRONTEND_NGROK || process.env.URL_FRONTEND || 'https://localhost:4200',
-                        cancel_url: process.env.URL_FRONTEND_NGROK || process.env.URL_FRONTEND || 'https://localhost:4200'
+                        return_url: (process.env.URL_FRONTEND_NGROK || process.env.URL_FRONTEND || 'https://localhost:4200').replace(/\/$/, '') + '/',
+                        cancel_url: (process.env.URL_FRONTEND_NGROK || process.env.URL_FRONTEND || 'https://localhost:4200').replace(/\/$/, '') + '/'
                     }
                 }
             });
@@ -411,8 +411,20 @@ export default {
             return res.status(200).send({ success: true, orderId: order.id, links: order.links });
 
         } catch (error) {
-            console.error('❌ [createPaypalOrder] Error:', error.response?.data || error.message || error);
-            return res.status(500).send({ message: 'Error creating PayPal order', details: error.response?.data || error.message });
+            console.error('❌ [createPaypalOrder] Error CRÍTICO:', error);
+            console.error('   🔍 Detalles del error:', error.response?.data || error.message);
+            console.error('   🌍 Entorno:', {
+                PAYPAL_MODE: process.env.PAYPAL_MODE,
+                URL_FRONTEND: process.env.URL_FRONTEND,
+                URL_FRONTEND_NGROK: process.env.URL_FRONTEND_NGROK
+            });
+            return res.status(500).send({
+                message: 'Error creating PayPal order',
+                details: error.response?.data || error.message,
+                debug_info: {
+                    sent_return_url: process.env.URL_FRONTEND_NGROK || process.env.URL_FRONTEND || 'https://localhost:4200'
+                }
+            });
         }
     },
 
