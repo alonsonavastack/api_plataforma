@@ -213,24 +213,37 @@ export const getInstructorsWithEarnings = async (req, res) => {
         const paymentMethodStats = calculatePaymentMethodStats(validEarnings);
         console.log('💳 [AdminPayments] Estadísticas por método:', paymentMethodStats);
 
+        const settings = await PlatformCommissionSettings.getSettings();
+        const daysUntilAvailable = settings.days_until_available || 7;
+        const now = new Date();
+
         // 🔥 PASO 4: Agrupar por instructor
         const earningsAggregation = validEarnings.reduce((acc, earning) => {
             const instructorId = earning.instructor.toString();
+
+            // Calcular madurez de la ganancia
+            const earnedAt = new Date(earning.earned_at);
+            const availabilityDate = new Date(earnedAt);
+            availabilityDate.setDate(earnedAt.getDate() + daysUntilAvailable);
+
+            // Está disponible si el status es 'available' O (es 'pending' y ya pasó el tiempo de espera)
+            const isMature = earning.status === 'available' || (earning.status === 'pending' && now >= availabilityDate);
 
             if (!acc[instructorId]) {
                 acc[instructorId] = {
                     _id: earning.instructor,
                     totalEarnings: 0,
+                    futureEarnings: 0, // 🆕 Rastreado pero separado
                     count: 0,
                     oldestEarning: earning.earned_at,
                     newestEarning: earning.earned_at,
-                    // 🆕 Desglose por método de pago
+                    // 🆕 Desglose por método de pago (SOLO DISPONIBLES)
                     paymentMethods: {
                         wallet: { count: 0, total: 0 },
                         paypal: { count: 0, total: 0 },
                         mixed_paypal: { count: 0, total: 0 }
                     },
-                    // 🆕 Desglose Orgánico vs Referido
+                    // 🆕 Desglose Orgánico vs Referido (SOLO DISPONIBLES)
                     breakdown: {
                         organic: { count: 0, total: 0 },
                         referral: { count: 0, total: 0 }
@@ -239,10 +252,18 @@ export const getInstructorsWithEarnings = async (req, res) => {
             }
 
             const amount = earning.instructor_earning;
-            const method = earning.payment_method || 'wallet';
 
+            // Si NO está madura, solo sumamos a futureEarnings y continuamos
+            if (!isMature) {
+                acc[instructorId].futureEarnings += amount;
+                return acc;
+            }
+
+            // Si ESTÁ madura, sumamos a totalEarnings y desgloses
             acc[instructorId].totalEarnings += amount;
             acc[instructorId].count++;
+
+            const method = earning.payment_method || 'wallet';
 
             // 🆕 Acumular por método
             if (acc[instructorId].paymentMethods[method]) {
