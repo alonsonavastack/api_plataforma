@@ -101,8 +101,9 @@ async function createEarningForProduct(sale, item) {
             }
         }
 
-        const commissionRate = commissionRatePercent / 100; // Convertir a decimal
-        const daysUntilAvailable = settings?.days_until_available || 7;
+        const commissionRate = commissionRatePercent / 100;
+        // 🔥 FIX: Permitir 0 días (no usar || porque 0 es falsy)
+        const daysUntilAvailable = settings?.days_until_available !== undefined ? settings.days_until_available : 7;
 
         console.log(`   🏛 Comisión plataforma: ${commissionRatePercent}%`);
         console.log(`   ⏳ Días hasta disponible: ${daysUntilAvailable} días`);
@@ -126,9 +127,8 @@ async function createEarningForProduct(sale, item) {
         const availableAt = new Date();
         availableAt.setDate(availableAt.getDate() + daysUntilAvailable);
 
-        // 🔥 CORRECCIÓN CRÍTICA: Si el pago ya está completado, la ganancia debe estar DISPONIBLE
-        // No tiene sentido tener "pending" si el dinero ya está en la plataforma
-        const earningStatus = 'available'; // ✅ SIEMPRE disponible cuando se crea
+        // 🔥 CORRECCIÓN: Respetar días de disponibilidad
+        const earningStatus = daysUntilAvailable > 0 ? 'pending' : 'available';
 
         // 4. 🔥 Crear ganancia CON información de descuento completa
         const newEarning = await models.InstructorEarnings.create({
