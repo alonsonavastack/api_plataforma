@@ -373,7 +373,8 @@ export default {
                     username: PAYPAL_CLIENT_ID.trim(),
                     password: PAYPAL_CLIENT_SECRET.trim()
                 },
-                params: { grant_type: 'client_credentials' }
+                params: { grant_type: 'client_credentials' },
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
             });
 
             const accessToken = tokenR.data.access_token;
