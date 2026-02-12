@@ -87,7 +87,7 @@ async function createEarningForProduct(sale, item) {
         const settings = await models.PlatformCommissionSettings.findOne();
 
         // 🔥 COMISIÓN: Determinar si es Referido u Orgánico
-        let commissionRatePercent = settings?.default_commission_rate || 30; // Default 30%
+        let commissionRatePercent = settings?.default_commission_rate || 30; // Default 30% (70% instructor)
         let isReferral = false;
 
         // Si la venta tiene marca de referido Y el cupón es válido para este instructor/producto
@@ -96,7 +96,8 @@ async function createEarningForProduct(sale, item) {
             const coupon = await models.Coupon.findOne({ code: sale.coupon_code });
 
             if (coupon && coupon.instructor.toString() === instructorId.toString()) {
-                commissionRatePercent = settings?.referral_commission_rate || 20; // Default 20% (80% instructor)
+                // Si es referido: 80% instructor, 20% plataforma
+                commissionRatePercent = settings?.referral_commission_rate || 20;
                 isReferral = true;
             }
         }
