@@ -214,7 +214,8 @@ export const getInstructorsWithEarnings = async (req, res) => {
         console.log('💳 [AdminPayments] Estadísticas por método:', paymentMethodStats);
 
         const settings = await PlatformCommissionSettings.getSettings();
-        const daysUntilAvailable = settings.days_until_available || 7;
+        // 🔥 FIX: Permitir 0 días (no usar || porque 0 es falsy)
+        const daysUntilAvailable = settings.days_until_available !== undefined ? settings.days_until_available : 7;
         const now = new Date();
 
         // 🔥 PASO 4: Agrupar por instructor
