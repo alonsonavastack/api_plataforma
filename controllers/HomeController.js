@@ -1280,8 +1280,37 @@ export default {
       // 2. Construir la consulta base
       const queryConditions = [{ state: 2 }]; // Solo items públicos
 
+      // Helper para escapar caracteres especiales de regex
+      const escapeRegex = (string) => {
+        return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      };
+
+      // Helper para generar regex insensible a acentos
+      const generateAccentInsensitiveRegex = (searchTerm) => {
+        // 1. Normalizar: quitar acentos y caracteres diacríticos
+        const normalizedTerm = searchTerm.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+
+        // 2. Escapar caracteres especiales
+        const escapedTerm = escapeRegex(normalizedTerm);
+
+        let regexStr = '';
+
+        for (let char of escapedTerm) {
+          switch (char.toLowerCase()) {
+            case 'a': regexStr += '[aáàâä]'; break;
+            case 'e': regexStr += '[eéèêë]'; break;
+            case 'i': regexStr += '[iíìîï]'; break;
+            case 'o': regexStr += '[oóòôö]'; break;
+            case 'u': regexStr += '[uúùûü]'; break;
+            case 'n': regexStr += '[nñ]'; break;
+            default: regexStr += char;
+          }
+        }
+        return new RegExp(regexStr, 'i');
+      };
+
       if (searchTerm.trim()) {
-        const searchRegex = new RegExp(searchTerm, "i");
+        const searchRegex = generateAccentInsensitiveRegex(searchTerm.trim());
         queryConditions.push({
           $or: [
             { title: searchRegex },
@@ -1290,6 +1319,7 @@ export default {
           ]
         });
       }
+
       // Solo añadir el filtro de categoría si categoryId es un ObjectId válido
       if (categoryId && ObjectId.isValid(categoryId)) {
         queryConditions.push({ categorie: new ObjectId(categoryId) });
