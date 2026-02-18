@@ -17201,3 +17201,76 @@ La aplicación puede iniciar, pero revisa estas configuraciones
 
 2026-02-16T17:39:46: ✅ Course indexes created successfully
 2026-02-16T17:39:47: ✅ Notification indexes created
+2026-02-18T14:16:13: 
+⚠️  SIGTERM recibido. Cerrando servidor...
+2026-02-18T14:16:13: 
+⏹️  Deteniendo todos los CRON jobs...
+2026-02-18T14:16:13:    ✓ Detenido: Update Earnings Status
+2026-02-18T14:16:13: ✅ Todos los CRON jobs detenidos.
+
+2026-02-18T14:16:13: ✅ CRON jobs detenidos
+2026-02-18T14:16:13: ✅ Servidor cerrado correctamente
+2026-02-18T14:16:13: 
+⚠️  SIGINT (Ctrl+C) recibido. Cerrando servidor...
+2026-02-18T14:33:00: [dotenv@17.2.3] injecting env (12) from .env -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+2026-02-18T14:33:00: 🔍 Validando variables de entorno...
+
+2026-02-18T14:33:00: ======================================================================
+2026-02-18T14:33:00: RESULTADO DE VALIDACIÓN
+2026-02-18T14:33:00: ======================================================================
+2026-02-18T14:33:00: 
+🟡 ADVERTENCIAS:
+
+2026-02-18T14:33:00: ⚠️  VIMEO_TOKEN no configurado - Token de Vimeo para videos
+2026-02-18T14:33:00: ⚠️  YOUTUBE_API_KEY no configurado - API Key de YouTube
+2026-02-18T14:33:00: 
+La aplicación puede iniciar, pero revisa estas configuraciones
+
+2026-02-18T14:33:00: ======================================================================
+
+2026-02-18T14:33:00: 
+📋 INFORMACIÓN DE ENTORNO:
+
+2026-02-18T14:33:00:    Entorno: production
+2026-02-18T14:33:00:    Puerto: 3000
+2026-02-18T14:33:00:    Backend: http://localhost:3000
+2026-02-18T14:33:00:    Frontend: http://localhost:4200
+2026-02-18T14:33:00:    PayPal Mode: live
+2026-02-18T14:33:00: 
+2026-02-18T14:33:00: 📂 [Init] Verificando estructura de directorios...
+2026-02-18T14:33:00: ✅ [Init] Estructura de directorios verificada.
+2026-02-18T14:33:00: ✅ Helmet configurado
+2026-02-18T14:33:00: ✅ CORS configurado
+2026-02-18T14:33:00: ✅ Protecciones anti-ataque configuradas
+2026-02-18T14:33:00: ✅ Rate limiting configurado
+2026-02-18T14:33:00: ✅ Parsers configurados
+2026-02-18T14:33:01: ✅ Conectado a la base de datos MongoDB [PRODUCCIÓN (MONGO_URI)]
+2026-02-18T14:33:01: 
+🚀 ============================================
+2026-02-18T14:33:01:    INICIALIZANDO CRON JOBS
+2026-02-18T14:33:01: ============================================
+
+2026-02-18T14:33:01: ✅ CRON Job programado: Actualización de estado de ganancias
+2026-02-18T14:33:01:    Frecuencia: Diario a las 00:00 (0 0 * * *)
+2026-02-18T14:33:01:    Zona horaria: America/Mexico_City
+2026-02-18T14:33:01: 
+✅ Total de CRON jobs activos: 1
+2026-02-18T14:33:01: ============================================
+
+2026-02-18T14:33:01: ✅ CRON jobs inicializados
+2026-02-18T14:33:02: [router/Sale] auth.verifyTienda type: function
+2026-02-18T14:33:02: [router/Sale] saleController.createPaypalOrder type: function
+2026-02-18T14:33:02: ✅ Rutas configuradas
+2026-02-18T14:33:02: 🔌 Socket.IO inicializado correctamente
+2026-02-18T14:33:03: 
+═══════════════════════════════════════════════════
+2026-02-18T14:33:03: 🚀 SERVIDOR INICIADO
+2026-02-18T14:33:03: ═══════════════════════════════════════════════════
+2026-02-18T14:33:03: 📡 Puerto: 3000
+2026-02-18T14:33:03: 🔌 WebSocket: ws://localhost:3000
+2026-02-18T14:33:03: 🌍 Entorno: production
+2026-02-18T14:33:03: 🔐 Seguridad: ACTIVADA
+2026-02-18T14:33:03: ═══════════════════════════════════════════════════
+
+2026-02-18T14:33:04: ✅ Course indexes created successfully
+2026-02-18T14:33:04: ✅ Notification indexes created

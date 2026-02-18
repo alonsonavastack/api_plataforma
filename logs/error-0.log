@@ -4326,3 +4326,4 @@
   userEmail: 'no autenticado',
   timestamp: '2026-02-08T23:50:11.129Z'
 }
+2026-02-18T00:02:06: [2026-02-18T06:02:06.795Z] [PID: 948] [32m[NODE-CRON][32m [33m[WARN][0m missed execution at Wed Feb 18 2026 00:00:00 GMT-0600 (Central Standard Time)! Possible blocking IO or high CPU user at the same process used by node-cron.

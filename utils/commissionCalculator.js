@@ -20,7 +20,7 @@ export function calculateEarnings(salePrice, commissionRate) {
     if (typeof salePrice !== 'number' || salePrice < 0) {
         throw new Error('El precio de venta debe ser un número positivo');
     }
-    
+
     if (typeof commissionRate !== 'number' || commissionRate < 0 || commissionRate > 100) {
         throw new Error('La tasa de comisión debe estar entre 0 y 100');
     }
@@ -94,7 +94,7 @@ export function calculateTotalEarnings(earnings) {
     });
 
     // Calcular promedios
-    totals.averageCommissionRate = totals.count > 0 
+    totals.averageCommissionRate = totals.count > 0
         ? ((totals.totalPlatformCommission / totals.totalSales) * 100).toFixed(2)
         : 0;
 
@@ -116,7 +116,7 @@ export function calculatePaymentAmount(totalEarnings, deductions = 0) {
     if (typeof totalEarnings !== 'number' || totalEarnings < 0) {
         throw new Error('totalEarnings debe ser un número positivo');
     }
-    
+
     if (typeof deductions !== 'number' || deductions < 0) {
         throw new Error('deductions debe ser un número positivo');
     }
@@ -250,6 +250,60 @@ export function calculateEarningsStatsByStatus(earnings) {
     return stats;
 }
 
+/**
+ * Desglosa un pago de PayPal (México) en: Comisión PayPal, Neto, Instructor (70%), Plataforma (30%)
+ * Fórmula PayPal MX estándar: 3.95% + $4.00 MXN + IVA (16%)
+ * @param {number} amount - Monto TOTAL pagado por el cliente (MXN)
+ * @returns {Object} Desglose financiero
+ */
+export function calculatePaymentSplit(amount) {
+    // 1. Validaciones básicas
+    if (typeof amount !== 'number' || amount <= 0) {
+        return {
+            error: true,
+            message: 'El monto debe ser mayor a 0',
+            paypalFee: 0,
+            netAmount: 0,
+            vendorShare: 0,
+            platformShare: 0
+        };
+    }
+
+    // 2. Cálculo de Comisión PayPal (3.95% + $4.00)
+    // El usuario indicó que NO se debe agregar IVA a la comisión.
+    const FIXED_FEE = 4.00;
+    const PERCENTAGE_FEE = 0.0395; // 3.95%
+
+    let baseFee = (amount * PERCENTAGE_FEE) + FIXED_FEE;
+    let paypalFee = baseFee;
+
+    // El fee no puede ser mayor al monto
+    if (paypalFee > amount) {
+        paypalFee = amount;
+    }
+
+    // 3. Monto Neto
+    const netAmount = amount - paypalFee;
+
+    // 4. Reparto (Split) 70% Vendor / 30% Plataforma sobre el NETO
+    let vendorShare = 0;
+    let platformShare = 0;
+
+    if (netAmount > 0) {
+        vendorShare = netAmount * 0.70;
+        platformShare = netAmount * 0.30;
+    }
+
+    return {
+        totalPaid: parseFloat(amount.toFixed(2)),
+        paypalFee: parseFloat(paypalFee.toFixed(2)),
+        netAmount: parseFloat(netAmount.toFixed(2)),
+        vendorShare: parseFloat(vendorShare.toFixed(2)),
+        platformShare: parseFloat(platformShare.toFixed(2)),
+        currency: 'MXN'
+    };
+}
+
 export default {
     calculateEarnings,
     getInstructorCommissionRate,
@@ -258,5 +312,6 @@ export default {
     calculatePaymentAmount,
     checkMinimumThreshold,
     convertCurrency,
-    calculateEarningsStatsByStatus
+    calculateEarningsStatsByStatus,
+    calculatePaymentSplit
 };
