@@ -136,7 +136,8 @@ export const connectPaypal = async (req, res) => {
 
         // NOTA: El redirect_uri debe coincidir exactamente con el usado en el frontend
         // PayPal no acepta localhost, usamos ngrok para desarrollo
-        const redirect_uri = process.env.URL_FRONTEND_NGROK || process.env.URL_FRONTEND || 'http://127.0.0.1:4200';
+        // 🔥 FIX: Recibir redirect_uri del frontend para coincidir exactamente
+        const redirect_uri = req.body.redirect_uri || process.env.URL_FRONTEND_NGROK || process.env.URL_FRONTEND || 'http://127.0.0.1:4200';
 
         // 1. Intercambiar código por token
         const params = new URLSearchParams();
