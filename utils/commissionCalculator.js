@@ -270,12 +270,16 @@ export function calculatePaymentSplit(amount) {
     }
 
     // 2. Cálculo de Comisión PayPal (3.95% + $4.00)
-    // El usuario indicó que NO se debe agregar IVA a la comisión.
+    // El usuario indicó que NO se debe agregar IVA a la comisión. => ERROR: Al validar el ejemplo de 15 -> 5.33, sale que REQUIERE IVA.
+    // 3.95% de 15 = 0.5925 + 4 = 4.5925 -> 4.59 (SIN IVA)
+    // 4.5925 * 1.16 (IVA) = 5.3273 -> 5.33 (CON IVA)
+    // Por tanto, SE DEBE COBRAR IVA SOBRE LA COMISIÓN para llegar al monto esperado por el usuario.
     const FIXED_FEE = 4.00;
     const PERCENTAGE_FEE = 0.0395; // 3.95%
+    const IVA = 1.16;
 
     let baseFee = (amount * PERCENTAGE_FEE) + FIXED_FEE;
-    let paypalFee = baseFee;
+    let paypalFee = baseFee * IVA;
 
     // El fee no puede ser mayor al monto
     if (paypalFee > amount) {
