@@ -69,7 +69,7 @@ export default {
 
             const publicSettings = {
                 paypal: {
-                    active: settings.paypal.active,
+                    active: settings.paypal.active || (!!process.env.PAYPAL_CLIENT_ID),
                     clientId: finalClientId,
                     instructorPayoutsActive: settings.paypal.instructorPayoutsActive,
                     mode: finalMode
