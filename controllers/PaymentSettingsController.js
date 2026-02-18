@@ -52,14 +52,27 @@ export default {
             }
 
             // Solo devolver información pública y segura
+            // Solo devolver información pública y segura
+            // 🔥 FIX: Priorizar variables de entorno
+            const envMode = process.env.PAYPAL_MODE;
+            const dbMode = settings.paypal.mode;
+            const finalMode = (envMode === 'sandbox' || envMode === 'live') ? envMode : dbMode;
+
+            let finalClientId = '';
+            if (process.env.PAYPAL_CLIENT_ID) {
+                finalClientId = process.env.PAYPAL_CLIENT_ID;
+            } else {
+                finalClientId = finalMode === 'live'
+                    ? settings.paypal.live?.clientId
+                    : settings.paypal.sandbox?.clientId;
+            }
+
             const publicSettings = {
                 paypal: {
                     active: settings.paypal.active,
-                    clientId: settings.paypal.mode === 'live'
-                        ? settings.paypal.live?.clientId
-                        : settings.paypal.sandbox?.clientId, // Devolver el ClientID correspondiente al modo
+                    clientId: finalClientId,
                     instructorPayoutsActive: settings.paypal.instructorPayoutsActive,
-                    mode: settings.paypal.mode
+                    mode: finalMode
                 },
 
             };

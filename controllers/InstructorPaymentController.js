@@ -87,22 +87,30 @@ export const connectPaypal = async (req, res) => {
         }
 
         // 🔥 OBTENER CONFIGURACIÓN DE PAGO DESDE BD (GLOBAL)
+        // 🔥 OBTENER CONFIGURACIÓN DE PAGO DESDE BD (GLOBAL)
         let paymentSettings = await PaymentSettings.findOne();
 
         // Determinar MODO
-        const PAYPAL_MODE = paymentSettings?.paypal?.mode || process.env.PAYPAL_MODE || 'sandbox';
+        // 🔥 FIX: Priorizar process.env.PAYPAL_MODE si existe
+        const PAYPAL_MODE = process.env.PAYPAL_MODE || paymentSettings?.paypal?.mode || 'sandbox';
 
         let PAYPAL_CLIENT_ID = '';
         let PAYPAL_CLIENT_SECRET = '';
 
         // Obtener credenciales según el modo
-        // 🔥 FIX: Priorizar process.env para evitar conflictos con configuraciones antiguas en BD
-        if (PAYPAL_MODE === 'sandbox') {
-            PAYPAL_CLIENT_ID = process.env.PAYPAL_CLIENT_ID || paymentSettings?.paypal?.sandbox?.clientId;
-            PAYPAL_CLIENT_SECRET = process.env.PAYPAL_CLIENT_SECRET || paymentSettings?.paypal?.sandbox?.clientSecret;
+        // 🔥 FIX: Priorizar process.env si existen credenciales en variables de entorno
+        if (process.env.PAYPAL_CLIENT_ID && process.env.PAYPAL_CLIENT_SECRET) {
+            PAYPAL_CLIENT_ID = process.env.PAYPAL_CLIENT_ID;
+            PAYPAL_CLIENT_SECRET = process.env.PAYPAL_CLIENT_SECRET;
         } else {
-            PAYPAL_CLIENT_ID = process.env.PAYPAL_CLIENT_ID || paymentSettings?.paypal?.live?.clientId;
-            PAYPAL_CLIENT_SECRET = process.env.PAYPAL_CLIENT_SECRET || paymentSettings?.paypal?.live?.clientSecret;
+            // Fallback a base de datos si no hay env vars completas
+            if (PAYPAL_MODE === 'sandbox') {
+                PAYPAL_CLIENT_ID = paymentSettings?.paypal?.sandbox?.clientId;
+                PAYPAL_CLIENT_SECRET = paymentSettings?.paypal?.sandbox?.clientSecret;
+            } else {
+                PAYPAL_CLIENT_ID = paymentSettings?.paypal?.live?.clientId;
+                PAYPAL_CLIENT_SECRET = paymentSettings?.paypal?.live?.clientSecret;
+            }
         }
 
         console.log('🔑 Authenticating with PayPal Credentials:', {
