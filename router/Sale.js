@@ -23,9 +23,7 @@ router.put("/update-status/:id", [auth.verifyAdmin], saleController.update_statu
 
 // Registrar venta - Cualquier usuario autenticado
 router.post("/register", auth.verifyTienda, saleController.register);
-// PayPal support: create order and capture
-router.post('/paypal/create', auth.verifyTienda, saleController.createPaypalOrder);
-router.post('/paypal/capture', auth.verifyTienda, saleController.capturePaypalOrder);
+// PayPal eliminado — usar Stripe
 
 
 

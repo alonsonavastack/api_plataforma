@@ -16,23 +16,7 @@ import { formatDate, formatDateTime, groupEarningsByMonth } from '../utils/dateH
  * Gestiona la configuración de pagos y visualización de ganancias del instructor
  */
 
-/**
- * 🕵️ VALIDACIÓN DE PAYPAL
- * @param {string} email
- * @returns {boolean}
- */
-const validatePayPalEmail = (email) => {
-    // 1. Regex básico
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) return false;
-
-    // 2. Blacklist de dominios temporales (simulado)
-    const blacklist = ['tempmail.com', '10minutemail.com'];
-    const domain = email.split('@')[1];
-    if (blacklist.includes(domain)) return false;
-
-    return true;
-};
+// validatePayPalEmail eliminado
 
 /**
  * Obtener configuración de pago del instructor
@@ -70,11 +54,9 @@ export const getPaymentConfig = async (req, res) => {
     }
 };
 
-/**
- * Conectar cuenta de PayPal via OAuth (Connect with PayPal)
- * POST /api/instructor/payment-config/paypal/connect
- */
-export const connectPaypal = async (req, res) => {
+// connectPaypal eliminado
+
+const _connectPaypal_removed = async (req, res) => {
     try {
         const instructorId = req.user._id;
         const { code } = req.body;
@@ -309,11 +291,8 @@ export const connectPaypal = async (req, res) => {
     }
 };
 
-/**
- * Actualizar/conectar configuración de PayPal (Manual - Legacy)
- * POST /api/instructor/payment-config/paypal
- */
-export const updatePaypalConfig = async (req, res) => {
+// updatePaypalConfig eliminado
+const _updatePaypalConfig_removed = async (req, res) => {
     try {
         const instructorId = req.user._id;
         const { paypal_email, paypal_merchant_id } = req.body;
@@ -392,10 +371,10 @@ export const updatePreferredPaymentMethod = async (req, res) => {
         const { preferred_payment_method } = req.body;
 
         // Validaciones
-        if (!['paypal'].includes(preferred_payment_method)) {
+        if (!['stripe', 'wallet', ''].includes(preferred_payment_method)) {
             return res.status(400).json({
                 success: false,
-                message: 'Método de pago inválido. Solo se acepta PayPal.'
+                message: 'Método de pago inválido.'
             });
         }
 
@@ -408,13 +387,6 @@ export const updatePreferredPaymentMethod = async (req, res) => {
             });
         }
 
-        // Verificar que el método esté configurado
-        if (preferred_payment_method === 'paypal' && !config.paypal_email) {
-            return res.status(400).json({
-                success: false,
-                message: 'Debe configurar PayPal primero'
-            });
-        }
 
 
         config.preferred_payment_method = preferred_payment_method;
@@ -691,11 +663,8 @@ export const getPaymentHistory = async (req, res) => {
     }
 };
 
-/**
- * Eliminar configuración de PayPal
- * DELETE /api/instructor/payment-config/paypal
- */
-export const deletePaypalConfig = async (req, res) => {
+// deletePaypalConfig eliminado
+const _deletePaypalConfig_removed = async (req, res) => {
     try {
         const instructorId = req.user._id;
 
@@ -742,9 +711,6 @@ export const deletePaypalConfig = async (req, res) => {
 
 export default {
     getPaymentConfig,
-    connectPaypal,
-    updatePaypalConfig,
-    deletePaypalConfig,
     updatePreferredPaymentMethod,
     getEarnings,
     getEarningsStats,

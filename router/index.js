@@ -32,6 +32,7 @@ import PaymentSettingsRouter from './PaymentSettings.js'; // 💳 Configuración
 import TaxBreakdownRouter from './taxBreakdown.js'; // 🧮 Sistema de desglose fiscal
 import TelegramRouter from './telegram.js'; // 📱 Webhook Telegram
 import HealthRouter from './health.js'; // 🏥 Health check endpoints
+import StripeRouter from './Stripe.js'; // 💳 Stripe Connect
 
 // http://localhost:3000/api/users/register
 const router = routerx();
@@ -70,6 +71,7 @@ router.use('/admin', AdminInstructorPaymentRouter); // Rutas para administradore
 router.use('/payment-settings', PaymentSettingsRouter); // 💳 Rutas de configuración de pagos
 router.use('/admin/tax-breakdown', TaxBreakdownRouter); // 🧮 Rutas de desglose fiscal
 router.use('/telegram', TelegramRouter); // 📱 Webhook y utilidades Telegram
+router.use('/stripe', StripeRouter); // 💳 Stripe Connect - pagos automáticos a instructores
 
 // 🏥 HEALTH CHECK - Siempre disponible
 router.use('/', HealthRouter); // Endpoints: /health, /ready, /live

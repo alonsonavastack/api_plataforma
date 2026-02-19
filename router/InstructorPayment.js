@@ -1,12 +1,7 @@
 import express from 'express';
 import {
     getPaymentConfig,
-    updatePaypalConfig,
-    connectPaypal,
-
     updatePreferredPaymentMethod,
-    deletePaypalConfig,
-
     getEarnings,
     getEarningsStats,
     getPaymentHistory
@@ -36,23 +31,7 @@ router.get('/payment-config', auth.verifyInstructor, getPaymentConfig);
  * @desc    Conectar/actualizar cuenta de PayPal
  * @access  Private (Instructor)
  */
-router.post('/payment-config/paypal', auth.verifyInstructor, updatePaypalConfig);
-
-/**
- * @route   POST /api/instructor/payment-config/paypal/connect
- * @desc    Conectar cuenta de PayPal (OAuth)
- * @access  Private (Instructor)
- */
-router.post('/payment-config/paypal/connect', auth.verifyInstructor, connectPaypal);
-
-
-
-/**
- * @route   DELETE /api/instructor/payment-config/paypal
- * @desc    Eliminar configuración de PayPal
- * @access  Private (Instructor)
- */
-router.delete('/payment-config/paypal', auth.verifyInstructor, deletePaypalConfig);
+// PayPal eliminado — usar Stripe Connect
 
 
 

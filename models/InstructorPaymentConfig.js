@@ -8,6 +8,24 @@ const InstructorPaymentConfigSchema = new Schema({
         unique: true // Un instructor solo puede tener una configuración
     },
 
+    // CONFIGURACIÓN DE STRIPE CONNECT
+    stripe_account_id: {
+        type: String,
+        default: null
+    },
+    stripe_onboarding_complete: {
+        type: Boolean,
+        default: false
+    },
+    stripe_charges_enabled: {
+        type: Boolean,
+        default: false
+    },
+    stripe_payouts_enabled: {
+        type: Boolean,
+        default: false
+    },
+
     // CONFIGURACIÓN DE PAYPAL
     paypal_email: {
         type: String,
@@ -31,7 +49,7 @@ const InstructorPaymentConfigSchema = new Schema({
     // CONFIGURACIÓN GENERAL
     preferred_payment_method: {
         type: String,
-        enum: ['paypal', 'wallet', ''],
+        enum: ['paypal', 'stripe', 'wallet', ''],
         default: ''
     },
 

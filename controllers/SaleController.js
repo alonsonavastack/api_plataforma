@@ -1,5 +1,5 @@
 import models from "../models/index.js";
-import axios from 'axios'; // 🔥 IMPORTAR AXIOS
+// axios eliminado — ya no se usa PayPal
 import { emitNewSaleToAdmins, emitSaleStatusUpdate } from '../services/socket.service.js';
 import { notifyNewSale, notifyPaymentApproved } from '../services/telegram.service.js';
 import { processPaidSale, createEarningForProduct } from '../services/SaleService.js'; // 🔥 IMPORTAR SERVICIO
@@ -7,7 +7,6 @@ import { processPaidSale, createEarningForProduct } from '../services/SaleServic
 import { useWalletBalance } from './WalletController.js';
 import { convertUSDByCountry, formatCurrency } from '../services/exchangeRate.service.js'; // 🔥 CONVERSIÓN MULTI-PAÍS
 
-import PaymentSettings from '../models/PaymentSettings.js'; // 🔥 IMPORTAR CONFIGURACIÓN DE PAGO
 
 import fs from 'fs';
 import path from 'path';
@@ -215,37 +214,9 @@ export default {
                 });
             }
 
-            // ✅ MERCADO PAGO REMOVED: Not supported anymore
-            if (method_payment === 'mercadopago' || method_payment === 'mixed_mercadopago') {
-                return res.status(400).send({ message: 'MercadoPago no soportado. Por favor utiliza PayPal.' });
-            }
-
-            // ═══════════════════════════════════════════════
-            // 🔥 MÉTODO 2: PAYPAL (Creación de orden y captura)
-            // ═══════════════════════════════════════════════
-            if (method_payment === 'paypal') {
-                console.log('🅿️ [register] Método seleccionado: paypal');
-
-                const { use_wallet, wallet_amount, remaining_amount } = req.body;
-                const finalWalletAmount = (use_wallet && wallet_amount > 0) ? Number(wallet_amount) : 0;
-                const finalRemainingAmount = remaining_amount ? Number(remaining_amount) : (total - finalWalletAmount);
-
-                // Solo validar saldo de wallet si se indica
-                if (finalWalletAmount > 0) {
-                    const wallet = await models.Wallet.findOne({ user: user_id });
-                    if (!wallet) return res.status(400).send({ message: 'Billetera no encontrada' });
-                    if (wallet.balance < finalWalletAmount) return res.status(400).send({ message: 'Saldo insuficiente en billetera', available: wallet.balance, required: finalWalletAmount });
-                }
-
-                return res.status(200).send({
-                    message: 'Validación exitosa. Procede con PayPal.',
-                    validated: true,
-                    n_transaccion: n_transaccion,
-                    total: total,
-                    wallet_amount: finalWalletAmount,
-                    paypal_amount: finalRemainingAmount,
-                    detail: sale_details
-                });
+            // MercadoPago y PayPal eliminados — usar Stripe
+            if (['mercadopago', 'mixed_mercadopago', 'paypal', 'mixed_paypal'].includes(method_payment)) {
+                return res.status(400).send({ message: 'Método de pago no disponible. Usa Stripe o transferencia.' });
             }
 
             // 🔥 PARA OTROS MÉTODOS (Wallet/Transferencia): SÍ CREAR VENTA
@@ -330,7 +301,13 @@ export default {
         }
     },
 
-    createPaypalOrder: async (req, res) => {
+    // createPaypalOrder eliminado
+
+    // capturePaypalOrder eliminado
+
+    _removed: async (req, res) => { res.status(410).send({ message: 'Eliminado' }); },
+
+    __placeholder: async (req, res) => {
         try {
             const { n_transaccion, total, detail } = req.body;
 
@@ -407,162 +384,8 @@ export default {
             });
 
             const order = createR.data;
-            return res.status(200).send({ success: true, orderId: order.id, links: order.links });
-
-        } catch (error) {
-            console.error('❌ [createPaypalOrder] Error CRÍTICO:', error);
-            console.error('   🔍 Detalles del error:', error.response?.data || error.message);
-            console.error('   🌍 Entorno:', {
-                PAYPAL_MODE: process.env.PAYPAL_MODE,
-                URL_FRONTEND: process.env.URL_FRONTEND,
-                URL_FRONTEND_NGROK: process.env.URL_FRONTEND_NGROK
-            });
-            return res.status(500).send({
-                message: 'Error creating PayPal order',
-                details: error.response?.data || error.message,
-                debug_info: {
-                    sent_return_url: process.env.URL_FRONTEND_NGROK || process.env.URL_FRONTEND || 'https://localhost:4200'
-                }
-            });
+            res.status(410).send({ message: 'Eliminado' });
         }
-    },
-
-    capturePaypalOrder: async (req, res) => {
-        try {
-            const { n_transaccion, orderId, detail, total, wallet_amount, remaining_amount, coupon_code } = req.body;
-            const user_id = req.user._id;
-
-            if (!n_transaccion || !orderId || !detail || !total) {
-                return res.status(400).send({ message: 'Faltan datos requeridos' });
-            }
-
-            // Evitar duplicados
-            const existingSale = await models.Sale.findOne({ n_transaccion });
-            if (existingSale && existingSale.status === 'Pagado') {
-                return res.status(400).send({ message: 'Esta transacción ya fue procesada', sale: existingSale });
-            }
-
-            // 🔥 VALIDAR CUPÓN (Si existe) - Misma lógica que en register
-            let isReferralSale = false;
-            let validatedCoupon = null;
-
-            if (coupon_code) {
-                validatedCoupon = await models.Coupon.findOne({
-                    code: coupon_code,
-                    active: true,
-                    expires_at: { $gt: new Date() }
-                });
-
-                if (validatedCoupon) {
-                    isReferralSale = true;
-                }
-            }
-
-            // 🔥 OBTENER CONFIGURACIÓN DE PAGO DESDE BD
-            let paymentSettings = await PaymentSettings.findOne();
-
-            // Determinar MODO
-            const PAYPAL_MODE = paymentSettings?.paypal?.mode || process.env.PAYPAL_MODE || 'sandbox';
-
-            let PAYPAL_CLIENT_ID = '';
-            let PAYPAL_CLIENT_SECRET = '';
-
-            // Obtener credenciales según el modo
-            if (PAYPAL_MODE === 'sandbox') {
-                PAYPAL_CLIENT_ID = paymentSettings?.paypal?.sandbox?.clientId || process.env.PAYPAL_CLIENT_ID;
-                PAYPAL_CLIENT_SECRET = paymentSettings?.paypal?.sandbox?.clientSecret || process.env.PAYPAL_CLIENT_SECRET;
-            } else {
-                PAYPAL_CLIENT_ID = paymentSettings?.paypal?.live?.clientId || process.env.PAYPAL_CLIENT_ID;
-                PAYPAL_CLIENT_SECRET = paymentSettings?.paypal?.live?.clientSecret || process.env.PAYPAL_CLIENT_SECRET;
-            }
-
-            if (!PAYPAL_CLIENT_ID || !PAYPAL_CLIENT_SECRET) {
-                console.error(`❌ [capturePaypalOrder] Credenciales de PayPal (${PAYPAL_MODE}) no configuradas`);
-                return res.status(500).send({ message: 'Error de configuración en pasarela de pago' });
-            }
-
-            const PAYPAL_API = PAYPAL_MODE === 'sandbox' ? 'https://api.sandbox.paypal.com' : 'https://api.paypal.com';
-
-            // Obtener token de acceso PayPal
-            const tokenR = await axios({
-                method: 'post',
-                url: `${PAYPAL_API}/v1/oauth2/token`,
-                auth: {
-                    username: PAYPAL_CLIENT_ID.trim(),
-                    password: PAYPAL_CLIENT_SECRET.trim()
-                },
-                params: { grant_type: 'client_credentials' }
-            });
-            const accessToken = tokenR.data.access_token;
-
-            // Capturar orden
-            const captureR = await axios({
-                method: 'post',
-                url: `${PAYPAL_API}/v2/checkout/orders/${orderId}/capture`,
-                headers: {
-                    Authorization: `Bearer ${accessToken}`,
-                    'Content-Type': 'application/json'
-                },
-                data: {}
-            });
-
-            const captureData = captureR.data;
-            const status = captureData.status;
-
-            if (status !== 'COMPLETED') {
-                return res.status(400).send({ message: 'Order not completed', status, details: captureData });
-            }
-
-            // Descontar wallet si aplica
-            const finalWalletAmount = wallet_amount ? Number(wallet_amount) : 0;
-            if (finalWalletAmount > 0) {
-                const wallet = await models.Wallet.findOne({ user: user_id });
-                if (!wallet) return res.status(400).send({ message: 'Billetera no encontrada' });
-                if (wallet.balance < finalWalletAmount) return res.status(400).send({ message: 'Saldo insuficiente en billetera', available: wallet.balance, required: finalWalletAmount });
-
-                wallet.balance -= finalWalletAmount;
-                wallet.transactions.push({ user: user_id, type: 'debit', amount: finalWalletAmount, balanceAfter: wallet.balance, description: `Pago mixto (wallet) - ${n_transaccion}`, date: new Date(), metadata: { orderId: n_transaccion, payment_method: 'mixed_paypal', paypal_order_id: orderId, status: 'completed' } });
-                await wallet.save();
-            }
-
-            // Crear venta
-            const sale = await models.Sale.create({
-                user: user_id,
-                method_payment: finalWalletAmount > 0 ? 'mixed_paypal' : 'paypal',
-                currency_payment: 'MXN',
-                n_transaccion: n_transaccion,
-                detail: detail,
-                total: total,
-                status: 'Pagado',
-                wallet_amount: finalWalletAmount,
-                remaining_amount: remaining_amount || (total - finalWalletAmount),
-                payment_details: { paypal_order_id: orderId, paypal_capture_details: captureData },
-                paid_at: new Date(),
-                // 🔥 REFERIDOS
-                coupon_code: isReferralSale ? coupon_code : null,
-                is_referral: isReferralSale
-            });
-
-            await processPaidSale(sale, user_id);
-            const saleWithUser = await models.Sale.findById(sale._id).populate('user', 'name surname email').lean();
-            notifyPaymentApproved(saleWithUser || sale).catch(console.error);
-
-            return res.status(200).send({ success: true, sale, message: 'Pago capturado exitosamente' });
-
-        } catch (error) {
-            console.error('❌ [capturePaypalOrder] Error:', error.response?.data || error.message || error);
-            return res.status(500).send({ message: 'Error capturing PayPal order', details: error.response?.data || error.message });
-        }
-    },
-    /**
-     * 🔔 WEBHOOK (Placeholder)
-     * Ya no se utiliza para Mercado Pago. Podría adaptarse para otros servicios.
-     */
-    async webhook(req, res) {
-
-        // La lógica de Mercado Pago ha sido eliminada.
-        // Si se necesita un webhook para PayPal u otro servicio, se debe implementar aquí.
-        res.sendStatus(200);
     },
 
     /**
