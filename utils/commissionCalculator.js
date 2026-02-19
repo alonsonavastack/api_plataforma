@@ -269,41 +269,45 @@ export function calculatePaymentSplit(amount) {
         };
     }
 
-    // 2. Cálculo de Comisión PayPal (3.95% + $4.00)
-    // El usuario indicó que NO se debe agregar IVA a la comisión. => ERROR: Al validar el ejemplo de 15 -> 5.33, sale que REQUIERE IVA.
-    // 3.95% de 15 = 0.5925 + 4 = 4.5925 -> 4.59 (SIN IVA)
-    // 4.5925 * 1.16 (IVA) = 5.3273 -> 5.33 (CON IVA)
-    // Por tanto, SE DEBE COBRAR IVA SOBRE LA COMISIÓN para llegar al monto esperado por el usuario.
+    // 2. Cálculo de Comisión PayPal (3.95% + $4.00) + IVA (16%)
     const FIXED_FEE = 4.00;
     const PERCENTAGE_FEE = 0.0395; // 3.95%
     const IVA = 1.16;
 
-    let baseFee = (amount * PERCENTAGE_FEE) + FIXED_FEE;
-    let paypalFee = baseFee * IVA;
+    // Cálculo inicial
+    let rawFee = ((amount * PERCENTAGE_FEE) + FIXED_FEE) * IVA;
+
+    // REDONDEO STEP 1: Fee de PayPal a 2 decimales
+    let paypalFee = parseFloat(rawFee.toFixed(2));
 
     // El fee no puede ser mayor al monto
     if (paypalFee > amount) {
         paypalFee = amount;
     }
 
-    // 3. Monto Neto
-    const netAmount = amount - paypalFee;
+    // 3. Monto Neto (Usando el fee ya redondeado para que cuadre la visualización)
+    // 15 - 5.33 = 9.67
+    const netAmount = parseFloat((amount - paypalFee).toFixed(2));
 
     // 4. Reparto (Split) 70% Vendor / 30% Plataforma sobre el NETO
     let vendorShare = 0;
     let platformShare = 0;
 
     if (netAmount > 0) {
-        vendorShare = netAmount * 0.70;
-        platformShare = netAmount * 0.30;
+        // REDONDEO STEP 2: Vendor share a 2 decimales
+        vendorShare = parseFloat((netAmount * 0.70).toFixed(2));
+
+        // REDONDEO STEP 3: Platform share es el restante exacto
+        // Esto evita que 6.77 + 2.90 != 9.67 por temas de redondeo independiente
+        platformShare = parseFloat((netAmount - vendorShare).toFixed(2));
     }
 
     return {
         totalPaid: parseFloat(amount.toFixed(2)),
-        paypalFee: parseFloat(paypalFee.toFixed(2)),
-        netAmount: parseFloat(netAmount.toFixed(2)),
-        vendorShare: parseFloat(vendorShare.toFixed(2)),
-        platformShare: parseFloat(platformShare.toFixed(2)),
+        paypalFee: paypalFee,
+        netAmount: netAmount,
+        vendorShare: vendorShare,
+        platformShare: platformShare,
         currency: 'MXN'
     };
 }

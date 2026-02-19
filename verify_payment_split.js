@@ -1,17 +1,27 @@
 import { calculatePaymentSplit } from './utils/commissionCalculator.js';
 
-console.log('--- Verificación de Split de Pagos PayPal MX (CON IVA - Requerido para coincidir con $5.33) ---');
+console.log('--- Verificación de Split de Pagos PayPal MX (Progressive Rounding) ---');
 
-const testCases = [15, 100, 200, 1000];
+const testCases = [15, 40, 100, 200, 1000]; // 40 represents 200 with 80% off
 
 testCases.forEach(amount => {
     const result = calculatePaymentSplit(amount);
-    console.log(`\nMonto: $${amount}`);
-    // Fee esperado con IVA: ((15 * 0.0395) + 4) * 1.16 = 5.33
-    console.log(`PayPal Fee: $${result.paypalFee} (Esperado para $15: ~$5.33)`);
-    // Neto esperado: 15 - 5.33 = 9.67
-    console.log(`Neto: $${result.netAmount} (Esperado para $15: ~$9.67)`);
-    // Vendor esperado: 9.67 * 0.70 = 6.769 -> 6.77
-    console.log(`Vendor (70%): $${result.vendorShare} (Esperado para $15: ~$6.77)`);
+    console.log(`\n--- Monto Pagado: $${amount} ---`);
+    console.log(`PayPal Fee: $${result.paypalFee}`);
+    console.log(`Neto: $${result.netAmount}`);
+    console.log(`Vendor (70%): $${result.vendorShare}`);
     console.log(`Plataforma (30%): $${result.platformShare}`);
+
+    // Verificaciones de integridad (Suma exacta)
+    const sumNet = parseFloat((result.vendorShare + result.platformShare).toFixed(2));
+    const sumTotal = parseFloat((result.paypalFee + result.netAmount).toFixed(2));
+
+    console.log(`> Check Net: ${result.vendorShare} + ${result.platformShare} = ${sumNet} (Esperado: ${result.netAmount})`);
+    console.log(`> Check Total: ${result.paypalFee} + ${result.netAmount} = ${sumTotal} (Esperado: ${amount})`);
+
+    if (sumNet !== result.netAmount) console.error('❌ ERROR: La suma del split no cuadra con el neto');
+    else console.log('✅ Split cuadra con Neto');
+
+    if (sumTotal !== result.totalPaid) console.error('❌ ERROR: La suma del desglose no cuadra con el total');
+    else console.log('✅ Desglose cuadra con Total');
 });
