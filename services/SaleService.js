@@ -1,5 +1,6 @@
 import models from "../models/index.js";
 import TaxBreakdownService from "./TaxBreakdownService.js";
+import { calculatePaymentSplit } from "../utils/commissionCalculator.js";
 
 /**
  * 📚 Inscribir estudiante en un curso
@@ -109,17 +110,24 @@ async function createEarningForProduct(sale, item) {
         console.log(`   🏛 Comisión plataforma: ${commissionRatePercent}%`);
         console.log(`   ⏳ Días hasta disponible: ${daysUntilAvailable} días`);
 
-        // 3. 🔥 CÁLCULO SOBRE NETO (NUEVO REQUERIMIENTO)
-        // Fórmula: (Precio Venta - Comisiones Pasarela) * % Reparto
-        const paypalFeeRate = 0.07; // 7%
-        const paypalFeeFixed = 4.00; // $4 MXN
-        const paypalFee = (salePrice * paypalFeeRate) + paypalFeeFixed; // Costo real aproximado
+        // 3. 🔥 CÁLCULO SOBRE NETO (NUEVO REQUERIMIENTO - PROGRESSIVE ROUNDING)
+        // Usamos la utilidad centralizada para asegurar que todo cuadre al centavo
+        const splitResult = calculatePaymentSplit(salePrice);
 
-        const netSale = Math.max(0, salePrice - paypalFee); // Base repartible
+        const paypalFee = splitResult.paypalFee;
+        const netSale = splitResult.netAmount;
 
-        // Reparto sobre el NETO
-        const platformCommission = netSale * commissionRate; // 20% o 30% del NETO
-        const instructorEarning = netSale - platformCommission; // 80% o 70% del NETO
+        // El splitResult ya nos da vendorShare (70%) y platformShare (30%) por defecto
+        // Pero aquí necesitamos aplicar el % específico del instructor (que puede ser 80/20 si es referido)
+
+        let platformCommission = 0;
+        let instructorEarning = 0;
+
+        if (netSale > 0) {
+            // Recalculamos usando el Neto OFICIAL devuelto por la utilidad
+            platformCommission = parseFloat((netSale * commissionRate).toFixed(2));
+            instructorEarning = parseFloat((netSale - platformCommission).toFixed(2));
+        }
 
         console.log(`   💸 PayPal Fee (Est.): -${paypalFee.toFixed(2)}`);
         console.log(`   🥩 Base Repartible (Neto): ${netSale.toFixed(2)}`);
@@ -141,7 +149,7 @@ async function createEarningForProduct(sale, item) {
             currency: sale.currency_total || sale.currency_payment || 'MXN',
 
             // 🔥 Guardamos comisiones de pasarela
-            payment_fee_rate: paypalFeeRate,
+            payment_fee_rate: 0, // Ya no es un % fijo simple
             payment_fee_amount: paypalFee,
 
             platform_commission_rate: commissionRate,

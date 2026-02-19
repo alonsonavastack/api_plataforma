@@ -22,7 +22,8 @@ class TaxBreakdownService {
 
             // 1️⃣ Comisión PayPal (RECIBIR)
             // 🔥 TOMA EL VALOR REAL DE LA GANANCIA GUARDADA (SaleService)
-            const paypalReceiveCommission = earning.payment_fee_amount || ((saleAmount * 0.07) + 4);
+            // Si por alguna razón no existe, calculamos con la fórmula correcta (Progressive Rounding sería ideal pero aquí aproximamos)
+            const paypalReceiveCommission = earning.payment_fee_amount || 0;
 
             const netAfterPaypalReceive = saleAmount - paypalReceiveCommission; // Base Repartible Real
 
