@@ -1,5 +1,6 @@
 import models from "../models/index.js";
 import mongoose from "mongoose";
+import { calculatePaymentSplit } from "../utils/commissionCalculator.js";
 
 export default {
   // ✅ NUEVO: Métricas Financieras Ejecutivas (Con Reembolsos y Comisiones)
@@ -95,11 +96,41 @@ export default {
         : currentMonthNet > 0 ? 100 : 0;
 
       // 💳 7. COMISIONES DE LA PLATAFORMA
+      // 🔥 FIX: Leer los datos REALES desde InstructorEarnings en lugar de
+      //         recalcular sobre el ingreso bruto (que no descuenta fee PayPal).
+      //         El flujo correcto es: Bruto → -FeePayPal → Neto → 70% Instructor / 30% Plataforma
       const commissionSettings = await models.PlatformCommissionSettings.findOne();
       const defaultCommissionRate = commissionSettings?.default_commission_rate || 30;
 
-      const platformCommissions = netIncome * (defaultCommissionRate / 100);
-      const instructorEarnings = netIncome - platformCommissions;
+      // Sumar instructor_earning y platform_commission_amount reales de la BD
+      const earningsAgg = await models.InstructorEarnings.aggregate([
+        { $match: { status: { $ne: 'refunded' } } },
+        {
+          $group: {
+            _id: null,
+            totalInstructorEarning: { $sum: '$instructor_earning' },
+            totalPlatformCommission: { $sum: '$platform_commission_amount' },
+            totalPaypalFee: { $sum: '$payment_fee_amount' }
+          }
+        }
+      ]);
+
+      const earningsData = earningsAgg[0] || { totalInstructorEarning: 0, totalPlatformCommission: 0, totalPaypalFee: 0 };
+
+      // Si ya tenemos datos reales en BD, usarlos; si no (sin ventas aún), calcular estimado
+      let platformCommissions;
+      let instructorEarnings;
+
+      if (earningsData.totalInstructorEarning > 0 || earningsData.totalPlatformCommission > 0) {
+        // ✅ Usar datos reales de la BD (ya tienen PayPal fee descontado)
+        platformCommissions = parseFloat(earningsData.totalPlatformCommission.toFixed(2));
+        instructorEarnings = parseFloat(earningsData.totalInstructorEarning.toFixed(2));
+      } else {
+        // Fallback: estimado sobre el neto (sin fee PayPal)
+        const split = calculatePaymentSplit(netIncome);
+        platformCommissions = parseFloat((split.netAmount * (defaultCommissionRate / 100)).toFixed(2));
+        instructorEarnings = parseFloat((split.netAmount - platformCommissions).toFixed(2));
+      }
 
       // 👥 8. CONTADORES
       const totalStudents = await models.User.countDocuments({ rol: 'cliente' });
