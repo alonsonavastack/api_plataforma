@@ -73,16 +73,16 @@ app.use(helmet({
             ],
             connectSrc: [
                 "'self'",
-                "https://api.paypal.com",
+                "https://api.stripe.com",
                 "wss://localhost:3000",
-                "wss://localhost:4200", // WebSockets dev
+                "wss://localhost:4200",
                 process.env.NODE_ENV === 'production' ? "wss://api.devhubsharks.com" : "",
                 process.env.NODE_ENV === 'production' ? "https://api.devhubsharks.com" : ""
             ].filter(Boolean),
             frameSrc: [
                 "'self'",
-                "https://www.paypal.com",
-                "https://www.sandbox.paypal.com"
+                "https://js.stripe.com",
+                "https://hooks.stripe.com"
             ],
             objectSrc: ["'none'"],
             upgradeInsecureRequests: process.env.NODE_ENV === 'production' ? [] : null
@@ -234,10 +234,25 @@ console.log('✅ Rate limiting configurado');
 // 📦 PARSING DE BODY
 // ═══════════════════════════════════════════════════════════════════════
 
-// Limitar tamaño del body
+// 🔥 IMPORTANTE: Stripe Webhooks necesitan el body RAW sin parsear.
+// Por lo tanto, montamos su router ANTES de parsear JSON globalmente.
+app.use('/api/stripe/webhook', express.raw({ type: 'application/json' }), async (req, res, next) => {
+    try {
+        const stripeController = await import('./controllers/StripeConnectController.js');
+        stripeController.stripeWebhook(req, res, next);
+    } catch (error) {
+        next(error);
+    }
+});
+
+// Limitar tamaño del body para el resto de la app
 app.use(express.json({
     limit: '100mb', // 🔥 AUMENTADO PARA BACKUPS
     verify: (req, res, buf, encoding) => {
+        // 🔥 IMPORTANTE: Stripe Webhooks necesitan el body RAW sin parsear
+        if (req.originalUrl.startsWith('/api/stripe/webhook')) {
+            req.rawBody = buf.toString(encoding || 'utf8');
+        }
         if (buf.length > 100 * 1024 * 1024) { // 100MB
             throw new Error('Body demasiado grande');
         }

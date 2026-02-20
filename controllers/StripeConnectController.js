@@ -177,7 +177,7 @@ export const stripeWebhook = async (req, res) => {
 
     let event;
     try {
-        event = constructWebhookEvent(req.body, signature);
+        event = constructWebhookEvent(req.rawBody || req.body, signature);
     } catch (err) {
         console.error('❌ Webhook Stripe - Firma inválida:', err.message);
         return res.status(400).send(`Webhook Error: ${err.message}`);
@@ -198,6 +198,40 @@ export const stripeWebhook = async (req, res) => {
                 }
             );
             console.log(`✅ Cuenta ${account.id} actualizada: charges=${account.charges_enabled}`);
+            break;
+        }
+
+        case 'checkout.session.completed': {
+            const session = event.data.object;
+            console.log(`✅ [Webhook] Checkout completado: ${session.id}`);
+
+            if (session.metadata && session.metadata.sale_id) {
+                try {
+                    const Sale = (await import('../models/Sale.js')).default;
+                    const { processPaidSale } = await import('../services/SaleService.js');
+                    const { notifyPaymentApproved } = await import('../services/telegram.service.js');
+                    const { emitSaleStatusUpdate } = await import('../services/socket.service.js');
+
+                    const saleObj = await Sale.findById(session.metadata.sale_id);
+                    if (saleObj && saleObj.status !== 'Pagado') {
+                        saleObj.status = 'Pagado';
+                        saleObj.n_transaccion = session.payment_intent || saleObj.n_transaccion;
+                        await saleObj.save();
+
+                        await processPaidSale(saleObj, saleObj.user);
+                        notifyPaymentApproved(saleObj).catch(console.error);
+                        emitSaleStatusUpdate(saleObj);
+
+                        console.log(`✅ [Webhook] Venta ${saleObj._id} marcada como Pagado automáticamente`);
+                    } else {
+                        console.log(`ℹ️ [Webhook] Venta ${session.metadata.sale_id} no encontrada o ya pagada`);
+                    }
+                } catch (error) {
+                    console.error('❌ [Webhook] Error al procesar checkout.session.completed:', error);
+                }
+            } else {
+                console.log('⚠️ [Webhook] Checkout session no contiene metadata.sale_id');
+            }
             break;
         }
 

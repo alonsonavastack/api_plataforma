@@ -11,4 +11,11 @@ router.put('/admin', [auth.verifyAdmin], PaymentSettingsController.updateSetting
 // Ruta pública para checkout
 router.get('/public', PaymentSettingsController.getPublicSettings);
 
+// 🔧 DEBUG TEMPORAL - Ver raw de MongoDB
+router.get('/debug-raw', [auth.verifyAdmin], async (req, res) => {
+    const PaymentSettings = (await import('../models/PaymentSettings.js')).default;
+    const doc = await PaymentSettings.findOne().lean();
+    res.json({ doc });
+});
+
 export default router;

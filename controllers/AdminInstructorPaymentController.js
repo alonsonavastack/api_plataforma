@@ -33,6 +33,8 @@ import { notifyPaymentProcessed } from '../services/telegram.service.js';
 function calculatePaymentMethodStats(earnings) {
     const stats = {
         wallet: { count: 0, total: 0 },
+        stripe: { count: 0, total: 0 },
+        mixed_stripe: { count: 0, total: 0, wallet_part: 0, stripe_part: 0 },
         paypal: { count: 0, total: 0 },
         mixed_paypal: { count: 0, total: 0, wallet_part: 0, paypal_part: 0 }
     };
@@ -44,14 +46,22 @@ function calculatePaymentMethodStats(earnings) {
         if (method === 'wallet') {
             stats.wallet.count++;
             stats.wallet.total += amount;
+        } else if (method === 'stripe') {
+            stats.stripe.count++;
+            stats.stripe.total += amount;
         } else if (method === 'paypal') {
             stats.paypal.count++;
             stats.paypal.total += amount;
+        } else if (method === 'mixed_stripe') {
+            stats.mixed_stripe.count++;
+            stats.mixed_stripe.total += amount;
+            if (earning.wallet_amount) stats.mixed_stripe.wallet_part += earning.wallet_amount;
+            if (earning.stripe_amount || earning.remaining_amount) stats.mixed_stripe.stripe_part += (earning.stripe_amount || earning.remaining_amount);
         } else if (method === 'mixed_paypal') {
             stats.mixed_paypal.count++;
             stats.mixed_paypal.total += amount;
             if (earning.wallet_amount) stats.mixed_paypal.wallet_part += earning.wallet_amount;
-            if (earning.paypal_amount) stats.mixed_paypal.paypal_part += earning.paypal_amount;
+            if (earning.paypal_amount || earning.remaining_amount) stats.mixed_paypal.paypal_part += (earning.paypal_amount || earning.remaining_amount);
         }
     });
 
@@ -241,6 +251,8 @@ export const getInstructorsWithEarnings = async (req, res) => {
                     // 🆕 Desglose por método de pago (SOLO DISPONIBLES)
                     paymentMethods: {
                         wallet: { count: 0, total: 0 },
+                        stripe: { count: 0, total: 0 },
+                        mixed_stripe: { count: 0, total: 0 },
                         paypal: { count: 0, total: 0 },
                         mixed_paypal: { count: 0, total: 0 }
                     },
@@ -340,7 +352,7 @@ export const getInstructorsWithEarnings = async (req, res) => {
                 // Obtener configuración de pago
                 const paymentConfig = await InstructorPaymentConfig.findOne({
                     instructor: item._id
-                }).select('preferred_payment_method paypal_connected');
+                }).select('preferred_payment_method paypal_connected stripe_connected');
 
                 // 🔥 Obtener país del instructor
                 const country = instructor.country || 'INTL';
@@ -362,6 +374,7 @@ export const getInstructorsWithEarnings = async (req, res) => {
                         hasConfig: !!paymentConfig,
                         preferredMethod: paymentConfig?.preferred_payment_method || 'none',
                         paypalConnected: paymentConfig?.paypal_connected || false,
+                        stripeConnected: paymentConfig?.stripe_connected || false, // 🔥 Incluir estado Stripe
                         country // 🔥 Incluir país
                     }
                 };
@@ -504,6 +517,12 @@ export const getInstructorEarnings = async (req, res) => {
                 earningObj.mixed_payment_breakdown = {
                     wallet_amount: earningObj.sale.wallet_amount || 0,
                     paypal_amount: earningObj.sale.remaining_amount || 0,
+                    total: earningObj.sale.total || 0
+                };
+            } else if (earningObj.payment_method === 'mixed_stripe' && earningObj.sale) {
+                earningObj.mixed_payment_breakdown = {
+                    wallet_amount: earningObj.sale.wallet_amount || 0,
+                    stripe_amount: earningObj.sale.remaining_amount || 0,
                     total: earningObj.sale.total || 0
                 };
             }

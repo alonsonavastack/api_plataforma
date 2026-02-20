@@ -17346,3 +17346,3066 @@ La aplicación puede iniciar, pero revisa estas configuraciones
 
 2026-02-18T20:37:34: ✅ Course indexes created successfully
 2026-02-18T20:37:35: ✅ Notification indexes created
+2026-02-19T15:47:04: 📋 [SystemConfigController] Obteniendo configuración pública
+2026-02-19T15:47:06: ✅ [SystemConfigController] Configuración pública obtenida: Dev Hub Sharks
+2026-02-19T15:47:06: 💱 [SystemConfigController] Tipo de cambio incluido: 20.5
+2026-02-19T15:47:06: ✅ [list_instructors] Encontrados 1 instructores
+2026-02-19T15:47:06: 🆔 [list_instructors] Slugs: [ { name: 'alo', slug: 'alo-bn' } ]
+2026-02-19T15:47:06: 
+Proyectos públicos encontrados: 3
+2026-02-19T15:47:07: ========== FIN DEBUG ==========
+
+2026-02-19T15:48:53: 📋 [SystemConfigController] Obteniendo configuración pública
+2026-02-19T15:48:53: ✅ [SystemConfigController] Configuración pública obtenida: Dev Hub Sharks
+2026-02-19T15:48:53: 💱 [SystemConfigController] Tipo de cambio incluido: 20.5
+2026-02-19T15:48:54: ✅ [list_instructors] Encontrados 1 instructores
+2026-02-19T15:48:54: 🆔 [list_instructors] Slugs: [ { name: 'alo', slug: 'alo-bn' } ]
+2026-02-19T15:48:54: 
+Proyectos públicos encontrados: 3
+2026-02-19T15:48:54: ========== FIN DEBUG ==========
+
+2026-02-19T15:51:46: 📋 [SystemConfigController] Obteniendo configuración pública
+2026-02-19T15:51:46: ✅ [SystemConfigController] Configuración pública obtenida: Dev Hub Sharks
+2026-02-19T15:51:46: 💱 [SystemConfigController] Tipo de cambio incluido: 20.5
+2026-02-19T15:51:46: ✅ [list_instructors] Encontrados 1 instructores
+2026-02-19T15:51:46: 🆔 [list_instructors] Slugs: [ { name: 'alo', slug: 'alo-bn' } ]
+2026-02-19T15:51:46: 
+Proyectos públicos encontrados: 3
+2026-02-19T15:51:47: ========== FIN DEBUG ==========
+
+2026-02-19T15:52:18: 📋 [SystemConfigController] Obteniendo configuración pública
+2026-02-19T15:52:18: ✅ [SystemConfigController] Configuración pública obtenida: Dev Hub Sharks
+2026-02-19T15:52:18: 💱 [SystemConfigController] Tipo de cambio incluido: 20.5
+2026-02-19T15:52:19: ✅ [list_instructors] Encontrados 1 instructores
+2026-02-19T15:52:19: 🆔 [list_instructors] Slugs: [ { name: 'alo', slug: 'alo-bn' } ]
+2026-02-19T15:52:19: 
+Proyectos públicos encontrados: 3
+2026-02-19T15:52:19: ========== FIN DEBUG ==========
+
+2026-02-19T15:54:38: 📋 [SystemConfigController] Obteniendo configuración pública
+2026-02-19T15:54:38: ✅ [SystemConfigController] Configuración pública obtenida: Dev Hub Sharks
+2026-02-19T15:54:38: 💱 [SystemConfigController] Tipo de cambio incluido: 20.5
+2026-02-19T15:54:38: ✅ [list_instructors] Encontrados 1 instructores
+2026-02-19T15:54:38: 🆔 [list_instructors] Slugs: [ { name: 'alo', slug: 'alo-bn' } ]
+2026-02-19T15:54:38: 
+Proyectos públicos encontrados: 3
+2026-02-19T15:54:39: ========== FIN DEBUG ==========
+
+2026-02-19T15:54:46: 🔑 [Login] Intento de login para: admin@example.com
+2026-02-19T15:54:46: 👤 [Login] Usuario encontrado: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  email: 'admin@example.com',
+  name: 'Luis Alonso',
+  hasPassword: true,
+  state: true,
+  isVerified: true
+}
+2026-02-19T15:54:46: 🔍 [WalletController.getMyWallet] User: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T15:54:46: 🔍 [WalletController.getMyWallet] Getting wallet for: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T15:54:46: 📚 [ProfileStudentController] Cursos inscritos encontrados: 0
+2026-02-19T15:54:46: ✅ [ProfileStudentController] Cursos con porcentaje calculado: 0
+2026-02-19T15:54:46: 📚 [ProfileStudentController] Cursos inscritos encontrados: 0
+2026-02-19T15:54:46: ✅ [ProfileStudentController] Cursos con porcentaje calculado: 0
+2026-02-19T15:54:46: 🔍 [WalletController.getMyWallet] User: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T15:54:46: 🔍 [WalletController.getMyWallet] Getting wallet for: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T15:54:46: 📦 [ProfileStudentController] Ventas cargadas y populadas: 0
+2026-02-19T15:54:46: 
+============================================================
+2026-02-19T15:54:46: 🔍 [ProfileStudentController] DIAGNÓSTICO DE PROYECTOS
+2026-02-19T15:54:46: ============================================================
+2026-02-19T15:54:46: 📋 Total ventas del usuario: 0
+2026-02-19T15:54:46: 👤 Usuario ID: 6943157e5c102f674cc5c265
+2026-02-19T15:54:46: 
+============================================================
+2026-02-19T15:54:46: 📊 RESULTADO FINAL: 0 proyectos encontrados
+2026-02-19T15:54:46: 📚 RESULTADO FINAL: 0 cursos activos
+2026-02-19T15:54:46: ============================================================
+
+2026-02-19T15:54:46: ✅ [ProfileStudentController] Proyectos únicos (sin duplicados): 0
+2026-02-19T15:54:46: 📦 [ProfileStudentController] Ventas cargadas y populadas: 0
+2026-02-19T15:54:46: 
+============================================================
+2026-02-19T15:54:46: 🔍 [ProfileStudentController] DIAGNÓSTICO DE PROYECTOS
+2026-02-19T15:54:46: ============================================================
+2026-02-19T15:54:46: 📋 Total ventas del usuario: 0
+2026-02-19T15:54:46: 👤 Usuario ID: 6943157e5c102f674cc5c265
+2026-02-19T15:54:46: 
+============================================================
+2026-02-19T15:54:46: 📊 RESULTADO FINAL: 0 proyectos encontrados
+2026-02-19T15:54:46: 📚 RESULTADO FINAL: 0 cursos activos
+2026-02-19T15:54:46: ============================================================
+
+2026-02-19T15:54:46: ✅ [ProfileStudentController] Proyectos únicos (sin duplicados): 0
+2026-02-19T15:54:47: ✅ Cliente conectado: 5bN7baNovbZ8KbvzAAAB
+2026-02-19T15:54:47: 👑 Admin 6943157e5c102f674cc5c265 (5bN7baNovbZ8KbvzAAAB) unido a sala de admins
+2026-02-19T15:54:47: 📊 [executiveMetrics] Generando métricas financieras ejecutivas...
+2026-02-19T15:54:47: 📊 [kpis] Excluyendo 0 ventas reembolsadas
+2026-02-19T15:54:47: 🔍 [RefundController.list] Iniciando...
+2026-02-19T15:54:47: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T15:54:47: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T15:54:47: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T15:54:47: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T15:54:48: ✅ [kpis] Ingresos Netos: 300.00
+2026-02-19T15:54:49: ✅ [executiveMetrics] Métricas generadas exitosamente
+2026-02-19T15:54:49:    • Ingresos Brutos: 300.00
+2026-02-19T15:54:49:    • Reembolsos:      0.00
+2026-02-19T15:54:49:    • Ingresos Netos:  300.00
+2026-02-19T15:55:17: 🔍 [RefundController.list] Iniciando...
+2026-02-19T15:55:17: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T15:55:17: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T15:55:17: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T15:55:17: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T15:55:47: 🔍 [RefundController.list] Iniciando...
+2026-02-19T15:55:47: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T15:55:47: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T15:55:47: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T15:55:47: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T15:56:08: ❌ Cliente desconectado: 5bN7baNovbZ8KbvzAAAB
+2026-02-19T15:56:08: 📋 [SystemConfigController] Obteniendo configuración pública
+2026-02-19T15:56:08: ✅ [SystemConfigController] Configuración pública obtenida: Dev Hub Sharks
+2026-02-19T15:56:08: 💱 [SystemConfigController] Tipo de cambio incluido: 20.5
+2026-02-19T15:56:09: 🔍 [WalletController.getMyWallet] User: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T15:56:09: 🔍 [WalletController.getMyWallet] Getting wallet for: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T15:56:09: ✅ Cliente conectado: 2sgB6sxnd1mnrdlHAAAD
+2026-02-19T15:56:09: 👑 Admin 6943157e5c102f674cc5c265 (2sgB6sxnd1mnrdlHAAAD) unido a sala de admins
+2026-02-19T15:56:09: 📊 [executiveMetrics] Generando métricas financieras ejecutivas...
+2026-02-19T15:56:09: 📊 [kpis] Excluyendo 0 ventas reembolsadas
+2026-02-19T15:56:09: 🔍 [RefundController.list] Iniciando...
+2026-02-19T15:56:09: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T15:56:09: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T15:56:09: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T15:56:09: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T15:56:09: 🔍 [WalletController.getMyWallet] User: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T15:56:09: 🔍 [WalletController.getMyWallet] Getting wallet for: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T15:56:09: ✅ [kpis] Ingresos Netos: 300.00
+2026-02-19T15:56:11: ✅ [executiveMetrics] Métricas generadas exitosamente
+2026-02-19T15:56:11:    • Ingresos Brutos: 300.00
+2026-02-19T15:56:11:    • Reembolsos:      0.00
+2026-02-19T15:56:11:    • Ingresos Netos:  300.00
+2026-02-19T15:56:18: ❌ Cliente desconectado: 2sgB6sxnd1mnrdlHAAAD
+2026-02-19T15:56:18: 📋 [SystemConfigController] Obteniendo configuración pública
+2026-02-19T15:56:18: ✅ [SystemConfigController] Configuración pública obtenida: Dev Hub Sharks
+2026-02-19T15:56:18: 💱 [SystemConfigController] Tipo de cambio incluido: 20.5
+2026-02-19T15:56:18: ✅ Cliente conectado: qqZqigq2JeYvWmKfAAAF
+2026-02-19T15:56:18: 👑 Admin 6943157e5c102f674cc5c265 (qqZqigq2JeYvWmKfAAAF) unido a sala de admins
+2026-02-19T15:56:18: 🔍 [WalletController.getMyWallet] User: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T15:56:18: 🔍 [WalletController.getMyWallet] Getting wallet for: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T15:56:18: 📊 [executiveMetrics] Generando métricas financieras ejecutivas...
+2026-02-19T15:56:18: 📊 [kpis] Excluyendo 0 ventas reembolsadas
+2026-02-19T15:56:18: 🔍 [RefundController.list] Iniciando...
+2026-02-19T15:56:18: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T15:56:18: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T15:56:18: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T15:56:18: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T15:56:18: 🔍 [WalletController.getMyWallet] User: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T15:56:18: 🔍 [WalletController.getMyWallet] Getting wallet for: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T15:56:19: ✅ [kpis] Ingresos Netos: 300.00
+2026-02-19T15:56:20: ✅ [executiveMetrics] Métricas generadas exitosamente
+2026-02-19T15:56:20:    • Ingresos Brutos: 300.00
+2026-02-19T15:56:20:    • Reembolsos:      0.00
+2026-02-19T15:56:20:    • Ingresos Netos:  300.00
+2026-02-19T15:56:48: 🔍 [RefundController.list] Iniciando...
+2026-02-19T15:56:48: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T15:56:48: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T15:56:48: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T15:56:48: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T15:57:18: 🔍 [RefundController.list] Iniciando...
+2026-02-19T15:57:18: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T15:57:18: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T15:57:18: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T15:57:18: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T15:57:31: ❌ Cliente desconectado: qqZqigq2JeYvWmKfAAAF
+2026-02-19T15:57:31: 📋 [SystemConfigController] Obteniendo configuración pública
+2026-02-19T15:57:31: ✅ [SystemConfigController] Configuración pública obtenida: Dev Hub Sharks
+2026-02-19T15:57:31: 💱 [SystemConfigController] Tipo de cambio incluido: 20.5
+2026-02-19T15:57:37: ✅ Cliente conectado: 2jKqpw0_rKBOp0qxAAAH
+2026-02-19T15:57:37: 👑 Admin 6943157e5c102f674cc5c265 (2jKqpw0_rKBOp0qxAAAH) unido a sala de admins
+2026-02-19T15:57:42: 🔍 [WalletController.getMyWallet] User: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T15:57:42: 🔍 [WalletController.getMyWallet] Getting wallet for: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T15:57:42: 📊 [executiveMetrics] Generando métricas financieras ejecutivas...
+2026-02-19T15:57:42: 📊 [kpis] Excluyendo 0 ventas reembolsadas
+2026-02-19T15:57:43: ✅ [kpis] Ingresos Netos: 300.00
+2026-02-19T15:57:44: ✅ [executiveMetrics] Métricas generadas exitosamente
+2026-02-19T15:57:44:    • Ingresos Brutos: 300.00
+2026-02-19T15:57:44:    • Reembolsos:      0.00
+2026-02-19T15:57:44:    • Ingresos Netos:  300.00
+2026-02-19T15:57:47: 🔍 [RefundController.list] Iniciando...
+2026-02-19T15:57:47: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T15:57:47: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T15:57:47: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T15:57:47: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T15:57:48: 🔍 [WalletController.getMyWallet] User: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T15:57:48: 🔍 [WalletController.getMyWallet] Getting wallet for: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T15:58:12: 🔍 [RefundController.list] Iniciando...
+2026-02-19T15:58:12: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T15:58:12: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T15:58:12: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T15:58:12: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T15:58:42: 🔍 [RefundController.list] Iniciando...
+2026-02-19T15:58:42: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T15:58:42: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T15:58:42: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T15:58:42: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T15:59:12: 🔍 [RefundController.list] Iniciando...
+2026-02-19T15:59:12: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T15:59:12: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T15:59:12: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T15:59:12: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T15:59:42: 🔍 [RefundController.list] Iniciando...
+2026-02-19T15:59:42: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T15:59:42: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T15:59:42: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T15:59:42: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:00:12: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:00:12: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:00:12: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:00:12: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:00:12: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:00:42: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:00:42: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:00:42: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:00:42: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:00:42: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:01:12: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:01:12: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:01:12: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:01:12: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:01:12: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:01:42: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:01:42: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:01:42: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:01:42: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:01:42: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:02:07: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:02:07: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:02:07: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:02:07: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:02:07: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:02:37: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:02:37: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:02:37: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:02:37: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:02:37: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:03:07: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:03:07: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:03:07: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:03:07: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:03:07: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:03:37: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:03:37: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:03:37: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:03:37: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:03:37: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:04:07: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:04:07: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:04:07: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:04:07: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:04:07: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:04:37: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:04:37: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:04:37: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:04:37: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:04:38: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:05:07: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:05:07: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:05:07: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:05:07: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:05:07: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:05:37: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:05:37: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:05:37: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:05:37: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:05:37: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:06:07: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:06:07: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:06:07: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:06:07: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:06:07: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:06:37: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:06:37: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:06:37: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:06:37: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:06:37: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:07:07: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:07:07: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:07:07: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:07:07: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:07:07: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:07:37: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:07:37: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:07:37: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:07:37: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:07:37: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:08:07: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:08:07: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:08:07: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:08:07: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:08:07: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:08:37: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:08:37: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:08:37: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:08:37: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:08:37: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:09:08: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:09:08: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:09:08: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:09:08: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:09:08: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:09:38: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:09:38: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:09:38: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:09:38: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:09:38: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:10:36: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:10:36: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:10:36: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:10:36: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:10:36: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:11:36: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:11:36: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:11:36: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:11:36: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:11:36: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:12:08: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:12:08: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:12:08: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:12:08: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:12:08: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:12:37: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:12:37: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:12:37: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:12:37: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:12:37: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:13:07: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:13:07: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:13:07: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:13:07: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:13:07: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:13:27: ❌ Cliente desconectado: 2jKqpw0_rKBOp0qxAAAH
+2026-02-19T16:13:27: 📋 [SystemConfigController] Obteniendo configuración pública
+2026-02-19T16:13:27: ✅ [SystemConfigController] Configuración pública obtenida: Dev Hub Sharks
+2026-02-19T16:13:27: 💱 [SystemConfigController] Tipo de cambio incluido: 20.5
+2026-02-19T16:13:27: 🔍 [WalletController.getMyWallet] User: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T16:13:27: 🔍 [WalletController.getMyWallet] Getting wallet for: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T16:13:27: 🔍 [WalletController.getMyWallet] User: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T16:13:27: 🔍 [WalletController.getMyWallet] Getting wallet for: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T16:13:28: 📊 [executiveMetrics] Generando métricas financieras ejecutivas...
+2026-02-19T16:13:28: 📊 [kpis] Excluyendo 0 ventas reembolsadas
+2026-02-19T16:13:28: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:13:28: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:13:28: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:13:28: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:13:28: ✅ Cliente conectado: _21pzsDQc1NHlPSSAAAJ
+2026-02-19T16:13:28: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:13:28: 👑 Admin 6943157e5c102f674cc5c265 (_21pzsDQc1NHlPSSAAAJ) unido a sala de admins
+2026-02-19T16:13:28: ✅ [kpis] Ingresos Netos: 300.00
+2026-02-19T16:13:29: ✅ [executiveMetrics] Métricas generadas exitosamente
+2026-02-19T16:13:29:    • Ingresos Brutos: 300.00
+2026-02-19T16:13:29:    • Reembolsos:      0.00
+2026-02-19T16:13:29:    • Ingresos Netos:  300.00
+2026-02-19T16:13:44: 🔄 [SystemConfigController] Actualizando configuración
+2026-02-19T16:13:44: 📦 Datos recibidos: {
+  siteName: 'Dev Hub Shark',
+  siteDescription: 'Plataforma de venta de proyectos digitales',
+  email: 'devhubsharks@gmail.com',
+  phone: '',
+  supportEmail: '',
+  facebook: 'https://www.facebook.com/alonsonava.fullstack',
+  instagram: '',
+  youtube: 'https://www.youtube.com/@alonsonavastack',
+  tiktok: '',
+  twitch: '',
+  twitter: '',
+  linkedin: '',
+  website: '',
+  backup_enabled: 'false'
+}
+2026-02-19T16:13:44: ✅ [SystemConfigController] Configuración actualizada exitosamente
+2026-02-19T16:13:49: ❌ Cliente desconectado: _21pzsDQc1NHlPSSAAAJ
+2026-02-19T16:13:49: 📋 [SystemConfigController] Obteniendo configuración pública
+2026-02-19T16:13:49: ✅ [SystemConfigController] Configuración pública obtenida: Dev Hub Shark
+2026-02-19T16:13:49: 💱 [SystemConfigController] Tipo de cambio incluido: 20.5
+2026-02-19T16:13:50: 🔍 [WalletController.getMyWallet] User: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T16:13:50: 🔍 [WalletController.getMyWallet] Getting wallet for: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T16:13:50: ✅ Cliente conectado: ZJ3tXxbM1lDNFx8OAAAL
+2026-02-19T16:13:50: 👑 Admin 6943157e5c102f674cc5c265 (ZJ3tXxbM1lDNFx8OAAAL) unido a sala de admins
+2026-02-19T16:13:50: 📊 [executiveMetrics] Generando métricas financieras ejecutivas...
+2026-02-19T16:13:50: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:13:50: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:13:50: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:13:50: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:13:50: 📊 [kpis] Excluyendo 0 ventas reembolsadas
+2026-02-19T16:13:50: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:13:50: 🔍 [WalletController.getMyWallet] User: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T16:13:50: 🔍 [WalletController.getMyWallet] Getting wallet for: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T16:13:51: ✅ [kpis] Ingresos Netos: 300.00
+2026-02-19T16:13:52: ✅ [executiveMetrics] Métricas generadas exitosamente
+2026-02-19T16:13:52:    • Ingresos Brutos: 300.00
+2026-02-19T16:13:52:    • Reembolsos:      0.00
+2026-02-19T16:13:52:    • Ingresos Netos:  300.00
+2026-02-19T16:14:20: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:14:20: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:14:20: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:14:20: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:14:20: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:14:50: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:14:50: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:14:50: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:14:50: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:14:50: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:15:20: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:15:20: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:15:20: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:15:20: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:15:20: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:15:50: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:15:50: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:15:50: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:15:50: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:15:50: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:16:20: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:16:20: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:16:20: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:16:20: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:16:20: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:16:49: ❌ Cliente desconectado: ZJ3tXxbM1lDNFx8OAAAL
+2026-02-19T16:16:49: 📋 [SystemConfigController] Obteniendo configuración pública
+2026-02-19T16:16:49: ✅ [SystemConfigController] Configuración pública obtenida: Dev Hub Shark
+2026-02-19T16:16:49: 💱 [SystemConfigController] Tipo de cambio incluido: 20.5
+2026-02-19T16:16:49: 🔍 [WalletController.getMyWallet] User: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T16:16:49: 🔍 [WalletController.getMyWallet] Getting wallet for: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T16:16:50: 🔍 [WalletController.getMyWallet] User: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T16:16:50: 🔍 [WalletController.getMyWallet] Getting wallet for: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T16:16:50: ✅ Cliente conectado: ALBMdrqNYOlq4dBHAAAN
+2026-02-19T16:16:50: 👑 Admin 6943157e5c102f674cc5c265 (ALBMdrqNYOlq4dBHAAAN) unido a sala de admins
+2026-02-19T16:16:50: 📊 [executiveMetrics] Generando métricas financieras ejecutivas...
+2026-02-19T16:16:50: 📊 [kpis] Excluyendo 0 ventas reembolsadas
+2026-02-19T16:16:50: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:16:50: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:16:50: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:16:50: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:16:50: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:16:51: ✅ [kpis] Ingresos Netos: 300.00
+2026-02-19T16:16:52: ✅ [executiveMetrics] Métricas generadas exitosamente
+2026-02-19T16:16:52:    • Ingresos Brutos: 300.00
+2026-02-19T16:16:52:    • Reembolsos:      0.00
+2026-02-19T16:16:52:    • Ingresos Netos:  300.00
+2026-02-19T16:17:20: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:17:20: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:17:20: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:17:20: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:17:20: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:17:50: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:17:50: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:17:50: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:17:50: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:17:50: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:17:54: ❌ Cliente desconectado: ALBMdrqNYOlq4dBHAAAN
+2026-02-19T16:17:54: 📋 [SystemConfigController] Obteniendo configuración pública
+2026-02-19T16:17:54: ✅ [SystemConfigController] Configuración pública obtenida: Dev Hub Shark
+2026-02-19T16:17:54: 💱 [SystemConfigController] Tipo de cambio incluido: 20.5
+2026-02-19T16:17:54: 🔍 [WalletController.getMyWallet] User: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T16:17:54: 🔍 [WalletController.getMyWallet] Getting wallet for: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T16:17:55: 🔍 [WalletController.getMyWallet] User: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T16:17:55: 🔍 [WalletController.getMyWallet] Getting wallet for: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T16:17:55: ✅ Cliente conectado: q76ZNr93PIhzNeYhAAAP
+2026-02-19T16:17:55: 👑 Admin 6943157e5c102f674cc5c265 (q76ZNr93PIhzNeYhAAAP) unido a sala de admins
+2026-02-19T16:17:55: 📊 [executiveMetrics] Generando métricas financieras ejecutivas...
+2026-02-19T16:17:55: 📊 [kpis] Excluyendo 0 ventas reembolsadas
+2026-02-19T16:17:55: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:17:55: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:17:55: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:17:55: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:17:55: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:17:56: ✅ [kpis] Ingresos Netos: 300.00
+2026-02-19T16:17:57: ✅ [executiveMetrics] Métricas generadas exitosamente
+2026-02-19T16:17:57:    • Ingresos Brutos: 300.00
+2026-02-19T16:17:57:    • Reembolsos:      0.00
+2026-02-19T16:17:57:    • Ingresos Netos:  300.00
+2026-02-19T16:18:25: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:18:25: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:18:25: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:18:25: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:18:25: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:18:55: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:18:55: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:18:55: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:18:55: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:18:55: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:19:25: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:19:25: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:19:25: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:19:25: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:19:25: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:19:55: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:19:55: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:19:55: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:19:55: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:19:55: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:20:25: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:20:25: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:20:25: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:20:25: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:20:25: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:20:48: ❌ Cliente desconectado: q76ZNr93PIhzNeYhAAAP
+2026-02-19T16:20:48: 📋 [SystemConfigController] Obteniendo configuración pública
+2026-02-19T16:20:48: ✅ [SystemConfigController] Configuración pública obtenida: Dev Hub Shark
+2026-02-19T16:20:48: 💱 [SystemConfigController] Tipo de cambio incluido: 20.5
+2026-02-19T16:20:49: 🔍 [WalletController.getMyWallet] User: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T16:20:49: 🔍 [WalletController.getMyWallet] Getting wallet for: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T16:20:49: 🔍 [WalletController.getMyWallet] User: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T16:20:49: 🔍 [WalletController.getMyWallet] Getting wallet for: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T16:20:49: 📊 [executiveMetrics] Generando métricas financieras ejecutivas...
+2026-02-19T16:20:49: 📊 [kpis] Excluyendo 0 ventas reembolsadas
+2026-02-19T16:20:49: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:20:49: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:20:49: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:20:49: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:20:49: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:20:50: ✅ [kpis] Ingresos Netos: 300.00
+2026-02-19T16:20:51: ✅ [executiveMetrics] Métricas generadas exitosamente
+2026-02-19T16:20:51:    • Ingresos Brutos: 300.00
+2026-02-19T16:20:51:    • Reembolsos:      0.00
+2026-02-19T16:20:51:    • Ingresos Netos:  300.00
+2026-02-19T16:20:53: ✅ Cliente conectado: oFeFVPGTS-QM4vGMAAAR
+2026-02-19T16:20:53: 👑 Admin 6943157e5c102f674cc5c265 (oFeFVPGTS-QM4vGMAAAR) unido a sala de admins
+2026-02-19T16:21:19: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:21:19: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:21:19: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:21:19: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:21:19: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:21:49: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:21:49: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:21:49: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:21:49: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:21:49: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:22:15: ❌ Cliente desconectado: oFeFVPGTS-QM4vGMAAAR
+2026-02-19T16:22:15: 📋 [SystemConfigController] Obteniendo configuración pública
+2026-02-19T16:22:15: ✅ [SystemConfigController] Configuración pública obtenida: Dev Hub Shark
+2026-02-19T16:22:15: 💱 [SystemConfigController] Tipo de cambio incluido: 20.5
+2026-02-19T16:22:15: 🔍 [WalletController.getMyWallet] User: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T16:22:15: 🔍 [WalletController.getMyWallet] Getting wallet for: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T16:22:16: 🔍 [WalletController.getMyWallet] User: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T16:22:16: 🔍 [WalletController.getMyWallet] Getting wallet for: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T16:22:16: 📊 [executiveMetrics] Generando métricas financieras ejecutivas...
+2026-02-19T16:22:16: 📊 [kpis] Excluyendo 0 ventas reembolsadas
+2026-02-19T16:22:16: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:22:16: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:22:16: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:22:16: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:22:16: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:22:16: ✅ [kpis] Ingresos Netos: 300.00
+2026-02-19T16:22:18: ✅ [executiveMetrics] Métricas generadas exitosamente
+2026-02-19T16:22:18:    • Ingresos Brutos: 300.00
+2026-02-19T16:22:18:    • Reembolsos:      0.00
+2026-02-19T16:22:18:    • Ingresos Netos:  300.00
+2026-02-19T16:22:19: ✅ Cliente conectado: hoSKKDQcuTD69KKBAAAT
+2026-02-19T16:22:19: 👑 Admin 6943157e5c102f674cc5c265 (hoSKKDQcuTD69KKBAAAT) unido a sala de admins
+2026-02-19T16:22:46: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:22:46: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:22:46: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:22:46: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:22:46: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:23:02: ❌ Cliente desconectado: hoSKKDQcuTD69KKBAAAT
+2026-02-19T16:23:02: 📋 [SystemConfigController] Obteniendo configuración pública
+2026-02-19T16:23:02: ✅ [SystemConfigController] Configuración pública obtenida: Dev Hub Shark
+2026-02-19T16:23:02: 💱 [SystemConfigController] Tipo de cambio incluido: 20.5
+2026-02-19T16:23:03: 🔍 [WalletController.getMyWallet] User: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T16:23:03: 🔍 [WalletController.getMyWallet] Getting wallet for: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T16:23:03: 🔍 [WalletController.getMyWallet] User: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T16:23:03: 🔍 [WalletController.getMyWallet] Getting wallet for: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T16:23:03: ✅ Cliente conectado: mL2k92BddR-I2910AAAV
+2026-02-19T16:23:03: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:23:03: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:23:03: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:23:03: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:23:03: 📊 [executiveMetrics] Generando métricas financieras ejecutivas...
+2026-02-19T16:23:03: 👑 Admin 6943157e5c102f674cc5c265 (mL2k92BddR-I2910AAAV) unido a sala de admins
+2026-02-19T16:23:04: 📊 [kpis] Excluyendo 0 ventas reembolsadas
+2026-02-19T16:23:04: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:23:04: ✅ [kpis] Ingresos Netos: 300.00
+2026-02-19T16:23:05: ✅ [executiveMetrics] Métricas generadas exitosamente
+2026-02-19T16:23:05:    • Ingresos Brutos: 300.00
+2026-02-19T16:23:05:    • Reembolsos:      0.00
+2026-02-19T16:23:05:    • Ingresos Netos:  300.00
+2026-02-19T16:23:33: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:23:33: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:23:33: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:23:33: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:23:33: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:23:48: ❌ Cliente desconectado: mL2k92BddR-I2910AAAV
+2026-02-19T16:23:48: 📋 [SystemConfigController] Obteniendo configuración pública
+2026-02-19T16:23:48: ✅ [SystemConfigController] Configuración pública obtenida: Dev Hub Shark
+2026-02-19T16:23:48: 💱 [SystemConfigController] Tipo de cambio incluido: 20.5
+2026-02-19T16:23:48: 🔍 [WalletController.getMyWallet] User: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T16:23:48: 🔍 [WalletController.getMyWallet] Getting wallet for: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T16:23:49: 🔍 [WalletController.getMyWallet] User: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T16:23:49: 🔍 [WalletController.getMyWallet] Getting wallet for: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T16:23:49: ✅ Cliente conectado: 2vVAnE-HW2qRRTCRAAAX
+2026-02-19T16:23:49: 👑 Admin 6943157e5c102f674cc5c265 (2vVAnE-HW2qRRTCRAAAX) unido a sala de admins
+2026-02-19T16:23:49: 📊 [executiveMetrics] Generando métricas financieras ejecutivas...
+2026-02-19T16:23:49: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:23:49: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:23:49: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:23:49: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:23:49: 📊 [kpis] Excluyendo 0 ventas reembolsadas
+2026-02-19T16:23:49: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:23:49: ✅ [kpis] Ingresos Netos: 300.00
+2026-02-19T16:23:50: ✅ [executiveMetrics] Métricas generadas exitosamente
+2026-02-19T16:23:50:    • Ingresos Brutos: 300.00
+2026-02-19T16:23:50:    • Reembolsos:      0.00
+2026-02-19T16:23:50:    • Ingresos Netos:  300.00
+2026-02-19T16:24:19: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:24:19: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:24:19: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:24:19: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:24:19: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:24:49: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:24:49: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:24:49: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:24:49: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:24:49: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:25:19: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:25:19: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:25:19: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:25:19: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:25:19: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:25:49: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:25:49: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:25:49: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:25:49: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:25:49: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:26:19: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:26:19: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:26:19: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:26:19: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:26:19: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:26:49: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:26:49: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:26:49: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:26:49: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:26:49: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:27:19: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:27:19: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:27:19: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:27:19: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:27:19: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:27:48: ❌ Cliente desconectado: 2vVAnE-HW2qRRTCRAAAX
+2026-02-19T16:27:48: 📋 [SystemConfigController] Obteniendo configuración pública
+2026-02-19T16:27:48: ✅ [SystemConfigController] Configuración pública obtenida: Dev Hub Shark
+2026-02-19T16:27:48: 💱 [SystemConfigController] Tipo de cambio incluido: 20.5
+2026-02-19T16:27:49: 🔍 [WalletController.getMyWallet] User: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T16:27:49: 🔍 [WalletController.getMyWallet] Getting wallet for: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T16:27:49: 📊 [executiveMetrics] Generando métricas financieras ejecutivas...
+2026-02-19T16:27:49: ✅ Cliente conectado: 3OW_bxN78Ln5qssbAAAZ
+2026-02-19T16:27:49: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:27:49: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:27:49: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:27:49: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:27:49: 📊 [kpis] Excluyendo 0 ventas reembolsadas
+2026-02-19T16:27:49: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:27:49: 🔍 [WalletController.getMyWallet] User: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T16:27:49: 🔍 [WalletController.getMyWallet] Getting wallet for: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T16:27:49: 👑 Admin 6943157e5c102f674cc5c265 (3OW_bxN78Ln5qssbAAAZ) unido a sala de admins
+2026-02-19T16:27:50: ✅ [kpis] Ingresos Netos: 300.00
+2026-02-19T16:27:51: ✅ [executiveMetrics] Métricas generadas exitosamente
+2026-02-19T16:27:51:    • Ingresos Brutos: 300.00
+2026-02-19T16:27:51:    • Reembolsos:      0.00
+2026-02-19T16:27:51:    • Ingresos Netos:  300.00
+2026-02-19T16:28:01: 🔄 [SystemConfigController] Actualizando configuración
+2026-02-19T16:28:01: 📦 Datos recibidos: {
+  siteName: 'Dev Hub Sharks',
+  siteDescription: 'Plataforma de venta de proyectos digitales',
+  email: 'devhubsharks@gmail.com',
+  phone: '',
+  supportEmail: '',
+  facebook: 'https://www.facebook.com/alonsonava.fullstack',
+  instagram: '',
+  youtube: 'https://www.youtube.com/@alonsonavastack',
+  tiktok: '',
+  twitch: '',
+  twitter: '',
+  linkedin: '',
+  website: '',
+  backup_enabled: 'false'
+}
+2026-02-19T16:28:02: ✅ [SystemConfigController] Configuración actualizada exitosamente
+2026-02-19T16:28:07: ❌ Cliente desconectado: 3OW_bxN78Ln5qssbAAAZ
+2026-02-19T16:28:07: 📋 [SystemConfigController] Obteniendo configuración pública
+2026-02-19T16:28:07: ✅ [SystemConfigController] Configuración pública obtenida: Dev Hub Sharks
+2026-02-19T16:28:07: 💱 [SystemConfigController] Tipo de cambio incluido: 20.5
+2026-02-19T16:28:08: 🔍 [WalletController.getMyWallet] User: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T16:28:08: 🔍 [WalletController.getMyWallet] Getting wallet for: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T16:28:08: ✅ Cliente conectado: bk9HSaapFArGIQaFAAAb
+2026-02-19T16:28:08: 📊 [executiveMetrics] Generando métricas financieras ejecutivas...
+2026-02-19T16:28:08: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:28:08: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:28:08: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:28:08: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:28:08: 👑 Admin 6943157e5c102f674cc5c265 (bk9HSaapFArGIQaFAAAb) unido a sala de admins
+2026-02-19T16:28:08: 📊 [kpis] Excluyendo 0 ventas reembolsadas
+2026-02-19T16:28:08: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:28:08: 🔍 [WalletController.getMyWallet] User: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T16:28:08: 🔍 [WalletController.getMyWallet] Getting wallet for: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T16:28:08: ✅ [kpis] Ingresos Netos: 300.00
+2026-02-19T16:28:09: ✅ [executiveMetrics] Métricas generadas exitosamente
+2026-02-19T16:28:09:    • Ingresos Brutos: 300.00
+2026-02-19T16:28:09:    • Reembolsos:      0.00
+2026-02-19T16:28:09:    • Ingresos Netos:  300.00
+2026-02-19T16:28:38: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:28:38: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:28:38: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:28:38: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:28:38: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:29:01: ❌ Cliente desconectado: bk9HSaapFArGIQaFAAAb
+2026-02-19T16:29:01: 📋 [SystemConfigController] Obteniendo configuración pública
+2026-02-19T16:29:01: ✅ [SystemConfigController] Configuración pública obtenida: Dev Hub Sharks
+2026-02-19T16:29:01: 💱 [SystemConfigController] Tipo de cambio incluido: 20.5
+2026-02-19T16:29:07: ✅ Cliente conectado: 2RWEONUm9bR6JeqtAAAd
+2026-02-19T16:29:07: 👑 Admin 6943157e5c102f674cc5c265 (2RWEONUm9bR6JeqtAAAd) unido a sala de admins
+2026-02-19T16:29:11: 🔍 [WalletController.getMyWallet] User: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T16:29:11: 🔍 [WalletController.getMyWallet] Getting wallet for: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T16:29:12: 📊 [executiveMetrics] Generando métricas financieras ejecutivas...
+2026-02-19T16:29:12: 📊 [kpis] Excluyendo 0 ventas reembolsadas
+2026-02-19T16:29:12: ✅ [kpis] Ingresos Netos: 300.00
+2026-02-19T16:29:13: ✅ [executiveMetrics] Métricas generadas exitosamente
+2026-02-19T16:29:13:    • Ingresos Brutos: 300.00
+2026-02-19T16:29:13:    • Reembolsos:      0.00
+2026-02-19T16:29:13:    • Ingresos Netos:  300.00
+2026-02-19T16:29:17: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:29:17: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:29:17: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:29:17: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:29:17: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:29:17: 🔍 [WalletController.getMyWallet] User: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T16:29:17: 🔍 [WalletController.getMyWallet] Getting wallet for: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T16:29:42: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:29:42: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:29:42: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:29:42: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:29:42: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:30:12: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:30:12: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:30:12: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:30:12: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:30:12: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:30:42: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:30:42: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:30:42: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:30:42: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:30:42: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:31:12: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:31:12: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:31:12: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:31:12: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:31:12: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:31:42: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:31:42: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:31:42: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:31:42: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:31:42: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:31:45: ❌ Cliente desconectado: 2RWEONUm9bR6JeqtAAAd
+2026-02-19T16:31:50: 📋 [SystemConfigController] Obteniendo configuración pública
+2026-02-19T16:31:50: ✅ [SystemConfigController] Configuración pública obtenida: Dev Hub Sharks
+2026-02-19T16:31:50: 💱 [SystemConfigController] Tipo de cambio incluido: 20.5
+2026-02-19T16:31:51: ✅ Cliente conectado: yPupphwB57hKa62bAAAf
+2026-02-19T16:31:51: 👑 Admin 6943157e5c102f674cc5c265 (yPupphwB57hKa62bAAAf) unido a sala de admins
+2026-02-19T16:31:55: 🔍 [WalletController.getMyWallet] User: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T16:31:55: 🔍 [WalletController.getMyWallet] Getting wallet for: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T16:31:56: 📊 [executiveMetrics] Generando métricas financieras ejecutivas...
+2026-02-19T16:31:56: 📊 [kpis] Excluyendo 0 ventas reembolsadas
+2026-02-19T16:31:56: ✅ [kpis] Ingresos Netos: 300.00
+2026-02-19T16:31:57: ✅ [executiveMetrics] Métricas generadas exitosamente
+2026-02-19T16:31:57:    • Ingresos Brutos: 300.00
+2026-02-19T16:31:57:    • Reembolsos:      0.00
+2026-02-19T16:31:57:    • Ingresos Netos:  300.00
+2026-02-19T16:32:01: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:32:01: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:32:01: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:32:01: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:32:01: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:32:02: 🔍 [WalletController.getMyWallet] User: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T16:32:02: 🔍 [WalletController.getMyWallet] Getting wallet for: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T16:32:21: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:32:21: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:32:21: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:32:21: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:32:21: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:32:36: ❌ Cliente desconectado: yPupphwB57hKa62bAAAf
+2026-02-19T16:32:36: 📋 [SystemConfigController] Obteniendo configuración pública
+2026-02-19T16:32:36: ✅ [SystemConfigController] Configuración pública obtenida: Dev Hub Sharks
+2026-02-19T16:32:36: 💱 [SystemConfigController] Tipo de cambio incluido: 20.5
+2026-02-19T16:32:37: 🔍 [WalletController.getMyWallet] User: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T16:32:37: 🔍 [WalletController.getMyWallet] Getting wallet for: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T16:32:37: 🔍 [WalletController.getMyWallet] User: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T16:32:37: 🔍 [WalletController.getMyWallet] Getting wallet for: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T16:32:37: ✅ Cliente conectado: 3_wrVIbZjauLbvnHAAAh
+2026-02-19T16:32:37: 👑 Admin 6943157e5c102f674cc5c265 (3_wrVIbZjauLbvnHAAAh) unido a sala de admins
+2026-02-19T16:32:37: 📊 [executiveMetrics] Generando métricas financieras ejecutivas...
+2026-02-19T16:32:37: 📊 [kpis] Excluyendo 0 ventas reembolsadas
+2026-02-19T16:32:37: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:32:37: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:32:37: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:32:37: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:32:37: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:32:38: ✅ [kpis] Ingresos Netos: 300.00
+2026-02-19T16:32:39: ✅ [executiveMetrics] Métricas generadas exitosamente
+2026-02-19T16:32:39:    • Ingresos Brutos: 300.00
+2026-02-19T16:32:39:    • Reembolsos:      0.00
+2026-02-19T16:32:39:    • Ingresos Netos:  300.00
+2026-02-19T16:33:07: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:33:07: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:33:07: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:33:07: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:33:07: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:33:37: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:33:37: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:33:37: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:33:37: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:33:37: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:34:07: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:34:07: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:34:07: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:34:07: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:34:07: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:34:37: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:34:37: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:34:37: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:34:37: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:34:37: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:35:07: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:35:07: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:35:07: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:35:07: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:35:07: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:35:37: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:35:37: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:35:37: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:35:37: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:35:37: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:36:07: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:36:07: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:36:07: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:36:07: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:36:07: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:36:37: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:36:37: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:36:37: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:36:37: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:36:37: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:37:07: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:37:07: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:37:07: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:37:07: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:37:07: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:37:07: ❌ Cliente desconectado: 3_wrVIbZjauLbvnHAAAh
+2026-02-19T16:37:08: 📋 [SystemConfigController] Obteniendo configuración pública
+2026-02-19T16:37:08: ✅ [SystemConfigController] Configuración pública obtenida: Dev Hub Sharks
+2026-02-19T16:37:08: 💱 [SystemConfigController] Tipo de cambio incluido: 20.5
+2026-02-19T16:37:08: 🔍 [WalletController.getMyWallet] User: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T16:37:08: 🔍 [WalletController.getMyWallet] Getting wallet for: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T16:37:08: 🔍 [WalletController.getMyWallet] User: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T16:37:08: 🔍 [WalletController.getMyWallet] Getting wallet for: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T16:37:08: ✅ Cliente conectado: Pc41XLOecIeiNJAOAAAj
+2026-02-19T16:37:08: 👑 Admin 6943157e5c102f674cc5c265 (Pc41XLOecIeiNJAOAAAj) unido a sala de admins
+2026-02-19T16:37:08: 📊 [executiveMetrics] Generando métricas financieras ejecutivas...
+2026-02-19T16:37:08: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:37:08: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:37:08: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:37:08: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:37:08: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:37:08: 📊 [kpis] Excluyendo 0 ventas reembolsadas
+2026-02-19T16:37:09: ✅ [kpis] Ingresos Netos: 300.00
+2026-02-19T16:37:10: ✅ [executiveMetrics] Métricas generadas exitosamente
+2026-02-19T16:37:10:    • Ingresos Brutos: 300.00
+2026-02-19T16:37:10:    • Reembolsos:      0.00
+2026-02-19T16:37:10:    • Ingresos Netos:  300.00
+2026-02-19T16:37:38: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:37:38: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:37:38: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:37:38: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:37:38: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:38:08: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:38:08: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:38:08: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:38:08: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:38:08: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:38:38: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:38:38: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:38:38: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:38:38: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:38:38: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:39:08: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:39:08: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:39:08: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:39:08: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:39:08: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:39:16: ❌ Cliente desconectado: Pc41XLOecIeiNJAOAAAj
+2026-02-19T16:39:17: 📋 [SystemConfigController] Obteniendo configuración pública
+2026-02-19T16:39:17: ✅ [SystemConfigController] Configuración pública obtenida: Dev Hub Sharks
+2026-02-19T16:39:17: 💱 [SystemConfigController] Tipo de cambio incluido: 20.5
+2026-02-19T16:39:17: 🔍 [WalletController.getMyWallet] User: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T16:39:17: 🔍 [WalletController.getMyWallet] Getting wallet for: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T16:39:17: 🔍 [WalletController.getMyWallet] User: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T16:39:17: 🔍 [WalletController.getMyWallet] Getting wallet for: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T16:39:17: ✅ Cliente conectado: gPdDtNJPwlrbxRBYAAAl
+2026-02-19T16:39:17: 👑 Admin 6943157e5c102f674cc5c265 (gPdDtNJPwlrbxRBYAAAl) unido a sala de admins
+2026-02-19T16:39:17: 📊 [executiveMetrics] Generando métricas financieras ejecutivas...
+2026-02-19T16:39:17: 📊 [kpis] Excluyendo 0 ventas reembolsadas
+2026-02-19T16:39:17: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:39:17: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:39:17: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:39:17: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:39:17: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:39:18: ✅ [kpis] Ingresos Netos: 300.00
+2026-02-19T16:39:19: ✅ [executiveMetrics] Métricas generadas exitosamente
+2026-02-19T16:39:19:    • Ingresos Brutos: 300.00
+2026-02-19T16:39:19:    • Reembolsos:      0.00
+2026-02-19T16:39:19:    • Ingresos Netos:  300.00
+2026-02-19T16:39:47: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:39:47: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:39:47: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:39:47: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:39:47: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:40:17: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:40:17: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:40:17: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:40:17: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:40:17: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:40:47: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:40:47: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:40:47: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:40:47: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:40:47: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:41:05: ❌ Cliente desconectado: gPdDtNJPwlrbxRBYAAAl
+2026-02-19T16:41:05: 📋 [SystemConfigController] Obteniendo configuración pública
+2026-02-19T16:41:05: ✅ [SystemConfigController] Configuración pública obtenida: Dev Hub Sharks
+2026-02-19T16:41:05: 💱 [SystemConfigController] Tipo de cambio incluido: 20.5
+2026-02-19T16:41:06: 🔍 [WalletController.getMyWallet] User: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T16:41:06: 🔍 [WalletController.getMyWallet] Getting wallet for: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T16:41:06: ✅ Cliente conectado: ujtO_FGZihWqYq86AAAn
+2026-02-19T16:41:06: 👑 Admin 6943157e5c102f674cc5c265 (ujtO_FGZihWqYq86AAAn) unido a sala de admins
+2026-02-19T16:41:06: 📊 [executiveMetrics] Generando métricas financieras ejecutivas...
+2026-02-19T16:41:06: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:41:06: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:41:06: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:41:06: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:41:06: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:41:06: 📊 [kpis] Excluyendo 0 ventas reembolsadas
+2026-02-19T16:41:06: 🔍 [WalletController.getMyWallet] User: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T16:41:06: 🔍 [WalletController.getMyWallet] Getting wallet for: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T16:41:07: ✅ [kpis] Ingresos Netos: 300.00
+2026-02-19T16:41:08: ✅ [executiveMetrics] Métricas generadas exitosamente
+2026-02-19T16:41:08:    • Ingresos Brutos: 300.00
+2026-02-19T16:41:08:    • Reembolsos:      0.00
+2026-02-19T16:41:08:    • Ingresos Netos:  300.00
+2026-02-19T16:41:23: 🔍 [AdminPayments] Buscando instructores con status='all', minAmount=0, paymentMethod='all', startDate='N/A', endDate='N/A'
+2026-02-19T16:41:23: 📊 [AdminPayments] Filtros aplicados: { status: { '$nin': [ 'paid', 'completed', 'refunded' ] } }
+2026-02-19T16:41:23: 📦 [AdminPayments] Earnings obtenidos: 1
+2026-02-19T16:41:23: 🔍 [filterEarnings] Validando 1 earnings...
+2026-02-19T16:41:23: ✅ [filterEarnings] Válidos: 1, Excluidos: 0
+2026-02-19T16:41:23: ✅ [AdminPayments] Ganancias válidas después de filtrar refunds: 1
+2026-02-19T16:41:23: 💳 [AdminPayments] Estadísticas por método: {
+  wallet: { count: 1, total: 120 },
+  paypal: { count: 0, total: 0 },
+  mixed_paypal: { count: 0, total: 0, wallet_part: 0, paypal_part: 0 }
+}
+2026-02-19T16:41:23: ✅ [AdminPayments] Encontrados 1 instructores con ganancias >= 0
+2026-02-19T16:41:23: 📊 [AdminPayments] Desglose por instructor:
+2026-02-19T16:41:23:    • Instructor 694316f05c102f674cc5c2b3:
+2026-02-19T16:41:23:      - Total: 120.00 USD
+2026-02-19T16:41:23:      - Items: 1
+2026-02-19T16:41:23:      - Métodos de pago:
+2026-02-19T16:41:23:        * wallet: 1 items, 120.00 USD
+2026-02-19T16:41:23:      - Estados:
+2026-02-19T16:41:23:        * available: 1 items, 120.00 USD
+2026-02-19T16:41:34: 📊 getSalesBreakdown - Parámetros recibidos: {
+  month: '2',
+  year: '2026',
+  instructor_id: undefined,
+  instructor_search: undefined,
+  status: undefined
+}
+2026-02-19T16:41:34: ✅ Filtro mes/año aplicado: { month: 2, year: 2026 }
+2026-02-19T16:41:34: 🔍 Query final: { month: 2, year: 2026 }
+2026-02-19T16:41:35: ✅ Respuesta exitosa: {
+  retentions_count: 1,
+  total_docs: 1,
+  totals: {
+    sales_count: 1,
+    total_gross: 142,
+    total_retentions: 29.252000000000002,
+    total_net_pay: 112.74799999999999,
+    total_paypal_send: 8.509920000000001,
+    platform_net_profit: 98.78265920000001,
+    platform_taxes: 34.7074208
+  }
+}
+2026-02-19T16:41:36: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:41:36: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:41:36: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:41:36: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:41:36: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:41:38: 📊 [getEarningsStats] Obteniendo stats para instructor: new ObjectId("6943157e5c102f674cc5c265") Usuario: new ObjectId("6943157e5c102f674cc5c265") Rol: admin
+2026-02-19T16:41:38: 📊 [getEarningsStats] Total earnings encontrados: 0
+2026-02-19T16:41:38: ⚠️ [getEarningsStats] Sin earnings para instructor: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T16:41:38: 📊 [getEarningsStats] Total de earnings en toda la BD: 1
+2026-02-19T16:41:38: 📊 [getEarningsStats] Instructores con earnings: [ new ObjectId("694316f05c102f674cc5c2b3") ]
+2026-02-19T16:41:38: 💰 [getEarningsStats] Reembolsos completados encontrados: 0
+2026-02-19T16:41:38: ✅ [getEarningsStats] Stats finales: { disponible: 0, reembolsos: 0, total: 0 }
+2026-02-19T16:41:43: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:41:43: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:41:43: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:41:43: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:41:43: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:42:06: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:42:06: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:42:06: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:42:06: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:42:06: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:42:36: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:42:36: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:42:36: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:42:36: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:42:36: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:43:06: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:43:06: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:43:06: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:43:06: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:43:06: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:43:36: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:43:36: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:43:36: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:43:36: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:43:36: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:44:06: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:44:06: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:44:06: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:44:06: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:44:06: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:44:36: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:44:36: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:44:36: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:44:36: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:44:36: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:45:06: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:45:06: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:45:06: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:45:06: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:45:06: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:45:36: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:45:36: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:45:36: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:45:36: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:45:36: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:46:06: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:46:06: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:46:06: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:46:06: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:46:06: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:46:36: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:46:36: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:46:36: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:46:36: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:46:36: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:47:06: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:47:06: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:47:06: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:47:06: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:47:06: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:47:36: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:47:36: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:47:36: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:47:36: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:47:36: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:48:06: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:48:06: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:48:06: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:48:06: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:48:06: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:48:36: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:48:36: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:48:36: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:48:36: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:48:36: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:49:06: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:49:06: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:49:06: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:49:06: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:49:06: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:49:36: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:49:36: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:49:36: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:49:36: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:49:36: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:50:06: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:50:06: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:50:06: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:50:06: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:50:07: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:50:36: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:50:36: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:50:36: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:50:36: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:50:36: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:51:06: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:51:06: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:51:06: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:51:06: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:51:06: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:51:36: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:51:36: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:51:36: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:51:36: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:51:36: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:52:06: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:52:06: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:52:06: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:52:06: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:52:06: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:52:36: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:52:36: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:52:36: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:52:36: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:52:36: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:53:06: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:53:06: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:53:06: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:53:06: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:53:06: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:53:36: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:53:36: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:53:36: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:53:36: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:53:36: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:54:06: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:54:06: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:54:06: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:54:06: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:54:06: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:54:36: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:54:36: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:54:36: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:54:36: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:54:36: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:55:06: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:55:06: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:55:06: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:55:06: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:55:06: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:55:36: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:55:36: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:55:36: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:55:36: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:55:36: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:56:06: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:56:06: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:56:06: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:56:06: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:56:06: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:56:36: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:56:36: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:56:36: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:56:36: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:56:36: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:57:06: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:57:06: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:57:06: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:57:06: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:57:06: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:57:36: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:57:36: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:57:36: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:57:36: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:57:36: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:58:06: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:58:06: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:58:06: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:58:06: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:58:06: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:58:36: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:58:36: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:58:36: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:58:36: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:58:36: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:59:06: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:59:06: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:59:06: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:59:06: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:59:06: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T16:59:36: 🔍 [RefundController.list] Iniciando...
+2026-02-19T16:59:36: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T16:59:36: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T16:59:36: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T16:59:36: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:00:06: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:00:06: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:00:06: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:00:06: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:00:06: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:00:36: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:00:36: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:00:36: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:00:36: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:00:36: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:01:06: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:01:06: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:01:06: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:01:06: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:01:06: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:01:36: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:01:36: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:01:36: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:01:36: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:01:36: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:02:06: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:02:06: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:02:06: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:02:06: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:02:06: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:02:36: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:02:36: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:02:36: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:02:36: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:02:36: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:03:06: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:03:06: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:03:06: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:03:06: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:03:06: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:03:36: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:03:36: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:03:36: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:03:36: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:03:36: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:04:06: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:04:06: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:04:06: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:04:06: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:04:06: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:04:36: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:04:36: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:04:36: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:04:36: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:04:36: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:05:06: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:05:06: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:05:06: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:05:06: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:05:06: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:05:36: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:05:36: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:05:36: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:05:36: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:05:36: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:06:06: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:06:06: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:06:06: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:06:06: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:06:06: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:06:36: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:06:36: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:06:36: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:06:36: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:06:37: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:07:06: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:07:06: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:07:06: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:07:06: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:07:06: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:07:36: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:07:36: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:07:36: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:07:36: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:07:36: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:08:06: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:08:06: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:08:06: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:08:06: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:08:06: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:08:36: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:08:36: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:08:36: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:08:36: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:08:36: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:09:06: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:09:06: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:09:06: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:09:06: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:09:06: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:09:36: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:09:36: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:09:36: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:09:36: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:09:36: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:10:06: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:10:06: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:10:06: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:10:06: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:10:06: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:10:36: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:10:36: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:10:36: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:10:36: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:10:36: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:11:06: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:11:06: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:11:06: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:11:06: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:11:06: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:11:36: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:11:36: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:11:36: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:11:36: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:11:36: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:12:06: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:12:06: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:12:06: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:12:06: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:12:06: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:12:36: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:12:36: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:12:36: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:12:36: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:12:36: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:13:06: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:13:06: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:13:06: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:13:06: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:13:06: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:13:36: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:13:36: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:13:36: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:13:36: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:13:36: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:14:06: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:14:06: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:14:06: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:14:06: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:14:06: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:14:36: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:14:36: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:14:36: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:14:36: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:14:36: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:15:06: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:15:06: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:15:06: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:15:06: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:15:06: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:15:36: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:15:36: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:15:36: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:15:36: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:15:36: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:16:06: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:16:06: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:16:06: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:16:06: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:16:06: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:16:36: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:16:36: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:16:36: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:16:36: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:16:36: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:17:06: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:17:06: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:17:06: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:17:06: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:17:06: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:17:36: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:17:36: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:17:36: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:17:36: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:17:36: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:18:06: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:18:06: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:18:06: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:18:06: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:18:06: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:18:36: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:18:36: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:18:36: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:18:36: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:18:36: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:19:06: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:19:06: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:19:06: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:19:06: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:19:06: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:19:36: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:19:36: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:19:36: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:19:36: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:19:36: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:20:06: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:20:06: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:20:06: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:20:06: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:20:06: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:20:36: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:20:36: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:20:36: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:20:36: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:20:36: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:21:06: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:21:06: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:21:06: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:21:06: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:21:06: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:21:36: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:21:36: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:21:36: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:21:36: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:21:36: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:22:06: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:22:06: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:22:06: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:22:06: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:22:06: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:22:36: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:22:36: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:22:36: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:22:36: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:22:36: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:23:06: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:23:06: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:23:06: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:23:06: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:23:06: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:23:36: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:23:36: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:23:36: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:23:36: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:23:36: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:24:06: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:24:06: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:24:06: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:24:06: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:24:06: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:24:36: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:24:36: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:24:36: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:24:36: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:24:36: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:25:06: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:25:06: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:25:06: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:25:06: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:25:06: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:25:36: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:25:36: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:25:36: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:25:36: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:25:36: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:25:43: ❌ Cliente desconectado: ujtO_FGZihWqYq86AAAn
+2026-02-19T17:26:19: 📋 [SystemConfigController] Obteniendo configuración pública
+2026-02-19T17:26:20: ✅ [SystemConfigController] Configuración pública obtenida: Dev Hub Sharks
+2026-02-19T17:26:20: 💱 [SystemConfigController] Tipo de cambio incluido: 20.5
+2026-02-19T17:26:20: 🔍 [WalletController.getMyWallet] User: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T17:26:20: 🔍 [WalletController.getMyWallet] Getting wallet for: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T17:26:20: 🔍 [WalletController.getMyWallet] User: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T17:26:20: 🔍 [WalletController.getMyWallet] Getting wallet for: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T17:26:20: 📊 [executiveMetrics] Generando métricas financieras ejecutivas...
+2026-02-19T17:26:20: ✅ Cliente conectado: Ag4kAcojPu4Y7KlfAAAp
+2026-02-19T17:26:20: 👑 Admin 6943157e5c102f674cc5c265 (Ag4kAcojPu4Y7KlfAAAp) unido a sala de admins
+2026-02-19T17:26:20: 📊 [kpis] Excluyendo 0 ventas reembolsadas
+2026-02-19T17:26:20: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:26:20: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:26:20: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:26:20: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:26:20: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:26:21: ✅ [kpis] Ingresos Netos: 300.00
+2026-02-19T17:26:22: ✅ [executiveMetrics] Métricas generadas exitosamente
+2026-02-19T17:26:22:    • Ingresos Brutos: 300.00
+2026-02-19T17:26:22:    • Reembolsos:      0.00
+2026-02-19T17:26:22:    • Ingresos Netos:  300.00
+2026-02-19T17:26:50: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:26:50: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:26:50: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:26:50: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:26:50: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:27:20: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:27:20: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:27:20: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:27:20: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:27:20: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:27:50: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:27:50: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:27:50: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:27:50: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:27:50: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:28:20: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:28:20: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:28:20: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:28:20: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:28:20: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:28:50: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:28:50: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:28:50: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:28:50: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:28:50: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:29:20: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:29:20: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:29:20: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:29:20: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:29:20: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:29:46: ❌ Cliente desconectado: Ag4kAcojPu4Y7KlfAAAp
+2026-02-19T17:29:46: 📋 [SystemConfigController] Obteniendo configuración pública
+2026-02-19T17:29:46: ✅ [SystemConfigController] Configuración pública obtenida: Dev Hub Sharks
+2026-02-19T17:29:46: 💱 [SystemConfigController] Tipo de cambio incluido: 20.5
+2026-02-19T17:29:47: 🔍 [WalletController.getMyWallet] User: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T17:29:47: 🔍 [WalletController.getMyWallet] Getting wallet for: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T17:29:47: 🔍 [WalletController.getMyWallet] User: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T17:29:47: 🔍 [WalletController.getMyWallet] Getting wallet for: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T17:29:47: 📊 [executiveMetrics] Generando métricas financieras ejecutivas...
+2026-02-19T17:29:47: ✅ Cliente conectado: tyo-cUiUmGTktCj-AAAr
+2026-02-19T17:29:47: 👑 Admin 6943157e5c102f674cc5c265 (tyo-cUiUmGTktCj-AAAr) unido a sala de admins
+2026-02-19T17:29:47: 📊 [kpis] Excluyendo 0 ventas reembolsadas
+2026-02-19T17:29:47: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:29:47: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:29:47: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:29:47: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:29:47: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:29:48: ✅ [kpis] Ingresos Netos: 300.00
+2026-02-19T17:29:49: ✅ [executiveMetrics] Métricas generadas exitosamente
+2026-02-19T17:29:49:    • Ingresos Brutos: 300.00
+2026-02-19T17:29:49:    • Reembolsos:      0.00
+2026-02-19T17:29:49:    • Ingresos Netos:  300.00
+2026-02-19T17:30:17: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:30:17: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:30:17: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:30:17: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:30:17: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:30:47: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:30:47: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:30:47: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:30:47: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:30:47: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:30:58: ❌ Cliente desconectado: tyo-cUiUmGTktCj-AAAr
+2026-02-19T17:30:59: 📋 [SystemConfigController] Obteniendo configuración pública
+2026-02-19T17:30:59: ✅ [SystemConfigController] Configuración pública obtenida: Dev Hub Sharks
+2026-02-19T17:30:59: 💱 [SystemConfigController] Tipo de cambio incluido: 20.5
+2026-02-19T17:30:59: 🔍 [WalletController.getMyWallet] User: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T17:30:59: 🔍 [WalletController.getMyWallet] Getting wallet for: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T17:30:59: 🔍 [WalletController.getMyWallet] User: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T17:30:59: 🔍 [WalletController.getMyWallet] Getting wallet for: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T17:30:59: ✅ Cliente conectado: SUK0lqcW4dcScgniAAAt
+2026-02-19T17:30:59: 👑 Admin 6943157e5c102f674cc5c265 (SUK0lqcW4dcScgniAAAt) unido a sala de admins
+2026-02-19T17:30:59: 📊 [executiveMetrics] Generando métricas financieras ejecutivas...
+2026-02-19T17:30:59: 📊 [kpis] Excluyendo 0 ventas reembolsadas
+2026-02-19T17:31:00: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:31:00: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:31:00: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:31:00: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:31:00: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:31:00: ✅ [kpis] Ingresos Netos: 300.00
+2026-02-19T17:31:01: ✅ [executiveMetrics] Métricas generadas exitosamente
+2026-02-19T17:31:01:    • Ingresos Brutos: 300.00
+2026-02-19T17:31:01:    • Reembolsos:      0.00
+2026-02-19T17:31:01:    • Ingresos Netos:  300.00
+2026-02-19T17:31:29: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:31:29: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:31:29: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:31:29: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:31:29: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:31:59: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:31:59: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:31:59: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:31:59: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:31:59: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:32:29: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:32:29: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:32:29: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:32:29: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:32:29: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:32:59: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:32:59: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:32:59: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:32:59: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:32:59: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:33:29: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:33:29: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:33:29: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:33:29: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:33:29: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:33:59: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:33:59: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:33:59: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:33:59: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:33:59: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:34:29: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:34:29: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:34:29: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:34:29: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:34:29: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:34:59: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:34:59: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:34:59: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:34:59: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:35:00: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:35:29: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:35:29: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:35:29: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:35:29: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:35:29: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:35:59: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:35:59: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:35:59: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:35:59: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:35:59: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:36:29: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:36:29: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:36:29: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:36:29: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:36:29: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:36:59: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:36:59: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:36:59: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:36:59: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:36:59: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:37:29: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:37:29: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:37:29: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:37:29: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:37:29: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:37:59: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:37:59: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:37:59: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:37:59: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:37:59: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:38:29: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:38:29: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:38:29: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:38:29: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:38:29: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:38:47: ❌ Cliente desconectado: SUK0lqcW4dcScgniAAAt
+2026-02-19T17:38:47: 📋 [SystemConfigController] Obteniendo configuración pública
+2026-02-19T17:38:47: ✅ [SystemConfigController] Configuración pública obtenida: Dev Hub Sharks
+2026-02-19T17:38:47: 💱 [SystemConfigController] Tipo de cambio incluido: 20.5
+2026-02-19T17:38:48: 🔍 [WalletController.getMyWallet] User: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T17:38:48: 🔍 [WalletController.getMyWallet] Getting wallet for: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T17:38:48: 🔍 [WalletController.getMyWallet] User: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T17:38:48: 🔍 [WalletController.getMyWallet] Getting wallet for: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T17:38:48: ✅ Cliente conectado: MsZTfpjQdRLUPQQPAAAv
+2026-02-19T17:38:48: 👑 Admin 6943157e5c102f674cc5c265 (MsZTfpjQdRLUPQQPAAAv) unido a sala de admins
+2026-02-19T17:38:48: 📊 [executiveMetrics] Generando métricas financieras ejecutivas...
+2026-02-19T17:38:48: 📊 [kpis] Excluyendo 0 ventas reembolsadas
+2026-02-19T17:38:48: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:38:48: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:38:48: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:38:48: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:38:48: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:38:49: ✅ [kpis] Ingresos Netos: 300.00
+2026-02-19T17:38:50: ✅ [executiveMetrics] Métricas generadas exitosamente
+2026-02-19T17:38:50:    • Ingresos Brutos: 300.00
+2026-02-19T17:38:50:    • Reembolsos:      0.00
+2026-02-19T17:38:50:    • Ingresos Netos:  300.00
+2026-02-19T17:39:18: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:39:18: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:39:18: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:39:18: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:39:18: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:39:35: ❌ Cliente desconectado: MsZTfpjQdRLUPQQPAAAv
+2026-02-19T17:40:50: 📋 [SystemConfigController] Obteniendo configuración pública
+2026-02-19T17:40:50: ✅ [SystemConfigController] Configuración pública obtenida: Dev Hub Sharks
+2026-02-19T17:40:50: 💱 [SystemConfigController] Tipo de cambio incluido: 20.5
+2026-02-19T17:40:50: ✅ [list_instructors] Encontrados 1 instructores
+2026-02-19T17:40:50: 🆔 [list_instructors] Slugs: [ { name: 'alo', slug: 'alo-bn' } ]
+2026-02-19T17:40:50: 
+Proyectos públicos encontrados: 3
+2026-02-19T17:40:51: ========== FIN DEBUG ==========
+
+2026-02-19T17:40:53: 📋 [SystemConfigController] Obteniendo configuración pública
+2026-02-19T17:40:53: ✅ [SystemConfigController] Configuración pública obtenida: Dev Hub Sharks
+2026-02-19T17:40:53: 💱 [SystemConfigController] Tipo de cambio incluido: 20.5
+2026-02-19T17:41:09: 🔑 [Login] Intento de login para: admin@example.com
+2026-02-19T17:41:09: 👤 [Login] Usuario encontrado: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  email: 'admin@example.com',
+  name: 'Luis Alonso',
+  hasPassword: true,
+  state: true,
+  isVerified: true
+}
+2026-02-19T17:41:10: 🔍 [WalletController.getMyWallet] User: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T17:41:10: 🔍 [WalletController.getMyWallet] Getting wallet for: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T17:41:10: 📚 [ProfileStudentController] Cursos inscritos encontrados: 0
+2026-02-19T17:41:10: ✅ [ProfileStudentController] Cursos con porcentaje calculado: 0
+2026-02-19T17:41:10: 📚 [ProfileStudentController] Cursos inscritos encontrados: 0
+2026-02-19T17:41:10: ✅ [ProfileStudentController] Cursos con porcentaje calculado: 0
+2026-02-19T17:41:10: 🔍 [WalletController.getMyWallet] User: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T17:41:10: 🔍 [WalletController.getMyWallet] Getting wallet for: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T17:41:10: 📦 [ProfileStudentController] Ventas cargadas y populadas: 0
+2026-02-19T17:41:10: 
+============================================================
+2026-02-19T17:41:10: 🔍 [ProfileStudentController] DIAGNÓSTICO DE PROYECTOS
+2026-02-19T17:41:10: ============================================================
+2026-02-19T17:41:10: 📋 Total ventas del usuario: 0
+2026-02-19T17:41:10: 👤 Usuario ID: 6943157e5c102f674cc5c265
+2026-02-19T17:41:10: 
+============================================================
+2026-02-19T17:41:10: 📊 RESULTADO FINAL: 0 proyectos encontrados
+2026-02-19T17:41:10: 📚 RESULTADO FINAL: 0 cursos activos
+2026-02-19T17:41:10: ============================================================
+
+2026-02-19T17:41:10: ✅ [ProfileStudentController] Proyectos únicos (sin duplicados): 0
+2026-02-19T17:41:10: 📦 [ProfileStudentController] Ventas cargadas y populadas: 0
+2026-02-19T17:41:10: 
+============================================================
+2026-02-19T17:41:10: 🔍 [ProfileStudentController] DIAGNÓSTICO DE PROYECTOS
+2026-02-19T17:41:10: ============================================================
+2026-02-19T17:41:10: 📋 Total ventas del usuario: 0
+2026-02-19T17:41:10: 👤 Usuario ID: 6943157e5c102f674cc5c265
+2026-02-19T17:41:10: 
+============================================================
+2026-02-19T17:41:10: 📊 RESULTADO FINAL: 0 proyectos encontrados
+2026-02-19T17:41:10: 📚 RESULTADO FINAL: 0 cursos activos
+2026-02-19T17:41:10: ============================================================
+
+2026-02-19T17:41:10: ✅ [ProfileStudentController] Proyectos únicos (sin duplicados): 0
+2026-02-19T17:41:10: ✅ Cliente conectado: bx6fvy0O3UtbMYgdAAAx
+2026-02-19T17:41:10: 👑 Admin 6943157e5c102f674cc5c265 (bx6fvy0O3UtbMYgdAAAx) unido a sala de admins
+2026-02-19T17:41:10: 📊 [executiveMetrics] Generando métricas financieras ejecutivas...
+2026-02-19T17:41:10: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:41:10: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:41:10: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:41:10: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:41:10: 📊 [kpis] Excluyendo 0 ventas reembolsadas
+2026-02-19T17:41:10: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:41:11: ✅ [kpis] Ingresos Netos: 300.00
+2026-02-19T17:41:12: ✅ [executiveMetrics] Métricas generadas exitosamente
+2026-02-19T17:41:12:    • Ingresos Brutos: 300.00
+2026-02-19T17:41:12:    • Reembolsos:      0.00
+2026-02-19T17:41:12:    • Ingresos Netos:  300.00
+2026-02-19T17:41:40: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:41:40: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:41:40: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:41:40: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:41:40: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:42:10: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:42:10: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:42:10: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:42:10: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:42:10: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:42:31: ❌ Cliente desconectado: bx6fvy0O3UtbMYgdAAAx
+2026-02-19T17:42:31: 📋 [SystemConfigController] Obteniendo configuración pública
+2026-02-19T17:42:31: ✅ [SystemConfigController] Configuración pública obtenida: Dev Hub Sharks
+2026-02-19T17:42:31: 💱 [SystemConfigController] Tipo de cambio incluido: 20.5
+2026-02-19T17:42:31: ✅ Cliente conectado: gQlLdTcJWzTUxVXmAAAz
+2026-02-19T17:42:31: 👑 Admin 6943157e5c102f674cc5c265 (gQlLdTcJWzTUxVXmAAAz) unido a sala de admins
+2026-02-19T17:42:31: 🔍 [WalletController.getMyWallet] User: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T17:42:31: 🔍 [WalletController.getMyWallet] Getting wallet for: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T17:42:32: 📊 [executiveMetrics] Generando métricas financieras ejecutivas...
+2026-02-19T17:42:32: 📊 [kpis] Excluyendo 0 ventas reembolsadas
+2026-02-19T17:42:32: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:42:32: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:42:32: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:42:32: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:42:32: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:42:32: 🔍 [WalletController.getMyWallet] User: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T17:42:32: 🔍 [WalletController.getMyWallet] Getting wallet for: new ObjectId("6943157e5c102f674cc5c265")
+2026-02-19T17:42:32: ✅ [kpis] Ingresos Netos: 300.00
+2026-02-19T17:42:33: ✅ [executiveMetrics] Métricas generadas exitosamente
+2026-02-19T17:42:33:    • Ingresos Brutos: 300.00
+2026-02-19T17:42:33:    • Reembolsos:      0.00
+2026-02-19T17:42:33:    • Ingresos Netos:  300.00
+2026-02-19T17:43:02: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:43:02: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:43:02: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:43:02: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:43:02: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:43:32: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:43:32: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:43:32: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:43:32: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:43:32: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:44:02: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:44:02: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:44:02: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:44:02: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:44:02: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:44:32: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:44:32: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:44:32: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:44:32: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:44:32: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:45:02: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:45:02: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:45:02: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:45:02: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:45:02: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:45:32: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:45:32: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:45:32: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:45:32: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:45:32: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:46:02: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:46:02: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:46:02: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:46:02: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:46:02: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:46:32: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:46:32: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:46:32: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:46:32: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:46:32: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:47:02: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:47:02: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:47:02: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:47:02: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:47:02: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:47:32: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:47:32: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:47:32: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:47:32: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:47:32: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:48:02: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:48:02: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:48:02: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:48:02: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:48:02: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:48:32: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:48:32: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:48:32: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:48:32: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:48:32: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:49:02: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:49:02: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:49:02: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:49:02: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:49:02: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:49:32: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:49:32: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:49:32: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:49:32: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:49:32: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:50:02: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:50:02: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:50:02: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:50:02: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:50:02: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:50:32: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:50:32: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:50:32: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:50:32: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:50:32: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:51:02: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:51:02: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:51:02: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:51:02: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:51:02: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:51:32: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:51:32: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:51:32: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:51:32: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:51:32: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:52:02: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:52:02: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:52:02: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:52:02: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:52:02: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:52:32: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:52:32: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:52:32: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:52:32: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:52:32: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:53:02: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:53:02: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:53:02: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:53:02: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:53:02: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:53:32: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:53:32: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:53:32: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:53:32: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:53:32: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:54:02: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:54:02: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:54:02: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:54:02: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:54:02: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:54:32: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:54:32: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:54:32: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:54:32: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:54:32: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:55:02: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:55:02: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:55:02: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:55:02: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:55:02: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:55:32: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:55:32: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:55:32: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:55:32: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:55:32: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:56:02: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:56:02: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:56:02: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:56:02: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:56:02: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:56:32: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:56:32: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:56:32: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:56:32: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:56:32: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:57:02: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:57:02: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:57:02: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:57:02: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:57:02: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:57:32: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:57:32: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:57:32: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:57:32: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:57:32: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:58:02: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:58:02: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:58:02: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:58:02: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:58:02: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:58:32: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:58:32: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:58:32: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:58:32: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:58:32: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:59:02: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:59:02: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:59:02: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:59:02: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:59:02: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T17:59:32: 🔍 [RefundController.list] Iniciando...
+2026-02-19T17:59:32: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T17:59:32: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T17:59:32: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T17:59:32: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T18:00:02: 🔍 [RefundController.list] Iniciando...
+2026-02-19T18:00:02: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T18:00:02: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T18:00:02: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T18:00:02: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T18:00:32: 🔍 [RefundController.list] Iniciando...
+2026-02-19T18:00:32: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T18:00:32: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T18:00:32: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T18:00:32: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T18:01:02: 🔍 [RefundController.list] Iniciando...
+2026-02-19T18:01:02: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T18:01:02: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T18:01:02: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T18:01:02: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T18:01:32: 🔍 [RefundController.list] Iniciando...
+2026-02-19T18:01:32: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T18:01:32: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T18:01:32: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T18:01:32: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T18:02:02: 🔍 [RefundController.list] Iniciando...
+2026-02-19T18:02:02: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T18:02:02: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T18:02:02: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T18:02:02: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T18:02:32: 🔍 [RefundController.list] Iniciando...
+2026-02-19T18:02:32: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T18:02:32: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T18:02:32: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T18:02:32: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T18:03:02: 🔍 [RefundController.list] Iniciando...
+2026-02-19T18:03:02: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T18:03:02: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T18:03:02: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T18:03:02: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T18:03:32: 🔍 [RefundController.list] Iniciando...
+2026-02-19T18:03:32: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T18:03:32: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T18:03:32: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T18:03:32: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T18:04:02: 🔍 [RefundController.list] Iniciando...
+2026-02-19T18:04:02: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T18:04:02: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T18:04:02: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T18:04:02: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T18:04:32: 🔍 [RefundController.list] Iniciando...
+2026-02-19T18:04:32: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T18:04:32: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T18:04:32: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T18:04:32: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T18:05:02: 🔍 [RefundController.list] Iniciando...
+2026-02-19T18:05:02: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T18:05:02: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T18:05:02: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T18:05:02: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T18:05:32: 🔍 [RefundController.list] Iniciando...
+2026-02-19T18:05:32: 👤 [RefundController.list] Usuario completo: {
+  id: new ObjectId("6943157e5c102f674cc5c265"),
+  rol: 'admin',
+  name: 'Luis Alonso'
+}
+2026-02-19T18:05:32: 👑 [RefundController.list] Modo admin - ve todos
+2026-02-19T18:05:32: 🔍 [RefundController.list] Filtro aplicado: {"state":1}
+2026-02-19T18:05:32: ✅ [RefundController.list] Reembolsos encontrados: 0
+2026-02-19T18:06:00: ❌ Cliente desconectado: gQlLdTcJWzTUxVXmAAAz

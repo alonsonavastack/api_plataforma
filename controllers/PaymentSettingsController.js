@@ -1,88 +1,115 @@
 import PaymentSettings from '../models/PaymentSettings.js';
 
+/**
+ * Obtiene el documento único de configuración de pagos.
+ * NUNCA crea más de un documento.
+ */
+const getOrCreate = async () => {
+    // 🔥 FIX CRÍTICO: Usar findOneAndUpdate con upsert vacío para garantizar UN ÚNICO documento
+    // y evitar que cree múltiples documentos si findOne() devuelve null por errores de validación
+    let settings = await PaymentSettings.findOne();
+
+    if (!settings) {
+        // En lugar de usar .create(), buscamos e insertamos atómicamente si no hay ninguno.
+        // Si hay documentos corruptos (ej. puros de paypal), findOneAndUpdate tomará el primero.
+        settings = await PaymentSettings.findOneAndUpdate(
+            {},
+            {
+                $setOnInsert: {
+                    stripe: { mode: 'test', active: true, secretKey: '', publishableKey: '', webhookSecret: '' }
+                }
+            },
+            { new: true, upsert: true, setDefaultsOnInsert: true }
+        );
+        console.log('✅ [PaymentSettings] Documento inicializado o recuperado atómicamente:', settings._id);
+    }
+
+    // Documento legacy sin campo stripe — inyectarlo con $set directo en MongoDB
+    if (settings && !settings.stripe) {
+        settings = await PaymentSettings.findByIdAndUpdate(
+            settings._id,
+            { $set: { stripe: { mode: 'test', active: true, secretKey: '', publishableKey: '', webhookSecret: '' } } },
+            { new: true }
+        );
+        console.log('🔧 [PaymentSettings] Campo stripe inyectado en documento legacy');
+    }
+
+    return settings;
+};
+
 export default {
+    // ─── Admin: leer configuración completa ─────────────────────────────────
     getSettings: async (req, res) => {
         try {
-            let settings = await PaymentSettings.findOne();
-            if (!settings) {
-                settings = await PaymentSettings.create({});
-            }
+            const settings = await getOrCreate();
+            console.log('📤 [PaymentSettings] GET stripe:', JSON.stringify(settings.stripe, null, 2));
             res.status(200).json({ settings });
         } catch (error) {
-            res.status(500).send({
-                message: 'OCURRIÓ UN PROBLEMA'
-            });
-            console.log(error);
+            console.error('❌ [PaymentSettings] getSettings:', error);
+            res.status(500).send({ message: 'OCURRIÓ UN PROBLEMA' });
         }
     },
 
+    // ─── Admin: guardar configuración ───────────────────────────────────────
     updateSettings: async (req, res) => {
         try {
             const data = req.body;
-            let settings = await PaymentSettings.findOne();
+            console.log('📥 [PaymentSettings] PUT recibido:', JSON.stringify(data, null, 2));
 
-            if (!settings) {
-                settings = new PaymentSettings(data);
-                settings.updatedBy = req.user._id; // Asumiendo que tenemos req.user desde el middleware de auth
-                await settings.save();
-            } else {
-                if (data.paypal) settings.paypal = { ...settings.paypal, ...data.paypal };
+            const settings = await getOrCreate();
 
-                settings.updatedBy = req.user._id;
-                await settings.save();
+            if (data.stripe) {
+                // Ensure stripe exists
+                if (!settings.stripe) settings.stripe = {};
+
+                // Update properties individually to avoid casting errors from legacy subdocuments
+                const fields = ['mode', 'active', 'secretKey', 'publishableKey', 'webhookSecret'];
+                fields.forEach(field => {
+                    if (data.stripe[field] !== undefined && data.stripe[field] !== null) {
+                        settings.stripe[field] = data.stripe[field];
+                    }
+                });
+
+                // Force mongoose to recognize changes in mixed/nested paths
+                settings.markModified('stripe');
             }
 
-            res.status(200).json({
-                message: 'Configuración actualizada correctamente',
-                settings
-            });
+            // Important: Explicitly remove paypal if it exists to clean DB schema natively over time
+            if (settings.paypal !== undefined) {
+                settings.paypal = undefined;
+            }
+
+            settings.updatedBy = req.user._id;
+            const saved = await settings.save();
+            console.log('✅ [PaymentSettings] Guardado:', JSON.stringify(saved.stripe, null, 2));
+
+            res.status(200).json({ message: 'Configuración actualizada correctamente', settings: saved });
         } catch (error) {
+            console.error('❌ [PaymentSettings] updateSettings error detallado:', error);
             res.status(500).send({
-                message: 'OCURRIÓ UN PROBLEMA'
+                message: 'Error al actualizar configuración de pago',
+                details: error.message
             });
-            console.log(error);
         }
     },
 
+    // ─── Público: solo datos seguros para el checkout ───────────────────────
+    // ⚠️ NUNCA crear documentos aquí — solo leer
     getPublicSettings: async (req, res) => {
         try {
-            let settings = await PaymentSettings.findOne();
-            if (!settings) {
-                settings = await PaymentSettings.create({});
-            }
-
-            // Solo devolver información pública y segura
-            // Solo devolver información pública y segura
-            // 🔥 FIX: Priorizar variables de entorno
-            const envMode = process.env.PAYPAL_MODE;
-            const dbMode = settings.paypal.mode;
-            const finalMode = (envMode === 'sandbox' || envMode === 'live') ? envMode : dbMode;
-
-            let finalClientId = '';
-            if (process.env.PAYPAL_CLIENT_ID) {
-                finalClientId = process.env.PAYPAL_CLIENT_ID;
-            } else {
-                finalClientId = finalMode === 'live'
-                    ? settings.paypal.live?.clientId
-                    : settings.paypal.sandbox?.clientId;
-            }
-
-            const publicSettings = {
-                paypal: {
-                    active: settings.paypal.active || (!!process.env.PAYPAL_CLIENT_ID),
-                    clientId: finalClientId,
-                    instructorPayoutsActive: settings.paypal.instructorPayoutsActive,
-                    mode: finalMode
-                },
-
-            };
-
-            res.status(200).json({ settings: publicSettings });
-        } catch (error) {
-            res.status(500).send({
-                message: 'OCURRIÓ UN PROBLEMA'
+            const settings = await PaymentSettings.findOne().lean();
+            res.status(200).json({
+                settings: {
+                    stripe: {
+                        active: settings?.stripe?.active !== false,
+                        publishableKey: process.env.STRIPE_PUBLISHABLE_KEY || settings?.stripe?.publishableKey || '',
+                        mode: process.env.STRIPE_MODE || settings?.stripe?.mode || 'test'
+                    }
+                }
             });
-            console.log(error);
+        } catch (error) {
+            console.error('❌ [PaymentSettings] getPublicSettings:', error);
+            res.status(500).send({ message: 'OCURRIÓ UN PROBLEMA' });
         }
     }
-}
+};

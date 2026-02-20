@@ -251,12 +251,14 @@ export function calculateEarningsStatsByStatus(earnings) {
 }
 
 /**
- * Desglosa un pago de PayPal (México) en: Comisión PayPal, Neto, Instructor (70%), Plataforma (30%)
+ * Desglosa un pago de PayPal (México) o Stripe en: Comisión, Neto, Instructor (70%), Plataforma (30%)
  * Fórmula PayPal MX estándar: 3.95% + $4.00 MXN + IVA (16%)
+ * Fórmula Stripe MX estándar: 4.4% + $4.00 MXN + IVA (16%)
  * @param {number} amount - Monto TOTAL pagado por el cliente (MXN)
+ * @param {string} gateway - 'paypal' o 'stripe'
  * @returns {Object} Desglose financiero
  */
-export function calculatePaymentSplit(amount) {
+export function calculatePaymentSplit(amount, gateway = 'paypal') {
     // 1. Validaciones básicas
     if (typeof amount !== 'number' || amount <= 0) {
         return {
@@ -269,25 +271,26 @@ export function calculatePaymentSplit(amount) {
         };
     }
 
-    // 2. Cálculo de Comisión PayPal (3.95% + $4.00) + IVA (16%)
+    // 2. Cálculo de Comisión Pasarela
     const FIXED_FEE = 4.00;
-    const PERCENTAGE_FEE = 0.0395; // 3.95%
+    // Stripe cobra 4.4% + $4.00, PayPal cobra 3.95% + $4.00. Ambos + IVA
+    const PERCENTAGE_FEE = gateway === 'stripe' ? 0.044 : 0.0395;
     const IVA = 1.16;
 
     // Cálculo inicial
     let rawFee = ((amount * PERCENTAGE_FEE) + FIXED_FEE) * IVA;
 
-    // REDONDEO STEP 1: Fee de PayPal a 2 decimales
-    let paypalFee = parseFloat(rawFee.toFixed(2));
+    // REDONDEO STEP 1: Fee de pasarela a 2 decimales
+    let gatewayFee = parseFloat(rawFee.toFixed(2));
 
     // El fee no puede ser mayor al monto
-    if (paypalFee > amount) {
-        paypalFee = amount;
+    if (gatewayFee > amount) {
+        gatewayFee = amount;
     }
 
     // 3. Monto Neto (Usando el fee ya redondeado para que cuadre la visualización)
     // 15 - 5.33 = 9.67
-    const netAmount = parseFloat((amount - paypalFee).toFixed(2));
+    const netAmount = parseFloat((amount - gatewayFee).toFixed(2));
 
     // 4. Reparto (Split) 70% Vendor / 30% Plataforma sobre el NETO
     let vendorShare = 0;
@@ -304,7 +307,8 @@ export function calculatePaymentSplit(amount) {
 
     return {
         totalPaid: parseFloat(amount.toFixed(2)),
-        paypalFee: paypalFee,
+        paypalFee: gatewayFee, // Manteniendo esta propiedad temporalmente por retrocompatibilidad
+        stripeFee: gatewayFee, // Nueva propiedad
         netAmount: netAmount,
         vendorShare: vendorShare,
         platformShare: platformShare,

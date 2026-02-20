@@ -112,7 +112,30 @@ async function createEarningForProduct(sale, item) {
 
         // 3. 🔥 CÁLCULO SOBRE NETO (NUEVO REQUERIMIENTO - PROGRESSIVE ROUNDING)
         // Usamos la utilidad centralizada para asegurar que todo cuadre al centavo
-        const splitResult = calculatePaymentSplit(salePrice);
+        // Identify gateway for fee calculation
+        let gateway = 'paypal'; // Default
+        if (sale.method_payment === 'stripe' || sale.method_payment === 'mixed_stripe') {
+            gateway = 'stripe';
+        }
+
+        let splitResult;
+
+        if (sale.method_payment === 'wallet') {
+            // For Wallet payments there are no explicit external payment gateway fixed fees
+            // but we still apply the 70/30 or 80/20 platform split to the net amount
+            splitResult = {
+                totalPaid: parseFloat(salePrice.toFixed(2)),
+                paypalFee: 0,
+                stripeFee: 0,
+                netAmount: parseFloat(salePrice.toFixed(2)),
+                vendorShare: parseFloat((salePrice * (1 - commissionRate)).toFixed(2)),
+                platformShare: parseFloat((salePrice * commissionRate).toFixed(2)),
+                currency: sale.currency_total || 'MXN'
+            };
+        } else {
+            // PayPal or Stripe (pass the configured gateway type for accurate fees)
+            splitResult = calculatePaymentSplit(salePrice, gateway);
+        }
 
         const paypalFee = splitResult.paypalFee;
         const netSale = splitResult.netAmount;
@@ -129,7 +152,7 @@ async function createEarningForProduct(sale, item) {
             instructorEarning = parseFloat((netSale - platformCommission).toFixed(2));
         }
 
-        console.log(`   💸 PayPal Fee (Est.): -${paypalFee.toFixed(2)}`);
+        console.log(`   💸 Pasarela Fee (Est.): -${paypalFee.toFixed(2)}`);
         console.log(`   🥩 Base Repartible (Neto): ${netSale.toFixed(2)}`);
 
         // Calcular fecha disponible
@@ -147,10 +170,11 @@ async function createEarningForProduct(sale, item) {
             product_type: item.product_type,
             sale_price: salePrice, // Precio CON descuento (precio final pagado por usuario)
             currency: sale.currency_total || sale.currency_payment || 'MXN',
+            payment_method: sale.method_payment || 'wallet', // 🔥 GUARDAR EL MÉTODO UTILIZADO EN LA GANANCIA
 
             // 🔥 Guardamos comisiones de pasarela
             payment_fee_rate: 0, // Ya no es un % fijo simple
-            payment_fee_amount: paypalFee,
+            payment_fee_amount: paypalFee, // Guardado genéricamente aquí por retrocompatibilidad
 
             platform_commission_rate: commissionRate,
             platform_commission_amount: platformCommission,

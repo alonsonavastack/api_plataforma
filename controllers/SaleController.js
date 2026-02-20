@@ -2,7 +2,9 @@ import models from "../models/index.js";
 // axios eliminado — ya no se usa PayPal
 import { emitNewSaleToAdmins, emitSaleStatusUpdate } from '../services/socket.service.js';
 import { notifyNewSale, notifyPaymentApproved } from '../services/telegram.service.js';
-import { processPaidSale, createEarningForProduct } from '../services/SaleService.js'; // 🔥 IMPORTAR SERVICIO
+import * as socketService from '../services/socket.service.js'; // Static import
+import * as telegramService from '../services/telegram.service.js'; // Static import
+import * as SaleService from '../services/SaleService.js'; // Static import
 
 import { useWalletBalance } from './WalletController.js';
 import { convertUSDByCountry, formatCurrency } from '../services/exchangeRate.service.js'; // 🔥 CONVERSIÓN MULTI-PAÍS
@@ -12,6 +14,8 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import ejs from 'ejs';
+import Stripe from 'stripe'; // Asumiendo que usas stripe
+import stripeService from '../services/stripe.service.js'; // Static import
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -21,6 +25,7 @@ import { JSDOM } from 'jsdom';
 import createDOMPurify from 'dompurify';
 import InstructorRetention from '../models/InstructorRetention.js'; // 🔥 IMPORTAR MODELO
 import PlatformCommissionBreakdown from '../models/PlatformCommissionBreakdown.js'; // 🔥 IMPORTAR MODELO
+import stripeDefault from '../services/stripe.service.js'; // 🔥 IMPORTAR STRIPE
 
 const window = new JSDOM('').window;
 const DOMPurify = createDOMPurify(window);
@@ -66,7 +71,7 @@ export default {
             const recentPending = await models.Sale.findOne({
                 user: user_id,
                 status: 'Pendiente',
-                method_payment: { $in: ['mercadopago', 'mixed_mercadopago', 'transfer'] },
+                method_payment: { $in: ['transfer', 'mixed_stripe'] },
                 createdAt: { $gte: new Date(Date.now() - 5 * 60 * 1000) }
             });
 
@@ -214,9 +219,9 @@ export default {
                 });
             }
 
-            // MercadoPago y PayPal eliminados — usar Stripe
+            // MercadoPago y PayPal eliminados — solo Stripe, wallet y transfer
             if (['mercadopago', 'mixed_mercadopago', 'paypal', 'mixed_paypal'].includes(method_payment)) {
-                return res.status(400).send({ message: 'Método de pago no disponible. Usa Stripe o transferencia.' });
+                return res.status(400).send({ message: 'Método de pago no disponible. Usa Stripe, billetera o transferencia.' });
             }
 
             // 🔥 PARA OTROS MÉTODOS (Wallet/Transferencia): SÍ CREAR VENTA
@@ -233,12 +238,46 @@ export default {
                 exchange_rate: conversion.rate
             });
 
+            // 🔥 MIXED_STRIPE: VALIDAR Y DESCONTAR BILLETERA
+            let wallet_used = 0;
+            let remaining_usd = total;
+            const final_n_transaccion = n_transaccion || `TXN-${Date.now()}`;
+
+            if (method_payment === 'mixed_stripe') {
+                console.log('💰 [register] Método mixto: Stripe + Billetera');
+                const wallet = await models.Wallet.findOne({ user: user_id });
+                if (!wallet || wallet.balance <= 0) {
+                    return res.status(400).send({ message: 'No tienes saldo en tu billetera para usar pago mixto.' });
+                }
+
+                wallet_used = wallet.balance >= total ? total : wallet.balance;
+                remaining_usd = total - wallet_used;
+
+                if (remaining_usd <= 0) {
+                    return res.status(400).send({ message: 'Tu saldo cubre el total. Por favor selecciona Billetera como método de pago exclusivo.' });
+                }
+
+                // Descontar saldo temporalmente
+                wallet.balance -= wallet_used;
+                wallet.transactions.push({
+                    user: user_id,
+                    type: 'debit',
+                    amount: wallet_used,
+                    balanceAfter: wallet.balance,
+                    description: `Reserva pago mixto - ${final_n_transaccion}`,
+                    date: new Date(),
+                    metadata: { orderId: final_n_transaccion, payment_method: 'mixed_stripe', status: 'pending' }
+                });
+                await wallet.save();
+                console.log(`✅ [register] Se reservaron $${wallet_used} USD de la billetera. Restante a procesar: $${remaining_usd} USD.`);
+            }
+
             // Crear la venta
             const sale = await models.Sale.create({
                 user: user_id,
                 method_payment,
                 currency_payment: 'USD', // 🔥 SIEMPRE guardamos en USD
-                n_transaccion: n_transaccion || `TXN-${Date.now()}`,
+                n_transaccion: final_n_transaccion,
                 detail: sale_details,
                 price_dolar: total, // 🔥 Precio en USD
                 total: total, // 🔥 Total en USD
@@ -248,6 +287,8 @@ export default {
                 conversion_currency: conversion.currency,
                 conversion_amount: conversion.amount,
                 conversion_country: userCountry,
+                wallet_amount: wallet_used,          // 🔥 Añadido para métodos mixtos
+                remaining_amount: remaining_usd,     // 🔥 Añadido para métodos mixtos
                 // 🔥 REFERIDOS
                 coupon_code: isReferralSale ? coupon_code : null,
                 is_referral: isReferralSale
@@ -283,12 +324,66 @@ export default {
                 });
             }
 
+            // 🔥 SI EL MÉTODO ES STRIPE O MIXED STRIPE, CREAR CHECKOUT SESSION
+            if (method_payment === 'stripe' || method_payment === 'mixed_stripe') {
+                console.log(`💳 [register] Generando Stripe Checkout Session para ${method_payment}...`);
+
+                // Preparar line_items para Stripe
+                // Calcular propocionalmente el costo del item en base al amount remanente
+                const line_items = sale_details.map(item => {
+                    const proportion = total > 0 ? (item.price_unit / total) : 0;
+                    const itemRemainingUsd = remaining_usd * proportion;
+                    const unitPriceCents = Math.round(itemRemainingUsd * conversion.rate * 100);
+
+                    return {
+                        price_data: {
+                            currency: conversion.currency.toLowerCase(),
+                            product_data: {
+                                name: item.title,
+                            },
+                            unit_amount: unitPriceCents,
+                        },
+                        quantity: 1,
+                    };
+                });
+
+                const session = await stripeDefault.checkout.sessions.create({
+                    payment_method_types: ['card'],
+                    line_items: line_items,
+                    mode: 'payment',
+                    success_url: `${process.env.URL_FRONTEND}/profile-student?section=projects&payment_success=true&sale_id=${sale._id}`,
+                    cancel_url: `${process.env.URL_FRONTEND}/checkout?payment_canceled=true`,
+                    client_reference_id: sale._id.toString(),
+                    metadata: {
+                        sale_id: sale._id.toString(),
+                        user_id: user_id.toString(),
+                        n_transaccion: sale.n_transaccion,
+                        wallet_used: wallet_used > 0 ? 'true' : 'false'
+                    }
+                });
+
+                console.log(`✅ [register] Stripe Session creada: ${session.id}`);
+
+                // 🔥 Guardar el session.id en n_transaccion temporalmente o agregarlo como campo
+                sale.stripe_session_id = session.id;
+                await sale.save();
+
+                return res.status(200).send({
+                    message: 'Redirigiendo a Stripe...',
+                    sale: sale,
+                    session_url: session.url,
+                    wallet_used: 0,
+                    remaining_amount: 0,
+                    fully_paid: false
+                });
+            }
+
             // Para otros métodos
             return res.status(200).send({
-                message: 'Pago procesado exitosamente',
+                message: 'Pago registrado exitosamente (Pendiente)',
                 sale: sale,
-                wallet_used: 0,
-                remaining_amount: 0,
+                wallet_used: wallet_used,
+                remaining_amount: remaining_usd,
                 fully_paid: false
             });
 
@@ -307,86 +402,7 @@ export default {
 
     _removed: async (req, res) => { res.status(410).send({ message: 'Eliminado' }); },
 
-    __placeholder: async (req, res) => {
-        try {
-            const { n_transaccion, total, detail } = req.body;
 
-            if (!n_transaccion || !total || !detail) {
-                return res.status(400).send({ message: 'n_transaccion, total y detail son requeridos' });
-            }
-
-            // 🔥 OBTENER CONFIGURACIÓN DE PAGO DESDE BD
-            let paymentSettings = await PaymentSettings.findOne();
-
-            // Determinar MODO
-            const PAYPAL_MODE = paymentSettings?.paypal?.mode || process.env.PAYPAL_MODE || 'sandbox';
-
-            let PAYPAL_CLIENT_ID = '';
-            let PAYPAL_CLIENT_SECRET = '';
-
-            // Obtener credenciales según el modo
-            if (PAYPAL_MODE === 'sandbox') {
-                PAYPAL_CLIENT_ID = paymentSettings?.paypal?.sandbox?.clientId || process.env.PAYPAL_CLIENT_ID;
-                PAYPAL_CLIENT_SECRET = paymentSettings?.paypal?.sandbox?.clientSecret || process.env.PAYPAL_CLIENT_SECRET;
-            } else {
-                PAYPAL_CLIENT_ID = paymentSettings?.paypal?.live?.clientId || process.env.PAYPAL_CLIENT_ID;
-                PAYPAL_CLIENT_SECRET = paymentSettings?.paypal?.live?.clientSecret || process.env.PAYPAL_CLIENT_SECRET;
-            }
-
-            if (!PAYPAL_CLIENT_ID || !PAYPAL_CLIENT_SECRET) {
-                console.error(`❌ [createPaypalOrder] Credenciales de PayPal (${PAYPAL_MODE}) no configuradas`);
-                return res.status(500).send({ message: 'Error de configuración en pasarela de pago' });
-            }
-
-            const PAYPAL_API = PAYPAL_MODE === 'sandbox' ? 'https://api.sandbox.paypal.com' : 'https://api.paypal.com';
-
-            // Obtener token de acceso PayPal
-            const tokenR = await axios({
-                method: 'post',
-                url: `${PAYPAL_API}/v1/oauth2/token`,
-                auth: {
-                    username: PAYPAL_CLIENT_ID.trim(),
-                    password: PAYPAL_CLIENT_SECRET.trim()
-                },
-                params: { grant_type: 'client_credentials' },
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
-            });
-
-            const accessToken = tokenR.data.access_token;
-
-            // Crear orden
-            const createR = await axios({
-                method: 'post',
-                url: `${PAYPAL_API}/v2/checkout/orders`,
-                headers: {
-                    Authorization: `Bearer ${accessToken}`,
-                    'Content-Type': 'application/json'
-                },
-                data: {
-                    intent: 'CAPTURE',
-                    purchase_units: [
-                        {
-                            amount: {
-                                currency_code: 'MXN',
-                                value: Number(total).toFixed(2)
-                            },
-                            description: `Compra ${n_transaccion}`
-                        }
-                    ],
-                    application_context: {
-                        brand_name: process.env.SITE_NAME || 'Dev-Sharks',
-                        landing_page: 'NO_PREFERENCE',
-                        user_action: 'PAY_NOW',
-                        return_url: (process.env.URL_FRONTEND_NGROK || process.env.URL_FRONTEND || 'https://localhost:4200').replace(/\/$/, '') + '/',
-                        cancel_url: (process.env.URL_FRONTEND_NGROK || process.env.URL_FRONTEND || 'https://localhost:4200').replace(/\/$/, '') + '/'
-                    }
-                }
-            });
-
-            const order = createR.data;
-            res.status(410).send({ message: 'Eliminado' });
-        }
-    },
 
     /**
      * 📋 LISTAR VENTAS
@@ -456,8 +472,39 @@ export default {
             let sales = await models.Sale.find(filter)
                 .populate('user', 'name surname email')
                 .populate({ path: 'detail.product', select: 'title imagen user' })
-                .sort({ createdAt: -1 })
-                .lean();
+                .sort({ createdAt: -1 }); // 🔥 Not using .lean() yet because we might need to .save()
+
+            // 🔥 AUTO-VERIFICACIÓN DE STRIPE PARA ADMINS/INSTRUCTORES
+            // Verificamos el estado actual si siguen "Pendiente"
+            for (let sale of sales) {
+                if (sale.status === 'Pendiente' &&
+                    (sale.method_payment === 'stripe' || sale.method_payment === 'mixed_stripe') &&
+                    sale.stripe_session_id) {
+                    try {
+                        console.log(`⏳ Verificando status en Stripe para la sesión: ${sale.stripe_session_id}`);
+                        if (stripeService) {
+                            const session = await stripeService.checkout.sessions.retrieve(sale.stripe_session_id);
+                            if (session && session.payment_status === 'paid') {
+                                console.log(`✅ [list] Auto-aprobando venta Stripe ${sale._id}`);
+                                sale.status = 'Pagado';
+                                sale.n_transaccion = session.payment_intent || sale.n_transaccion;
+                                await sale.save();
+
+                                await SaleService.processPaidSale(sale, sale.user || sale.user._id);
+
+                                telegramService.notifyPaymentApproved(sale).catch(console.error);
+
+                                socketService.emitSaleStatusUpdate(sale);
+                            }
+                        }
+                    } catch (verifyError) {
+                        console.error(`❌ [list] Error auto-verificando Stripe:`, verifyError.message);
+                    }
+                }
+            }
+
+            // Convertir a lean objects
+            sales = sales.map(s => typeof s.toObject === 'function' ? s.toObject() : s);
 
             // Agregar info de reembolsos
             const saleIds = sales.map(s => s._id);
@@ -483,6 +530,7 @@ export default {
                 })).filter(sale => sale.detail.length > 0);
             }
 
+            console.log(`✅ [list] Operación completada, devolviendo ${sales.length} ventas`);
             res.status(200).json({ sales });
 
         } catch (error) {
@@ -708,8 +756,43 @@ export default {
         try {
             let sales = await models.Sale.find({ user: req.user._id })
                 .populate({ path: 'detail.product', select: 'title imagen' })
-                .sort({ createdAt: -1 })
-                .lean();
+                .sort({ createdAt: -1 }); // 🔥 Not using .lean() yet because we might need to .save()
+
+            // 🔥 AUTO-VERIFICACIÓN DE STRIPE
+            // Si hay pagos con Stripe que siguen "Pendiente", verificamos su estado actual
+            let hasChanges = false;
+            for (let sale of sales) {
+                if (sale.status === 'Pendiente' &&
+                    (sale.method_payment === 'stripe' || sale.method_payment === 'mixed_stripe') &&
+                    sale.stripe_session_id) {
+
+                    try {
+                        console.log(`⏳ Verificando status en Stripe para la sesión: ${sale.stripe_session_id}`);
+                        if (stripeService) {
+                            const session = await stripeService.checkout.sessions.retrieve(sale.stripe_session_id);
+                            if (session && session.payment_status === 'paid') {
+                                console.log(`✅ [my_transactions] Auto-aprobando venta Stripe ${sale._id}`);
+                                sale.status = 'Pagado';
+                                sale.n_transaccion = session.payment_intent || sale.n_transaccion;
+                                await sale.save();
+
+                                await SaleService.processPaidSale(sale, sale.user);
+
+                                telegramService.notifyPaymentApproved(sale).catch(console.error);
+
+                                socketService.emitSaleStatusUpdate(sale);
+
+                                hasChanges = true;
+                            }
+                        }
+                    } catch (verifyError) {
+                        console.error(`❌ [my_transactions] Error auto-verificando Stripe:`, verifyError.message);
+                    }
+                }
+            }
+
+            // Convert to lean object array
+            sales = sales.map(s => typeof s.toObject === 'function' ? s.toObject() : s);
 
             // 🔥 VERIFICAR PAGOS A INSTRUCTORES (Para bloquear reembolsos)
             const saleIds = sales.map(s => s._id);
@@ -778,15 +861,42 @@ export default {
             const sale = await models.Sale.findOne({
                 n_transaccion,
                 user: req.user._id
-            })
-                .populate({ path: 'detail.product', select: 'title imagen' })
-                .lean();
+            }).populate({ path: 'detail.product', select: 'title imagen' });
 
             if (!sale) {
                 return res.status(404).json({ message: 'Transacción no encontrada' });
             }
 
-            res.status(200).json({ transaction: sale });
+            // 🔥 AUTO-VERIFICACIÓN DE STRIPE
+            if (sale.status === 'Pendiente' &&
+                (sale.method_payment === 'stripe' || sale.method_payment === 'mixed_stripe') &&
+                sale.stripe_session_id) {
+                try {
+                    console.log(`⏳ Verificando status en Stripe para la sesión: ${sale.stripe_session_id}`);
+                    if (stripeService) {
+                        const session = await stripeService.checkout.sessions.retrieve(sale.stripe_session_id);
+                        if (session && session.payment_status === 'paid') {
+                            console.log(`✅ [get_by_transaction] Auto-aprobando venta Stripe ${sale._id}`);
+                            sale.status = 'Pagado';
+                            sale.n_transaccion = session.payment_intent || sale.n_transaccion;
+                            await sale.save();
+
+                            await SaleService.processPaidSale(sale, sale.user || req.user._id);
+
+                            telegramService.notifyPaymentApproved(sale).catch(console.error);
+
+                            socketService.emitSaleStatusUpdate(sale);
+                        }
+                    }
+                } catch (verifyError) {
+                    console.error(`❌ [get_by_transaction] Error auto-verificando Stripe:`, verifyError.message);
+                }
+            }
+
+            // Convertir a lean()
+            const leanSale = typeof sale.toObject === 'function' ? sale.toObject() : sale;
+
+            res.status(200).json({ transaction: leanSale });
 
         } catch (error) {
             console.error('❌ Error en get_by_transaction:', error);

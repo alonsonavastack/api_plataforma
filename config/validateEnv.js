@@ -1,9 +1,5 @@
 // config/validateEnv.js
 
-/**
- * Valida que todas las variables de entorno críticas estén configuradas
- * y cumplan con los requisitos de seguridad
- */
 export function validateEnvironment() {
   console.log('🔍 Validando variables de entorno...\n');
 
@@ -12,113 +8,83 @@ export function validateEnvironment() {
 
   // Variables requeridas
   const requiredVars = {
-    'MONGO_URI': 'Conexión a base de datos',
-    'JWT_SECRETO': 'Secret para tokens JWT',
-    'PUERTO': 'Puerto del servidor',
-    'URL_BACKEND': 'URL del backend',
-    'URL_FRONTEND': 'URL del frontend',
-    'PAYPAL_CLIENT_ID': 'PayPal Client ID',
-    'PAYPAL_CLIENT_SECRET': 'PayPal Client Secret',
-    'TELEGRAM_TOKEN': 'Token del bot de Telegram',
-    'NODE_ENV': 'Entorno de ejecución'
+    'MONGO_URI':        'Conexión a base de datos',
+    'JWT_SECRETO':      'Secret para tokens JWT',
+    'PUERTO':           'Puerto del servidor',
+    'URL_BACKEND':      'URL del backend',
+    'URL_FRONTEND':     'URL del frontend',
+    'STRIPE_SECRET_KEY':'Stripe Secret Key (sk_...)',
+    'TELEGRAM_TOKEN':   'Token del bot de Telegram',
+    'NODE_ENV':         'Entorno de ejecución'
   };
 
-  // Verificar variables requeridas
   Object.entries(requiredVars).forEach(([varName, description]) => {
     if (!process.env[varName]) {
       errors.push(`❌ ${varName} - ${description}`);
     }
   });
 
-  // Validaciones de seguridad específicas
-
-  // 1. JWT_SECRETO debe ser fuerte
+  // JWT_SECRETO fuerte
   if (process.env.JWT_SECRETO) {
     const jwtSecret = process.env.JWT_SECRETO;
-
     if (jwtSecret.length < 32) {
-      errors.push('❌ JWT_SECRETO debe tener al menos 32 caracteres para seguridad');
+      errors.push('❌ JWT_SECRETO debe tener al menos 32 caracteres');
     }
-
-    // Verificar que no sea un secret conocido o débil
-    const weakSecrets = [
-      'secret',
-      '12345',
-      'password',
-      'super-secreto',
-      'mi-secreto',
-      'jwt-secret',
-      'super-secreto-largo'
-    ];
-
-    if (weakSecrets.some(weak => jwtSecret.toLowerCase().includes(weak))) {
-      errors.push('❌ JWT_SECRETO es demasiado predecible. Usa: node -e "console.log(require(\'crypto\').randomBytes(64).toString(\'hex\'))"');
+    const weakSecrets = ['secret','12345','password','super-secreto','mi-secreto','jwt-secret'];
+    if (weakSecrets.some(w => jwtSecret.toLowerCase().includes(w))) {
+      errors.push('❌ JWT_SECRETO es demasiado predecible');
     }
   }
 
-  // 2. MONGO_URI no debe incluir contraseñas débiles
+  // MONGO_URI contraseña débil (advertencia)
   const checkWeakMongoPassword = (uri, varName) => {
-    if (uri && (
-      uri.includes(':123@') ||
-      uri.includes(':password@') ||
-      uri.includes(':admin@'))) {
+    if (uri && (uri.includes(':123@') || uri.includes(':password@') || uri.includes(':admin@'))) {
       warnings.push(`⚠️  ${varName} parece contener una contraseña débil`);
     }
   };
+  if (process.env.MONGO_URI)      checkWeakMongoPassword(process.env.MONGO_URI, 'MONGO_URI');
+  if (process.env.MONGO_URILOCAL) checkWeakMongoPassword(process.env.MONGO_URILOCAL, 'MONGO_URILOCAL');
 
-  if (process.env.MONGO_URI) {
-    checkWeakMongoPassword(process.env.MONGO_URI, 'MONGO_URI');
-  }
-
-  if (process.env.MONGO_URILOCAL) {
-    checkWeakMongoPassword(process.env.MONGO_URILOCAL, 'MONGO_URILOCAL');
-  }
-
-  // 3. NODE_ENV debe ser válido
+  // NODE_ENV válido
   if (process.env.NODE_ENV) {
-    const validEnvs = ['development', 'production', 'test'];
-    if (!validEnvs.includes(process.env.NODE_ENV)) {
-      warnings.push(`⚠️  NODE_ENV="${process.env.NODE_ENV}" no es un valor estándar. Usa: ${validEnvs.join(', ')}`);
+    if (!['development','production','test'].includes(process.env.NODE_ENV)) {
+      warnings.push(`⚠️  NODE_ENV="${process.env.NODE_ENV}" no es un valor estándar`);
     }
   }
 
-  // 4. Verificar que las URLs sean válidas
-  const urlVars = ['URL_BACKEND', 'URL_FRONTEND'];
-  urlVars.forEach(varName => {
+  // URLs válidas
+  ['URL_BACKEND','URL_FRONTEND'].forEach(varName => {
     if (process.env[varName]) {
-      try {
-        new URL(process.env[varName]);
-      } catch (e) {
-        errors.push(`❌ ${varName} no es una URL válida`);
-      }
+      try { new URL(process.env[varName]); }
+      catch (e) { errors.push(`❌ ${varName} no es una URL válida`); }
     }
   });
 
-  // 5. PAYPAL_MODE debe ser válido
-  if (process.env.PAYPAL_MODE) {
-    if (!['sandbox', 'live'].includes(process.env.PAYPAL_MODE)) {
-      warnings.push('⚠️  PAYPAL_MODE debe ser "sandbox" o "live"');
-    }
+  // Stripe: advertir si falta la publishable key (no crítica para el backend)
+  if (!process.env.STRIPE_PUBLISHABLE_KEY) {
+    warnings.push('⚠️  STRIPE_PUBLISHABLE_KEY no configurada (necesaria para el frontend)');
+  }
+  if (!process.env.STRIPE_WEBHOOK_SECRET) {
+    warnings.push('⚠️  STRIPE_WEBHOOK_SECRET no configurada (necesaria para webhooks)');
+  }
 
-    if (process.env.NODE_ENV === 'production' && process.env.PAYPAL_MODE === 'sandbox') {
-      warnings.push('⚠️  Usando PayPal en modo SANDBOX en producción');
+  // Stripe en producción con modo test
+  if (process.env.NODE_ENV === 'production') {
+    const secretKey = process.env.STRIPE_SECRET_KEY || '';
+    if (secretKey.startsWith('sk_test_')) {
+      warnings.push('⚠️  Usando Stripe en modo TEST en producción. Cambia a sk_live_...');
     }
   }
 
-  // 6. Variables opcionales pero recomendadas
+  // Opcionales recomendadas
   const optionalVars = {
-    'VIMEO_TOKEN': 'Token de Vimeo para videos',
-    'YOUTUBE_API_KEY': 'API Key de YouTube',
     'TELEGRAM_CHAT_ID': 'Chat ID de Telegram'
   };
-
   Object.entries(optionalVars).forEach(([varName, description]) => {
-    if (!process.env[varName]) {
-      warnings.push(`⚠️  ${varName} no configurado - ${description}`);
-    }
+    if (!process.env[varName]) warnings.push(`⚠️  ${varName} no configurado - ${description}`);
   });
 
-  // Mostrar resultados
+  // ── Resultados ──────────────────────────────────────────────────────────
   console.log('='.repeat(70));
   console.log('RESULTADO DE VALIDACIÓN');
   console.log('='.repeat(70));
@@ -128,19 +94,17 @@ export function validateEnvironment() {
     return true;
   }
 
-  // Mostrar errores críticos
   if (errors.length > 0) {
     console.log('\n🔴 ERRORES CRÍTICOS:\n');
-    errors.forEach(error => console.log(error));
+    errors.forEach(e => console.log(e));
     console.log('\n⛔ La aplicación NO puede iniciarse con estos errores\n');
     console.log('='.repeat(70));
     process.exit(1);
   }
 
-  // Mostrar advertencias
   if (warnings.length > 0) {
     console.log('\n🟡 ADVERTENCIAS:\n');
-    warnings.forEach(warning => console.log(warning));
+    warnings.forEach(w => console.log(w));
     console.log('\nLa aplicación puede iniciar, pero revisa estas configuraciones\n');
   }
 
@@ -148,30 +112,19 @@ export function validateEnvironment() {
   return true;
 }
 
-/**
- * Genera un nuevo JWT_SECRET fuerte
- */
 export async function generateJWTSecret() {
   const crypto = await import('crypto');
   return crypto.randomBytes(64).toString('hex');
 }
 
-/**
- * Muestra información sobre las variables de entorno
- */
 export function showEnvInfo() {
   console.log('\n📋 INFORMACIÓN DE ENTORNO:\n');
-  console.log(`   Entorno: ${process.env.NODE_ENV || 'no especificado'}`);
-  console.log(`   Puerto: ${process.env.PUERTO || 'no especificado'}`);
-  console.log(`   Backend: ${process.env.URL_BACKEND || 'no especificado'}`);
-  console.log(`   Frontend: ${process.env.URL_FRONTEND || 'no especificado'}`);
-  console.log(`   PayPal Mode: ${process.env.PAYPAL_MODE || 'no especificado'}`);
-  // 🔒 LOG REMOVIDO POR SEGURIDAD
+  console.log(`   Entorno:        ${process.env.NODE_ENV || 'no especificado'}`);
+  console.log(`   Puerto:         ${process.env.PUERTO || 'no especificado'}`);
+  console.log(`   Backend:        ${process.env.URL_BACKEND || 'no especificado'}`);
+  console.log(`   Frontend:       ${process.env.URL_FRONTEND || 'no especificado'}`);
+  console.log(`   Stripe mode:    ${process.env.STRIPE_SECRET_KEY?.startsWith('sk_live') ? 'live' : 'test'}`);
   console.log('');
 }
 
-export default {
-  validateEnvironment,
-  generateJWTSecret,
-  showEnvInfo
-};
+export default { validateEnvironment, generateJWTSecret, showEnvInfo };

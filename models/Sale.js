@@ -24,7 +24,7 @@ const SaleSchema = new Schema({
         type: String,
         maxlength: 200,
         required: true,
-        enum: ['wallet', 'paypal', 'mixed_paypal', 'card', 'other']
+        enum: ['wallet', 'stripe', 'mixed_stripe', 'transfer', 'card', 'other']
     },
 
     // === CUPONES Y REFERIDOS ===
@@ -87,6 +87,13 @@ const SaleSchema = new Schema({
         maxlength: 200,
         required: true,
         unique: true
+    },
+
+    // ID de la sesión de Stripe (para auto-verificación)
+    stripe_session_id: {
+        type: String,
+        maxlength: 200,
+        default: null
     },
 
     // === BILLETERA DIGITAL ===

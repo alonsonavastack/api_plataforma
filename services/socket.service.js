@@ -23,7 +23,7 @@ export function initializeSocketIO(server) {
         // El cliente envía su rol al conectarse
         socket.on('authenticate', (data) => {
             const { userId, role } = data;
-            
+
             if (role === 'admin') {
                 socket.join('admins');
                 console.log(`👑 Admin ${userId} (${socket.id}) unido a sala de admins`);
@@ -35,7 +35,7 @@ export function initializeSocketIO(server) {
                 socket.join(`instructor_${userId}`); // Reutilizamos el mismo patrón
                 console.log(`👨‍💼 Cliente ${userId} (${socket.id}) unido a su sala`);
             }
-            
+
             // Confirmar autenticación
             socket.emit('authenticated', { success: true, role });
         });
@@ -117,7 +117,12 @@ export function emitSaleStatusUpdate(sale) {
     };
 
     io.to('admins').emit('sale_status_updated', saleData);
-    console.log('🔄 Estado de venta actualizado y emitido a admins:', sale._id, '-', sale.status);
+    // 🔥 También emitir al usuario (cliente/instructor) para que reaccione su frontend
+    const userId = sale.user._id || sale.user;
+    if (userId) {
+        io.to(`instructor_${userId}`).emit('sale_status_updated', saleData);
+    }
+    console.log('🔄 Estado de venta actualizado y emitido a admins y usuario:', sale._id, '-', sale.status);
 }
 
 /**
