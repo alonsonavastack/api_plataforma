@@ -14,7 +14,6 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import ejs from 'ejs';
-import Stripe from 'stripe'; // Asumiendo que usas stripe
 import stripeService from '../services/stripe.service.js'; // Static import
 
 const __filename = fileURLToPath(import.meta.url);
