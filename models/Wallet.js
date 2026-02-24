@@ -5,16 +5,18 @@ const WalletTransactionSchema = new Schema({
     user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
     type: {
         type: String,
-        enum: ['credit', 'debit'],
+        enum: ['credit', 'debit', 'refund'],
         required: true
-    }, // credit = +, debit = -
+    }, // credit = +, debit = -, refund = devolución
     amount: { type: Number, required: true },
     balanceAfter: { type: Number, required: true },
     description: { type: String },
     metadata: {
         refundId: { type: Schema.Types.ObjectId, ref: 'Refund' },
-        orderId: { type: String }, // 🔥 Cambiado a String para soportar n_transaccion
-        reason: { type: String }
+        orderId: { type: String }, // n_transaccion o sale._id
+        reason: { type: String },
+        payment_method: { type: String }, // 'wallet', 'mixed_stripe', etc.
+        status: { type: String, default: null } // 'pending' | 'completed' para reservas mixtas
     }
 }, {
     timestamps: true

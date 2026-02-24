@@ -218,7 +218,10 @@ export async function create(req, res) {
         });
 
         console.log('📊 [RefundController.create] Calculando reembolso...');
-        refund.calculateRefund();
+        // Pasar método de pago para calcular fee correctamente
+        refund._paymentMethod = sale.method_payment;
+        refund._walletAmount = sale.wallet_amount || 0;
+        refund.calculateRefund(sale.method_payment);
 
         console.log('💾 [RefundController.create] Guardando en base de datos...');
         await refund.save();
@@ -822,7 +825,10 @@ export async function requestRefund(req, res) {
         console.log('🧮 [RefundController.requestRefund] Calculando reembolso...');
 
         try {
-            newRefund.calculateRefund();
+            // Pasar método de pago para calcular fee correctamente
+            newRefund._paymentMethod = sale.method_payment;
+            newRefund._walletAmount = sale.wallet_amount || 0;
+            newRefund.calculateRefund(sale.method_payment);
             console.log('✅ [RefundController.requestRefund] Cálculo completado:', newRefund.calculations);
         } catch (calcError) {
             console.error('❌ [RefundController.requestRefund] Error en calculateRefund:', calcError);

@@ -28,6 +28,12 @@ async function createEarningForProduct(sale, item) {
         let instructorId;
         let salePrice = item.price_unit; // 🔥 Este YA es el precio final (con descuento aplicado)
 
+        // 🔒 NORMALIZAR product: si viene populado (objeto con _id), extraer solo el _id
+        // Esto ocurre cuando la venta fue cargada con .populate('detail.product')
+        if (item.product && typeof item.product === 'object' && item.product._id) {
+            item = { ...item, product: item.product._id };
+        }
+
         // 🔥 CORRECCIÓN CRÍTICA: CALCULAR PRECIO ORIGINAL Y DESCUENTO
         let originalPrice = salePrice;
         let discountAmount = item.discount || 0;
@@ -87,57 +93,96 @@ async function createEarningForProduct(sale, item) {
         // 2. 🔥 Obtener configuración de comisiones desde la base de datos
         const settings = await models.PlatformCommissionSettings.findOne();
 
-        // 🔥 COMISIÓN: Determinar si es Referido u Orgánico
-        let commissionRatePercent = settings?.default_commission_rate || 30; // Default 30% (70% instructor)
+        // Tasas base con fallback seguros (sin usar || para evitar que 0 sea falsy)
+        const DEFAULT_COMMISSION  = settings?.default_commission_rate  ?? 30; // 30% plat → 70% instructor
+        const REFERRAL_COMMISSION = settings?.referral_commission_rate ?? 20; // 20% plat → 80% instructor
+
+        let commissionRatePercent = DEFAULT_COMMISSION;
         let isReferral = false;
 
-        // Si la venta tiene marca de referido Y el cupón es válido para este instructor/producto
+        // 🔥 COMISIÓN REFERIDO: verificar si la venta viene de un cupón válido
         if (sale.is_referral && sale.coupon_code) {
-            // Validar que el cupón realmente pertenezca a este instructor (seguridad adicional)
-            const coupon = await models.Coupon.findOne({ code: sale.coupon_code });
+            console.log(`   🎟️ [REFERIDO] Verificando cupón: "${sale.coupon_code}"`);
 
-            if (coupon && coupon.instructor.toString() === instructorId.toString()) {
-                // Si es referido: 80% instructor, 20% plataforma
-                commissionRatePercent = settings?.referral_commission_rate || 20;
-                isReferral = true;
+            // Buscar el cupón SIN filtrar active/expires_at porque la venta ya ocurrió
+            const coupon = await models.Coupon.findOne({
+                code: sale.coupon_code.trim().toUpperCase()
+            });
+
+            if (!coupon) {
+                console.warn(`   ⚠️ [REFERIDO] Cupón "${sale.coupon_code}" no encontrado en BD → comisión normal`);
+            } else {
+                const instructorMatch = coupon.instructor.toString() === instructorId.toString();
+                const productMatch    = coupon.projects.some(p => p.toString() === item.product.toString());
+
+                console.log(`   🔍 [REFERIDO] instructor match: ${instructorMatch} | product match: ${productMatch}`);
+
+                if (instructorMatch && productMatch) {
+                    // ✅ Cupón verificado: 80% instructor, 20% plataforma
+                    commissionRatePercent = REFERRAL_COMMISSION;
+                    isReferral = true;
+                    console.log(`   ✅ [REFERIDO] Comisión 80/20 aplicada (plataforma ${REFERRAL_COMMISSION}%)`);
+                } else if (!instructorMatch) {
+                    console.warn(`   ⚠️ [REFERIDO] El cupón pertenece a otro instructor → comisión normal`);
+                } else {
+                    console.warn(`   ⚠️ [REFERIDO] El producto no está en el cupón → comisión normal`);
+                }
             }
+        } else if (sale.is_referral && !sale.coupon_code) {
+            // Marcada como referido pero sin código → aplicar 80/20 de todas formas
+            console.log(`   🎟️ [REFERIDO] Venta marcada referido sin código → comisión 80/20`);
+            commissionRatePercent = REFERRAL_COMMISSION;
+            isReferral = true;
         }
 
         const commissionRate = commissionRatePercent / 100;
-        // 🔥 FIX: Permitir 0 días (no usar || porque 0 es falsy)
-        const daysUntilAvailable = settings?.days_until_available !== undefined ? settings.days_until_available : 7;
+
+        // ─── VENTANA DE PROTECCIÓN CONTRA REEMBOLSOS ──────────────────────────
+        // La política de reembolsos establece 7 días desde la compra.
+        // El earning SIEMPRE nace 'pending' durante esos 7 días, sin importar
+        // cuántos días configure el admin en 'days_until_available'.
+        //
+        // 'days_until_available' es el tiempo ADICIONAL tras la ventana de
+        // reembolso que el admin quiere esperar antes de pagar al instructor.
+        //
+        // Ejemplo con days_until_available = 8:
+        //   available_at = hoy + 7 días (reembolso) + 8 días (espera pago) = día 15
+        //
+        // Ejemplo con days_until_available = 0 (modo pruebas):
+        //   available_at = hoy + 7 días (solo ventana de reembolso)
+        //   El earning sigue siendo 'pending' hasta que cierren los 7 días.
+
+        const REFUND_WINDOW_DAYS = 7; // Fijo — política de reembolso
+        const extraDays = settings?.days_until_available !== undefined ? settings.days_until_available : 0;
+        const totalDaysUntilAvailable = REFUND_WINDOW_DAYS + extraDays;
 
         console.log(`   🏛 Comisión plataforma: ${commissionRatePercent}%`);
-        console.log(`   ⏳ Días hasta disponible: ${daysUntilAvailable} días`);
+        console.log(`   🛡️  Ventana reembolso: ${REFUND_WINDOW_DAYS} días (fija)`);
+        console.log(`   ⏳ Espera adicional pago: ${extraDays} días (configurable)`);
+        console.log(`   📅 Total días hasta disponible: ${totalDaysUntilAvailable} días`);
 
-        // 3. 🔥 CÁLCULO SOBRE NETO (NUEVO REQUERIMIENTO - PROGRESSIVE ROUNDING)
-        // Usamos la utilidad centralizada para asegurar que todo cuadre al centavo
-        // Identify gateway for fee calculation
-        let gateway = 'paypal'; // Default
-        if (sale.method_payment === 'stripe' || sale.method_payment === 'mixed_stripe') {
-            gateway = 'stripe';
-        }
+        // 3. 🔥 CÁLCULO SOBRE NETO
+        // Determinar gateway: solo Stripe o Wallet (PayPal eliminado)
+        const isStripe = sale.method_payment === 'stripe' || sale.method_payment === 'mixed_stripe';
+        const isWallet = sale.method_payment === 'wallet';
 
         let splitResult;
 
-        if (sale.method_payment === 'wallet') {
-            // For Wallet payments there are no explicit external payment gateway fixed fees
-            // but we still apply the 70/30 or 80/20 platform split to the net amount
+        if (isWallet) {
+            // Wallet: sin fee de pasarela externa
             splitResult = {
                 totalPaid: parseFloat(salePrice.toFixed(2)),
                 paypalFee: 0,
                 stripeFee: 0,
                 netAmount: parseFloat(salePrice.toFixed(2)),
-                vendorShare: parseFloat((salePrice * (1 - commissionRate)).toFixed(2)),
-                platformShare: parseFloat((salePrice * commissionRate).toFixed(2)),
-                currency: sale.currency_total || 'MXN'
+                currency: sale.currency_payment || 'MXN'
             };
         } else {
-            // PayPal or Stripe (pass the configured gateway type for accurate fees)
-            splitResult = calculatePaymentSplit(salePrice, gateway);
+            // Stripe (predeterminado para cualquier otro método)
+            splitResult = calculatePaymentSplit(salePrice, 'stripe');
         }
 
-        const paypalFee = splitResult.paypalFee;
+        const gatewayFee = splitResult.paypalFee; // paypalFee se usa genéricamente para cualquier gateway
         const netSale = splitResult.netAmount;
 
         // El splitResult ya nos da vendorShare (70%) y platformShare (30%) por defecto
@@ -152,15 +197,18 @@ async function createEarningForProduct(sale, item) {
             instructorEarning = parseFloat((netSale - platformCommission).toFixed(2));
         }
 
-        console.log(`   💸 Pasarela Fee (Est.): -${paypalFee.toFixed(2)}`);
+        console.log(`   💸 Fee pasarela (Stripe): -${gatewayFee.toFixed(2)}`);
+        console.log(`   🔗 Referido: ${isReferral ? 'Sí (80/20)' : 'No (70/30)'}`);
         console.log(`   🥩 Base Repartible (Neto): ${netSale.toFixed(2)}`);
 
         // Calcular fecha disponible
+        // SIEMPRE pending al menos 7 días (ventana de reembolso)
         const availableAt = new Date();
-        availableAt.setDate(availableAt.getDate() + daysUntilAvailable);
+        availableAt.setDate(availableAt.getDate() + totalDaysUntilAvailable);
 
-        // 🔥 CORRECCIÓN: Respetar días de disponibilidad
-        const earningStatus = daysUntilAvailable > 0 ? 'pending' : 'available';
+        // El earning SIEMPRE nace 'pending' — nunca 'available' al crearse.
+        // El cron job lo pasará a 'available' cuando available_at llegue.
+        const earningStatus = 'pending';
 
         // 4. 🔥 Crear ganancia CON información de descuento completa
         const newEarning = await models.InstructorEarnings.create({
@@ -173,8 +221,8 @@ async function createEarningForProduct(sale, item) {
             payment_method: sale.method_payment || 'wallet', // 🔥 GUARDAR EL MÉTODO UTILIZADO EN LA GANANCIA
 
             // 🔥 Guardamos comisiones de pasarela
-            payment_fee_rate: 0, // Ya no es un % fijo simple
-            payment_fee_amount: paypalFee, // Guardado genéricamente aquí por retrocompatibilidad
+            payment_fee_rate: 0,
+            payment_fee_amount: gatewayFee,
 
             platform_commission_rate: commissionRate,
             platform_commission_amount: platformCommission,
@@ -198,7 +246,7 @@ async function createEarningForProduct(sale, item) {
         console.log(`      💵 Precio venta: ${salePrice.toFixed(2)}`);
         console.log(`      🏛 Comisión plataforma (${(commissionRate * 100).toFixed(0)}%): ${platformCommission.toFixed(2)}`);
         console.log(`      💰 Ganancia instructor: ${instructorEarning.toFixed(2)}`);
-        console.log(`      ✅ Estado: ${earningStatus} (disponible inmediatamente)`);
+        console.log(`      ⏳ Estado: ${earningStatus} | disponible en: ${availableAt.toLocaleDateString('es-MX')} (${totalDaysUntilAvailable} días)`);
         if (discountPercentage > 0) {
             console.log(`      🎁 Descuento original: ${discountPercentage.toFixed(1)}% (-${actualDiscountAmount.toFixed(2)})`);
         }
@@ -210,7 +258,7 @@ async function createEarningForProduct(sale, item) {
         return true;
     } catch (error) {
         console.error(`   ❌ Error al crear ganancia:`, error.message);
-        throw error; // Re-lanzar para que el llamador lo maneje
+        return false; // No relanzar — la venta ya fue procesada correctamente
     }
 }
 
@@ -234,7 +282,11 @@ export async function processPaidSale(sale, userId) {
         console.log(`   💰 Precio: ${item.price_unit}`);
 
         const type = item.product_type || item.type_detail;
-        const productId = item.product || item.course || item.project;
+        // 🔒 Extraer productId puro: si viene populado (objeto), usar su _id
+        const rawProductRef = item.product || item.course || item.project;
+        const productId = (rawProductRef && typeof rawProductRef === 'object' && rawProductRef._id)
+            ? rawProductRef._id
+            : rawProductRef;
 
         // 📚 Inscribir en CURSOS (tiene modelo CourseStudent)
         if (type === 'course') {
@@ -249,9 +301,10 @@ export async function processPaidSale(sale, userId) {
 
         // 💰 Crear ganancias del instructor (para cursos Y proyectos)
         console.log(`   💰 Creando ganancia para instructor...`);
-        // ✅ CORRECCIÓN: Pasar item completo con toda la información de descuento
+        // ✅ CORRECCIÓN: Pasar item completo con toda la información de descuento.
+        // IMPORTANTE: productId ya extrae el _id puro (string/ObjectId), nunca el objeto populado.
         const earningItem = {
-            product: productId,
+            product: productId,   // ← siempre ObjectId puro, no objeto populado
             product_type: type,
             title: item.title,
             price_unit: item.price_unit,
@@ -259,7 +312,17 @@ export async function processPaidSale(sale, userId) {
             type_discount: item.type_discount || 0,
             campaign_discount: item.campaign_discount || null
         };
-        await createEarningForProduct(sale, earningItem);
+        // Pasamos también la venta con is_referral y coupon_code seguros
+        const saleForEarning = {
+            ...sale,
+            _id: sale._id,
+            is_referral: sale.is_referral,
+            coupon_code: sale.coupon_code || null,
+            method_payment: sale.method_payment,
+            currency_total: sale.currency_total,
+            currency_payment: sale.currency_payment
+        };
+        await createEarningForProduct(saleForEarning, earningItem);
     }
 
     console.log(`\n✅ [processPaidSale] Venta ${sale._id} procesada completamente`);

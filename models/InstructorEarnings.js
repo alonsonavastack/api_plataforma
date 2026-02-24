@@ -82,7 +82,7 @@ const InstructorEarningsSchema = new Schema({
     // MÉTODO DE PAGO
     payment_method: {
         type: String,
-        enum: ['bank_transfer', 'paypal', 'stripe', 'wise', 'payoneer', 'oxxo', 'sepa'],
+        enum: ['bank_transfer', 'paypal', 'stripe', 'wise', 'payoneer', 'oxxo', 'sepa', 'wallet', 'mixed_stripe', 'mixed_paypal', 'transfer'],
         required: false
     },
     payment_method_name: { type: String, maxlength: 100 },

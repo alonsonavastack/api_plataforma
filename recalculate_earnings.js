@@ -46,14 +46,16 @@ const run = async () => {
 
     for (const earning of earnings) {
         const salePrice = earning.sale_price;
-        const commissionRate = earning.platform_commission_rate; // ej: 0.30
+            // 🔥 SIEMPRE usar 30% de comisión de plataforma (70% instructor)
+        // No usar earning.platform_commission_rate porque puede estar mal en BD
+        const CORRECT_PLATFORM_RATE = 0.30;
 
-        // Calcular valores correctos con la fórmula actual (con IVA)
+        // Calcular valores correctos con la fórmula actual (con IVA en Stripe)
         const split = calculatePaymentSplit(salePrice);
 
         if (split.netAmount <= 0) continue;
 
-        const correctPlatformCommission = parseFloat((split.netAmount * commissionRate).toFixed(2));
+        const correctPlatformCommission = parseFloat((split.netAmount * CORRECT_PLATFORM_RATE).toFixed(2));
         const correctInstructorEarning = parseFloat((split.netAmount - correctPlatformCommission).toFixed(2));
         const correctPaypalFee = split.paypalFee;
 
@@ -68,7 +70,7 @@ const run = async () => {
         console.log(`─────────────────────────────────────────`);
         console.log(`📄 Earning ID: ${earning._id}`);
         console.log(`   Precio venta:       $${salePrice.toFixed(2)}`);
-        console.log(`   Tasa comisión:      ${(commissionRate * 100).toFixed(0)}%`);
+        console.log(`   Tasa comisión:      ${(CORRECT_PLATFORM_RATE * 100).toFixed(0)}% (forzada correcta)`);`
         console.log(`   Fee PayPal actual:  $${currentFee.toFixed(2)}  →  correcto: $${correctPaypalFee.toFixed(2)}  ${feeDiff > 0.01 ? '❌' : '✅'}`);
         console.log(`   Neto actual (calc): $${(salePrice - currentFee).toFixed(2)}  →  correcto: $${split.netAmount.toFixed(2)}`);
         console.log(`   Ganancia actual:    $${currentEarning.toFixed(2)}  →  correcto: $${correctInstructorEarning.toFixed(2)}  ${earningDiff > 0.01 ? '❌' : '✅'}`);
@@ -86,6 +88,7 @@ const run = async () => {
             await InstructorEarnings.findByIdAndUpdate(earning._id, {
                 $set: {
                     payment_fee_amount: correctPaypalFee,
+                    platform_commission_rate: CORRECT_PLATFORM_RATE, // 🔥 Corregir también la tasa
                     platform_commission_amount: correctPlatformCommission,
                     instructor_earning: correctInstructorEarning,
                 }

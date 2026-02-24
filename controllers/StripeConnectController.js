@@ -177,7 +177,8 @@ export const stripeWebhook = async (req, res) => {
 
     let event;
     try {
-        event = constructWebhookEvent(req.rawBody || req.body, signature);
+        // req.body ya viene como Buffer porque la ruta usa express.raw()
+        event = constructWebhookEvent(req.body, signature);
     } catch (err) {
         console.error('❌ Webhook Stripe - Firma inválida:', err.message);
         return res.status(400).send(`Webhook Error: ${err.message}`);
@@ -201,50 +202,101 @@ export const stripeWebhook = async (req, res) => {
             break;
         }
 
+        // ✅ CHECKOUT COMPLETADO — activar venta + confirmar billetera mixta
         case 'checkout.session.completed': {
             const session = event.data.object;
             console.log(`✅ [Webhook] Checkout completado: ${session.id}`);
 
-            if (session.metadata && session.metadata.sale_id) {
-                try {
-                    const Sale = (await import('../models/Sale.js')).default;
-                    const { processPaidSale } = await import('../services/SaleService.js');
-                    const { notifyPaymentApproved } = await import('../services/telegram.service.js');
-                    const { emitSaleStatusUpdate } = await import('../services/socket.service.js');
+            const saleId = session.client_reference_id || session.metadata?.sale_id;
+            if (!saleId) {
+                console.warn('⚠️ [Webhook] checkout.session.completed sin sale_id');
+                break;
+            }
 
-                    const saleObj = await Sale.findById(session.metadata.sale_id);
-                    if (saleObj && saleObj.status !== 'Pagado') {
-                        saleObj.status = 'Pagado';
-                        saleObj.n_transaccion = session.payment_intent || saleObj.n_transaccion;
-                        await saleObj.save();
+            try {
+                const Sale = (await import('../models/Sale.js')).default;
+                const Wallet = (await import('../models/Wallet.js')).default;
+                const { processPaidSale } = await import('../services/SaleService.js');
+                const { notifyPaymentApproved } = await import('../services/telegram.service.js');
+                const { emitSaleStatusUpdate } = await import('../services/socket.service.js');
 
-                        await processPaidSale(saleObj, saleObj.user);
-                        notifyPaymentApproved(saleObj).catch(console.error);
-                        emitSaleStatusUpdate(saleObj);
+                const saleObj = await Sale.findById(saleId);
+                if (!saleObj) { console.error(`❌ [Webhook] Venta ${saleId} no encontrada`); break; }
+                if (saleObj.status === 'Pagado') { console.log(`ℹ️ [Webhook] Venta ${saleId} ya estaba pagada`); break; }
 
-                        console.log(`✅ [Webhook] Venta ${saleObj._id} marcada como Pagado automáticamente`);
-                    } else {
-                        console.log(`ℹ️ [Webhook] Venta ${session.metadata.sale_id} no encontrada o ya pagada`);
+                // 💰 Pago mixto: confirmar transacción de billetera como completada
+                if (saleObj.method_payment === 'mixed_stripe' && saleObj.wallet_amount > 0) {
+                    const wallet = await Wallet.findOne({ user: saleObj.user });
+                    if (wallet) {
+                        const pendingTx = wallet.transactions.find(
+                            t => t.metadata?.orderId === saleObj.n_transaccion &&
+                                 t.metadata?.status === 'pending'
+                        );
+                        if (pendingTx) {
+                            pendingTx.metadata.status = 'completed';
+                            await wallet.save();
+                        }
+                        console.log(`✅ [Webhook] Billetera mixta confirmada: ${saleObj.wallet_amount} MXN`);
                     }
-                } catch (error) {
-                    console.error('❌ [Webhook] Error al procesar checkout.session.completed:', error);
                 }
-            } else {
-                console.log('⚠️ [Webhook] Checkout session no contiene metadata.sale_id');
+
+                saleObj.status = 'Pagado';
+                saleObj.stripe_payment_intent = session.payment_intent || null;
+                await saleObj.save();
+
+                await processPaidSale(saleObj, saleObj.user);
+                notifyPaymentApproved(saleObj).catch(console.error);
+                emitSaleStatusUpdate(saleObj);
+
+                console.log(`✅ [Webhook] Venta ${saleId} activada (método: ${saleObj.method_payment})`);
+            } catch (err) {
+                console.error('❌ [Webhook] Error en checkout.session.completed:', err.message);
             }
             break;
         }
 
-        case 'payment_intent.succeeded': {
-            // Pago exitoso — aquí puedes activar la venta si usas Stripe como método de pago
-            const paymentIntent = event.data.object;
-            console.log(`💰 PaymentIntent exitoso: ${paymentIntent.id} - ${paymentIntent.amount / 100} ${paymentIntent.currency.toUpperCase()}`);
+        // ❌ SESIÓN EXPIRADA — devolver billetera si era pago mixto
+        case 'checkout.session.expired': {
+            const session = event.data.object;
+            const saleId = session.client_reference_id || session.metadata?.sale_id;
+            if (!saleId) break;
+
+            try {
+                const Sale = (await import('../models/Sale.js')).default;
+                const Wallet = (await import('../models/Wallet.js')).default;
+
+                const saleObj = await Sale.findById(saleId);
+                if (!saleObj || saleObj.status !== 'Pendiente') break;
+
+                // Devolver saldo de billetera si se reservó
+                if (saleObj.method_payment === 'mixed_stripe' && saleObj.wallet_amount > 0) {
+                    const wallet = await Wallet.findOne({ user: saleObj.user });
+                    if (wallet) {
+                        wallet.balance += saleObj.wallet_amount;
+                        wallet.transactions.push({
+                            type: 'refund',
+                            amount: saleObj.wallet_amount,
+                            description: `Devolución pago mixto cancelado - ${saleObj.n_transaccion}`,
+                            date: new Date(),
+                            metadata: { orderId: saleObj.n_transaccion, reason: 'Sesión Stripe expirada' }
+                        });
+                        await wallet.save();
+                        console.log(`✅ [Webhook] Billetera reacreditada ${saleObj.wallet_amount} MXN (sesión expirada)`);
+                    }
+                }
+
+                saleObj.status = 'Anulado';
+                saleObj.admin_notes = 'Anulado automáticamente: sesión Stripe expiró';
+                await saleObj.save();
+                console.log(`❌ [Webhook] Venta ${saleId} anulada por sesión expirada`);
+            } catch (err) {
+                console.error('❌ [Webhook] Error en checkout.session.expired:', err.message);
+            }
             break;
         }
 
         case 'payment_intent.payment_failed': {
-            const paymentIntent = event.data.object;
-            console.log(`❌ Pago fallido: ${paymentIntent.id}`);
+            console.log(`❌ Pago fallido: ${event.data.object.id}`);
             break;
         }
 

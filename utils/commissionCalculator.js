@@ -251,14 +251,13 @@ export function calculateEarningsStatsByStatus(earnings) {
 }
 
 /**
- * Desglosa un pago de PayPal (México) o Stripe en: Comisión, Neto, Instructor (70%), Plataforma (30%)
- * Fórmula PayPal MX estándar: 3.95% + $4.00 MXN + IVA (16%)
- * Fórmula Stripe MX estándar: 4.4% + $4.00 MXN + IVA (16%)
+ * Desglosa un pago de Stripe en: Comisión, Neto, Instructor (70%), Plataforma (30%)
+ * Fórmula Stripe MX estándar: 3.6% + $3.00 MXN + IVA (16%)
  * @param {number} amount - Monto TOTAL pagado por el cliente (MXN)
- * @param {string} gateway - 'paypal' o 'stripe'
+ * @param {string} gateway - 'stripe' (valor por defecto, único aceptado)
  * @returns {Object} Desglose financiero
  */
-export function calculatePaymentSplit(amount, gateway = 'paypal') {
+export function calculatePaymentSplit(amount, gateway = 'stripe') {
     // 1. Validaciones básicas
     if (typeof amount !== 'number' || amount <= 0) {
         return {
@@ -272,9 +271,9 @@ export function calculatePaymentSplit(amount, gateway = 'paypal') {
     }
 
     // 2. Cálculo de Comisión Pasarela
-    const FIXED_FEE = 4.00;
-    // Stripe cobra 4.4% + $4.00, PayPal cobra 3.95% + $4.00. Ambos + IVA
-    const PERCENTAGE_FEE = gateway === 'stripe' ? 0.044 : 0.0395;
+    // Stripe México: 3.6% + $3.00 MXN + IVA 16%
+    const FIXED_FEE = 3.00;
+    const PERCENTAGE_FEE = 0.036;
     const IVA = 1.16;
 
     // Cálculo inicial

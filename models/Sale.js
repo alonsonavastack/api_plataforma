@@ -34,6 +34,11 @@ const SaleSchema = new Schema({
         trim: true,
         default: null
     },
+    coupon_id: {
+        type: Schema.ObjectId,
+        ref: 'coupon',
+        default: null
+    },
     is_referral: {
         type: Boolean,
         default: false
@@ -91,6 +96,13 @@ const SaleSchema = new Schema({
 
     // ID de la sesión de Stripe (para auto-verificación)
     stripe_session_id: {
+        type: String,
+        maxlength: 200,
+        default: null
+    },
+
+    // ID del PaymentIntent de Stripe (confirmación final)
+    stripe_payment_intent: {
         type: String,
         maxlength: 200,
         default: null

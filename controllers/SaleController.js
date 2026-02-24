@@ -2,60 +2,54 @@ import models from "../models/index.js";
 // axios eliminado — ya no se usa PayPal
 import { emitNewSaleToAdmins, emitSaleStatusUpdate } from '../services/socket.service.js';
 import { notifyNewSale, notifyPaymentApproved } from '../services/telegram.service.js';
-import * as socketService from '../services/socket.service.js'; // Static import
-import * as telegramService from '../services/telegram.service.js'; // Static import
-import * as SaleService from '../services/SaleService.js'; // Static import
+import * as socketService from '../services/socket.service.js';
+import * as telegramService from '../services/telegram.service.js';
+import * as SaleService from '../services/SaleService.js';
+import { processPaidSale, createEarningForProduct } from '../services/SaleService.js'; // ✅ FIX: import directo
 
 import { useWalletBalance } from './WalletController.js';
-import { convertUSDByCountry, formatCurrency } from '../services/exchangeRate.service.js'; // 🔥 CONVERSIÓN MULTI-PAÍS
-
+import { convertUSDByCountry, formatCurrency } from '../services/exchangeRate.service.js';
 
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import ejs from 'ejs';
-import stripeService from '../services/stripe.service.js'; // Static import
+import stripeService from '../services/stripe.service.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// 🛡️ SECURITY: Input Sanitization
 import { JSDOM } from 'jsdom';
 import createDOMPurify from 'dompurify';
-import InstructorRetention from '../models/InstructorRetention.js'; // 🔥 IMPORTAR MODELO
-import PlatformCommissionBreakdown from '../models/PlatformCommissionBreakdown.js'; // 🔥 IMPORTAR MODELO
-import stripeDefault from '../services/stripe.service.js'; // 🔥 IMPORTAR STRIPE
+import InstructorRetention from '../models/InstructorRetention.js';
+import PlatformCommissionBreakdown from '../models/PlatformCommissionBreakdown.js';
+import stripeDefault from '../services/stripe.service.js';
 
 const window = new JSDOM('').window;
 const DOMPurify = createDOMPurify(window);
 
 /**
- * 📧 Enviar email de confirmación de compra
+ * 🔒 Helper: recarga una venta desde BD SIN populate para garantizar
+ * que detail.product sea ObjectId puro (no objeto populado).
+ * Indispensable antes de llamar processPaidSale desde auto-verificación.
  */
+async function reloadSaleClean(saleId) {
+    return await models.Sale.findById(saleId).lean();
+}
+
 export default {
-    /**
-     * 🛍️ REGISTRO DE VENTA - Sistema de compra directa (un producto a la vez)
-     * 
-     * CARACTERÍSTICAS:
-     * - Acepta compra 1x1 de curso o proyecto
-     * - Soporta pago 100% billetera (activa automáticamente)
-     * - Soporta pago mixto (billetera + transferencia)
-     * - Soporta pago 100% transferencia (requiere aprobación admin)
-     */
     async register(req, res) {
         try {
 
-            // 🛡️ SANITIZE INPUTS
             if (req.body.method_payment) req.body.method_payment = DOMPurify.sanitize(req.body.method_payment);
             if (req.body.currency_payment) req.body.currency_payment = DOMPurify.sanitize(req.body.currency_payment);
             if (req.body.n_transaccion) req.body.n_transaccion = DOMPurify.sanitize(req.body.n_transaccion);
             if (req.body.country) req.body.country = DOMPurify.sanitize(req.body.country);
 
-            let { method_payment, currency_payment, n_transaccion, detail, country, coupon_code } = req.body; // 🔥 detail en lugar de items + country, se recibe coupon_code
+            let { method_payment, currency_payment, n_transaccion, detail, country, coupon_code } = req.body;
             const user_id = req.user._id;
-            const userCountry = country || 'MX'; // Default México
+            const userCountry = country || 'MX';
 
-            // 🔥 Generar n_transaccion si no existe (para usarlo en billetera y preferencia)
             if (!n_transaccion) {
                 n_transaccion = `TXN-${Date.now()}`;
             }
@@ -66,105 +60,155 @@ export default {
                 items_count: detail?.length
             });
 
-            // 🔥 CORRECCIÓN CRÍTICA 3: Prevenir pagos duplicados
-            const recentPending = await models.Sale.findOne({
-                user: user_id,
-                status: 'Pendiente',
-                method_payment: { $in: ['transfer', 'mixed_stripe'] },
-                createdAt: { $gte: new Date(Date.now() - 5 * 60 * 1000) }
-            });
+            // Prevenir pagos duplicados Stripe y limpiar ventas pendientes anteriores
+            if (method_payment === 'stripe' || method_payment === 'mixed_stripe') {
+                const productIds = (detail || []).map(d => d.product);
 
-            if (recentPending) {
-                console.log('⚠️ [register] Pago duplicado detectado:', recentPending._id);
-                return res.status(409).send({
-                    message: 'Ya tienes un pago en proceso. Por favor espera.',
-                    pending_sale: recentPending._id,
-                    created_at: recentPending.createdAt
+                // Buscar TODAS las ventas pendientes del usuario para estos productos
+                const pendingSales = await models.Sale.find({
+                    user: user_id,
+                    status: 'Pendiente',
+                    method_payment: { $in: ['stripe', 'mixed_stripe'] },
+                    'detail.product': { $in: productIds },
+                    createdAt: { $gte: new Date(Date.now() - 60 * 60 * 1000) } // últimas 1 hora
                 });
+
+                for (const pendingSale of pendingSales) {
+                    // Verificar si la sesión Stripe sigue abierta
+                    if (pendingSale.stripe_session_id) {
+                        try {
+                            const existingSession = await stripeDefault.checkout.sessions.retrieve(pendingSale.stripe_session_id);
+                            if (existingSession && existingSession.status === 'open') {
+                                // Sesión activa → reutilizar
+                                console.log('⚠️ [register] Sesión Stripe activa reutilizada:', pendingSale._id);
+                                return res.status(200).send({
+                                    message: 'Ya tienes un pago en proceso.',
+                                    sale: pendingSale,
+                                    session_url: existingSession.url,
+                                    wallet_used: 0,
+                                    remaining_amount: 0,
+                                    fully_paid: false
+                                });
+                            }
+                            // Sesión expirada o cancelada → anular y devolver wallet
+                            console.log(`🔄 [register] Sesión Stripe expirada, anulando venta anterior: ${pendingSale._id}`);
+                        } catch (e) {
+                            // Error al recuperar sesión → también anular
+                            console.log(`🔄 [register] Error al verificar sesión, anulando venta anterior: ${pendingSale._id}`);
+                        }
+                    }
+
+                    // Devolver wallet si se habia reservado
+                    if (pendingSale.wallet_amount && pendingSale.wallet_amount > 0) {
+                        try {
+                            const wallet = await models.Wallet.findOne({ user: user_id });
+                            if (wallet) {
+                                wallet.balance = parseFloat((wallet.balance + pendingSale.wallet_amount).toFixed(2));
+                                wallet.transactions.push({
+                                    user: user_id,
+                                    type: 'refund',
+                                    amount: pendingSale.wallet_amount,
+                                    balanceAfter: wallet.balance,
+                                    description: `Reembolso automático - pago cancelado ${pendingSale.n_transaccion}`,
+                                    date: new Date(),
+                                    metadata: { orderId: pendingSale._id, reason: 'Sesión Stripe expirada, nuevo intento' }
+                                });
+                                await wallet.save();
+                                console.log(`✅ [register] Wallet devuelto: ${pendingSale.wallet_amount} MXN`);
+                            }
+                        } catch (walletErr) {
+                            console.error('❌ [register] Error devolviendo wallet:', walletErr.message);
+                        }
+                    }
+
+                    // Anular la venta anterior
+                    await models.Sale.updateOne({ _id: pendingSale._id }, { status: 'Anulado' });
+                    console.log(`✅ [register] Venta anterior anulada: ${pendingSale._id}`);
+                }
             }
 
-            // Calcular total
+            if (method_payment === 'transfer') {
+                const recentTransfer = await models.Sale.findOne({
+                    user: user_id,
+                    status: 'Pendiente',
+                    method_payment: 'transfer',
+                    createdAt: { $gte: new Date(Date.now() - 5 * 60 * 1000) }
+                });
+                if (recentTransfer) {
+                    return res.status(409).send({
+                        message: 'Ya tienes un pago en proceso. Por favor espera.',
+                        pending_sale: recentTransfer._id,
+                        created_at: recentTransfer.createdAt
+                    });
+                }
+            }
+
             let total = 0;
             const sale_details = [];
 
-            // 🔥 VALIDAR CUPÓN (Si existe)
             let isReferralSale = false;
             let validatedCoupon = null;
 
             if (coupon_code) {
+                const normalizedCode = coupon_code.trim().toUpperCase();
                 validatedCoupon = await models.Coupon.findOne({
-                    code: coupon_code,
+                    code: normalizedCode,
                     active: true,
                     expires_at: { $gt: new Date() }
                 });
 
                 if (validatedCoupon) {
-                    console.log(`🎟️ [register] Cupón aplicado: ${coupon_code}`);
-                    isReferralSale = true;
+                    const productIds = (detail || []).map(d => d.product?.toString());
+                    const couponProductIds = validatedCoupon.projects.map(p => p.toString());
+                    const appliestoProduct = productIds.some(pid => couponProductIds.includes(pid));
+
+                    if (appliestoProduct) {
+                        coupon_code = normalizedCode;
+                        isReferralSale = true;
+                        console.log(`🎟️ [register] Cupón de referido aplicado: ${coupon_code} → comisión 80/20`);
+                    } else {
+                        console.warn(`⚠️ [register] Cupón ${coupon_code} no aplica a ningún producto del pedido, ignorado`);
+                        validatedCoupon = null;
+                    }
                 } else {
                     console.warn(`⚠️ [register] Cupón inválido/expirado ignorado: ${coupon_code}`);
                 }
             }
 
-            // 🔥 Adaptar 'detail' (frontend) a 'items' (lógica del usuario)
             const items = detail || [];
 
-            // 🔥 CORRECCIÓN CRÍTICA 2: Validar productos ANTES de cobrar
+            // Validar productos
             for (const item of items) {
                 if (item.product_type === 'course') {
                     const course = await models.Course.findById(item.product);
-                    if (!course) {
-                        return res.status(404).send({
-                            message: `El curso "${item.title}" no existe`
-                        });
-                    }
-                    if (course.state !== 2) {
-                        return res.status(400).send({
-                            message: `El curso "${item.title}" no está disponible`
-                        });
-                    }
+                    if (!course) return res.status(404).send({ message: `El curso "${item.title}" no existe` });
+                    if (course.state !== 2) return res.status(400).send({ message: `El curso "${item.title}" no está disponible` });
                 } else if (item.product_type === 'project') {
                     const project = await models.Project.findById(item.product);
-                    if (!project) {
-                        return res.status(404).send({
-                            message: `El proyecto "${item.title}" no existe`
-                        });
-                    }
-                    if (project.state !== 2) {
-                        return res.status(400).send({
-                            message: `El proyecto "${item.title}" no está disponible`
-                        });
-                    }
+                    if (!project) return res.status(404).send({ message: `El proyecto "${item.title}" no existe` });
+                    if (project.state !== 2) return res.status(400).send({ message: `El proyecto "${item.title}" no está disponible` });
                 }
             }
 
             for (const item of items) {
-                const detailObj = {
-                    product: item.product, // 🔥 CORREGIDO: usar 'product' directamente
-                    product_type: item.product_type, // 🔥 CORREGIDO: 'product_type' no 'type_detail'
+                sale_details.push({
+                    product: item.product,
+                    product_type: item.product_type,
                     title: item.title,
                     price_unit: item.price_unit,
                     discount: item.discount || 0,
                     type_discount: item.type_discount || 0,
                     campaign_discount: item.campaign_discount || null
-                };
-
-                sale_details.push(detailObj);
+                });
                 total += item.price_unit;
             }
 
-
-
-            // 🔥 LÓGICA PARA PAGO 100% CON BILLETERA
+            // ─── PAGO 100% BILLETERA ─────────────────────────────────────────────
             if (method_payment === 'wallet') {
                 console.log('💰 [register] Método seleccionado: wallet (100% billetera)');
 
-                // 1. Validar Billetera
                 const wallet = await models.Wallet.findOne({ user: user_id });
-                if (!wallet) {
-                    return res.status(400).send({ message: 'Billetera no encontrada' });
-                }
-
+                if (!wallet) return res.status(400).send({ message: 'Billetera no encontrada' });
                 if (wallet.balance < total) {
                     return res.status(400).send({
                         message: 'Saldo insuficiente en billetera',
@@ -173,7 +217,6 @@ export default {
                     });
                 }
 
-                // 2. Descontar saldo
                 const newBalance = wallet.balance - total;
                 wallet.balance = newBalance;
                 wallet.transactions.push({
@@ -183,31 +226,29 @@ export default {
                     balanceAfter: newBalance,
                     description: `Pago compra - ${n_transaccion}`,
                     date: new Date(),
-                    metadata: {
-                        orderId: n_transaccion,
-                        payment_method: 'wallet',
-                        status: 'completed'
-                    }
+                    metadata: { orderId: n_transaccion, payment_method: 'wallet', status: 'completed' }
                 });
                 await wallet.save();
 
-
-                // 3. Crear Venta PAGADA
                 const sale = await models.Sale.create({
                     user: user_id,
                     method_payment: 'wallet',
-                    currency_payment: currency_payment,
+                    currency_payment: currency_payment || 'MXN',
                     n_transaccion: n_transaccion,
                     detail: sale_details,
-                    price_dolar: total,
                     total: total,
-                    status: 'Pagado', // 🔥 IMPORTANTE: Estado Pagado
+                    status: 'Pagado',
                     wallet_amount: total,
-                    remaining_amount: 0
+                    remaining_amount: 0,
+                    coupon_code: isReferralSale ? coupon_code : null,
+                    is_referral: isReferralSale,
+                    coupon_id: isReferralSale && validatedCoupon ? validatedCoupon._id : null
                 });
 
-                // 4. Procesar accesos y notificaciones
-                await processPaidSale(sale, user_id);
+                // Procesar en background — no bloquea la respuesta al cliente ✅
+                processPaidSale(sale, user_id).catch(err => {
+                    console.error('⚠️ [register/wallet] Error en processPaidSale (no crítico):', err.message);
+                });
                 notifyPaymentApproved(sale).catch(console.error);
 
                 return res.status(200).send({
@@ -218,30 +259,27 @@ export default {
                 });
             }
 
-            // MercadoPago y PayPal eliminados — solo Stripe, wallet y transfer
+            // Métodos eliminados
             if (['mercadopago', 'mixed_mercadopago', 'paypal', 'mixed_paypal'].includes(method_payment)) {
                 return res.status(400).send({ message: 'Método de pago no disponible. Usa Stripe, billetera o transferencia.' });
             }
 
-            // 🔥 PARA OTROS MÉTODOS (Wallet/Transferencia): SÍ CREAR VENTA
             console.log(`🏦 [register] Método seleccionado: ${method_payment}`);
 
-            // 🔥 CONVERTIR USD → MONEDA LOCAL SEGÚN PAÍS
             const conversion = await convertUSDByCountry(total, userCountry);
 
-            console.log('💱 [register] Conversión para el usuario:', {
-                total_usd: formatCurrency(conversion.usd, 'USD'),
+            console.log('💱 [register] Conversión:', {
+                total_usd: formatCurrency(conversion.usd || total, 'USD'),
                 total_local: formatCurrency(conversion.amount, conversion.currency),
                 currency: conversion.currency,
-                country: conversion.country,
                 exchange_rate: conversion.rate
             });
 
-            // 🔥 MIXED_STRIPE: VALIDAR Y DESCONTAR BILLETERA
             let wallet_used = 0;
             let remaining_usd = total;
             const final_n_transaccion = n_transaccion || `TXN-${Date.now()}`;
 
+            // ─── PAGO MIXTO (Billetera + Stripe) ────────────────────────────────
             if (method_payment === 'mixed_stripe') {
                 console.log('💰 [register] Método mixto: Stripe + Billetera');
                 const wallet = await models.Wallet.findOne({ user: user_id });
@@ -249,15 +287,36 @@ export default {
                     return res.status(400).send({ message: 'No tienes saldo en tu billetera para usar pago mixto.' });
                 }
 
-                wallet_used = wallet.balance >= total ? total : wallet.balance;
-                remaining_usd = total - wallet_used;
+                // ── Mínimo que Stripe acepta en MXN ──────────────────────────────
+                const STRIPE_MIN_MXN = 10; // Stripe México: mínimo $10 MXN
+
+                let desiredWalletUse = parseFloat((wallet.balance >= total ? total : wallet.balance).toFixed(2));
+                let proposedRemaining = parseFloat((total - desiredWalletUse).toFixed(2));
+
+                // Si el restante quedaría entre $0.01 y $9.99 MXN, ajustamos el wallet
+                // para que Stripe reciba exactamente el mínimo ($10 MXN)
+                if (proposedRemaining > 0 && proposedRemaining < STRIPE_MIN_MXN) {
+                    const adjustment = parseFloat((STRIPE_MIN_MXN - proposedRemaining).toFixed(2));
+                    desiredWalletUse = parseFloat((desiredWalletUse - adjustment).toFixed(2));
+                    proposedRemaining = STRIPE_MIN_MXN;
+                    console.log(`⚙️ [register] Ajuste mínimo Stripe: wallet reducido a ${desiredWalletUse}, Stripe recibirá ${proposedRemaining}`);
+                }
+
+                // Si tras ajuste el wallet quedaría negativo, el saldo es insuficiente
+                if (desiredWalletUse < 0 || wallet.balance < desiredWalletUse) {
+                    return res.status(400).send({
+                        message: `Tu saldo en billetera (${wallet.balance.toFixed(2)} MXN) no es suficiente. Stripe requiere un mínimo de ${STRIPE_MIN_MXN} MXN como pago con tarjeta.`
+                    });
+                }
+
+                wallet_used = desiredWalletUse;
+                remaining_usd = proposedRemaining;
 
                 if (remaining_usd <= 0) {
                     return res.status(400).send({ message: 'Tu saldo cubre el total. Por favor selecciona Billetera como método de pago exclusivo.' });
                 }
 
-                // Descontar saldo temporalmente
-                wallet.balance -= wallet_used;
+                wallet.balance = parseFloat((wallet.balance - wallet_used).toFixed(2));
                 wallet.transactions.push({
                     user: user_id,
                     type: 'debit',
@@ -268,51 +327,39 @@ export default {
                     metadata: { orderId: final_n_transaccion, payment_method: 'mixed_stripe', status: 'pending' }
                 });
                 await wallet.save();
-                console.log(`✅ [register] Se reservaron $${wallet_used} USD de la billetera. Restante a procesar: $${remaining_usd} USD.`);
+                console.log(`✅ [register] Reservados ${wallet_used} MXN de billetera. Stripe recibirá: ${remaining_usd} MXN`);
             }
 
-            // Crear la venta
             const sale = await models.Sale.create({
                 user: user_id,
                 method_payment,
-                currency_payment: 'USD', // 🔥 SIEMPRE guardamos en USD
+                currency_payment: 'MXN',
                 n_transaccion: final_n_transaccion,
                 detail: sale_details,
-                price_dolar: total, // 🔥 Precio en USD
-                total: total, // 🔥 Total en USD
-                status: 'Pendiente', // Pendiente de aprobación admin
-                // 🔥 NUEVO: Guardar info de conversión multi-país
-                conversion_rate: conversion.rate,
-                conversion_currency: conversion.currency,
-                conversion_amount: conversion.amount,
-                conversion_country: userCountry,
-                wallet_amount: wallet_used,          // 🔥 Añadido para métodos mixtos
-                remaining_amount: remaining_usd,     // 🔥 Añadido para métodos mixtos
-                // 🔥 REFERIDOS
+                total: total,
+                status: 'Pendiente',
+                wallet_amount: wallet_used,
+                remaining_amount: remaining_usd,
                 coupon_code: isReferralSale ? coupon_code : null,
-                is_referral: isReferralSale
+                is_referral: isReferralSale,
+                coupon_id: isReferralSale && validatedCoupon ? validatedCoupon._id : null
             });
 
             console.log('✅ [register] Venta creada:', sale._id);
 
-            // 🔥 PARA TRANSFERENCIA: Retornar datos bancarios con monto en MONEDA LOCAL
-            if (method_payment === 'transfer') { // 🔥 CORREGIDO: 'transfer' en lugar de 'transferencia' para coincidir con el frontend
+            // ─── TRANSFERENCIA ───────────────────────────────────────────────────
+            if (method_payment === 'transfer') {
                 return res.status(200).send({
                     message: 'Venta registrada. Por favor realiza la transferencia.',
                     sale: sale,
                     n_transaccion: n_transaccion,
-                    // 🔥 INFORMACIÓN PARA EL USUARIO CON MONEDA LOCAL
                     payment_info: {
                         amount_usd: total,
                         amount_local: conversion.amount,
                         currency: conversion.currency,
-                        country: conversion.country,
-                        symbol: conversion.symbol,
                         exchange_rate: conversion.rate,
-                        formatted_usd: formatCurrency(total, 'USD'),
                         formatted_local: formatCurrency(conversion.amount, conversion.currency)
                     },
-                    // 🔥 DATOS BANCARIOS (desde tu .env o hardcoded)
                     bank_details: {
                         bank_name: 'BBVA México',
                         account_holder: 'Tu Nombre o Empresa',
@@ -323,23 +370,37 @@ export default {
                 });
             }
 
-            // 🔥 SI EL MÉTODO ES STRIPE O MIXED STRIPE, CREAR CHECKOUT SESSION
+            // ─── STRIPE / MIXED STRIPE ───────────────────────────────────────────
             if (method_payment === 'stripe' || method_payment === 'mixed_stripe') {
                 console.log(`💳 [register] Generando Stripe Checkout Session para ${method_payment}...`);
 
-                // Preparar line_items para Stripe
-                // Calcular propocionalmente el costo del item en base al amount remanente
-                const line_items = sale_details.map(item => {
-                    const proportion = total > 0 ? (item.price_unit / total) : 0;
-                    const itemRemainingUsd = remaining_usd * proportion;
-                    const unitPriceCents = Math.round(itemRemainingUsd * conversion.rate * 100);
+                // ── Construir line_items para Stripe ────────────────────────────
+                // Si hay múltiples items, distribuimos el monto restante proporcionalmente.
+                // Al último item le asignamos el residuo para evitar errores de redondeo.
+                let accumulatedCents = 0;
+                const totalRemainingCents = Math.round(remaining_usd * 100);
+
+                const line_items = sale_details.map((item, index) => {
+                    let unitPriceCents;
+                    if (index === sale_details.length - 1) {
+                        // Último item: toma el residuo exacto para que la suma cuadre
+                        unitPriceCents = totalRemainingCents - accumulatedCents;
+                    } else {
+                        const proportion = total > 0 ? (item.price_unit / total) : 0;
+                        unitPriceCents = Math.round(remaining_usd * proportion * 100);
+                        accumulatedCents += unitPriceCents;
+                    }
+
+                    // Garantizar mínimo de Stripe (1000 centavos = $10 MXN) por item
+                    if (unitPriceCents < 1000) {
+                        console.warn(`⚠️ [register] Item "${item.title}" tiene ${unitPriceCents} centavos → ajustado a 1000 (mínimo Stripe)`);
+                        unitPriceCents = 1000;
+                    }
 
                     return {
                         price_data: {
-                            currency: conversion.currency.toLowerCase(),
-                            product_data: {
-                                name: item.title,
-                            },
+                            currency: (conversion.currency || 'MXN').toLowerCase(),
+                            product_data: { name: item.title },
                             unit_amount: unitPriceCents,
                         },
                         quantity: 1,
@@ -350,20 +411,20 @@ export default {
                     payment_method_types: ['card'],
                     line_items: line_items,
                     mode: 'payment',
-                    success_url: `${process.env.URL_FRONTEND}/profile-student?section=projects&payment_success=true&sale_id=${sale._id}`,
-                    cancel_url: `${process.env.URL_FRONTEND}/checkout?payment_canceled=true`,
+                    success_url: `${process.env.URL_FRONTEND}/#/payment-success?payment_success=true&sale_id=${sale._id}`,
+                    cancel_url: `${process.env.URL_FRONTEND}/#/checkout?payment_canceled=true`,
                     client_reference_id: sale._id.toString(),
                     metadata: {
                         sale_id: sale._id.toString(),
                         user_id: user_id.toString(),
                         n_transaccion: sale.n_transaccion,
-                        wallet_used: wallet_used > 0 ? 'true' : 'false'
+                        wallet_used: wallet_used > 0 ? 'true' : 'false',
+                        coupon_code: isReferralSale ? (coupon_code || '') : '',
+                        is_referral: isReferralSale ? 'true' : 'false'
                     }
                 });
 
                 console.log(`✅ [register] Stripe Session creada: ${session.id}`);
-
-                // 🔥 Guardar el session.id en n_transaccion temporalmente o agregarlo como campo
                 sale.stripe_session_id = session.id;
                 await sale.save();
 
@@ -377,7 +438,6 @@ export default {
                 });
             }
 
-            // Para otros métodos
             return res.status(200).send({
                 message: 'Pago registrado exitosamente (Pendiente)',
                 sale: sale,
@@ -388,24 +448,25 @@ export default {
 
         } catch (error) {
             console.error('❌ [register] Error general:', error);
+            // 🔧 Log detallado para errores de Stripe
+            if (error?.type?.startsWith('Stripe') || error?.raw) {
+                console.error('❌ [register] Stripe error detallado:', {
+                    type: error.type,
+                    code: error.code,
+                    param: error.param,
+                    message: error.message,
+                    raw: error.raw
+                });
+            }
             return res.status(500).send({
-                message: 'Error al procesar el pago',
-                error: error.message
+                message: error?.message || 'Error al procesar el pago',
+                stripe_error: error?.code || null
             });
         }
     },
 
-    // createPaypalOrder eliminado
-
-    // capturePaypalOrder eliminado
-
     _removed: async (req, res) => { res.status(410).send({ message: 'Eliminado' }); },
 
-
-
-    /**
-     * 📋 LISTAR VENTAS
-     */
     list: async (req, res) => {
         try {
             const { search, status, month, year, exclude_refunded, user: userId } = req.query;
@@ -413,36 +474,21 @@ export default {
 
             let filter = { status: { $ne: 'Anulado' } };
 
-            // 🔥 Filtro por usuario específico (para dashboard de estudiantes)
-            if (userId) {
-                filter.user = userId;
-            }
+            if (userId) filter.user = userId;
 
-            // Filtro para excluir ventas reembolsadas
             if (exclude_refunded === 'true') {
-                const refundedSales = await models.Refund.find({
-                    status: 'completed', state: 1
-                }).distinct('sale');
-
-                if (refundedSales.length > 0) {
-                    filter._id = { $nin: refundedSales };
-                }
+                const refundedSales = await models.Refund.find({ status: 'completed', state: 1 }).distinct('sale');
+                if (refundedSales.length > 0) filter._id = { $nin: refundedSales };
             }
 
             if (status) filter.status = status;
 
-            // Filtro por fecha
             if (month && year) {
-                const startDate = new Date(year, month - 1, 1);
-                const endDate = new Date(year, month, 0, 23, 59, 59, 999);
-                filter.createdAt = { $gte: startDate, $lte: endDate };
+                filter.createdAt = { $gte: new Date(year, month - 1, 1), $lte: new Date(year, month, 0, 23, 59, 59, 999) };
             } else if (year) {
-                const startDate = new Date(year, 0, 1);
-                const endDate = new Date(year, 11, 31, 23, 59, 59, 999);
-                filter.createdAt = { $gte: startDate, $lte: endDate };
+                filter.createdAt = { $gte: new Date(year, 0, 1), $lte: new Date(year, 11, 31, 23, 59, 59, 999) };
             }
 
-            // Búsqueda
             if (search) {
                 const users = await models.User.find({
                     $or: [
@@ -458,43 +504,36 @@ export default {
                 ];
             }
 
-            // Filtro para instructores
             if (user.rol === 'instructor') {
                 const courses = await models.Course.find({ user: user._id }).select('_id');
                 const projects = await models.Project.find({ user: user._id }).select('_id');
                 const productIds = [...courses, ...projects].map(p => p._id);
-
                 filter['detail'] = { $elemMatch: { product: { $in: productIds } } };
             }
 
-            // Obtener ventas
             let sales = await models.Sale.find(filter)
                 .populate('user', 'name surname email')
                 .populate({ path: 'detail.product', select: 'title imagen user' })
-                .sort({ createdAt: -1 }); // 🔥 Not using .lean() yet because we might need to .save()
+                .sort({ createdAt: -1 });
 
-            // 🔥 AUTO-VERIFICACIÓN DE STRIPE PARA ADMINS/INSTRUCTORES
-            // Verificamos el estado actual si siguen "Pendiente"
+            // Auto-verificación Stripe
             for (let sale of sales) {
                 if (sale.status === 'Pendiente' &&
                     (sale.method_payment === 'stripe' || sale.method_payment === 'mixed_stripe') &&
                     sale.stripe_session_id) {
                     try {
-                        console.log(`⏳ Verificando status en Stripe para la sesión: ${sale.stripe_session_id}`);
-                        if (stripeService) {
-                            const session = await stripeService.checkout.sessions.retrieve(sale.stripe_session_id);
-                            if (session && session.payment_status === 'paid') {
-                                console.log(`✅ [list] Auto-aprobando venta Stripe ${sale._id}`);
-                                sale.status = 'Pagado';
-                                sale.n_transaccion = session.payment_intent || sale.n_transaccion;
-                                await sale.save();
-
-                                await SaleService.processPaidSale(sale, sale.user || sale.user._id);
-
-                                telegramService.notifyPaymentApproved(sale).catch(console.error);
-
-                                socketService.emitSaleStatusUpdate(sale);
-                            }
+                        const session = await stripeService.checkout.sessions.retrieve(sale.stripe_session_id);
+                        if (session && session.payment_status === 'paid') {
+                            console.log(`✅ [list] Auto-aprobando venta Stripe ${sale._id}`);
+                            sale.status = 'Pagado';
+                            sale.n_transaccion = session.payment_intent || sale.n_transaccion;
+                            await sale.save();
+                            // 🔒 Recargar sin populate para que detail.product sea ObjectId puro
+                            const saleClean = await reloadSaleClean(sale._id);
+                            const userId = saleClean.user;
+                            processPaidSale(saleClean, userId).catch(console.error);
+                            telegramService.notifyPaymentApproved(sale).catch(console.error);
+                            socketService.emitSaleStatusUpdate(sale);
                         }
                     } catch (verifyError) {
                         console.error(`❌ [list] Error auto-verificando Stripe:`, verifyError.message);
@@ -502,10 +541,8 @@ export default {
                 }
             }
 
-            // Convertir a lean objects
             sales = sales.map(s => typeof s.toObject === 'function' ? s.toObject() : s);
 
-            // Agregar info de reembolsos
             const saleIds = sales.map(s => s._id);
             const refunds = await models.Refund.find({ sale: { $in: saleIds }, state: 1 }).lean();
             const refundMap = new Map(refunds.map(r => [r.sale.toString(), r]));
@@ -515,21 +552,21 @@ export default {
                 refund: refundMap.get(sale._id.toString()) || null
             }));
 
-            // Filtrar para instructores
             if (user.rol === 'instructor') {
-                const productIdStrings = [...await models.Course.find({ user: user._id }).select('_id'),
-                ...await models.Project.find({ user: user._id }).select('_id')]
-                    .map(p => p._id.toString());
+                const productIdStrings = [
+                    ...await models.Course.find({ user: user._id }).select('_id'),
+                    ...await models.Project.find({ user: user._id }).select('_id')
+                ].map(p => p._id.toString());
 
                 sales = sales.map(sale => ({
                     ...sale,
                     detail: sale.detail.filter(item =>
-                        item.product && productIdStrings.includes(item.product._id.toString())
+                        item.product && productIdStrings.includes(item.product._id?.toString())
                     )
                 })).filter(sale => sale.detail.length > 0);
             }
 
-            console.log(`✅ [list] Operación completada, devolviendo ${sales.length} ventas`);
+            console.log(`✅ [list] Devolviendo ${sales.length} ventas`);
             res.status(200).json({ sales });
 
         } catch (error) {
@@ -538,207 +575,79 @@ export default {
         }
     },
 
-    /**
-     * 🔄 ACTUALIZAR ESTADO DE VENTA (Solo Admin)
-     * 
-     * 🔥 IMPORTANTE: 
-     * - Cuando cambia de Pendiente → Pagado: activa automáticamente el acceso
-     * - Cuando cambia a Anulado: revierte billetera + elimina accesos + cancela ganancias
-     */
     update_status_sale: async (req, res) => {
         try {
-            if (req.user.rol !== 'admin') {
-                return res.status(403).json({ message: 'No autorizado' });
-            }
+            if (req.user.rol !== 'admin') return res.status(403).json({ message: 'No autorizado' });
 
             const { id } = req.params;
-
-            // 🛡️ SANITIZE INPUTS
             if (req.body.admin_notes) req.body.admin_notes = DOMPurify.sanitize(req.body.admin_notes);
-
             const { status, admin_notes } = req.body;
 
             const sale = await models.Sale.findById(id).populate('user');
-            if (!sale) {
-                return res.status(404).json({ message: 'Venta no encontrada' });
-            }
+            if (!sale) return res.status(404).json({ message: 'Venta no encontrada' });
 
             const oldStatus = sale.status;
 
-            // ════════════════════════════════════════════════
-            // 🔥 CASO 1: RECHAZAR VENTA (Anulado)
-            // ════════════════════════════════════════════════
+            // ── ANULAR ───────────────────────────────────────────────────────────
             if (status === 'Anulado' && oldStatus !== 'Anulado') {
-                console.log('\n🚨 ═══════════════════════════════════════════════');
                 console.log('🚨 [RECHAZO] Anulando venta:', sale._id);
-                console.log('🚨 ═══════════════════════════════════════════════');
-                console.log(`   📊 Estado anterior: ${oldStatus}`);
-                console.log(`   👤 Usuario: ${sale.user.name} ${sale.user.surname}`);
-                console.log(`   💰 Total venta: ${sale.total}`);
-                console.log(`   💳 Método: ${sale.method_payment}`);
 
-                // ────────────────────────────────────────────────
-                // 💸 1. DEVOLVER SALDO DE BILLETERA SI SE USÓ
-                // ────────────────────────────────────────────────
                 if (sale.wallet_amount && sale.wallet_amount > 0) {
-                    console.log(`\n💸 [RECHAZO] Devolviendo ${sale.wallet_amount} a billetera...`);
-
                     try {
-                        // Obtener billetera del usuario
                         const wallet = await models.Wallet.findOne({ user: sale.user._id });
-
-                        if (!wallet) {
-                            console.error('❌ [RECHAZO] Billetera no encontrada para usuario');
-                        } else {
-                            // Crear transacción de reembolso
-                            const refundTransaction = {
+                        if (wallet) {
+                            wallet.balance += sale.wallet_amount;
+                            wallet.transactions.push({
                                 type: 'refund',
                                 amount: sale.wallet_amount,
                                 description: `Devolución por venta rechazada: ${sale.n_transaccion || sale._id}`,
                                 date: new Date(),
-                                metadata: {
-                                    orderId: sale._id,
-                                    reason: 'Venta anulada por administrador',
-                                    admin_notes: admin_notes || 'Sin observaciones'
-                                }
-                            };
-
-                            // Acreditar saldo
-                            wallet.balance += sale.wallet_amount;
-                            wallet.transactions.push(refundTransaction);
+                                metadata: { orderId: sale._id, reason: 'Venta anulada por administrador' }
+                            });
                             await wallet.save();
-
-                            console.log(`✅ [RECHAZO] Billetera reacreditada exitosamente`);
-                            console.log(`   💰 Monto devuelto: ${sale.wallet_amount}`);
-                            console.log(`   💵 Nuevo saldo: ${wallet.balance}`);
+                            console.log(`✅ [RECHAZO] Billetera reacreditada: ${sale.wallet_amount}`);
                         }
-
                     } catch (walletError) {
-                        console.error('❌ [RECHAZO] Error al reacreditar billetera:', walletError.message);
-                        // Continuar con la anulación, pero loguear el error
+                        console.error('❌ [RECHAZO] Error reacreditando billetera:', walletError.message);
                     }
-                } else {
-                    console.log('ℹ️  [RECHAZO] No se usó billetera en esta venta');
                 }
 
-                // ────────────────────────────────────────────────
-                // 🗑️ 2. ELIMINAR INSCRIPCIONES SI EXISTEN
-                // ────────────────────────────────────────────────
                 if (oldStatus === 'Pagado') {
-                    console.log('\n🗑️ [RECHAZO] Venta estaba pagada, eliminando accesos...');
-
                     for (const item of sale.detail) {
-                        // Solo los CURSOS tienen modelo CourseStudent
                         if (item.product_type === 'course') {
-                            try {
-                                const deleted = await models.CourseStudent.deleteMany({
-                                    user: sale.user._id,
-                                    course: item.product
-                                });
-
-                                if (deleted.deletedCount > 0) {
-                                    console.log(`   ✅ Acceso eliminado: curso ${item.product}`);
-                                } else {
-                                    console.log(`   ℹ️  Sin acceso previo: curso ${item.product}`);
-                                }
-                            } catch (deleteError) {
-                                console.error(`   ❌ Error eliminando acceso al curso:`, deleteError.message);
-                            }
-                        } else if (item.product_type === 'project') {
-                            console.log(`   📦 Proyecto ${item.product}: acceso controlado por venta (no requiere eliminación)`);
+                            await models.CourseStudent.deleteMany({ user: sale.user._id, course: item.product }).catch(console.error);
                         }
                     }
-                } else {
-                    console.log('ℹ️  [RECHAZO] Venta no estaba pagada, no hay accesos que eliminar');
                 }
 
-                // ────────────────────────────────────────────────
-                // 💰 3. MARCAR GANANCIAS COMO ANULADAS
-                // ────────────────────────────────────────────────
-                console.log('\n💰 [RECHAZO] Cancelando ganancias de instructores...');
+                await models.InstructorEarnings.updateMany(
+                    { sale: sale._id, status: { $in: ['pending', 'available'] } },
+                    { $set: { status: 'cancelled', cancelled_at: new Date() } }
+                ).catch(console.error);
 
-                try {
-                    const earningsUpdate = await models.InstructorEarnings.updateMany(
-                        {
-                            sale: sale._id,
-                            status: { $in: ['pending', 'available'] }
-                        },
-                        {
-                            $set: {
-                                status: 'cancelled',
-                                admin_notes: admin_notes || 'Venta anulada por administrador',
-                                cancelled_at: new Date()
-                            }
-                        }
-                    );
+                await InstructorRetention.updateMany({ sale: sale._id }, { $set: { status: 'cancelled' } }).catch(console.error);
+                await PlatformCommissionBreakdown.deleteMany({ sale: sale._id }).catch(console.error);
 
-                    if (earningsUpdate.modifiedCount > 0) {
-                        console.log(`✅ [RECHAZO] ${earningsUpdate.modifiedCount} ganancia(s) marcadas como anuladas`);
-                    } else {
-                        console.log('ℹ️  [RECHAZO] No había ganancias pendientes/disponibles para anular');
-                    }
-
-                } catch (earningsError) {
-                    console.error('❌ [RECHAZO] Error al cancelar ganancias:', earningsError.message);
-                }
-
-                // ────────────────────────────────────────────────
-                // 🧮 4. CANCELAR REGISTROS FISCALES (NUEVO)
-                // ────────────────────────────────────────────────
-                console.log('\n🧮 [RECHAZO] Cancelando registros fiscales...');
-                try {
-                    // Cancelar Retenciones
-                    const retentionUpdate = await InstructorRetention.updateMany(
-                        { sale: sale._id },
-                        { $set: { status: 'cancelled' } }
-                    );
-                    console.log(`✅ [RECHAZO] ${retentionUpdate.modifiedCount} retención(es) cancelada(s)`);
-
-                    // Eliminar/Marcar Breakdown de Plataforma
-                    // Opcional: Podrías querer mantenerlos para auditoría, o borrarlos. 
-                    // Como no tienen estado 'status', los eliminamos o los dejamos huérfanos.
-                    // Vamos a eliminarlos para limpiar stats.
-                    const breakdownDelete = await PlatformCommissionBreakdown.deleteMany({ sale: sale._id });
-                    console.log(`✅ [RECHAZO] ${breakdownDelete.deletedCount} desglose(s) de plataforma eliminado(s)`);
-
-                } catch (fiscalError) {
-                    console.error('❌ [RECHAZO] Error al cancelar registros fiscales:', fiscalError.message);
-                }
-
-                console.log('\n✅ [RECHAZO] Proceso de anulación completado');
-                console.log('🚨 ═══════════════════════════════════════════════\n');
+                console.log('✅ [RECHAZO] Proceso de anulación completado');
             }
 
-            // ════════════════════════════════════════════════
-            // 🔥 CASO 2: APROBAR VENTA (Pagado)
-            // ════════════════════════════════════════════════
+            // ── APROBAR ──────────────────────────────────────────────────────────
             if (oldStatus !== 'Pagado' && status === 'Pagado') {
-                console.log('\n🚀 ═══════════════════════════════════════════════');
                 console.log('🚀 [APROBACIÓN] Activando acceso para venta:', sale._id);
-                console.log('🚀 ═══════════════════════════════════════════════\n');
-
-                await processPaidSale(sale, sale.user._id);
-                // sendConfirmationEmail(sale._id).catch(console.error);
-
-                // 🔔 Notificar al estudiante por Telegram
+                processPaidSale(sale, sale.user._id).catch(err => {
+                    console.error('⚠️ [update_status_sale] Error en processPaidSale (no crítico):', err.message);
+                });
                 notifyPaymentApproved(sale).catch(console.error);
             }
 
-            // ────────────────────────────────────────────────
-            // ACTUALIZAR ESTADO DE LA VENTA
-            // ────────────────────────────────────────────────
             sale.status = status;
-            if (admin_notes) {
-                sale.admin_notes = admin_notes;
-            }
+            if (admin_notes) sale.admin_notes = admin_notes;
             await sale.save();
 
             emitSaleStatusUpdate(sale);
 
             res.status(200).json({
-                message: status === 'Anulado'
-                    ? '❌ Venta anulada y saldo devuelto'
-                    : '✅ Estado actualizado',
+                message: status === 'Anulado' ? '❌ Venta anulada y saldo devuelto' : '✅ Estado actualizado',
                 sale
             });
 
@@ -748,41 +657,28 @@ export default {
         }
     },
 
-    /**
-     * 📄 MIS TRANSACCIONES (Estudiante)
-     */
     my_transactions: async (req, res) => {
         try {
             let sales = await models.Sale.find({ user: req.user._id })
                 .populate({ path: 'detail.product', select: 'title imagen' })
-                .sort({ createdAt: -1 }); // 🔥 Not using .lean() yet because we might need to .save()
+                .sort({ createdAt: -1 });
 
-            // 🔥 AUTO-VERIFICACIÓN DE STRIPE
-            // Si hay pagos con Stripe que siguen "Pendiente", verificamos su estado actual
-            let hasChanges = false;
             for (let sale of sales) {
                 if (sale.status === 'Pendiente' &&
                     (sale.method_payment === 'stripe' || sale.method_payment === 'mixed_stripe') &&
                     sale.stripe_session_id) {
-
                     try {
-                        console.log(`⏳ Verificando status en Stripe para la sesión: ${sale.stripe_session_id}`);
-                        if (stripeService) {
-                            const session = await stripeService.checkout.sessions.retrieve(sale.stripe_session_id);
-                            if (session && session.payment_status === 'paid') {
-                                console.log(`✅ [my_transactions] Auto-aprobando venta Stripe ${sale._id}`);
-                                sale.status = 'Pagado';
-                                sale.n_transaccion = session.payment_intent || sale.n_transaccion;
-                                await sale.save();
-
-                                await SaleService.processPaidSale(sale, sale.user);
-
-                                telegramService.notifyPaymentApproved(sale).catch(console.error);
-
-                                socketService.emitSaleStatusUpdate(sale);
-
-                                hasChanges = true;
-                            }
+                        const session = await stripeService.checkout.sessions.retrieve(sale.stripe_session_id);
+                        if (session && session.payment_status === 'paid') {
+                            console.log(`✅ [my_transactions] Auto-aprobando venta Stripe ${sale._id}`);
+                            sale.status = 'Pagado';
+                            sale.n_transaccion = session.payment_intent || sale.n_transaccion;
+                            await sale.save();
+                            // 🔒 Recargar sin populate para que detail.product sea ObjectId puro
+                            const saleClean = await reloadSaleClean(sale._id);
+                            processPaidSale(saleClean, saleClean.user).catch(console.error);
+                            telegramService.notifyPaymentApproved(sale).catch(console.error);
+                            socketService.emitSaleStatusUpdate(sale);
                         }
                     } catch (verifyError) {
                         console.error(`❌ [my_transactions] Error auto-verificando Stripe:`, verifyError.message);
@@ -790,51 +686,30 @@ export default {
                 }
             }
 
-            // Convert to lean object array
             sales = sales.map(s => typeof s.toObject === 'function' ? s.toObject() : s);
 
-            // 🔥 VERIFICAR PAGOS A INSTRUCTORES (Para bloquear reembolsos)
             const saleIds = sales.map(s => s._id);
 
-            // 1. Verificar Ganancias directas marcadas como pagadas
-            const paidEarnings = await models.InstructorEarnings.find({
-                sale: { $in: saleIds },
-                status: 'paid'
-            }).select('sale').lean();
-
-            // 2. Verificar Retenciones/Desgloses marcados como pagados o declarados
-            // Esto cubre el flujo de impuestos donde se paga al instructor vía retención
-            const paidRetentions = await models.InstructorRetention.find({
-                sale: { $in: saleIds },
-                status: { $in: ['paid', 'declared'] }
-            }).select('sale').lean();
+            const paidEarnings = await models.InstructorEarnings.find({ sale: { $in: saleIds }, status: 'paid' }).select('sale').lean();
+            const paidRetentions = await models.InstructorRetention.find({ sale: { $in: saleIds }, status: { $in: ['paid', 'declared'] } }).select('sale').lean();
 
             const paidSaleIds = new Set([
                 ...paidEarnings.map(e => e.sale.toString()),
                 ...paidRetentions.map(r => r.sale.toString())
             ]);
 
-            // Obtener reembolsos
             const refunds = await models.Refund.find({ sale: { $in: saleIds } }).lean();
             const refundMap = new Map();
             refunds.forEach(r => {
-                if (!refundMap.has(r.sale.toString())) {
-                    refundMap.set(r.sale.toString(), []);
-                }
+                if (!refundMap.has(r.sale.toString())) refundMap.set(r.sale.toString(), []);
                 refundMap.get(r.sale.toString()).push(r);
             });
 
             sales = sales.map(sale => {
                 const saleRefunds = refundMap.get(sale._id.toString()) || [];
-                // Determinar estado general de reembolso
-                let refundStatus = null;
-                if (saleRefunds.length > 0) {
-                    refundStatus = saleRefunds[0];
-                }
-
                 return {
                     ...sale,
-                    refund: refundStatus,
+                    refund: saleRefunds[0] || null,
                     refunds: saleRefunds,
                     instructor_paid: paidSaleIds.has(sale._id.toString())
                 };
@@ -848,54 +723,71 @@ export default {
         }
     },
 
-
-
-    /**
-     * 🔍 BUSCAR POR NÚMERO DE TRANSACCIÓN
-     */
-    get_by_transaction: async (req, res) => {
+    get_by_id: async (req, res) => {
         try {
-            const { n_transaccion } = req.params;
+            const { id } = req.params;
+            const sale = await models.Sale.findOne({ _id: id, user: req.user._id })
+                .populate({ path: 'detail.product', select: 'title imagen' });
 
-            const sale = await models.Sale.findOne({
-                n_transaccion,
-                user: req.user._id
-            }).populate({ path: 'detail.product', select: 'title imagen' });
+            if (!sale) return res.status(404).json({ message: 'Venta no encontrada' });
 
-            if (!sale) {
-                return res.status(404).json({ message: 'Transacción no encontrada' });
-            }
-
-            // 🔥 AUTO-VERIFICACIÓN DE STRIPE
             if (sale.status === 'Pendiente' &&
                 (sale.method_payment === 'stripe' || sale.method_payment === 'mixed_stripe') &&
                 sale.stripe_session_id) {
                 try {
-                    console.log(`⏳ Verificando status en Stripe para la sesión: ${sale.stripe_session_id}`);
-                    if (stripeService) {
-                        const session = await stripeService.checkout.sessions.retrieve(sale.stripe_session_id);
-                        if (session && session.payment_status === 'paid') {
-                            console.log(`✅ [get_by_transaction] Auto-aprobando venta Stripe ${sale._id}`);
-                            sale.status = 'Pagado';
-                            sale.n_transaccion = session.payment_intent || sale.n_transaccion;
-                            await sale.save();
+                    const session = await stripeService.checkout.sessions.retrieve(sale.stripe_session_id);
+                    if (session && session.payment_status === 'paid') {
+                        sale.status = 'Pagado';
+                        sale.stripe_payment_intent = session.payment_intent || null;
+                        await sale.save();
+                        // 🔒 Recargar sin populate para que detail.product sea ObjectId puro
+                        const saleClean = await reloadSaleClean(sale._id);
+                        processPaidSale(saleClean, saleClean.user).catch(console.error);
+                        telegramService.notifyPaymentApproved(sale).catch(console.error);
+                        socketService.emitSaleStatusUpdate(sale);
+                    }
+                } catch (verifyError) {
+                    console.error(`❌ [get_by_id] Error auto-verificando Stripe:`, verifyError.message);
+                }
+            }
 
-                            await SaleService.processPaidSale(sale, sale.user || req.user._id);
+            res.status(200).json({ transaction: typeof sale.toObject === 'function' ? sale.toObject() : sale });
 
-                            telegramService.notifyPaymentApproved(sale).catch(console.error);
+        } catch (error) {
+            console.error('❌ Error en get_by_id:', error);
+            res.status(500).json({ message: 'Error al buscar venta' });
+        }
+    },
 
-                            socketService.emitSaleStatusUpdate(sale);
-                        }
+    get_by_transaction: async (req, res) => {
+        try {
+            const { n_transaccion } = req.params;
+            const sale = await models.Sale.findOne({ n_transaccion, user: req.user._id })
+                .populate({ path: 'detail.product', select: 'title imagen' });
+
+            if (!sale) return res.status(404).json({ message: 'Transacción no encontrada' });
+
+            if (sale.status === 'Pendiente' &&
+                (sale.method_payment === 'stripe' || sale.method_payment === 'mixed_stripe') &&
+                sale.stripe_session_id) {
+                try {
+                    const session = await stripeService.checkout.sessions.retrieve(sale.stripe_session_id);
+                    if (session && session.payment_status === 'paid') {
+                        sale.status = 'Pagado';
+                        sale.n_transaccion = session.payment_intent || sale.n_transaccion;
+                        await sale.save();
+                        // 🔒 Recargar sin populate para que detail.product sea ObjectId puro
+                        const saleClean = await reloadSaleClean(sale._id);
+                        processPaidSale(saleClean, saleClean.user).catch(console.error);
+                        telegramService.notifyPaymentApproved(sale).catch(console.error);
+                        socketService.emitSaleStatusUpdate(sale);
                     }
                 } catch (verifyError) {
                     console.error(`❌ [get_by_transaction] Error auto-verificando Stripe:`, verifyError.message);
                 }
             }
 
-            // Convertir a lean()
-            const leanSale = typeof sale.toObject === 'function' ? sale.toObject() : sale;
-
-            res.status(200).json({ transaction: leanSale });
+            res.status(200).json({ transaction: typeof sale.toObject === 'function' ? sale.toObject() : sale });
 
         } catch (error) {
             console.error('❌ Error en get_by_transaction:', error);
@@ -903,20 +795,14 @@ export default {
         }
     },
 
-    /**
-     * 🔔 NOTIFICACIONES RECIENTES (Admin)
-     */
     recent_notifications: async (req, res) => {
         try {
             const { limit = 10 } = req.query;
-
             const sales = await models.Sale.find({})
                 .populate('user', 'name surname email')
                 .sort({ createdAt: -1 })
                 .limit(parseInt(limit))
                 .lean();
-
-            const unreadCount = sales.filter(s => s.status === 'Pendiente').length;
 
             res.status(200).json({
                 recent_sales: sales.map(s => ({
@@ -927,7 +813,7 @@ export default {
                     createdAt: s.createdAt,
                     user: s.user
                 })),
-                unread_count: unreadCount
+                unread_count: sales.filter(s => s.status === 'Pendiente').length
             });
 
         } catch (error) {
@@ -936,120 +822,53 @@ export default {
         }
     },
 
-    /**
-     * ✅ MARCAR NOTIFICACIONES COMO LEÍDAS
-     */
     mark_notifications_read: async (req, res) => {
         res.status(200).json({ success: true });
     },
 
-    /**
-     * 🔧 PROCESAR VENTAS EXISTENTES
-     * Busca ventas pagadas que no tengan ganancias generadas y las crea.
-     * Útil para migración o corrección de datos.
-     */
     process_existing_sales: async (req, res) => {
         try {
-            console.log('🔧 [process_existing_sales] Iniciando procesamiento manual...');
-
-            // Buscar todas las ventas pagadas
             const sales = await models.Sale.find({ status: 'Pagado' });
-            console.log(`🔧 Encontradas ${sales.length} ventas pagadas.`);
-
-            let sales_reviewed = 0;
-            let processed = 0;
-            let skipped = 0;
-            let total = 0;
-
-            const processed_details = [];
-            const skipped_details = [];
+            let processed = 0, skipped = 0, total = 0;
+            const processed_details = [], skipped_details = [];
 
             for (const sale of sales) {
-                sales_reviewed++;
-
                 for (const item of sale.detail) {
                     total++;
-
                     try {
-                        // 1. Validar Instructor
                         let instructorId = null;
                         if (item.product_type === 'course') {
                             const course = await models.Course.findById(item.product).select('user title');
                             instructorId = course?.user;
-                            if (course) item.title = course.title; // Asegurar título
                         } else if (item.product_type === 'project') {
                             const project = await models.Project.findById(item.product).select('user title');
                             instructorId = project?.user;
-                            if (project) item.title = project.title;
                         }
 
                         if (!instructorId) {
                             skipped++;
-                            skipped_details.push({
-                                sale: sale.n_transaccion || sale._id,
-                                product: item.product,
-                                title: item.title,
-                                reason: 'Producto sin instructor asignado'
-                            });
+                            skipped_details.push({ sale: sale.n_transaccion || sale._id, product: item.product, reason: 'Sin instructor' });
                             continue;
                         }
 
-                        // 2. Verificar si ya existe ganancia
-                        const existing = await models.InstructorEarnings.findOne({
-                            sale: sale._id,
-                            product_id: item.product
-                        });
+                        const existing = await models.InstructorEarnings.findOne({ sale: sale._id, product_id: item.product });
+                        if (existing) { skipped++; continue; }
 
-                        if (existing) {
-                            skipped++;
-                            // No agregamos a skipped_details para no saturar, ya que es el caso común
-                            continue;
-                        }
-
-                        // 3. Crear ganancia
                         const created = await createEarningForProduct(sale, item);
-
                         if (created) {
                             processed++;
-                            processed_details.push({
-                                sale: sale.n_transaccion || sale._id,
-                                product: item.product,
-                                title: item.title
-                            });
+                            processed_details.push({ sale: sale.n_transaccion || sale._id, product: item.product, title: item.title });
                         } else {
-                            // Si retornó false pero no lanzó error (ej. ya existía o sin instructor, aunque esos casos ya los filtramos arriba)
-                            // En realidad createEarningForProduct tiene sus propios chequeos, pero nosotros ya hicimos algunos.
-                            // Si createEarningForProduct retorna false es porque falló algo interno o validación extra.
-                            // Asumimos que si no es created, es skipped.
                             skipped++;
-                            // No agregamos detalle genérico
                         }
-
                     } catch (err) {
                         skipped++;
-                        skipped_details.push({
-                            sale: sale.n_transaccion || sale._id,
-                            product: item.product,
-                            title: item.title,
-                            reason: 'Error interno',
-                            error: err.message
-                        });
+                        skipped_details.push({ sale: sale.n_transaccion || sale._id, product: item.product, error: err.message });
                     }
                 }
             }
 
-            console.log(`✅ [process_existing_sales] Finalizado. Procesados: ${processed}, Omitidos: ${skipped}, Total: ${total}`);
-
-            res.status(200).json({
-                success: true,
-                message: 'Procesamiento completado',
-                processed,
-                skipped,
-                total,
-                sales_reviewed,
-                processed_details,
-                skipped_details
-            });
+            res.status(200).json({ success: true, message: 'Procesamiento completado', processed, skipped, total, processed_details, skipped_details });
 
         } catch (error) {
             console.error('❌ Error en process_existing_sales:', error);
@@ -1057,14 +876,113 @@ export default {
         }
     },
 
-    /**
-     * 🖼️ OBTENER IMAGEN DEL VOUCHER
-     */
+    fix_referral_earnings: async (req, res) => {
+        // 🔧 Endpoint de corrección: recalcula ganancias de ventas con cupón de referido
+        // que fueron mal calculadas con 30% en vez de 20%
+        try {
+            if (req.user.rol !== 'admin') return res.status(403).json({ message: 'No autorizado' });
+
+            const { sale_id } = req.body; // Opcional: corregir solo una venta
+
+            const filter = { is_referral: true, coupon_code: { $ne: null }, status: 'Pagado' };
+            if (sale_id) filter._id = sale_id;
+
+            const referralSales = await models.Sale.find(filter);
+            console.log(`🔧 [fix_referral_earnings] Ventas referido encontradas: ${referralSales.length}`);
+
+            const settings = await models.PlatformCommissionSettings.findOne();
+            const REFERRAL_COMMISSION = (settings?.referral_commission_rate ?? 20) / 100; // 0.20
+
+            const { calculatePaymentSplit } = await import('../utils/commissionCalculator.js');
+
+            let fixed = 0, skipped = 0;
+            const details = [];
+
+            for (const sale of referralSales) {
+                for (const item of sale.detail) {
+                    // Buscar el earning existente
+                    const earning = await models.InstructorEarnings.findOne({
+                        sale: sale._id,
+                        product_id: item.product
+                    });
+
+                    if (!earning) { skipped++; continue; }
+
+                    // Si ya está marcado como referido con 20%, saltarlo
+                    if (earning.is_referral && Math.abs(earning.platform_commission_rate - REFERRAL_COMMISSION) < 0.001) {
+                        console.log(`   ℹ️ Earning ${earning._id} ya tiene comisión 20% correcta`);
+                        skipped++;
+                        continue;
+                    }
+
+                    // Verificar que el cupón aplica a este producto/instructor
+                    const coupon = await models.Coupon.findOne({ code: sale.coupon_code.trim().toUpperCase() });
+                    if (!coupon) { skipped++; continue; }
+
+                    const instructorMatch = coupon.instructor.toString() === earning.instructor.toString();
+                    // 🔒 Normalizar item.product: puede ser ObjectId o objeto populado
+                    const rawProduct = item.product;
+                    const productIdStr = (rawProduct && typeof rawProduct === 'object' && rawProduct._id)
+                        ? rawProduct._id.toString()
+                        : rawProduct?.toString();
+                    const productMatch = coupon.projects.some(p => p.toString() === productIdStr);
+
+                    if (!instructorMatch || !productMatch) { skipped++; continue; }
+
+                    // Recalcular con 20% de plataforma
+                    const isWallet = sale.method_payment === 'wallet';
+                    const splitResult = isWallet
+                        ? { paypalFee: 0, netAmount: item.price_unit }
+                        : calculatePaymentSplit(item.price_unit, 'stripe');
+
+                    const netSale           = splitResult.netAmount;
+                    const newPlatCommission = parseFloat((netSale * REFERRAL_COMMISSION).toFixed(2));
+                    const newInstrEarning   = parseFloat((netSale - newPlatCommission).toFixed(2));
+
+                    const oldCommission = earning.platform_commission_amount;
+                    const oldEarning    = earning.instructor_earning;
+
+                    // Actualizar el earning
+                    earning.platform_commission_rate   = REFERRAL_COMMISSION;
+                    earning.platform_commission_amount = newPlatCommission;
+                    earning.instructor_earning         = newInstrEarning;
+                    earning.instructor_earning_usd     = newInstrEarning;
+                    earning.is_referral                = true;
+                    await earning.save();
+
+                    fixed++;
+                    details.push({
+                        sale_id: sale._id,
+                        n_transaccion: sale.n_transaccion,
+                        product: item.title,
+                        old_commission: oldCommission,
+                        new_commission: newPlatCommission,
+                        old_earning: oldEarning,
+                        new_earning: newInstrEarning
+                    });
+
+                    console.log(`   ✅ Corregido earning ${earning._id}: comisión ${(oldCommission)} → ${newPlatCommission} | ganancia ${oldEarning} → ${newInstrEarning}`);
+                }
+            }
+
+            res.status(200).json({
+                success: true,
+                message: `Corrección completada: ${fixed} corregidos, ${skipped} omitidos`,
+                fixed,
+                skipped,
+                details
+            });
+
+        } catch (error) {
+            console.error('❌ Error en fix_referral_earnings:', error);
+            res.status(500).json({ message: 'Error al corregir ganancias', error: error.message });
+        }
+    },
+
     get_voucher_image: async (req, res) => {
         try {
             const img = req.params.image;
             const path_img = path.join(__dirname, '../uploads/transfers/', img);
-
             if (fs.existsSync(path_img)) {
                 res.sendFile(path.resolve(path_img));
             } else {
@@ -1072,7 +990,6 @@ export default {
                 res.sendFile(path.resolve(path_default));
             }
         } catch (error) {
-            console.log(error);
             res.status(500).send({ message: 'HUBO UN ERROR' });
         }
     }

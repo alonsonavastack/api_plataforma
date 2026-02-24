@@ -56,7 +56,41 @@ export const client = async (req, res) => {
 
         console.log(`✅ [ProfileStudentController] Cursos con porcentaje calculado: ${enrolled_courses.length}`);
 
-        // 2. Obtener el historial de compras (opcional, pero útil para el perfil)
+        // 2. Obtener el historial de compras
+        // ⚡ PRIMERO: Auto-verificar ventas Stripe pendientes ANTES de hacer lean()
+        const pendingStripeSales = await models.Sale.find({
+            user: req.user._id,
+            status: 'Pendiente',
+            method_payment: { $in: ['stripe', 'mixed_stripe'] },
+            stripe_session_id: { $exists: true, $ne: null }
+        });
+
+        for (const pendingSale of pendingStripeSales) {
+            try {
+                const stripeModule = await import('../services/stripe.service.js');
+                const stripeService = stripeModule.default;
+                const session = await stripeService.checkout.sessions.retrieve(pendingSale.stripe_session_id);
+
+                if (session && session.payment_status === 'paid') {
+                    console.log(`✅ [client] Auto-aprobando venta Stripe ${pendingSale._id}`);
+                    pendingSale.status = 'Pagado';
+                    pendingSale.stripe_payment_intent = session.payment_intent || null;
+                    await pendingSale.save();
+
+                    // Procesar accesos e ganancias
+                    const { processPaidSale } = await import('../services/SaleService.js');
+                    await processPaidSale(pendingSale, pendingSale.user);
+
+                    // Notificaciones (sin await para no bloquear)
+                    import('../services/telegram.service.js')
+                        .then(m => m.notifyPaymentApproved(pendingSale))
+                        .catch(() => {});
+                }
+            } catch (stripeErr) {
+                console.error(`❌ [client] Error verificando Stripe para venta ${pendingSale._id}:`, stripeErr.message);
+            }
+        }
+
         let sales = await models.Sale.find({ user: req.user._id })
             .sort({ createdAt: -1 })
             .lean(); // Usamos lean() para poder modificar los objetos

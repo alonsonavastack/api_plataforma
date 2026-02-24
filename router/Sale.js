@@ -18,6 +18,9 @@ router.post("/mark-notifications-read", [auth.verifyAdmin], saleController.mark_
 // 🔧 Procesar ventas existentes - Crear ganancias de instructores
 router.post("/process-existing-sales", [auth.verifyAdmin], saleController.process_existing_sales);
 
+// 🔥 Corregir ganancias de ventas con cupón de referido que quedaron con 30% en vez de 20%
+router.post("/fix-referral-earnings", [auth.verifyAdmin], saleController.fix_referral_earnings);
+
 // Actualizar estado - Solo administradores
 router.put("/update-status/:id", [auth.verifyAdmin], saleController.update_status_sale);
 
@@ -30,8 +33,11 @@ router.post("/register", auth.verifyTienda, saleController.register);
 // Obtener mis transacciones (estudiante)
 router.get("/my-transactions", auth.verifyTienda, saleController.my_transactions);
 
-// Buscar transacción por número
+// Buscar transacción por número de transacción
 router.get("/transaction/:n_transaccion", auth.verifyTienda, saleController.get_by_transaction);
+
+// Buscar venta por ID de MongoDB (para verificar estado post-Stripe)
+router.get("/by-id/:id", auth.verifyTienda, saleController.get_by_id);
 
 
 

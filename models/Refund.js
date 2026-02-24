@@ -105,47 +105,54 @@ const RefundSchema = new Schema({
 });
 
 // Método para calcular el reembolso
-RefundSchema.methods.calculateRefund = function () {
+RefundSchema.methods.calculateRefund = function (paymentMethod = null) {
     // 🔥 USAR EL PRECIO DEL ÍTEM ESPECÍFICO, NO EL TOTAL DE LA VENTA
     const original = this.sale_detail_item?.price_unit || this.originalAmount;
 
-    // Inicializar calculations si no existe
-    if (!this.calculations) {
-        this.calculations = {};
+    if (!this.calculations) this.calculations = {};
+
+    // ✅ POLÍTICA: Solo se descuenta el fee de Stripe si el pago fue con tarjeta.
+    // Pagos con billetera (wallet) se reembolsan al 100% ya que no hubo procesamiento bancario.
+    const method = paymentMethod || this._paymentMethod || 'stripe';
+    const isWalletOnly = method === 'wallet';
+
+    let stripeFee = 0;
+
+    if (!isWalletOnly) {
+        // Stripe México: 3.6% + $3.00 MXN fijo + 16% IVA sobre el fee
+        const STRIPE_PERCENT = 0.036;
+        const STRIPE_FIXED   = 3.00;
+        const IVA_RATE       = 1.16;
+
+        // Para pago mixto, el fee de Stripe aplica solo sobre el monto que pasó por Stripe
+        // El resto (billetera) se reembolsa al 100%
+        if (method === 'mixed_stripe') {
+            const walletAmount  = this._walletAmount || 0;
+            const stripeAmount  = Math.max(0, original - walletAmount);
+            const rawFee = ((stripeAmount * STRIPE_PERCENT) + STRIPE_FIXED) * IVA_RATE;
+            stripeFee = parseFloat(rawFee.toFixed(2));
+        } else {
+            // Pago 100% Stripe
+            const rawFee = ((original * STRIPE_PERCENT) + STRIPE_FIXED) * IVA_RATE;
+            stripeFee = parseFloat(rawFee.toFixed(2));
+        }
     }
 
-    // 🆕 NUEVO SISTEMA: Reembolso completo a billetera digital
-    // Ya NO hay deducciones - el estudiante recibe el 100%
+    const refundAmount     = parseFloat(Math.max(0, original - stripeFee).toFixed(2));
+    const refundPercentage = parseFloat(((refundAmount / original) * 100).toFixed(2));
 
-    // 1. El monto a reembolsar es el 100% del pago original
-    const refundAmount = original;
-    const refundPercentage = 100;
+    this.calculations.subtotal          = original;
+    this.calculations.iva               = 0;
+    this.calculations.ivaRate           = 0;
+    this.calculations.platformFee       = 0;
+    this.calculations.platformFeeRate   = 0;
+    this.calculations.processingFee     = stripeFee;
+    this.calculations.processingFeeRate = isWalletOnly ? 0 : 0.036;
+    this.calculations.refundAmount      = refundAmount;
+    this.calculations.refundPercentage  = refundPercentage;
+    this.calculations.payment_method    = method;
 
-    // 2. Solo guardamos datos para referencia histórica
-    // (pero ya no se usan para cálculos)
-    const ivaRate = 0.16;
-    const subtotal = original / (1 + ivaRate);
-    const iva = original - subtotal;
-
-    // Comisiones ya NO se deducen del reembolso
-    // Se quedan en la plataforma automáticamente
-    const platformFeeRate = 0;
-    const processingFeeRate = 0;
-    const platformFee = 0;
-    const processingFee = 0;
-
-    // 3. Actualizar el documento
-    this.calculations.subtotal = parseFloat(subtotal.toFixed(2));
-    this.calculations.iva = parseFloat(iva.toFixed(2));
-    this.calculations.ivaRate = ivaRate;
-    this.calculations.platformFee = 0;
-    this.calculations.platformFeeRate = 0;
-    this.calculations.processingFee = 0;
-    this.calculations.processingFeeRate = 0;
-    this.calculations.refundAmount = parseFloat(refundAmount.toFixed(2)); // 👉 Siempre 100%
-    this.calculations.refundPercentage = parseFloat(refundPercentage.toFixed(2)); // 👉 Siempre 100%
-
-    console.log(`💰 [Refund] Calculado: ${original} → ${refundAmount} (${refundPercentage}%)`);
+    console.log(`💰 [Refund] Método: ${method} | ${original} MXN - Fee Stripe: ${stripeFee} = Reembolso: ${refundAmount} MXN (${refundPercentage}%)`);
 
     return this.calculations;
 };

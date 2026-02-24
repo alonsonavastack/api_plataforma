@@ -14,17 +14,20 @@ const CouponSchema = new Schema({
         ref: 'user',
         required: true
     },
-    // El proyecto/curso para el cual es válido este cupón
-    // Aunque el usuario dijo "seleccionar el proyecto", hacerlo array da flexibilidad futura
-    // Si array está vacío, podría ser global para todos sus cursos (opcional)
+    // IDs de productos (cursos O proyectos) a los que aplica este cupón
     projects: [{
         type: Schema.ObjectId,
-        ref: 'project', // O 'course', habrá que manejar ambos IDs o asumir que 'project' abarca ambos en contexto de selección
         required: true
     }],
+    // 🔥 NUEVO: tipo de producto del cupón (para saber si aplica a course o project)
+    product_type: {
+        type: String,
+        enum: ['course', 'project'],
+        default: 'project'
+    },
     discount_percentage: {
         type: Number,
-        default: 0, // Por defecto 0 si solo es para tracking/comisión
+        default: 0, // 0 = solo tracking de referido (comisión 80/20)
         min: 0,
         max: 100
     },
