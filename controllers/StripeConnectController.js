@@ -118,11 +118,23 @@ export const getStripeStatus = async (req, res) => {
         const status = await checkAccountStatus(config.stripe_account_id);
 
         // Actualizar en BD si hay cambios
+        let needsSave = false;
+
         if (config.stripe_charges_enabled !== status.charges_enabled ||
             config.stripe_payouts_enabled !== status.payouts_enabled) {
             config.stripe_charges_enabled = status.charges_enabled;
             config.stripe_payouts_enabled = status.payouts_enabled;
             config.stripe_onboarding_complete = status.details_submitted;
+            needsSave = true;
+        }
+
+        // Si ya puede recibir pagos y no tiene método preferido, asignarlo automáticamente a Stripe
+        if (status.charges_enabled && (!config.preferred_payment_method || config.preferred_payment_method === '')) {
+            config.preferred_payment_method = 'stripe';
+            needsSave = true;
+        }
+
+        if (needsSave) {
             await config.save();
         }
 

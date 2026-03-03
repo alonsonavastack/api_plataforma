@@ -352,7 +352,7 @@ export const getInstructorsWithEarnings = async (req, res) => {
                 // Obtener configuración de pago
                 const paymentConfig = await InstructorPaymentConfig.findOne({
                     instructor: item._id
-                }).select('preferred_payment_method paypal_connected stripe_connected');
+                }).select('preferred_payment_method paypal_connected stripe_charges_enabled');
 
                 // 🔥 Obtener país del instructor
                 const country = instructor.country || 'INTL';
@@ -374,7 +374,7 @@ export const getInstructorsWithEarnings = async (req, res) => {
                         hasConfig: !!paymentConfig,
                         preferredMethod: paymentConfig?.preferred_payment_method || 'none',
                         paypalConnected: paymentConfig?.paypal_connected || false,
-                        stripeConnected: paymentConfig?.stripe_connected || false, // 🔥 Incluir estado Stripe
+                        stripeConnected: paymentConfig?.stripe_charges_enabled || false, // 🔥 Incluir estado Stripe
                         country // 🔥 Incluir país
                     }
                 };
@@ -1185,6 +1185,14 @@ export const getInstructorPaymentMethodFull = async (req, res) => {
         } else if (paymentConfig.preferred_payment_method === 'wallet') {
             response.paymentDetails = {
                 type: 'wallet',
+                country: instructor.country || 'INTL'
+            };
+        } else if (paymentConfig.preferred_payment_method === 'stripe') {
+            response.paymentDetails = {
+                type: 'stripe',
+                stripe_account_id: paymentConfig.stripe_account_id,
+                stripe_charges_enabled: paymentConfig.stripe_charges_enabled,
+                stripe_onboarding_complete: paymentConfig.stripe_onboarding_complete,
                 country: instructor.country || 'INTL'
             };
         }
