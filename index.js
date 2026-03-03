@@ -53,7 +53,9 @@ app.use(helmet({
                 "'self'",
                 "'unsafe-inline'", // Solo para desarrollo
                 "https://cdn.jsdelivr.net",
-                "https://cdnjs.cloudflare.com"
+                "https://cdnjs.cloudflare.com",
+                "https://js.stripe.com",
+                "https://connect-js.stripe.com"
             ],
             styleSrc: [
                 "'self'",
@@ -74,6 +76,9 @@ app.use(helmet({
             connectSrc: [
                 "'self'",
                 "https://api.stripe.com",
+                "https://connect-js.stripe.com",
+                "https://*.stripe.com",
+                "wss://*.stripe.com",
                 "wss://localhost:3000",
                 "wss://localhost:4200",
                 process.env.NODE_ENV === 'production' ? "wss://api.devhubsharks.com" : "",
@@ -82,7 +87,8 @@ app.use(helmet({
             frameSrc: [
                 "'self'",
                 "https://js.stripe.com",
-                "https://hooks.stripe.com"
+                "https://hooks.stripe.com",
+                "https://connect.stripe.com"
             ],
             objectSrc: ["'none'"],
             upgradeInsecureRequests: process.env.NODE_ENV === 'production' ? [] : null
@@ -96,9 +102,9 @@ app.use(helmet({
         preload: true
     },
 
-    // Prevenir clickjacking
+    // Prevenir clickjacking (permitir iframes de Stripe)
     frameguard: {
-        action: 'deny'
+        action: 'sameorigin'
     },
 
     // Prevenir MIME sniffing
