@@ -28,8 +28,8 @@ const InstructorRetentionSchema = new Schema({
     // Monto neto a pagar
     net_pay: { type: Number, required: true }, // gross - retentions
 
-    // Comisiones PayPal (enviar)
-    paypal_send_commission: { type: Number, required: true }, // Comisión al enviar el pago
+    // Comisiones Stripe (enviar)
+    stripe_send_commission: { type: Number, required: true }, // Comisión al enviar el pago
 
     // Estado de la retención
     status: {

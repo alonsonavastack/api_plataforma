@@ -7,13 +7,13 @@ const PlatformCommissionBreakdownSchema = new Schema({
     // Ingreso inicial
     sale_amount: { type: Number, required: true }, // Total venta
 
-    // Comisiones PayPal
-    paypal_receive_commission: { type: Number, required: true }, // 4% + 4 fijo (al recibir)
-    paypal_send_commission: { type: Number, required: true },    // 4% + 4 fijo (al enviar)
-    total_paypal_commissions: { type: Number, required: true },  // Suma de ambas
+    // Comisiones Stripe
+    stripe_receive_commission: { type: Number, required: true }, // 4% + 4 fijo (al recibir)
+    stripe_send_commission: { type: Number, required: true },    // 4% + 4 fijo (al enviar)
+    total_stripe_commissions: { type: Number, required: true },  // Suma de ambas
 
     // División instructor/plataforma
-    net_after_paypal_receive: { type: Number, required: true }, // Venta - comisión recibir
+    net_after_stripe_receive: { type: Number, required: true }, // Venta - comisión recibir
     platform_share: { type: Number, required: true },           // 50%
     instructor_share: { type: Number, required: true },         // 50%
 

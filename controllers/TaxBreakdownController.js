@@ -208,7 +208,7 @@ export default {
                             total_gross: 0,
                             total_retentions: 0,
                             total_net_pay: 0,
-                            total_paypal_send: 0,
+                            total_stripe_send: 0,
                             platform_net_profit: 0,
                             platform_taxes: 0
                         }
@@ -232,14 +232,14 @@ export default {
             const skip = (page - 1) * limit;
 
             // 1. Get totals for the entire period (ignoring pagination)
-            const allRetentions = await models.InstructorRetention.find(query).select('gross_earning total_retention net_pay paypal_send_commission sale');
+            const allRetentions = await models.InstructorRetention.find(query).select('gross_earning total_retention net_pay stripe_send_commission sale');
 
             let totals = {
                 sales_count: allRetentions.length,
                 total_gross: 0,
                 total_retentions: 0,
                 total_net_pay: 0,
-                total_paypal_send: 0,
+                total_stripe_send: 0,
                 // Platform Totals
                 platform_net_profit: 0,
                 platform_taxes: 0
@@ -255,7 +255,7 @@ export default {
                 totals.total_gross += r.gross_earning;
                 totals.total_retentions += r.total_retention;
                 totals.total_net_pay += r.net_pay;
-                totals.total_paypal_send += r.paypal_send_commission;
+                totals.total_stripe_send += r.stripe_send_commission || 0;
             });
 
             // 2. Get Platform Totals
@@ -389,11 +389,11 @@ export default {
                 .populate('instructor', 'name surname email');
 
             // CSV Header
-            let csv = "Instructor,Email,ID Venta,Monto Bruto,Retención ISR,Retención IVA,Total Retenido,Pago Neto,Comisión P.Envío,Estado\n";
+            let csv = "Instructor,Email,ID Venta,Monto Bruto,Retención ISR,Retención IVA,Total Retenido,Pago Neto,Comisión Stripe Payouts,Estado\n";
 
             retentions.forEach(r => {
                 const instructorName = `${r.instructor.name} ${r.instructor.surname}`;
-                csv += `"${instructorName}","${r.instructor.email}","${r.sale}","${r.gross_earning.toFixed(2)}","${r.isr_retention.toFixed(2)}","${r.iva_retention.toFixed(2)}","${r.total_retention.toFixed(2)}","${r.net_pay.toFixed(2)}","${r.paypal_send_commission.toFixed(2)}","${r.status}"\n`;
+                csv += `"${instructorName}","${r.instructor.email}","${r.sale}","${r.gross_earning.toFixed(2)}","${r.isr_retention.toFixed(2)}","${r.iva_retention.toFixed(2)}","${r.total_retention.toFixed(2)}","${r.net_pay.toFixed(2)}","${r.stripe_send_commission ? r.stripe_send_commission.toFixed(2) : '0.00'}","${r.status}"\n`;
             });
 
             res.header('Content-Type', 'text/csv');

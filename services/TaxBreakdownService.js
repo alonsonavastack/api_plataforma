@@ -20,16 +20,16 @@ class TaxBreakdownService {
             // Obtener monto real de la venta (o del item si es venta múltiple)
             const saleAmount = earning.sale_price; // $110.00
 
-            // 1️⃣ Comisión PayPal (RECIBIR)
+            // 1️⃣ Comisión Stripe (RECIBIR)
             // 🔥 TOMA EL VALOR REAL DE LA GANANCIA GUARDADA (SaleService)
             // Si por alguna razón no existe, calculamos con la fórmula correcta (Progressive Rounding sería ideal pero aquí aproximamos)
-            const paypalReceiveCommission = earning.payment_fee_amount || 0;
+            const stripeReceiveCommission = earning.payment_fee_amount || 0;
 
-            const netAfterPaypalReceive = saleAmount - paypalReceiveCommission; // Base Repartible Real
+            const netAfterStripeReceive = saleAmount - stripeReceiveCommission; // Base Repartible Real
 
             // 2️⃣ División Real (Basada en la ganancia real calculada previamente sobre el NETO)
             const instructorShare = earning.instructor_earning; // Ganancia neta del instructor (70-80% del neto)
-            const platformShare = netAfterPaypalReceive - instructorShare; // 20-30% del neto
+            const platformShare = netAfterStripeReceive - instructorShare; // 20-30% del neto
 
             // 3️⃣ Retenciones al Instructor (ELIMINADO A PETICIÓN DEL USUARIO)
             // Ya no se retiene ISR ni IVA al instructor porque no hay depósito bancario directo
@@ -39,20 +39,18 @@ class TaxBreakdownService {
 
             const instructorNetPay = instructorShare; // Se transfiere el total de su ganancia
 
-            // 4️⃣ Comisión PayPal (ENVIAR al instructor)
-            // Esto es lo que cuesta ENVIARLE el dinero (Mass Pay o similar)
-            // ¿Quién lo paga? Usualmente se descuenta del saldo o lo absorbe la plataforma.
-            // La lógica anterior lo descontaba del `instructorNetPay` para calcular comisiones de plataforma?
+            // 4️⃣ Comisión Stripe (ENVIAR al instructor)
+            // Esto es lo que cuesta ENVIARLE el dinero (Payouts)
             // Mantendremos el cálculo informativo.
-            const paypalSendPercentage = 0.04;
-            const paypalSendFee = 4.00;
+            const stripeSendPercentage = 0; // Configurable si se cobra algo por payout
+            const stripeSendFee = 0; // Stripe Connect standard payouts to connected accounts typically don't have this extra fee if configured correctly, but keeping vars just in case
 
-            const paypalSendCommission = (instructorNetPay * paypalSendPercentage) + paypalSendFee;
+            const stripeSendCommission = (instructorNetPay * stripeSendPercentage) + stripeSendFee;
 
-            const totalPaypalCommissions = paypalReceiveCommission + paypalSendCommission;
+            const totalStripeCommissions = stripeReceiveCommission + stripeSendCommission;
 
             // 5️⃣ Ganancia Operativa de la Plataforma
-            const platformOperatingProfit = platformShare - paypalSendCommission;
+            const platformOperatingProfit = platformShare - stripeSendCommission;
 
             // 6️⃣ Impuestos de la Plataforma (Sobre su ganancia operativa)
             const platformISR = platformOperatingProfit * 0.10;
@@ -78,7 +76,7 @@ class TaxBreakdownService {
                 iva_retention: ivaRetention,
                 total_retention: totalRetentions,
                 net_pay: instructorNetPay,
-                paypal_send_commission: paypalSendCommission,
+                stripe_send_commission: stripeSendCommission,
                 status: 'pending',
                 month: month,
                 year: year
@@ -89,10 +87,10 @@ class TaxBreakdownService {
             await models.PlatformCommissionBreakdown.create({
                 sale: sale._id,
                 sale_amount: saleAmount,
-                paypal_receive_commission: paypalReceiveCommission,
-                paypal_send_commission: paypalSendCommission,
-                total_paypal_commissions: totalPaypalCommissions,
-                net_after_paypal_receive: netAfterPaypalReceive,
+                stripe_receive_commission: stripeReceiveCommission,
+                stripe_send_commission: stripeSendCommission,
+                total_stripe_commissions: totalStripeCommissions,
+                net_after_stripe_receive: netAfterStripeReceive,
                 platform_share: platformShare,
                 instructor_share: instructorShare,
                 platform_operating_profit: platformOperatingProfit,
