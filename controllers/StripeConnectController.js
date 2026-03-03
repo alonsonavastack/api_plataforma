@@ -166,6 +166,42 @@ export const getStripeDashboardLink = async (req, res) => {
 };
 
 /**
+ * 🗑️ Desvincular la cuenta de Stripe del instructor
+ * DELETE /api/stripe/connect/disconnect
+ */
+export const disconnectStripe = async (req, res) => {
+    try {
+        const instructor = req.user;
+
+        const config = await InstructorPaymentConfig.findOne({ instructor: instructor._id });
+
+        if (!config || !config.stripe_account_id) {
+            return res.status(400).json({ success: false, message: 'No hay cuenta de Stripe vinculada a este usuario.' });
+        }
+
+        // Limpiar los datos de Stripe de la configuración del instructor
+        config.stripe_account_id = null;
+        config.stripe_onboarding_complete = false;
+        config.stripe_charges_enabled = false;
+        config.stripe_payouts_enabled = false;
+
+        // Si Stripe era el método preferido, limpiarlo
+        if (config.preferred_payment_method === 'stripe') {
+            config.preferred_payment_method = '';
+        }
+
+        await config.save();
+
+        console.log(`✅ Cuenta Stripe desvinculada para el instructor ${instructor._id}`);
+
+        res.json({ success: true, message: 'La cuenta ha sido desvinculada exitosamente.' });
+    } catch (error) {
+        console.error('❌ Error en disconnectStripe:', error.message);
+        res.status(500).json({ success: false, message: 'Ocurrió un error al intentar desvincular la cuenta.' });
+    }
+}
+
+/**
  * 🔔 Webhook de Stripe — Stripe llama aquí cuando ocurren eventos
  * POST /api/stripe/webhook
  * 
@@ -230,7 +266,7 @@ export const stripeWebhook = async (req, res) => {
                     if (wallet) {
                         const pendingTx = wallet.transactions.find(
                             t => t.metadata?.orderId === saleObj.n_transaccion &&
-                                 t.metadata?.status === 'pending'
+                                t.metadata?.status === 'pending'
                         );
                         if (pendingTx) {
                             pendingTx.metadata.status = 'completed';

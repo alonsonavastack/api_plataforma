@@ -35,4 +35,9 @@ router.get('/connect/status', auth.verifyInstructor, getStripeStatus);
 // GET /api/stripe/connect/dashboard
 router.get('/connect/dashboard', auth.verifyInstructor, getStripeDashboardLink);
 
+// 🗑️ Desvincular cuenta Stripe
+// DELETE /api/stripe/connect/disconnect
+import { disconnectStripe } from '../controllers/StripeConnectController.js';
+router.delete('/connect/disconnect', auth.verifyInstructor, disconnectStripe);
+
 export default router;
