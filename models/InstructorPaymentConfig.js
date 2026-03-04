@@ -26,30 +26,11 @@ const InstructorPaymentConfigSchema = new Schema({
         default: false
     },
 
-    // CONFIGURACIÓN DE PAYPAL
-    paypal_email: {
-        type: String,
-        maxlength: 250,
-        required: false
-    },
-    paypal_merchant_id: {
-        type: String,
-        maxlength: 250,
-        required: false
-    },
-    paypal_connected: {
-        type: Boolean,
-        default: false
-    },
-    paypal_verified: {
-        type: Boolean,
-        default: false
-    },
 
     // CONFIGURACIÓN GENERAL
     preferred_payment_method: {
         type: String,
-        enum: ['paypal', 'stripe', 'wallet', ''],
+        enum: ['stripe', 'wallet', ''],
         default: ''
     },
 

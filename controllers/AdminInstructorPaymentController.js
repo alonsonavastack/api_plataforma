@@ -34,13 +34,11 @@ function calculatePaymentMethodStats(earnings) {
     const stats = {
         wallet: { count: 0, total: 0 },
         stripe: { count: 0, total: 0 },
-        mixed_stripe: { count: 0, total: 0, wallet_part: 0, stripe_part: 0 },
-        paypal: { count: 0, total: 0 },
-        mixed_paypal: { count: 0, total: 0, wallet_part: 0, paypal_part: 0 }
+        mixed_stripe: { count: 0, total: 0, wallet_part: 0, stripe_part: 0 }
     };
 
     earnings.forEach(earning => {
-        const method = earning.payment_method || 'wallet'; // Default a wallet si no está definido
+        const method = earning.payment_method || 'stripe';
         const amount = earning.instructor_earning || 0;
 
         if (method === 'wallet') {
@@ -49,19 +47,11 @@ function calculatePaymentMethodStats(earnings) {
         } else if (method === 'stripe') {
             stats.stripe.count++;
             stats.stripe.total += amount;
-        } else if (method === 'paypal') {
-            stats.paypal.count++;
-            stats.paypal.total += amount;
         } else if (method === 'mixed_stripe') {
             stats.mixed_stripe.count++;
             stats.mixed_stripe.total += amount;
             if (earning.wallet_amount) stats.mixed_stripe.wallet_part += earning.wallet_amount;
             if (earning.stripe_amount || earning.remaining_amount) stats.mixed_stripe.stripe_part += (earning.stripe_amount || earning.remaining_amount);
-        } else if (method === 'mixed_paypal') {
-            stats.mixed_paypal.count++;
-            stats.mixed_paypal.total += amount;
-            if (earning.wallet_amount) stats.mixed_paypal.wallet_part += earning.wallet_amount;
-            if (earning.paypal_amount || earning.remaining_amount) stats.mixed_paypal.paypal_part += (earning.paypal_amount || earning.remaining_amount);
         }
     });
 
@@ -256,9 +246,7 @@ export const getInstructorsWithEarnings = async (req, res) => {
                     paymentMethods: {
                         wallet: { count: 0, total: 0 },
                         stripe: { count: 0, total: 0 },
-                        mixed_stripe: { count: 0, total: 0 },
-                        paypal: { count: 0, total: 0 },
-                        mixed_paypal: { count: 0, total: 0 }
+                        mixed_stripe: { count: 0, total: 0 }
                     },
                     // 🆕 Desglose Orgánico vs Referido (SOLO DISPONIBLES)
                     breakdown: {
@@ -662,10 +650,8 @@ export const createPayment = async (req, res) => {
         // Preparar detalles del pago según el método
         const paymentDetails = {};
 
-        if (paymentConfig.preferred_payment_method === 'paypal') {
-            paymentDetails.paypal_email = paymentConfig.paypal_email;
-        } else if (paymentConfig.preferred_payment_method === 'wallet') {
-            paymentDetails.wallet_enabled = true;
+        if (paymentConfig.preferred_payment_method === 'stripe') {
+            paymentDetails.stripe_account_id = paymentConfig.stripe_account_id || null;
         }
 
         // Crear el pago
@@ -742,8 +728,8 @@ export const processPayment = async (req, res) => {
         }
 
         // Actualizar detalles según el método
-        if (payment.payment_method === 'paypal' && transaction_id) {
-            payment.payment_details.paypal_transaction_id = transaction_id;
+        if (payment.payment_method === 'stripe' && transaction_id) {
+            payment.payment_details.stripe_transfer_id = transaction_id;
         }
 
 

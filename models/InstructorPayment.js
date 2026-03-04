@@ -33,22 +33,19 @@ const InstructorPaymentSchema = new Schema({
     // MÉTODO DE PAGO
     payment_method: {
         type: String,
-        enum: ['paypal', 'other'],
+        enum: ['wallet', 'stripe', 'mixed_stripe', 'other'],
         required: true
     },
     payment_details: {
-        // Para PayPal
-        paypal_email: {
+        // Para Stripe
+        stripe_transfer_id: {
             type: String,
             required: false
         },
-        paypal_transaction_id: {
+        stripe_account_id: {
             type: String,
             required: false
         },
-
-
-
         // Para otros métodos
         other_details: {
             type: String,
