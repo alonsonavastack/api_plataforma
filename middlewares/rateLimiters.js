@@ -143,13 +143,19 @@ export const generalApiLimiter = rateLimit({
   skip: (req) => {
     // 🔥 NUEVO: Deshabilitar completamente en desarrollo
     if (process.env.NODE_ENV === 'development') return true;
-    
+
     // No aplicar rate limiting a:
     // 1. Webhooks de Mercado Pago (tienen su propia validación)
     if (req.path.includes('/webhook')) return true;
 
     // 2. Imágenes estáticas (ya tienen cache)
     if (req.path.match(/\.(jpg|jpeg|png|gif|webp|svg|pdf)$/i)) return true;
+
+    // 3. Rutas de Backup e Información del Sistema
+    if (req.path.includes('/backup')) return true;
+
+    // 4. Conexiones Socket.IO (Polling fallback)
+    if (req.path.includes('/socket.io/')) return true;
 
     return false;
   },
