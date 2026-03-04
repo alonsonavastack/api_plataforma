@@ -187,13 +187,12 @@ async function createEarningForProduct(sale, item) {
         console.log(`   🥩 Base Repartible (Neto): ${netSale.toFixed(2)}`);
 
         // Calcular fecha disponible
-        // SIEMPRE pending al menos 7 días (ventana de reembolso)
         const availableAt = new Date();
         availableAt.setDate(availableAt.getDate() + totalDaysUntilAvailable);
 
-        // El earning SIEMPRE nace 'pending' — nunca 'available' al crearse.
-        // El cron job lo pasará a 'available' cuando available_at llegue.
-        const earningStatus = 'pending';
+        // Si los días de espera son 0, la ganancia está disponible inmediatamente.
+        // Si no, nace como 'pending' y el cron job la pasará a 'available' cuando corresponda.
+        const earningStatus = totalDaysUntilAvailable === 0 ? 'available' : 'pending';
 
         // 4. 🔥 Crear ganancia CON información de descuento completa
         const newEarning = await models.InstructorEarnings.create({
