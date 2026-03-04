@@ -26,4 +26,8 @@ router.post('/simulate-transfer', TestingController.simulateTransfer);
 // GET /api/testing/compare-prices?amount=50
 router.get('/compare-prices', TestingController.comparePrices);
 
+// 🧪 DUMP EARNINGS
+// GET /api/testing/dump-earnings
+router.get('/dump-earnings', TestingController.dumpEarnings);
+
 export default router;

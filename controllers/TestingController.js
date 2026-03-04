@@ -316,6 +316,31 @@ export default {
                 error: error.message
             });
         }
+    },
+
+    /**
+     * 🧪 DUMP EARNINGS
+     * GET /api/testing/dump-earnings
+     */
+    dumpEarnings: async (req, res) => {
+        try {
+            const { default: models } = await import('../models/index.js');
+            const earnings = await models.InstructorEarnings.find({})
+                .sort({ createdAt: -1 })
+                .limit(5)
+                .populate('sale')
+                .lean();
+
+            const sales = await models.Sale.find({ is_referral: true })
+                .sort({ createdAt: -1 })
+                .limit(5)
+                .lean();
+
+            res.status(200).json({ earnings, latest_referral_sales: sales });
+        } catch (error) {
+            console.error('Error in dumpEarnings:', error);
+            res.status(500).json({ error: error.message });
+        }
     }
 };
 

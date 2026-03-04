@@ -124,6 +124,15 @@ const download = async (req, res) => {
         // 4. DOWNLOAD
         console.log('✅ [BackupController] Enviando archivo al cliente...');
 
+        // 🔥 FIX: Obtener el tamaño del archivo para que el frontend pueda mostrar el progreso real (event.total)
+        try {
+            const stat = fs.statSync(zipPath);
+            res.setHeader('Content-Length', stat.size);
+            res.setHeader('Content-Type', 'application/zip');
+        } catch (e) {
+            console.error('⚠️ No se pudo obtener el tamaño del archivo para los headers:', e);
+        }
+
         res.download(zipPath, zipFilename, (err) => {
             if (err) {
                 console.error('❌ Error enviando archivo (cliente canceló?):', err);

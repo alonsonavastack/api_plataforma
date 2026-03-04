@@ -891,7 +891,7 @@ export default {
             console.log(`🔧 [fix_referral_earnings] Ventas referido encontradas: ${referralSales.length}`);
 
             const settings = await models.PlatformCommissionSettings.findOne();
-            const REFERRAL_COMMISSION = (settings?.referral_commission_rate ?? 20) / 100; // 0.20
+            const REFERRAL_COMMISSION = 20 / 100; // 0.20 (Fija 80/20)
 
             const { calculatePaymentSplit } = await import('../utils/commissionCalculator.js');
 
@@ -935,19 +935,19 @@ export default {
                         ? { paypalFee: 0, netAmount: item.price_unit }
                         : calculatePaymentSplit(item.price_unit, 'stripe');
 
-                    const netSale           = splitResult.netAmount;
+                    const netSale = splitResult.netAmount;
                     const newPlatCommission = parseFloat((netSale * REFERRAL_COMMISSION).toFixed(2));
-                    const newInstrEarning   = parseFloat((netSale - newPlatCommission).toFixed(2));
+                    const newInstrEarning = parseFloat((netSale - newPlatCommission).toFixed(2));
 
                     const oldCommission = earning.platform_commission_amount;
-                    const oldEarning    = earning.instructor_earning;
+                    const oldEarning = earning.instructor_earning;
 
                     // Actualizar el earning
-                    earning.platform_commission_rate   = REFERRAL_COMMISSION;
+                    earning.platform_commission_rate = REFERRAL_COMMISSION;
                     earning.platform_commission_amount = newPlatCommission;
-                    earning.instructor_earning         = newInstrEarning;
-                    earning.instructor_earning_usd     = newInstrEarning;
-                    earning.is_referral                = true;
+                    earning.instructor_earning = newInstrEarning;
+                    earning.instructor_earning_usd = newInstrEarning;
+                    earning.is_referral = true;
                     await earning.save();
 
                     fixed++;

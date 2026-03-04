@@ -1,8 +1,3 @@
-/**
- * 🔧 Script one-shot: corrige earnings con cupón de referido mal calculados (30% en vez de 20%)
- * Uso: node fix_referral_commission_23feb.js
- */
-
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 dotenv.config();
@@ -10,21 +5,25 @@ dotenv.config();
 import models from './models/index.js';
 import { calculatePaymentSplit } from './utils/commissionCalculator.js';
 
-const MONGO_URI = process.env.MONGODB_URI || process.env.MONGO_URI || process.env.DB_URI;
+const MONGO_URI = process.env.MONGODB_URI || process.env.MONGO_URI || process.env.DB_URI || 'mongodb://127.0.0.1:27017/devhub_sharks';
 
 async function main() {
     await mongoose.connect(MONGO_URI);
     console.log('✅ Conectado a MongoDB');
 
-    const settings = await models.PlatformCommissionSettings.findOne();
-    const REFERRAL_RATE = 20 / 100; // 0.20 (Fija 80/20)
-    console.log(`🏛 Tasa referido configurada: ${(REFERRAL_RATE * 100)}% plataforma`);
+    // 1. Force the referral commission rate to 20% in the settings
+    await models.PlatformCommissionSettings.updateMany({}, {
+        $set: { referral_commission_rate: 20 }
+    });
+    console.log('✅ referral_commission_rate forced to 20 in PlatformCommissionSettings');
 
-    // Buscar todas las ventas marcadas como referido con código de cupón
+    const REFERRAL_RATE = 0.20; // Hardcode to 20% for the fix
+
+    // 2. Recalculate all past referral earnings!
     const referralSales = await models.Sale.find({
         is_referral: true,
         coupon_code: { $ne: null },
-        status: 'Pagado'
+        status: { $in: ['Pagado', 'Aprobado'] } // might be Pagado
     }).lean();
 
     console.log(`\n📋 Ventas referido encontradas: ${referralSales.length}`);
@@ -43,7 +42,6 @@ async function main() {
         }
 
         for (const item of sale.detail) {
-            // Normalizar productId
             const rawProduct = item.product;
             const productId = (rawProduct && typeof rawProduct === 'object' && rawProduct._id)
                 ? rawProduct._id
@@ -55,30 +53,16 @@ async function main() {
             });
 
             if (!earning) {
-                console.warn(`  ⚠️ Earning no encontrado: venta=${sale._id} producto=${productId}`);
                 skipped++;
                 continue;
             }
 
-            // Verificar si ya está correcto
+            // Mismatched rate verification
             if (earning.is_referral && Math.abs(earning.platform_commission_rate - REFERRAL_RATE) < 0.001) {
-                console.log(`  ℹ️ Ya correcto: earning ${earning._id} (${(REFERRAL_RATE * 100)}%)`);
                 skipped++;
                 continue;
             }
 
-            // Verificar que el cupón aplica a este instructor y producto
-            const instructorMatch = coupon.instructor.toString() === earning.instructor.toString();
-            const productIdStr = productId.toString();
-            const productMatch = coupon.projects.some(p => p.toString() === productIdStr);
-
-            if (!instructorMatch || !productMatch) {
-                console.warn(`  ⚠️ Cupón no aplica: instrMatch=${instructorMatch} prodMatch=${productMatch}`);
-                skipped++;
-                continue;
-            }
-
-            // Recalcular con la tasa correcta
             const isWallet = sale.method_payment === 'wallet';
             const splitResult = isWallet
                 ? { paypalFee: 0, netAmount: item.price_unit }
@@ -88,10 +72,9 @@ async function main() {
             const newPlatComm = parseFloat((netSale * REFERRAL_RATE).toFixed(2));
             const newInstrEarning = parseFloat((netSale - newPlatComm).toFixed(2));
 
-            console.log(`\n  🔧 Corrigiendo earning ${earning._id}`);
-            console.log(`     Venta: ${sale.n_transaccion} | Producto: ${item.title}`);
-            console.log(`     Comisión plataforma: ${(earning.platform_commission_rate * 100).toFixed(0)}% (${earning.platform_commission_amount}) → ${(REFERRAL_RATE * 100)}% (${newPlatComm})`);
-            console.log(`     Ganancia instructor: ${earning.instructor_earning} → ${newInstrEarning}`);
+            console.log(`\n  🔧 Corrigiendo earning ${earning._id} de Venta ${sale.n_transaccion}`);
+            console.log(`     Comisión org: ${(earning.platform_commission_rate * 100).toFixed(0)}% → Nueva: 20%`);
+            console.log(`     Ganancia instructor: $${earning.instructor_earning} → $${newInstrEarning}`);
 
             await models.InstructorEarnings.updateOne(
                 { _id: earning._id },
@@ -105,18 +88,12 @@ async function main() {
                     }
                 }
             );
-
-            console.log(`  ✅ Corregido`);
             fixed++;
         }
     }
 
-    console.log(`\n${'='.repeat(50)}`);
-    console.log(`✅ Completado: ${fixed} corregidos | ${skipped} omitidos`);
+    console.log(`\n✅ Completado: ${fixed} corregidos | ${skipped} omitidos`);
     await mongoose.disconnect();
 }
 
-main().catch(err => {
-    console.error('❌ Error:', err);
-    process.exit(1);
-});
+main().catch(console.error);

@@ -95,7 +95,7 @@ async function createEarningForProduct(sale, item) {
 
         // Tasas base con fallback seguros (sin usar || para evitar que 0 sea falsy)
         const DEFAULT_COMMISSION = settings?.default_commission_rate ?? 30; // 30% plat → 70% instructor
-        const REFERRAL_COMMISSION = settings?.referral_commission_rate ?? 20; // 20% plat → 80% instructor
+        const REFERRAL_COMMISSION = 20; // 20% plat → 80% instructor (fija)
 
         let commissionRatePercent = DEFAULT_COMMISSION;
         let isReferral = false;
