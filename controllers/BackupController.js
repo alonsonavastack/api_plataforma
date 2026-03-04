@@ -94,7 +94,8 @@ const download = async (req, res) => {
 
         await new Promise((resolve, reject) => {
             const output = fs.createWriteStream(zipPath);
-            const archive = archiver('zip', { zlib: { level: 9 } });
+            // 🔥 Nivel 1 de compresión para hacerlo mucho más rápido, ya que las imágenes/videos no se comprimen mucho de todas formas.
+            const archive = archiver('zip', { zlib: { level: 1 } });
 
             output.on('close', () => {
                 console.log(`✅ ZIP local creado: ${archive.pointer()} bytes`);
