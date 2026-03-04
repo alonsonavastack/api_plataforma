@@ -4,19 +4,11 @@ import auth from '../service/auth.js';
 
 const router = routerx();
 
-// GET /api/admin/tax-breakdown/sales
 router.get('/sales', [auth.verifyAdmin], TaxBreakdownController.getSalesBreakdown);
-
-// POST /api/admin/tax-breakdown/generate-cfdi
-router.post('/generate-cfdi', [auth.verifyAdmin], TaxBreakdownController.generateCFDI);
-
-// POST /api/admin/tax-breakdown/resend-cfdi
-router.post('/resend-cfdi', [auth.verifyAdmin], TaxBreakdownController.resendCFDI);
-
-// GET /api/admin/tax-breakdown/pending-count
-router.get('/pending-count', [auth.verifyAdmin], TaxBreakdownController.getPendingCount);
-
-// GET /api/admin/tax-breakdown/export
+router.get('/summary', [auth.verifyAdmin], TaxBreakdownController.getSummary);
 router.get('/export', [auth.verifyAdmin], TaxBreakdownController.exportRetentions);
+router.post('/generate-cfdi', [auth.verifyAdmin], TaxBreakdownController.generateCFDI);
+router.post('/resend-cfdi', [auth.verifyAdmin], TaxBreakdownController.resendCFDI);
+router.get('/pending-count', [auth.verifyAdmin], TaxBreakdownController.getPendingCount);
 
 export default router;
