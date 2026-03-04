@@ -961,19 +961,20 @@ export const updateCommissionSettings = async (req, res) => {
             });
 
             const now = new Date();
+            let recalculadas = 0;
 
             for (const earning of unpaidEarnings) {
                 const newAvailableAt = new Date(earning.earned_at);
                 newAvailableAt.setDate(newAvailableAt.getDate() + days_until_available);
-
                 const newStatus = now >= newAvailableAt ? 'available' : 'pending';
 
                 await InstructorEarnings.updateOne(
                     { _id: earning._id },
                     { $set: { status: newStatus, available_at: newAvailableAt } }
                 );
+                recalculadas++;
             }
-            console.log(`✅ Recalculadas ${unpaidEarnings.length} ganancias con ${days_until_available} días`);
+            console.log(`✅ Recalculadas ${recalculadas} ganancias con ${days_until_available} días`);
         }
 
         res.json({
