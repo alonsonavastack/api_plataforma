@@ -953,11 +953,27 @@ export const updateCommissionSettings = async (req, res) => {
         settings.last_updated_by = adminId;
         await settings.save();
 
-        // Si los días de espera son 0, actualizar ganancias pendientes inmediatamente
-        if (days_until_available === 0 || settings.days_until_available === 0) {
-            const { updateEarningsStatusJob } = await import('../cron/updateEarningsStatus.js');
-            await updateEarningsStatusJob();
-            console.log('✅ Ganancias actualizadas inmediatamente por 0 días de espera');
+        // 🔥 RECALCULAR todas las ganancias no pagadas según los nuevos días
+        if (days_until_available !== undefined) {
+            const unpaidEarnings = await InstructorEarnings.find({
+                status: { $in: ['available', 'pending'] },
+                is_referral: { $ne: true }
+            });
+
+            const now = new Date();
+
+            for (const earning of unpaidEarnings) {
+                const newAvailableAt = new Date(earning.earned_at);
+                newAvailableAt.setDate(newAvailableAt.getDate() + days_until_available);
+
+                const newStatus = now >= newAvailableAt ? 'available' : 'pending';
+
+                await InstructorEarnings.updateOne(
+                    { _id: earning._id },
+                    { $set: { status: newStatus, available_at: newAvailableAt } }
+                );
+            }
+            console.log(`✅ Recalculadas ${unpaidEarnings.length} ganancias con ${days_until_available} días`);
         }
 
         res.json({
