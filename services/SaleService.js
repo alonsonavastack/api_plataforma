@@ -141,8 +141,8 @@ async function createEarningForProduct(sale, item) {
         // 'days_until_available' es el tiempo total que el admin configura
         // para esperar antes de que la ganancia esté disponible.
         // Si es 0, estará disponible de inmediato.
-        // 🔥 Si es un referido (80/20), el usuario solicitó que pase de inmediato a disponible (0 días)
-        const totalDaysUntilAvailable = isReferral ? 0 : (settings?.days_until_available !== undefined ? settings.days_until_available : 7);
+        // 🔥 ACTUALIZADO: Los referidos también respetan los días de espera configurados
+        const totalDaysUntilAvailable = settings?.days_until_available !== undefined ? settings.days_until_available : 7;
 
         console.log(`   🏛 Comisión plataforma: ${commissionRatePercent}%`);
         console.log(`   📅 Total días hasta disponible: ${totalDaysUntilAvailable} días`);

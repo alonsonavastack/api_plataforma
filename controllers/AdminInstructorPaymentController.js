@@ -235,8 +235,8 @@ export const getInstructorsWithEarnings = async (req, res) => {
             // Calcular madurez de la ganancia
             const earnedAt = new Date(earning.earned_at);
 
-            // 🔥 REFERIDOS: Días de espera es 0
-            const dynamicDaysUntilAvailable = earning.is_referral ? 0 : daysUntilAvailable;
+            // 🔥 ACTUALIZADO: Referidos también esperan
+            const dynamicDaysUntilAvailable = daysUntilAvailable;
 
             const availabilityDate = new Date(earnedAt);
             availabilityDate.setDate(earnedAt.getDate() + dynamicDaysUntilAvailable);
@@ -494,8 +494,8 @@ export const getInstructorEarnings = async (req, res) => {
             if (earningObj.status === 'available') {
                 const earnedAt = new Date(earningObj.earned_at);
 
-                // 🔥 REFERIDOS: Días de espera es 0
-                const dynamicDaysUntilAvailable = earningObj.is_referral ? 0 : daysUntilAvailable;
+                // 🔥 ACTUALIZADO: Referidos también esperan
+                const dynamicDaysUntilAvailable = daysUntilAvailable;
 
                 const dynamicAvailableDate = new Date(earnedAt);
                 dynamicAvailableDate.setDate(earnedAt.getDate() + dynamicDaysUntilAvailable);
@@ -955,9 +955,10 @@ export const updateCommissionSettings = async (req, res) => {
 
         // 🔥 RECALCULAR todas las ganancias no pagadas según los nuevos días
         if (days_until_available !== undefined) {
+            const parsedDays = Number(days_until_available);
             const unpaidEarnings = await InstructorEarnings.find({
-                status: { $in: ['available', 'pending'] },
-                is_referral: { $ne: true }
+                status: { $in: ['available', 'pending'] }
+                // 🔥 Se evaluarán TODAS, incluyendo referidos
             });
 
             const now = new Date();
@@ -965,7 +966,7 @@ export const updateCommissionSettings = async (req, res) => {
 
             for (const earning of unpaidEarnings) {
                 const newAvailableAt = new Date(earning.earned_at);
-                newAvailableAt.setDate(newAvailableAt.getDate() + days_until_available);
+                newAvailableAt.setDate(newAvailableAt.getDate() + parsedDays);
                 const newStatus = now >= newAvailableAt ? 'available' : 'pending';
 
                 await InstructorEarnings.updateOne(
@@ -974,7 +975,7 @@ export const updateCommissionSettings = async (req, res) => {
                 );
                 recalculadas++;
             }
-            console.log(`✅ Recalculadas ${recalculadas} ganancias con ${days_until_available} días`);
+            console.log(`✅ Recalculadas ${recalculadas} ganancias con ${parsedDays} días`);
         }
 
         res.json({
