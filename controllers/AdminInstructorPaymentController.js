@@ -953,6 +953,13 @@ export const updateCommissionSettings = async (req, res) => {
         settings.last_updated_by = adminId;
         await settings.save();
 
+        // Si los días de espera son 0, actualizar ganancias pendientes inmediatamente
+        if (days_until_available === 0 || settings.days_until_available === 0) {
+            const { updateEarningsStatusJob } = await import('../cron/updateEarningsStatus.js');
+            await updateEarningsStatusJob();
+            console.log('✅ Ganancias actualizadas inmediatamente por 0 días de espera');
+        }
+
         res.json({
             success: true,
             message: 'Configuración de comisiones actualizada',

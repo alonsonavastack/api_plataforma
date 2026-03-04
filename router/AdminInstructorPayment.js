@@ -136,4 +136,23 @@ router.delete('/commission-settings/custom/:instructorId', auth.verifyAdmin, rem
  */
 router.get('/earnings/report', auth.verifyAdmin, getEarningsReport);
 
+// ========================================
+// CRON MANUAL
+// ========================================
+
+/**
+ * @route   POST /api/admin/earnings/run-cron
+ * @desc    Ejecutar manualmente el job de actualización de ganancias
+ * @access  Private (Admin)
+ */
+router.post('/earnings/run-cron', auth.verifyAdmin, async (req, res) => {
+    try {
+        const { updateEarningsStatusJob } = await import('../cron/updateEarningsStatus.js');
+        const result = await updateEarningsStatusJob();
+        res.json({ success: true, result });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+});
+
 export default router;
