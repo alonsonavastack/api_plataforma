@@ -325,7 +325,7 @@ export default {
     dumpEarnings: async (req, res) => {
         try {
             const { default: models } = await import('../models/index.js');
-            const earnings = await models.InstructorEarnings.find({})
+            const recentEarnings = await models.InstructorEarnings.find()
                 .sort({ createdAt: -1 })
                 .limit(5)
                 .populate('sale')

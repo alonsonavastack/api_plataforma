@@ -234,8 +234,12 @@ export const getInstructorsWithEarnings = async (req, res) => {
 
             // Calcular madurez de la ganancia
             const earnedAt = new Date(earning.earned_at);
+
+            // 🔥 REFERIDOS: Días de espera es 0
+            const dynamicDaysUntilAvailable = earning.is_referral ? 0 : daysUntilAvailable;
+
             const availabilityDate = new Date(earnedAt);
-            availabilityDate.setDate(earnedAt.getDate() + daysUntilAvailable);
+            availabilityDate.setDate(earnedAt.getDate() + dynamicDaysUntilAvailable);
 
             // Está disponible si el status es 'available' O (es 'pending' y ya pasó el tiempo de espera)
             const isMature = earning.status === 'available' || (earning.status === 'pending' && now >= availabilityDate);
@@ -485,16 +489,20 @@ export const getInstructorEarnings = async (req, res) => {
         const formattedEarnings = validEarnings.map(earning => {
             const earningObj = earning.toObject();
 
-            // \u26a0\ufe0f VALIDACIÓN DINÁMICA: Respetar configuración de días
+            // ⚠️ VALIDACIÓN DINÁMICA: Respetar configuración de días
             // Si la ganancia dice 'available' pero no ha pasado el tiempo configurado, la mostramos como 'pending'
             if (earningObj.status === 'available') {
                 const earnedAt = new Date(earningObj.earned_at);
+
+                // 🔥 REFERIDOS: Días de espera es 0
+                const dynamicDaysUntilAvailable = earningObj.is_referral ? 0 : daysUntilAvailable;
+
                 const dynamicAvailableDate = new Date(earnedAt);
-                dynamicAvailableDate.setDate(earnedAt.getDate() + daysUntilAvailable);
+                dynamicAvailableDate.setDate(earnedAt.getDate() + dynamicDaysUntilAvailable);
 
                 // Si aún no es fecha de disponibilidad según la config ACTUAL
                 if (now < dynamicAvailableDate) {
-                    console.log(`   \u23f3 Earning ${earningObj._id} forzado a PENDING (Dinámico). Earned: ${earningObj.earned_at.toISOString()}, AvailableAt (Calc): ${dynamicAvailableDate.toISOString()}`);
+                    console.log(`   ⏳ Earning ${earningObj._id} forzado a PENDING (Dinámico). Earned: ${earningObj.earned_at.toISOString()}, AvailableAt (Calc): ${dynamicAvailableDate.toISOString()}`);
                     earningObj.status = 'pending';
                     // Opcional: actualizar fecha disponible visual
                     earningObj.available_at = dynamicAvailableDate;

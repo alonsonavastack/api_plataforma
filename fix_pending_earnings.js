@@ -34,9 +34,12 @@ const fixPendingEarnings = async () => {
             const earnedAt = new Date(earning.earned_at);
             const currentAvailableAt = new Date(earning.available_at);
 
-            // Calcular nueva fecha SIN los 7 días fijos
+            // 🔥 REFERIDOS: Días de espera es 0
+            const dynamicDaysUntilAvailable = earning.is_referral ? 0 : daysUntilAvailable;
+
+            // Calcular nueva fecha SIN los 7 días fijos (o 0 si es referido)
             const newAvailableAt = new Date(earnedAt);
-            newAvailableAt.setDate(newAvailableAt.getDate() + daysUntilAvailable);
+            newAvailableAt.setDate(newAvailableAt.getDate() + dynamicDaysUntilAvailable);
 
             // Solo actualizar si la fecha cambia significativamente
             if (Math.abs(newAvailableAt.getTime() - currentAvailableAt.getTime()) > 60000) {
