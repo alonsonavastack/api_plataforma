@@ -256,6 +256,21 @@ const restore = async (req, res) => {
 
             console.log(`⏳ [BackupController] Ejecutando mongorestore usando: ${mongorestorePath}`);
 
+            // 🔥 FIX: Guardar configuraciones de Stripe antes de restaurar (evitar perder cuentas conectadas recientes)
+            emitProgress(36, 'Respaldando configuraciones de Stripe Connect en memoria...');
+            let preservedStripeConfigs = [];
+            try {
+                // Importar el modelo dentro del scope si no está disponible arriba
+                const { default: InstructorPaymentConfig } = await import('../models/InstructorPaymentConfig.js');
+                preservedStripeConfigs = await InstructorPaymentConfig.find({
+                    stripe_account_id: { $ne: null },
+                    stripe_account_id: { $exists: true }
+                }).lean();
+                console.log(`[BackupController] 🛡️ Se preservarán en memoria ${preservedStripeConfigs.length} configuraciones de Stripe Connect.`);
+            } catch (err) {
+                console.error('⚠️ [BackupController] Error guardando configs de Stripe en memoria:', err.message);
+            }
+
             await new Promise((resolve, reject) => {
                 const mongorestore = spawn(mongorestorePath, [
                     `--uri=${mongoUri}`,
@@ -282,6 +297,34 @@ const restore = async (req, res) => {
                     else reject(new Error(`mongorestore falló con código ${code}`));
                 });
             });
+
+            // 🔥 FIX: Restaurar configuraciones de Stripe preservadas
+            if (preservedStripeConfigs.length > 0) {
+                emitProgress(65, 'Reaplicando vinculaciones recientes de Stripe Connect...');
+                console.log(`[BackupController] 🔄 Restaurando ${preservedStripeConfigs.length} configuraciones de Stripe Connect...`);
+                try {
+                    const { default: InstructorPaymentConfig } = await import('../models/InstructorPaymentConfig.js');
+                    for (const config of preservedStripeConfigs) {
+                        await InstructorPaymentConfig.findOneAndUpdate(
+                            { instructor: config.instructor },
+                            {
+                                $set: {
+                                    stripe_account_id: config.stripe_account_id,
+                                    stripe_onboarding_complete: config.stripe_onboarding_complete,
+                                    stripe_charges_enabled: config.stripe_charges_enabled,
+                                    stripe_payouts_enabled: config.stripe_payouts_enabled,
+                                    preferred_payment_method: config.preferred_payment_method
+                                }
+                            },
+                            { upsert: true } // si el usuario no existe aún (p ej. se creó post-respaldo), podría requerir manejo especial, pero esto lo inserta
+                        );
+                    }
+                    console.log(`[BackupController] ✅ Configuraciones de Stripe Connect reaplicadas.`);
+                } catch (err) {
+                    console.error('⚠️ [BackupController] Error reaplicando configs de Stripe:', err.message);
+                }
+            }
+
             console.log('✅ [BackupController] Base de datos restaurada.');
             emitProgress(70, 'Base de datos restaurada correctamente.');
         }
