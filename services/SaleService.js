@@ -94,7 +94,7 @@ async function createEarningForProduct(sale, item) {
         const settings = await models.PlatformCommissionSettings.findOne();
 
         // Tasas base con fallback seguros (sin usar || para evitar que 0 sea falsy)
-        const DEFAULT_COMMISSION  = settings?.default_commission_rate  ?? 30; // 30% plat → 70% instructor
+        const DEFAULT_COMMISSION = settings?.default_commission_rate ?? 30; // 30% plat → 70% instructor
         const REFERRAL_COMMISSION = settings?.referral_commission_rate ?? 20; // 20% plat → 80% instructor
 
         let commissionRatePercent = DEFAULT_COMMISSION;
@@ -113,7 +113,7 @@ async function createEarningForProduct(sale, item) {
                 console.warn(`   ⚠️ [REFERIDO] Cupón "${sale.coupon_code}" no encontrado en BD → comisión normal`);
             } else {
                 const instructorMatch = coupon.instructor.toString() === instructorId.toString();
-                const productMatch    = coupon.projects.some(p => p.toString() === item.product.toString());
+                const productMatch = coupon.projects.some(p => p.toString() === item.product.toString());
 
                 console.log(`   🔍 [REFERIDO] instructor match: ${instructorMatch} | product match: ${productMatch}`);
 
@@ -137,28 +137,13 @@ async function createEarningForProduct(sale, item) {
 
         const commissionRate = commissionRatePercent / 100;
 
-        // ─── VENTANA DE PROTECCIÓN CONTRA REEMBOLSOS ──────────────────────────
-        // La política de reembolsos establece 7 días desde la compra.
-        // El earning SIEMPRE nace 'pending' durante esos 7 días, sin importar
-        // cuántos días configure el admin en 'days_until_available'.
-        //
-        // 'days_until_available' es el tiempo ADICIONAL tras la ventana de
-        // reembolso que el admin quiere esperar antes de pagar al instructor.
-        //
-        // Ejemplo con days_until_available = 8:
-        //   available_at = hoy + 7 días (reembolso) + 8 días (espera pago) = día 15
-        //
-        // Ejemplo con days_until_available = 0 (modo pruebas):
-        //   available_at = hoy + 7 días (solo ventana de reembolso)
-        //   El earning sigue siendo 'pending' hasta que cierren los 7 días.
-
-        const REFUND_WINDOW_DAYS = 7; // Fijo — política de reembolso
-        const extraDays = settings?.days_until_available !== undefined ? settings.days_until_available : 0;
-        const totalDaysUntilAvailable = REFUND_WINDOW_DAYS + extraDays;
+        // ─── VENTANA DE ESPERA PARA PAGOS ──────────────────────────────
+        // 'days_until_available' es el tiempo total que el admin configura
+        // para esperar antes de que la ganancia esté disponible.
+        // Si es 0, estará disponible de inmediato.
+        const totalDaysUntilAvailable = settings?.days_until_available !== undefined ? settings.days_until_available : 7;
 
         console.log(`   🏛 Comisión plataforma: ${commissionRatePercent}%`);
-        console.log(`   🛡️  Ventana reembolso: ${REFUND_WINDOW_DAYS} días (fija)`);
-        console.log(`   ⏳ Espera adicional pago: ${extraDays} días (configurable)`);
         console.log(`   📅 Total días hasta disponible: ${totalDaysUntilAvailable} días`);
 
         // 3. 🔥 CÁLCULO SOBRE NETO
