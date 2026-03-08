@@ -20531,3 +20531,11 @@ La aplicación puede iniciar, pero revisa estas configuraciones
 
 2026-03-04T20:39:04: ✅ Course indexes created successfully
 2026-03-04T20:39:04: ✅ Notification indexes created
+2026-03-07T00:00:00: 
+🕐 ============================================
+2026-03-07T00:00:00:    CRON JOB: Actualización de earnings
+2026-03-07T00:00:00: ============================================
+2026-03-07T00:00:00: [2026-03-07T06:00:00.053Z] 🔄 Iniciando actualización de estado de ganancias...
+2026-03-07T00:00:01: [2026-03-07T06:00:00.053Z] ℹ️  No hay ganancias para actualizar.
+2026-03-07T00:00:01: ============================================
+

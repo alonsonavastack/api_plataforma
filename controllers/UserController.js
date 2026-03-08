@@ -114,7 +114,7 @@ export default {
           code: otpCode,
           phone: req.body.phone,
           userName: `${req.body.name} ${req.body.surname}`,
-          chatId: null // En registro nuevo, no tenemos ID de chat aún
+          chatId: req.body.telegram_chat_id || null // Usar el chat_id si viene en el registro
         });
         console.log(`✅ OTP enviado exitosamente a Telegram:`, telegramResponse);
         console.log(`   📱 Teléfono: ${req.body.phone}`);
