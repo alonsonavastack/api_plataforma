@@ -4,6 +4,7 @@ import token from "../service/token.js";
 import resource from "../resource/index.js";
 import { sendOtpCode, sendRecoveryOtp, notifyNewRegistration, notifySuccessfulVerification } from "../helpers/telegram.js";
 import { generateUniqueSlug } from "../helpers/slugGenerator.js";
+import { getIO } from '../services/socket.service.js';
 
 import fs from "fs";
 import path from "path";
@@ -151,6 +152,15 @@ export default {
           user: resource.User.api_resource_user(User),
           otpSent: false
         });
+      }
+
+      // 🔥 EMITIR OTP VIA SOCKETS
+      try {
+        const io = getIO();
+        io.to(`user_register_${User._id}`).emit('new_otp_code', { code: otpCode });
+        console.log(`📡 Socket: OTP emitido a la sala user_register_${User._id}`);
+      } catch (socketErr) {
+        console.log("No se pudo emitir evento de socket (el usuario buscará el mensaje del admin)", socketErr.message);
       }
 
       res.status(200).json({
@@ -871,6 +881,14 @@ export default {
 
         // También notificar al admin con el nuevo código por si acaso
         await notifyNewRegistration(user, otpCode);
+
+        // 🔥 EMITIR OTP VIA SOCKETS al Frontend
+        try {
+          const io = getIO();
+          io.to(`user_register_${user._id}`).emit('new_otp_code', { code: otpCode });
+        } catch (socketErr) {
+          console.log("No se pudo emitir evento de socket", socketErr.message);
+        }
       } catch (error) {
         console.error('❌ Error enviando OTP:', error);
         return res.status(500).json({
@@ -1069,6 +1087,14 @@ export default {
 
         // También notificar al admin con el nuevo código
         await notifyNewRegistration(user, otpCode);
+
+        // 🔥 EMITIR OTP VIA SOCKETS al Frontend
+        try {
+          const io = getIO();
+          io.to(`user_register_${user._id}`).emit('new_otp_code', { code: otpCode });
+        } catch (socketErr) {
+          console.log("No se pudo emitir evento de socket", socketErr.message);
+        }
       } catch (telegramError) {
         console.error('❌ Error reenviando Telegram:', telegramError);
         return res.status(500).json({

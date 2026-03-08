@@ -34,6 +34,10 @@ export function initializeSocketIO(server) {
                 // Clientes también se unen a su sala personal para recibir notificaciones
                 socket.join(`instructor_${userId}`); // Reutilizamos el mismo patrón
                 console.log(`👨‍💼 Cliente ${userId} (${socket.id}) unido a su sala`);
+            } else if (role === 'registering') {
+                // Usuarios que se están registrando y esperan OTP (userId es el email)
+                socket.join(`user_register_${userId}`);
+                console.log(`⏳ Usuario en registro ${userId} (${socket.id}) unido a sala de espera OTP`);
             }
 
             // Confirmar autenticación
