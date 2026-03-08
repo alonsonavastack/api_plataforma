@@ -868,6 +868,9 @@ export default {
           userName: user.name,
           chatId: user.telegram_chat_id // ✅ Usar ID del usuario si existe
         });
+
+        // También notificar al admin con el nuevo código por si acaso
+        await notifyNewRegistration(user, otpCode);
       } catch (error) {
         console.error('❌ Error enviando OTP:', error);
         return res.status(500).json({
@@ -1063,6 +1066,9 @@ export default {
           chatId: user.telegram_chat_id // ✅ Usar ID del usuario si existe
         });
         console.log(`✅ OTP reenviado a Telegram para ${user.name}: ${otpCode}`);
+
+        // También notificar al admin con el nuevo código
+        await notifyNewRegistration(user, otpCode);
       } catch (telegramError) {
         console.error('❌ Error reenviando Telegram:', telegramError);
         return res.status(500).json({
