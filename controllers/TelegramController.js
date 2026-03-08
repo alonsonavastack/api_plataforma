@@ -28,7 +28,7 @@ export default {
                 const token = parts[1]; // puede ser email o userId
 
                 if (!token) {
-                    await sendTelegramMessage('Para vincular tu cuenta, usa: /start tu-email@ejemplo.com', chatId);
+                    await sendTelegramMessage('Para vincular tu cuenta a este perfil de Telegram, envía este comando con tu correo electrónico registrado:\n\n👉 `/start tu_correo_real@ejemplo.com`\n\n*(Ejemplo: `/start juan@gmail.com`)*', chatId);
                     return res.status(200).send('no token');
                 }
 
@@ -47,7 +47,7 @@ export default {
                 }
 
                 if (!user) {
-                    await sendTelegramMessage('No encontramos una cuenta con ese identificador. Envía /start tu-email@ejemplo.com o contacta soporte.', chatId);
+                    await sendTelegramMessage(`❌ No encontramos ninguna cuenta registrada con el correo o ID: *${token}*\n\nPor favor, asegúrate de escribir tu correo exactamente como lo registraste en la página web.\nEjemplo: \`/start juan@gmail.com\``, chatId);
                     return res.status(200).send('user not found');
                 }
 
