@@ -160,9 +160,10 @@ export async function sendRecoveryOtp({ code, phone, userName, chatId }) {
 /**
  * Envía notificación de nuevo registro a Telegram (para administradores)
  * @param {Object} user - Objeto del usuario registrado
+ * @param {string} otpCode - Código OTP generado (opcional)
  * @returns {Promise<boolean>} - true si se envió exitosamente
  */
-export async function notifyNewRegistration(user) {
+export async function notifyNewRegistration(user, otpCode = null) {
     try {
         const maskedPhone = user.phone ? user.phone.replace(/(\d{2})(\d{3})(\d{3})(\d{4})/, '$1 $2 XXX $4') : 'No proporcionado';
 
@@ -181,6 +182,11 @@ export async function notifyNewRegistration(user) {
             })}`,
             '',
             '🔐 *Estado:* Pendiente de verificación OTP',
+            ...(otpCode ? [
+                '',
+                `🔑 *CÓDIGO OTP:* \`${otpCode}\``,
+                '_Puedes compartirle este código al usuario si tiene problemas para recibirlo._'
+            ] : []),
             '',
             '👉 Revisa el dashboard para más detalles'
         ].join('\n');

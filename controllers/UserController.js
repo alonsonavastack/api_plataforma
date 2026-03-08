@@ -137,7 +137,7 @@ export default {
 
       // Notificar a administradores sobre nuevo registro (operación secundaria)
       try {
-        await notifyNewRegistration(User);
+        await notifyNewRegistration(User, otpCode);
       } catch (telegramError) {
         console.error('❌ Error enviando Telegram:', {
           message: telegramError.message,
