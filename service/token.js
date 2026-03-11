@@ -2,28 +2,28 @@ import jwt from 'jsonwebtoken'
 import models from '../models/index.js'
 
 export default {
-    encode: async(_id, rol, email, type = 'auth') => {
+    encode: async (_id, rol, email, type = 'auth') => {
         const payload = {
-            _id: _id, 
-            rol: rol, 
+            _id: _id,
+            rol: rol,
             email: email,
             type: type
         };
-        
+
         // Diferentes tiempos de expiración según el tipo
-        let expiresIn = process.env.JWT_EXPIRES_IN || '1d';
+        let expiresIn = process.env.JWT_EXPIRES_IN || '30d';
         if (type === 'password_recovery') {
             expiresIn = '15m'; // 15 minutos para recuperación de contraseña
         }
-        
+
         const token = jwt.sign(payload, process.env.JWT_SECRETO, { expiresIn });
         return token;
     },
-    decode: async(token) => {
+    decode: async (token) => {
         try {
             // jwt.verify es síncrono, no necesita await.
             const decoded = jwt.verify(token, process.env.JWT_SECRETO);
-            
+
             // Si es un token de recuperación de contraseña, devolver solo los datos del token
             if (decoded.type === 'password_recovery') {
                 return {
@@ -33,10 +33,10 @@ export default {
                     type: decoded.type
                 };
             }
-            
+
             // Para tokens normales, buscar el usuario en la BD
-            const user = await models.User.findOne({_id: decoded._id});
-            if(user){
+            const user = await models.User.findOne({ _id: decoded._id });
+            if (user) {
                 return user;
             }
             return false;

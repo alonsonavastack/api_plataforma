@@ -20539,3 +20539,223 @@ La aplicación puede iniciar, pero revisa estas configuraciones
 2026-03-07T00:00:01: [2026-03-07T06:00:00.053Z] ℹ️  No hay ganancias para actualizar.
 2026-03-07T00:00:01: ============================================
 
+2026-03-08T00:00:00: 
+🕐 ============================================
+2026-03-08T00:00:00:    CRON JOB: Actualización de earnings
+2026-03-08T00:00:00: ============================================
+2026-03-08T00:00:00: [2026-03-08T06:00:00.011Z] 🔄 Iniciando actualización de estado de ganancias...
+2026-03-08T00:00:00: [2026-03-08T06:00:00.011Z] ℹ️  No hay ganancias para actualizar.
+2026-03-08T00:00:00: ============================================
+
+2026-03-08T00:16:29: 
+⚠️  SIGTERM recibido. Cerrando servidor...
+2026-03-08T00:16:29: 
+⏹️  Deteniendo todos los CRON jobs...
+2026-03-08T00:16:29:    ✓ Detenido: Update Earnings Status
+2026-03-08T00:16:29: ✅ Todos los CRON jobs detenidos.
+
+2026-03-08T00:16:29: ✅ CRON jobs detenidos
+2026-03-08T00:16:29: ✅ Servidor cerrado correctamente
+2026-03-08T15:19:22: [dotenv@17.2.3] injecting env (12) from .env -- tip: ⚙️  enable debug logging with { debug: true }
+2026-03-08T15:19:22: 🔍 Validando variables de entorno...
+
+2026-03-08T15:19:22: ======================================================================
+2026-03-08T15:19:22: RESULTADO DE VALIDACIÓN
+2026-03-08T15:19:22: ======================================================================
+2026-03-08T15:19:22: 
+🟡 ADVERTENCIAS:
+
+2026-03-08T15:19:22: ⚠️  Usando Stripe en modo TEST en producción. Cambia a sk_live_...
+2026-03-08T15:19:22: 
+La aplicación puede iniciar, pero revisa estas configuraciones
+
+2026-03-08T15:19:22: ======================================================================
+
+2026-03-08T15:19:22: 
+📋 INFORMACIÓN DE ENTORNO:
+
+2026-03-08T15:19:22:    Entorno:        production
+2026-03-08T15:19:22:    Puerto:         3000
+2026-03-08T15:19:22:    Backend:        http://localhost:3000
+2026-03-08T15:19:22:    Frontend:       https://devhubsharks.com
+2026-03-08T15:19:22:    Stripe mode:    test
+2026-03-08T15:19:22: 
+2026-03-08T15:19:22: 📂 [Init] Verificando estructura de directorios...
+2026-03-08T15:19:22: ✅ [Init] Estructura de directorios verificada.
+2026-03-08T15:19:22: ✅ Helmet configurado
+2026-03-08T15:19:22: ✅ CORS configurado
+2026-03-08T15:19:22: ✅ Protecciones anti-ataque configuradas
+2026-03-08T15:19:22: ✅ Rate limiting configurado
+2026-03-08T15:19:22: ✅ Parsers configurados
+2026-03-08T15:19:23: ✅ Conectado a la base de datos MongoDB [PRODUCCIÓN (MONGO_URI)]
+2026-03-08T15:19:23: 
+🚀 ============================================
+2026-03-08T15:19:23:    INICIALIZANDO CRON JOBS
+2026-03-08T15:19:23: ============================================
+
+2026-03-08T15:19:24: ✅ CRON Job programado: Actualización de estado de ganancias
+2026-03-08T15:19:24:    Frecuencia: Diario a las 00:00 (0 0 * * *)
+2026-03-08T15:19:24:    Zona horaria: America/Mexico_City
+2026-03-08T15:19:24: 
+✅ Total de CRON jobs activos: 1
+2026-03-08T15:19:24: ============================================
+
+2026-03-08T15:19:24: ✅ CRON jobs inicializados
+2026-03-08T15:19:24: [router/Sale] auth.verifyTienda type: function
+2026-03-08T15:19:24: [router/Sale] saleController.createPaypalOrder type: undefined
+2026-03-08T15:19:26: ✅ Rutas configuradas
+2026-03-08T15:19:26: 🔌 Socket.IO inicializado correctamente
+2026-03-08T15:19:28: 
+═══════════════════════════════════════════════════
+2026-03-08T15:19:28: 🚀 SERVIDOR INICIADO
+2026-03-08T15:19:28: ═══════════════════════════════════════════════════
+2026-03-08T15:19:28: 📡 Puerto: 3000
+2026-03-08T15:19:28: 🔌 WebSocket: ws://localhost:3000
+2026-03-08T15:19:28: 🌍 Entorno: production
+2026-03-08T15:19:28: 🔐 Seguridad: ACTIVADA
+2026-03-08T15:19:28: ═══════════════════════════════════════════════════
+
+2026-03-08T15:19:30: ✅ Course indexes created successfully
+2026-03-08T15:19:30: ✅ Notification indexes created
+2026-03-09T21:43:52: 
+⚠️  SIGTERM recibido. Cerrando servidor...
+2026-03-09T21:43:52: 
+⏹️  Deteniendo todos los CRON jobs...
+2026-03-09T21:43:52:    ✓ Detenido: Update Earnings Status
+2026-03-09T21:43:52: ✅ Todos los CRON jobs detenidos.
+
+2026-03-09T21:43:52: ✅ CRON jobs detenidos
+2026-03-09T21:43:52: ✅ Servidor cerrado correctamente
+2026-03-09T21:43:52: 
+⚠️  SIGINT (Ctrl+C) recibido. Cerrando servidor...
+2026-03-10T13:07:04: [dotenv@17.2.3] injecting env (12) from .env -- tip: ✅ audit secrets and track compliance: https://dotenvx.com/ops
+2026-03-10T13:07:04: 🔍 Validando variables de entorno...
+
+2026-03-10T13:07:04: ======================================================================
+2026-03-10T13:07:04: RESULTADO DE VALIDACIÓN
+2026-03-10T13:07:04: ======================================================================
+2026-03-10T13:07:04: 
+🟡 ADVERTENCIAS:
+
+2026-03-10T13:07:04: ⚠️  Usando Stripe en modo TEST en producción. Cambia a sk_live_...
+2026-03-10T13:07:04: 
+La aplicación puede iniciar, pero revisa estas configuraciones
+
+2026-03-10T13:07:04: ======================================================================
+
+2026-03-10T13:07:04: 
+📋 INFORMACIÓN DE ENTORNO:
+
+2026-03-10T13:07:04:    Entorno:        production
+2026-03-10T13:07:04:    Puerto:         3000
+2026-03-10T13:07:04:    Backend:        http://localhost:3000
+2026-03-10T13:07:04:    Frontend:       https://devhubsharks.com
+2026-03-10T13:07:04:    Stripe mode:    test
+2026-03-10T13:07:04: 
+2026-03-10T13:07:04: 📂 [Init] Verificando estructura de directorios...
+2026-03-10T13:07:04: ✅ [Init] Estructura de directorios verificada.
+2026-03-10T13:07:04: ✅ Helmet configurado
+2026-03-10T13:07:04: ✅ CORS configurado
+2026-03-10T13:07:04: ✅ Protecciones anti-ataque configuradas
+2026-03-10T13:07:04: ✅ Rate limiting configurado
+2026-03-10T13:07:04: ✅ Parsers configurados
+2026-03-10T13:07:06: ✅ Conectado a la base de datos MongoDB [PRODUCCIÓN (MONGO_URI)]
+2026-03-10T13:07:06: 
+🚀 ============================================
+2026-03-10T13:07:06:    INICIALIZANDO CRON JOBS
+2026-03-10T13:07:06: ============================================
+
+2026-03-10T13:07:06: ✅ CRON Job programado: Actualización de estado de ganancias
+2026-03-10T13:07:06:    Frecuencia: Diario a las 00:00 (0 0 * * *)
+2026-03-10T13:07:06:    Zona horaria: America/Mexico_City
+2026-03-10T13:07:06: 
+✅ Total de CRON jobs activos: 1
+2026-03-10T13:07:06: ============================================
+
+2026-03-10T13:07:06: ✅ CRON jobs inicializados
+2026-03-10T13:07:07: [router/Sale] auth.verifyTienda type: function
+2026-03-10T13:07:07: [router/Sale] saleController.createPaypalOrder type: undefined
+2026-03-10T13:07:08: ✅ Rutas configuradas
+2026-03-10T13:07:08: 🔌 Socket.IO inicializado correctamente
+2026-03-10T13:07:08: 
+═══════════════════════════════════════════════════
+2026-03-10T13:07:08: 🚀 SERVIDOR INICIADO
+2026-03-10T13:07:08: ═══════════════════════════════════════════════════
+2026-03-10T13:07:08: 📡 Puerto: 3000
+2026-03-10T13:07:08: 🔌 WebSocket: ws://localhost:3000
+2026-03-10T13:07:08: 🌍 Entorno: production
+2026-03-10T13:07:08: 🔐 Seguridad: ACTIVADA
+2026-03-10T13:07:08: ═══════════════════════════════════════════════════
+
+2026-03-10T13:07:10: ✅ Course indexes created successfully
+2026-03-10T13:07:10: ✅ Notification indexes created
+2026-03-10T13:19:38: 
+⚠️  SIGTERM recibido. Cerrando servidor...
+2026-03-10T13:19:38: 
+⏹️  Deteniendo todos los CRON jobs...
+2026-03-10T13:19:38:    ✓ Detenido: Update Earnings Status
+2026-03-10T13:19:38: ✅ Todos los CRON jobs detenidos.
+
+2026-03-10T13:19:38: ✅ CRON jobs detenidos
+2026-03-10T13:19:38: ✅ Servidor cerrado correctamente
+2026-03-11T10:18:25: [dotenv@17.2.3] injecting env (12) from .env -- tip: 🔄 add secrets lifecycle management: https://dotenvx.com/ops
+2026-03-11T10:18:25: 🔍 Validando variables de entorno...
+
+2026-03-11T10:18:25: ======================================================================
+2026-03-11T10:18:25: RESULTADO DE VALIDACIÓN
+2026-03-11T10:18:25: ======================================================================
+2026-03-11T10:18:25: 
+🟡 ADVERTENCIAS:
+
+2026-03-11T10:18:25: ⚠️  Usando Stripe en modo TEST en producción. Cambia a sk_live_...
+2026-03-11T10:18:25: 
+La aplicación puede iniciar, pero revisa estas configuraciones
+
+2026-03-11T10:18:25: ======================================================================
+
+2026-03-11T10:18:25: 
+📋 INFORMACIÓN DE ENTORNO:
+
+2026-03-11T10:18:25:    Entorno:        production
+2026-03-11T10:18:25:    Puerto:         3000
+2026-03-11T10:18:25:    Backend:        http://localhost:3000
+2026-03-11T10:18:25:    Frontend:       https://devhubsharks.com
+2026-03-11T10:18:25:    Stripe mode:    test
+2026-03-11T10:18:25: 
+2026-03-11T10:18:25: 📂 [Init] Verificando estructura de directorios...
+2026-03-11T10:18:25: ✅ [Init] Estructura de directorios verificada.
+2026-03-11T10:18:25: ✅ Helmet configurado
+2026-03-11T10:18:25: ✅ CORS configurado
+2026-03-11T10:18:25: ✅ Protecciones anti-ataque configuradas
+2026-03-11T10:18:25: ✅ Rate limiting configurado
+2026-03-11T10:18:25: ✅ Parsers configurados
+2026-03-11T10:18:28: ✅ Conectado a la base de datos MongoDB [PRODUCCIÓN (MONGO_URI)]
+2026-03-11T10:18:28: 
+🚀 ============================================
+2026-03-11T10:18:28:    INICIALIZANDO CRON JOBS
+2026-03-11T10:18:28: ============================================
+
+2026-03-11T10:18:29: ✅ CRON Job programado: Actualización de estado de ganancias
+2026-03-11T10:18:29:    Frecuencia: Diario a las 00:00 (0 0 * * *)
+2026-03-11T10:18:29:    Zona horaria: America/Mexico_City
+2026-03-11T10:18:29: 
+✅ Total de CRON jobs activos: 1
+2026-03-11T10:18:29: ============================================
+
+2026-03-11T10:18:29: ✅ CRON jobs inicializados
+2026-03-11T10:18:30: [router/Sale] auth.verifyTienda type: function
+2026-03-11T10:18:30: [router/Sale] saleController.createPaypalOrder type: undefined
+2026-03-11T10:18:31: ✅ Rutas configuradas
+2026-03-11T10:18:31: 🔌 Socket.IO inicializado correctamente
+2026-03-11T10:18:32: 
+═══════════════════════════════════════════════════
+2026-03-11T10:18:32: 🚀 SERVIDOR INICIADO
+2026-03-11T10:18:32: ═══════════════════════════════════════════════════
+2026-03-11T10:18:32: 📡 Puerto: 3000
+2026-03-11T10:18:32: 🔌 WebSocket: ws://localhost:3000
+2026-03-11T10:18:32: 🌍 Entorno: production
+2026-03-11T10:18:32: 🔐 Seguridad: ACTIVADA
+2026-03-11T10:18:32: ═══════════════════════════════════════════════════
+
+2026-03-11T10:18:34: ✅ Course indexes created successfully
+2026-03-11T10:18:35: ✅ Notification indexes created
