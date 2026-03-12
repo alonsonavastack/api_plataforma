@@ -20,7 +20,12 @@ const SeoController = {
 
             const title = `${project.title} | Dev Hub Sharks`;
             const description = project.subtitle || project.description || 'Proyecto práctico en Dev Hub Sharks';
+
+            // La URL que facebook lee (sin hash)
             const url = `${baseUrl}/project-detail/${project._id}`;
+            // La URL a donde debemos redirigir a los humanos reales (con hash)
+            const redirectUrl = `${baseUrl}/#/project-detail/${project._id}`;
+
             // Mongoose getter or building url
             const imageUrl = project.imagen ? `${apiUrl}/api/projects/uploads/projects/${project.imagen}` : `${baseUrl}/assets/logo.png`;
 
@@ -50,7 +55,7 @@ const SeoController = {
     
     <!-- Redirect for normal users if they hit this endpoint by accident -->
     <script>
-        window.location.href = "${url}";
+        window.location.href = "${redirectUrl}";
     </script>
 </head>
 <body>
@@ -58,7 +63,7 @@ const SeoController = {
     <p>${description}</p>
     <img src="${imageUrl}" alt="${title}">
     <script>
-        window.location.href = "${url}";
+        window.location.href = "${redirectUrl}";
     </script>
 </body>
 </html>`;
