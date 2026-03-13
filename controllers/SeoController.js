@@ -24,7 +24,7 @@ const SeoController = {
             // La URL que facebook lee (sin hash)
             const url = `${baseUrl}/project-detail/${project._id}`;
             // La URL a donde debemos redirigir a los humanos reales (con hash)
-            const redirectUrl = `${baseUrl}/#/project-detail/${project._id}`;
+            const redirectUrl = `${baseUrl}/project-detail/${project._id}`;
 
             // Mongoose getter or building url
             const imageUrl = project.imagen ? `${apiUrl}/api/projects/uploads/projects/${project.imagen}` : `${baseUrl}/assets/logo.png`;

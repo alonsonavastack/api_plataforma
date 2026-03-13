@@ -31,8 +31,8 @@ export async function createConnectedAccount(instructor) {
 export async function createOnboardingLink(stripeAccountId) {
     const accountLink = await stripe.accountLinks.create({
         account: stripeAccountId,
-        refresh_url: `${process.env.URL_FRONTEND}/#/instructor/stripe/reauth`,
-        return_url: `${process.env.URL_FRONTEND}/#/instructor/stripe/success`,
+        refresh_url: `${process.env.URL_FRONTEND}/instructor/stripe/reauth`,
+        return_url: `${process.env.URL_FRONTEND}/instructor/stripe/success`,
         type: 'account_onboarding',
     });
 

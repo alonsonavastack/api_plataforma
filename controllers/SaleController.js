@@ -411,8 +411,8 @@ export default {
                     payment_method_types: ['card'],
                     line_items: line_items,
                     mode: 'payment',
-                    success_url: `${process.env.URL_FRONTEND}/#/payment-success?payment_success=true&sale_id=${sale._id}`,
-                    cancel_url: `${process.env.URL_FRONTEND}/#/checkout?payment_canceled=true`,
+                    success_url: `${process.env.URL_FRONTEND}/payment-success?payment_success=true&sale_id=${sale._id}`,
+                    cancel_url: `${process.env.URL_FRONTEND}/checkout?payment_canceled=true`,
                     client_reference_id: sale._id.toString(),
                     metadata: {
                         sale_id: sale._id.toString(),
