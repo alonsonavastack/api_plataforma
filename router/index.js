@@ -34,6 +34,7 @@ import TaxBreakdownRouter from './taxBreakdown.js'; // 🧮 Sistema de desglose 
 import TelegramRouter from './telegram.js'; // 📱 Webhook Telegram
 import HealthRouter from './health.js'; // 🏥 Health check endpoints
 import StripeRouter from './Stripe.js'; // 💳 Stripe Connect
+import OgShareRouter from './OgShare.js'; // 🔗 Open Graph para redes sociales
 
 // http://localhost:3000/api/users/register
 const router = routerx();
@@ -66,6 +67,7 @@ router.use('/wallet', WalletRouter); // 💰 Rutas de billetera digital
 router.use('/seo', SeoRouter); // 🔍 Rutas SEO Bot Proxy proxy
 // router.use('/transfers', TransferRouter); // 🗑️ ELIMINADO
 router.use('/payment-dashboard', PaymentDashboardRouter); // 📊 Dashboard de pagos
+router.use('/share', OgShareRouter); // 🔗 Open Graph share para redes sociales
 
 // SISTEMA DE PAGOS A INSTRUCTORES
 router.use('/instructor', InstructorPaymentRouter); // Rutas para instructores
