@@ -88,10 +88,10 @@ router.get('/project/:id', async (req, res) => {
             .select('title description imagen price_mxn isFree')
             .lean();
 
-        if (!project) return res.redirect(`${FRONTEND_URL}/#/`);
+        if (!project) return res.redirect(`${FRONTEND_URL}/`);
 
         const image = resolveProjectImageUrl(project.imagen);
-        const redirectUrl = `${FRONTEND_URL}/#/project-detail/${req.params.id}`;
+        const redirectUrl = `${FRONTEND_URL}/project-detail/${req.params.id}`;
         const shareUrl = `${API_URL}/api/share/project/${req.params.id}`;
         const price = project.isFree ? 'Gratis' : `$${parseFloat(project.price_mxn || 0).toFixed(2)} MXN`;
         const description = `${price} — ${project.description || ''}`;
@@ -105,7 +105,7 @@ router.get('/project/:id', async (req, res) => {
         return res.send(html);
     } catch (err) {
         console.error('[OgShare] /project/:id error:', err.message);
-        return res.redirect(`${FRONTEND_URL}/#/`);
+        return res.redirect(`${FRONTEND_URL}/`);
     }
 });
 
@@ -116,10 +116,10 @@ router.get('/course/:id', async (req, res) => {
             .select('title description imagen price isFree')
             .lean();
 
-        if (!course) return res.redirect(`${FRONTEND_URL}/#/`);
+        if (!course) return res.redirect(`${FRONTEND_URL}/`);
 
         const image = resolveCourseImageUrl(course.imagen);
-        const redirectUrl = `${FRONTEND_URL}/#/course-detail/${req.params.id}`;
+        const redirectUrl = `${FRONTEND_URL}/course-detail/${req.params.id}`;
         const shareUrl = `${API_URL}/api/share/course/${req.params.id}`;
         const price = course.isFree ? 'Gratis' : `$${parseFloat(course.price || 0).toFixed(2)} MXN`;
         const description = `${price} — ${course.description || ''}`;
@@ -133,7 +133,7 @@ router.get('/course/:id', async (req, res) => {
         return res.send(html);
     } catch (err) {
         console.error('[OgShare] /course/:id error:', err.message);
-        return res.redirect(`${FRONTEND_URL}/#/`);
+        return res.redirect(`${FRONTEND_URL}/`);
     }
 });
 
