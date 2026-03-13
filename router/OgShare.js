@@ -67,9 +67,6 @@ function buildOgHtml({ title, description, image, redirectUrl, shareUrl }) {
   <meta name="twitter:title"       content="${fullTitle}">
   <meta name="twitter:description" content="${cleanDesc}">
   <meta name="twitter:image"       content="${safeImage}">
-
-  <!-- Redirigir al usuario real al frontend Angular -->
-  <meta http-equiv="refresh" content="0; url=${redirectUrl}">
 </head>
 <body>
   <p>Redirigiendo... <a href="${redirectUrl}">clic aquí si no redirige</a></p>
