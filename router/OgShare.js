@@ -21,29 +21,32 @@ const SITE_NAME = 'Dev Hub Sharks';
 function resolveProjectImageUrl(imagen) {
     if (!imagen) return null;
     if (imagen.startsWith('http://') || imagen.startsWith('https://')) return imagen;
-    // Usar la ruta estática /uploads/project/ para máxima compatibilidad con bots
-    return `${API_URL}/uploads/project/${imagen}`;
+    // La imagen se sirve a través del controlador oficial que sabemos que Nginx no bloquea
+    return `${API_URL}/api/projects/imagen-project/${imagen}`;
 }
 
 function resolveCourseImageUrl(imagen) {
     if (!imagen) return null;
     if (imagen.startsWith('http://') || imagen.startsWith('https://')) return imagen;
-    // Usar la ruta estática /uploads/course/ para máxima compatibilidad con bots
-    return `${API_URL}/uploads/course/${imagen}`;
+    // La imagen se sirve a través del controlador oficial
+    return `${API_URL}/api/courses/imagen-course/${imagen}`;
 }
 
 // ── Generar HTML con meta OG ─────────────────────────────────────────────────
 function buildOgHtml({ title, description, image, redirectUrl, shareUrl }) {
-    const cleanDesc = (description || '')
-        .replace(/<[^>]+>/g, '')
-        .replace(/\s+/g, ' ')
-        .trim()
-        .substring(0, 200);
+    const SITE_NAME = process.env.SITE_NAME || 'Dev Hub Sharks';
 
-    const fullTitle = `${title} | ${SITE_NAME}`;
-
+    const fullTitle = (title ? `${title} | ${SITE_NAME}` : SITE_NAME).replace(/"/g, '&quot;');
+    const cleanDesc = (description || '').substring(0, 200).replace(/"/g, '&quot;');
     // Usar HTTPS siempre para la imagen (requerido por Facebook)
-    const safeImage = image || `${API_URL}/uploads/default.jpg`;
+    const safeImage = (image || `${API_URL}/assets/logo.png`).replace(/"/g, '&quot;');
+
+    // Extraer el tipo de contenido usando la extensión
+    let imageType = '';
+    if (safeImage.includes('.png')) imageType = 'image/png';
+    else if (safeImage.includes('.webp')) imageType = 'image/webp';
+    else if (safeImage.includes('.gif')) imageType = 'image/gif';
+    else if (safeImage.includes('.jpg') || safeImage.includes('.jpeg')) imageType = 'image/jpeg';
 
     return `<!DOCTYPE html>
 <html lang="es">
@@ -57,6 +60,9 @@ function buildOgHtml({ title, description, image, redirectUrl, shareUrl }) {
   <meta property="og:description"  content="${cleanDesc}">
   <meta property="og:image"        content="${safeImage}">
   <meta property="og:image:secure_url" content="${safeImage}">
+  ${imageType ? `<meta property="og:image:type" content="${imageType}">` : ''}
+  <meta property="og:image:width"  content="1200">
+  <meta property="og:image:height" content="630">
   <meta property="og:image:alt"    content="${fullTitle}">
   <meta property="og:url"          content="${shareUrl}">
   <meta property="og:site_name"    content="${SITE_NAME}">
