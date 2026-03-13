@@ -2,7 +2,7 @@
  * ROUTER: Open Graph Share
  * Sirve meta tags OG para que Facebook/WhatsApp lean imagen, título y descripción.
  *
- * URL que se comparte: https://api.devhubsharks.com/share/project/ID
+ * URL que se comparte: https://api.devhubsharks.com/api/share/project/ID
  * El scraper de FB llama a esa URL → lee las <meta> → muestra imagen en el preview.
  * El usuario humano que hace clic → es redirigido a devhubsharks.com/#/project-detail/ID
  */
@@ -13,18 +13,23 @@ import Course from '../models/Course.js';
 
 const router = express.Router();
 
-const API_URL      = 'https://api.devhubsharks.com';   // dominio de TU API
-const FRONTEND_URL = 'https://devhubsharks.com';        // dominio del FRONTEND
+const API_URL      = 'https://api.devhubsharks.com';
+const FRONTEND_URL = 'https://devhubsharks.com';
 const SITE_NAME    = 'Dev Hub Sharks';
-const DEFAULT_IMG  = `${API_URL}/uploads/og-default.jpg`; // imagen fallback 1200×630px (opcional)
 
-// ── Resolver URL de imagen ────────────────────────────────────────────────────
-function resolveImageUrl(imagen) {
-    if (!imagen) return DEFAULT_IMG;
+// ── Resolver URL de imagen usando los endpoints existentes del API ─────────────
+function resolveProjectImageUrl(imagen) {
+    if (!imagen) return null;
     if (imagen.startsWith('http://') || imagen.startsWith('https://')) return imagen;
-    // Ruta relativa guardada como "uploads/xxx.jpg" o "/uploads/xxx.jpg"
-    const clean = imagen.startsWith('/') ? imagen : `/${imagen}`;
-    return `${API_URL}${clean}`;
+    // Las imágenes de proyectos se sirven desde /api/projects/imagen-project/:img
+    return `${API_URL}/api/projects/imagen-project/${imagen}`;
+}
+
+function resolveCourseImageUrl(imagen) {
+    if (!imagen) return null;
+    if (imagen.startsWith('http://') || imagen.startsWith('https://')) return imagen;
+    // Las imágenes de cursos se sirven desde /api/courses/imagen-course/:img
+    return `${API_URL}/api/courses/imagen-course/${imagen}`;
 }
 
 // ── Generar HTML con meta OG ─────────────────────────────────────────────────
@@ -37,6 +42,9 @@ function buildOgHtml({ title, description, image, redirectUrl }) {
 
     const fullTitle = `${title} | ${SITE_NAME}`;
 
+    // Usar HTTPS siempre para la imagen (requerido por Facebook)
+    const safeImage = image || `${API_URL}/uploads/default.jpg`;
+
     return `<!DOCTYPE html>
 <html lang="es">
 <head>
@@ -47,10 +55,9 @@ function buildOgHtml({ title, description, image, redirectUrl }) {
   <meta property="og:type"         content="website">
   <meta property="og:title"        content="${fullTitle}">
   <meta property="og:description"  content="${cleanDesc}">
-  <meta property="og:image"        content="${image}">
+  <meta property="og:image"        content="${safeImage}">
   <meta property="og:image:width"  content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:type"   content="image/jpeg">
   <meta property="og:url"          content="${redirectUrl}">
   <meta property="og:site_name"    content="${SITE_NAME}">
   <meta property="og:locale"       content="es_MX">
@@ -59,7 +66,7 @@ function buildOgHtml({ title, description, image, redirectUrl }) {
   <meta name="twitter:card"        content="summary_large_image">
   <meta name="twitter:title"       content="${fullTitle}">
   <meta name="twitter:description" content="${cleanDesc}">
-  <meta name="twitter:image"       content="${image}">
+  <meta name="twitter:image"       content="${safeImage}">
 
   <!-- Redirigir al usuario real al frontend Angular -->
   <meta http-equiv="refresh" content="0; url=${redirectUrl}">
@@ -80,14 +87,16 @@ router.get('/project/:id', async (req, res) => {
 
         if (!project) return res.redirect(`${FRONTEND_URL}/#/`);
 
-        const image       = resolveImageUrl(project.imagen);
+        const image       = resolveProjectImageUrl(project.imagen);
         const redirectUrl = `${FRONTEND_URL}/#/project-detail/${req.params.id}`;
-        const price       = project.isFree ? 'Gratis' : `$${parseFloat(project.price_mxn).toFixed(2)} MXN`;
+        const price       = project.isFree ? 'Gratis' : `$${parseFloat(project.price_mxn || 0).toFixed(2)} MXN`;
         const description = `${price} — ${project.description || ''}`;
+
+        console.log(`[OgShare] project ${req.params.id} → imagen: ${image}`);
 
         const html = buildOgHtml({ title: project.title, description, image, redirectUrl });
 
-        res.set('Cache-Control', 'public, max-age=3600');
+        res.set('Cache-Control', 'no-cache'); // Sin cache para que FB siempre lea fresco
         res.set('Content-Type', 'text/html; charset=utf-8');
         return res.send(html);
     } catch (err) {
@@ -105,14 +114,16 @@ router.get('/course/:id', async (req, res) => {
 
         if (!course) return res.redirect(`${FRONTEND_URL}/#/`);
 
-        const image       = resolveImageUrl(course.imagen);
+        const image       = resolveCourseImageUrl(course.imagen);
         const redirectUrl = `${FRONTEND_URL}/#/course-detail/${req.params.id}`;
-        const price       = course.isFree ? 'Gratis' : `$${parseFloat(course.price).toFixed(2)} MXN`;
+        const price       = course.isFree ? 'Gratis' : `$${parseFloat(course.price || 0).toFixed(2)} MXN`;
         const description = `${price} — ${course.description || ''}`;
+
+        console.log(`[OgShare] course ${req.params.id} → imagen: ${image}`);
 
         const html = buildOgHtml({ title: course.title, description, image, redirectUrl });
 
-        res.set('Cache-Control', 'public, max-age=3600');
+        res.set('Cache-Control', 'no-cache');
         res.set('Content-Type', 'text/html; charset=utf-8');
         return res.send(html);
     } catch (err) {
