@@ -13,9 +13,9 @@ import Course from '../models/Course.js';
 
 const router = express.Router();
 
-const API_URL      = 'https://api.devhubsharks.com';
+const API_URL = 'https://api.devhubsharks.com';
 const FRONTEND_URL = 'https://devhubsharks.com';
-const SITE_NAME    = 'Dev Hub Sharks';
+const SITE_NAME = 'Dev Hub Sharks';
 
 // ── Resolver URL de imagen usando los endpoints existentes del API ─────────────
 function resolveProjectImageUrl(imagen) {
@@ -33,7 +33,7 @@ function resolveCourseImageUrl(imagen) {
 }
 
 // ── Generar HTML con meta OG ─────────────────────────────────────────────────
-function buildOgHtml({ title, description, image, redirectUrl }) {
+function buildOgHtml({ title, description, image, redirectUrl, shareUrl }) {
     const cleanDesc = (description || '')
         .replace(/<[^>]+>/g, '')
         .replace(/\s+/g, ' ')
@@ -58,7 +58,7 @@ function buildOgHtml({ title, description, image, redirectUrl }) {
   <meta property="og:image"        content="${safeImage}">
   <meta property="og:image:width"  content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:url"          content="${redirectUrl}">
+  <meta property="og:url"          content="${shareUrl}">
   <meta property="og:site_name"    content="${SITE_NAME}">
   <meta property="og:locale"       content="es_MX">
 
@@ -87,14 +87,15 @@ router.get('/project/:id', async (req, res) => {
 
         if (!project) return res.redirect(`${FRONTEND_URL}/#/`);
 
-        const image       = resolveProjectImageUrl(project.imagen);
+        const image = resolveProjectImageUrl(project.imagen);
         const redirectUrl = `${FRONTEND_URL}/#/project-detail/${req.params.id}`;
-        const price       = project.isFree ? 'Gratis' : `$${parseFloat(project.price_mxn || 0).toFixed(2)} MXN`;
+        const shareUrl = `${API_URL}/api/share/project/${req.params.id}`;
+        const price = project.isFree ? 'Gratis' : `$${parseFloat(project.price_mxn || 0).toFixed(2)} MXN`;
         const description = `${price} — ${project.description || ''}`;
 
         console.log(`[OgShare] project ${req.params.id} → imagen: ${image}`);
 
-        const html = buildOgHtml({ title: project.title, description, image, redirectUrl });
+        const html = buildOgHtml({ title: project.title, description, image, redirectUrl, shareUrl });
 
         res.set('Cache-Control', 'no-cache'); // Sin cache para que FB siempre lea fresco
         res.set('Content-Type', 'text/html; charset=utf-8');
@@ -114,14 +115,15 @@ router.get('/course/:id', async (req, res) => {
 
         if (!course) return res.redirect(`${FRONTEND_URL}/#/`);
 
-        const image       = resolveCourseImageUrl(course.imagen);
+        const image = resolveCourseImageUrl(course.imagen);
         const redirectUrl = `${FRONTEND_URL}/#/course-detail/${req.params.id}`;
-        const price       = course.isFree ? 'Gratis' : `$${parseFloat(course.price || 0).toFixed(2)} MXN`;
+        const shareUrl = `${API_URL}/api/share/course/${req.params.id}`;
+        const price = course.isFree ? 'Gratis' : `$${parseFloat(course.price || 0).toFixed(2)} MXN`;
         const description = `${price} — ${course.description || ''}`;
 
         console.log(`[OgShare] course ${req.params.id} → imagen: ${image}`);
 
-        const html = buildOgHtml({ title: course.title, description, image, redirectUrl });
+        const html = buildOgHtml({ title: course.title, description, image, redirectUrl, shareUrl });
 
         res.set('Cache-Control', 'no-cache');
         res.set('Content-Type', 'text/html; charset=utf-8');
