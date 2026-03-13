@@ -21,15 +21,15 @@ const SITE_NAME = 'Dev Hub Sharks';
 function resolveProjectImageUrl(imagen) {
     if (!imagen) return null;
     if (imagen.startsWith('http://') || imagen.startsWith('https://')) return imagen;
-    // Las imágenes de proyectos se sirven desde /api/projects/imagen-project/:img
-    return `${API_URL}/api/projects/imagen-project/${imagen}`;
+    // Usar la ruta estática /uploads/project/ para máxima compatibilidad con bots
+    return `${API_URL}/uploads/project/${imagen}`;
 }
 
 function resolveCourseImageUrl(imagen) {
     if (!imagen) return null;
     if (imagen.startsWith('http://') || imagen.startsWith('https://')) return imagen;
-    // Las imágenes de cursos se sirven desde /api/courses/imagen-course/:img
-    return `${API_URL}/api/courses/imagen-course/${imagen}`;
+    // Usar la ruta estática /uploads/course/ para máxima compatibilidad con bots
+    return `${API_URL}/uploads/course/${imagen}`;
 }
 
 // ── Generar HTML con meta OG ─────────────────────────────────────────────────
@@ -57,9 +57,6 @@ function buildOgHtml({ title, description, image, redirectUrl, shareUrl }) {
   <meta property="og:description"  content="${cleanDesc}">
   <meta property="og:image"        content="${safeImage}">
   <meta property="og:image:secure_url" content="${safeImage}">
-  <meta property="og:image:type"   content="image/jpeg">
-  <meta property="og:image:width"  content="1200">
-  <meta property="og:image:height" content="630">
   <meta property="og:image:alt"    content="${fullTitle}">
   <meta property="og:url"          content="${shareUrl}">
   <meta property="og:site_name"    content="${SITE_NAME}">
