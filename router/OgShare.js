@@ -56,8 +56,11 @@ function buildOgHtml({ title, description, image, redirectUrl, shareUrl }) {
   <meta property="og:title"        content="${fullTitle}">
   <meta property="og:description"  content="${cleanDesc}">
   <meta property="og:image"        content="${safeImage}">
+  <meta property="og:image:secure_url" content="${safeImage}">
+  <meta property="og:image:type"   content="image/jpeg">
   <meta property="og:image:width"  content="1200">
   <meta property="og:image:height" content="630">
+  <meta property="og:image:alt"    content="${fullTitle}">
   <meta property="og:url"          content="${shareUrl}">
   <meta property="og:site_name"    content="${SITE_NAME}">
   <meta property="og:locale"       content="es_MX">
