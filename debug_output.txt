@@ -1,0 +1,39 @@
+✅ Connected to MongoDB
+✅ Course indexes created successfully
+📊 Commission Settings:
+{
+  enabled_payment_methods: { paypal: true, bank_transfer: true, other: false },
+  notifications: {
+    notify_instructor_on_new_earning: true,
+    notify_instructor_on_available: true,
+    notify_instructor_on_payment: true,
+    notify_admin_on_threshold: true
+  },
+  referral_commission_rate: 20,
+  _id: new ObjectId("693a17e2147f8634b39a9fe1"),
+  default_commission_rate: 50,
+  days_until_available: 0,
+  minimum_payment_threshold: 50,
+  default_currency: 'USD',
+  exchange_rate_usd_to_mxn: 17.5,
+  instructor_custom_rates: [],
+  createdAt: 2025-12-11T01:01:22.502Z,
+  updatedAt: 2025-12-15T20:32:40.162Z,
+  __v: 0,
+  last_updated_by: new ObjectId("693dd18d799dc8b95fa6b07a")
+}
+🔍 Searching for coupon: REF-ALO-0V5DH
+✅ Coupon found:
+   _id: 6970288652482e6e35eec490
+   code: REF-ALO-0V5DH
+   instructor (ID): 694316f05c102f674cc5c2b3
+   type: undefined
+✅ Notification indexes created
+👤 User found for ID 694316f05c102f674cc5c2b3:
+   Name: alo bn
+   Rol: instructor
+   Email: halcon.luis15@gmail.com
+👤 User found for ID 694316f05c102f674cc5c2b3:
+   Name: alo bn
+   Rol: instructor
+   Email: halcon.luis15@gmail.com

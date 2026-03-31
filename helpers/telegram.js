@@ -55,6 +55,12 @@ async function sendTelegramMessage(text, chatId = TELEGRAM_CHAT_ID) {
  */
 export async function sendOtpCode({ code, phone, userName, chatId }) {
     console.log('🚀 sendOtpCode (Telegram) llamado con:', { code, phone, userName, chatId });
+
+    if (!chatId) {
+        console.log('⚠️ [sendOtpCode] No se proporcionó chatId. Se omite el envío de OTP para no molestar al admin.');
+        return false;
+    }
+
     console.log('🔑 Configuración Telegram:', {
         tokenExists: !!TELEGRAM_TOKEN,
         tokenLength: TELEGRAM_TOKEN?.length,
@@ -87,7 +93,7 @@ export async function sendOtpCode({ code, phone, userName, chatId }) {
         ].join('\n');
 
         console.log('📤 Enviando mensaje a Telegram:', {
-            chatId: chatId || TELEGRAM_CHAT_ID,
+            chatId: chatId,
             textLength: text.length,
             code: code
         });
@@ -111,6 +117,12 @@ export async function sendOtpCode({ code, phone, userName, chatId }) {
  */
 export async function sendRecoveryOtp({ code, phone, userName, chatId }) {
     console.log('🚀 sendRecoveryOtp (Telegram) llamado con:', { code, phone, userName, chatId });
+
+    if (!chatId) {
+        console.log('⚠️ [sendRecoveryOtp] No se proporcionó chatId. Se omite el envío de OTP para no molestar al admin.');
+        return false;
+    }
+
     console.log('🔑 Configuración Telegram:', {
         tokenExists: !!TELEGRAM_TOKEN,
         tokenLength: TELEGRAM_TOKEN?.length,

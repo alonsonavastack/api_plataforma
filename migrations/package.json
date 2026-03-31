@@ -1,0 +1,8 @@
+{
+  "name": "migrations",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "migrate:refunds": "node update-refunds-to-100.js"
+  }
+}

@@ -109,9 +109,10 @@ export default {
       const User = await models.User.create(req.body);
 
       // Enviar OTP por Telegram
+      let telegramResponse = false;
       try {
         console.log(`📤 Intentando enviar OTP a Telegram para ${req.body.name}...`);
-        const telegramResponse = await sendOtpCode({
+        telegramResponse = await sendOtpCode({
           code: otpCode,
           phone: req.body.phone,
           userName: `${req.body.name} ${req.body.surname}`,
@@ -164,9 +165,9 @@ export default {
       }
 
       res.status(200).json({
-        message: 'Usuario registrado. Revisa tu Telegram para verificar tu cuenta.',
+        message: telegramResponse ? 'Usuario registrado. Revisa tu Telegram para verificar tu cuenta.' : 'Usuario registrado. Por favor vincula tu Telegram para verificar tu cuenta.',
         user: resource.User.api_resource_user(User),
-        otpSent: true,
+        otpSent: !!telegramResponse,
         expiresIn: 600 // segundos
       });
     } catch (error) {
@@ -1075,15 +1076,20 @@ export default {
 
       await user.save();
 
-      // Enviar nuevo OTP por Telegram
+      // Enviar nuevo OTP a Telegram
+      let telegramResponse = false;
       try {
-        await sendOtpCode({
+        telegramResponse = await sendOtpCode({
           code: otpCode,
           phone: user.phone,
           userName: user.name,
           chatId: user.telegram_chat_id // ✅ Usar ID del usuario si existe
         });
-        console.log(`✅ OTP reenviado a Telegram para ${user.name}: ${otpCode}`);
+        if (telegramResponse) {
+             console.log(`✅ OTP reenviado a Telegram para ${user.name}: ${otpCode}`);
+        } else {
+             console.log(`⚠️ OTP no se pudo enviar a Telegram para ${user.name} porque no ha vinculado su cuenta (falta chat_id).`);
+        }
 
         // También notificar al admin con el nuevo código
         await notifyNewRegistration(user, otpCode);
@@ -1103,7 +1109,7 @@ export default {
       }
 
       res.status(200).json({
-        message: "Código reenviado exitosamente. Revisa tu Telegram.",
+        message: telegramResponse ? "Código reenviado exitosamente. Revisa tu Telegram." : "Código generado. Asegúrate de vincular tu cuenta con Telegram para recibirlo.",
         expiresIn: 600, // segundos
         resendsRemaining: 5 - user.otp.resends
       });
