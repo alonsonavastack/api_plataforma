@@ -25,6 +25,8 @@ router.post("/resend-recovery-otp", [], userController.resend_recovery_otp)
 router.post("/generate-otp-test", [], userController.generate_otp_for_existing_user)
 
 router.post("/login", userController.login_general); // RUTA UNIFICADA
+router.post("/google-login", userController.google_login); // 🆕 RUTA GOOGLE AUTH
+
 router.get("/debug-token", userController.debug_token);
 router.get("/debug-user-project", userController.debug_user_with_project);
 //CRUD ADMIN 

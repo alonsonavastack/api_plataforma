@@ -5,9 +5,14 @@ const UserSchema = new Schema({
     name: { type: String, maxlength: 250, required: true },
     surname: { type: String, maxlength: 250, required: true },
     email: { type: String, maxlength: 250, required: true, unique: true },
-    password: { type: String, maxlength: 250, required: true },
+    password: { type: String, maxlength: 250, required: false }, // Opcional para auth de Google
     avatar: { type: String, maxlength: 250, required: false },
     state: { type: Boolean, default: true },//true ES ACTIVO false ES INACTIVO
+    
+    // ✅ Proveedor de Identidad
+    auth_provider: { type: String, enum: ['local', 'google'], default: 'local' },
+    google_id: { type: String, unique: true, sparse: true },
+
     phone: { type: String, maxlength: 30, required: false, unique: true, sparse: true },
     birthday: { type: Date, required: false },
 

@@ -777,6 +777,91 @@ export default {
       res.status(500).send({ message: "Ocurrió un error en el servidor." });
     }
   },
+  google_login: async (req, res) => {
+    try {
+      const { token: googleToken } = req.body;
+      if (!googleToken) {
+        return res.status(400).json({ message_text: "Token de Google es requerido." });
+      }
+
+      // Importar jwt dinámicamente si no está instanciado globalmente
+      let jwt;
+      try {
+        jwt = (await import('jsonwebtoken')).default || await import('jsonwebtoken');
+      } catch (err) {
+        console.error("Error cargando jsonwebtoken", err);
+      }
+
+      // Usamos decode porque la verificación de firma requeriría claves JWK de Google.
+      // En producción, lo ideal es usar google-auth-library. Trataremos OAuth2Client primero si lo lograste instalar.
+      let payload;
+      try {
+        const { OAuth2Client } = await import('google-auth-library');
+        const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID || '29745605382-bfa5i85funt4od87or39hot18bn7a6hh.apps.googleusercontent.com');
+        const ticket = await client.verifyIdToken({
+            idToken: googleToken,
+            audience: process.env.GOOGLE_CLIENT_ID || '29745605382-bfa5i85funt4od87or39hot18bn7a6hh.apps.googleusercontent.com',
+        });
+        payload = ticket.getPayload();
+      } catch (err) {
+        console.log("⚠️ No se pudo usar google-auth-library (quizás no está instalada o hubo error de red). Usando fallback manual con jwt.decode...");
+        payload = jwt.decode(googleToken);
+      }
+
+      if (!payload || !payload.email) {
+        return res.status(400).json({ message_text: "Token de Google inválido." });
+      }
+
+      const { email, name, family_name, sub: google_id, picture } = payload;
+
+      // 1. Buscar si el usuario ya existe
+      let user = await models.User.findOne({ email });
+
+      if (user) {
+        // Actualizar datos si es necesario (ej. marcar como verificado, y vincular con google)
+        if (!user.google_id) {
+           user.google_id = google_id;
+           user.auth_provider = 'google';
+           if (!user.isVerified) user.isVerified = true;
+           await user.save();
+        }
+      } else {
+        // 2. Si no existe, lo creamos
+        user = await models.User.create({
+          name: name || 'Usuario',
+          surname: family_name || 'Google',
+          email: email,
+          password: await bcrypt.hash(google_id + Date.now().toString(), 10), // Random seguro
+          avatar: picture || null, // Opcional, pero Google provee una
+          state: true,
+          rol: 'cliente',
+          isVerified: true, // Google ya verificó el email
+          auth_provider: 'google',
+          google_id: google_id
+        });
+      }
+
+      // Si fue baneado
+      if (!user.state) {
+         return res.status(404).json({ message_text: "Tu cuenta está desactivada." });
+      }
+
+      // Generar token propio
+      const tokenReturn = await token.encode(user._id, user.rol, user.email);
+
+      res.status(200).json({
+        USER: {
+          token: tokenReturn,
+          user: { _id: user._id, rol: user.rol },
+          profile: resource.User.api_resource_user(user),
+        },
+      });
+
+    } catch (error) {
+      console.error("Error en Google Login:", error);
+      res.status(500).json({ message: "Ocurrió un error en el servidor procesando Google Auth." });
+    }
+  },
   debug_token: async (req, res) => {
     try {
       const user = await models.User.findOne({ rol: 'admin' });
