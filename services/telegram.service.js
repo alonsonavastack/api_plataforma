@@ -126,17 +126,31 @@ export async function notifyVoucherUpload(sale) {
  */
 export async function notifyPaymentApproved(sale) {
     try {
-        // 🔥 CORRECCIÓN: Asegurar que user esté populado
         let userName = 'Cliente';
+        let userChatId = null;
+
+        // Importamos User de models de forma dinámica para evitar referencias circulares
+        const { default: models } = await import('../models/index.js');
+        let fullUser = null;
 
         if (sale.user) {
-            if (typeof sale.user === 'object') {
-                // Usuario ya populado
-                userName = sale.user.name || 'Cliente';
+            // Verificar si sale.user ya trae campos como email o telegram_chat_id
+            if (typeof sale.user === 'object' && sale.user.email) {
+                fullUser = sale.user;
             } else {
-                // Usuario es solo ID, necesita populate
-                console.warn('⚠️ [notifyPaymentApproved] User no está populado, usando "Cliente"');
+                // Si solo viene el ID, lo buscamos en la base de datos
+                fullUser = await models.User.findById(sale.user);
             }
+        }
+
+        if (fullUser) {
+            userName = fullUser.name || 'Cliente';
+            userChatId = fullUser.telegram_chat_id;
+        }
+
+        if (!userChatId) {
+             console.log(`⚠️ El estudiante ${userName} no tiene Telegram vinculado. Se omite el envío de confirmación de compra a Telegram.`);
+             return false;
         }
 
         const text = [
@@ -157,7 +171,7 @@ export async function notifyPaymentApproved(sale) {
             })}`
         ].join('\n');
 
-        await sendTelegramMessage(text);
+        await sendTelegramMessage(text, userChatId);
     } catch (error) {
         console.error('❌ Error al notificar aprobación de pago:', error.message);
     }

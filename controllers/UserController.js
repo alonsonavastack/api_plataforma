@@ -1086,9 +1086,9 @@ export default {
           chatId: user.telegram_chat_id // ✅ Usar ID del usuario si existe
         });
         if (telegramResponse) {
-             console.log(`✅ OTP reenviado a Telegram para ${user.name}: ${otpCode}`);
+          console.log(`✅ OTP reenviado a Telegram para ${user.name}: ${otpCode}`);
         } else {
-             console.log(`⚠️ OTP no se pudo enviar a Telegram para ${user.name} porque no ha vinculado su cuenta (falta chat_id).`);
+          console.log(`⚠️ OTP no se pudo enviar a Telegram para ${user.name} porque no ha vinculado su cuenta (falta chat_id).`);
         }
 
         // También notificar al admin con el nuevo código
