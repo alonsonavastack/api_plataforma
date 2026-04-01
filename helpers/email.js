@@ -1,57 +1,59 @@
 /**
  * 📧 HELPER DE CORREOS — Dev Hub Sharks
- * Usa nodemailer con SMTP (configurable en .env)
+ * Usa Resend (API HTTPS) — sin bloqueos de puerto SMTP en servidores cloud
  *
  * Variables requeridas en .env:
- *   SMTP_HOST=smtp.gmail.com
- *   SMTP_PORT=587
- *   SMTP_USER=tu@correo.com
- *   SMTP_PASS=tu_contraseña_o_app_password
- *   SMTP_FROM="Dev Hub Sharks <no-reply@devhubsharks.com>"
+ *   RESEND_API_KEY=re_xxxxxxxxxxxxxxxxxx
+ *   RESEND_FROM="Dev Hub Sharks <no-reply@devhubsharks.com>"
+ *
+ * Fallback a SMTP (nodemailer) si no hay RESEND_API_KEY (para desarrollo local)
  */
 
-import nodemailer from 'nodemailer';
 import path from 'path';
-import fs from 'fs';
 import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname  = path.dirname(__filename);
 
-// ── Transporter singleton ────────────────────────────────────────────────────
-let _transporter = null;
+// ── Envío con Resend ─────────────────────────────────────────────────────────
+async function sendWithResend({ to, subject, html, text }) {
+    const { Resend } = await import('resend');
+    const resend = new Resend(process.env.RESEND_API_KEY);
+    const from = process.env.RESEND_FROM || `Dev Hub Sharks <no-reply@devhubsharks.com>`;
 
-function getTransporter() {
-    if (_transporter) return _transporter;
+    const { data, error } = await resend.emails.send({ from, to, subject, html, text });
+    if (error) throw new Error(error.message);
+    return data;
+}
 
-    if (!process.env.SMTP_HOST || !process.env.SMTP_USER || !process.env.SMTP_PASS) {
-        console.warn('⚠️ [email] SMTP no configurado en .env — los correos no se enviarán.');
-        return null;
-    }
-
-    _transporter = nodemailer.createTransport({
+// ── Fallback SMTP con nodemailer (para local sin Resend) ─────────────────────
+async function sendWithSMTP({ to, subject, html, text }) {
+    const nodemailer = (await import('nodemailer')).default;
+    const transporter = nodemailer.createTransport({
         host:   process.env.SMTP_HOST,
         port:   parseInt(process.env.SMTP_PORT || '587'),
-        secure: process.env.SMTP_SECURE === 'true',   // true para 465, false para 587
-        auth: {
-            user: process.env.SMTP_USER,
-            pass: process.env.SMTP_PASS,
-        },
+        secure: process.env.SMTP_SECURE === 'true',
+        auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
         tls: { rejectUnauthorized: false },
     });
-
-    return _transporter;
+    const from = process.env.SMTP_FROM || `"Dev Hub Sharks" <${process.env.SMTP_USER}>`;
+    const info = await transporter.sendMail({ from, to, subject, html, text });
+    return info;
 }
 
 // ── Función base de envío ────────────────────────────────────────────────────
 export async function sendEmail({ to, subject, html, text }) {
-    const transporter = getTransporter();
-    if (!transporter) return false;
-
     try {
-        const from = process.env.SMTP_FROM || `"Dev Hub Sharks" <${process.env.SMTP_USER}>`;
-        const info = await transporter.sendMail({ from, to, subject, html, text });
-        console.log(`✅ [email] Correo enviado a ${to} | MessageId: ${info.messageId}`);
+        if (process.env.RESEND_API_KEY) {
+            const data = await sendWithResend({ to, subject, html, text });
+            console.log(`✅ [email] Correo enviado (Resend) a ${to} | id: ${data?.id}`);
+        } else if (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS) {
+            const info = await sendWithSMTP({ to, subject, html, text });
+            console.log(`✅ [email] Correo enviado (SMTP) a ${to} | MessageId: ${info.messageId}`);
+        } else {
+            console.warn('⚠️ [email] Sin configuración de correo (RESEND_API_KEY o SMTP). Se omite.');
+            return false;
+        }
         return true;
     } catch (err) {
         console.error(`❌ [email] Error enviando correo a ${to}:`, err.message);
